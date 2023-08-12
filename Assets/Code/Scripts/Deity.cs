@@ -28,6 +28,9 @@ public class Deity : MonoBehaviour
     [SerializeField] float enmity;
     [SerializeField] GameObject deityAttackVFX;
     [SerializeField] GameObject deityFieldEffectVFX;
+    public delegate void DeityJudgment();
+    public static event DeityJudgment OnDeityJudgment;
+
 
     public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
     //This function keeps track of the behaviour of the Player during the gameplay and increases the Enmity
@@ -65,7 +68,7 @@ public class Deity : MonoBehaviour
         }
         else if (battleManager.turnCounter == 6)
         {
-            DeityJudgment();
+            DeityJudgmentMove();
             StartCoroutine("EndDeityTurn");
             //battleManager.PassTurnToPlayer();
         }
@@ -134,8 +137,10 @@ public class Deity : MonoBehaviour
             selectedTileController.ActivateBlueParticle();
         }
     }
-    public void DeityJudgment()
+    public void DeityJudgmentMove()
     {
+        OnDeityJudgment();
+        /*
         //Scans for Player's and Companions
         if (player.unitCurrentTile.currentTileAlignment == TileController.TileAlignment.blue)
         {
@@ -148,6 +153,7 @@ public class Deity : MonoBehaviour
             //If Player's current Tile is Red, spare the Player's from the damage
             Debug.Log("The Player was spared from the Deity's judgment");
         }
+        */
     }
     IEnumerator ResetDeityAttack()
     //This coroutine triggers at the end of the Deity's attack, resetting the UI displays and the VFX.

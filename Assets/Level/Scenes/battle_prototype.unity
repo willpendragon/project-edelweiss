@@ -35304,12 +35304,12 @@ GameObject:
   - component: {fileID: 1490576773}
   - component: {fileID: 1490576772}
   m_Layer: 5
-  m_Name: TestPanel
+  m_Name: DebugPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1490576771
 RectTransform:
   m_ObjectHideFlags: 0
@@ -45994,7 +45994,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1380747461}
         m_TargetAssemblyTypeName: Deity, Assembly-CSharp
-        m_MethodName: DeityJudgment
+        m_MethodName: DeityJudgmentMove
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -47342,6 +47342,10 @@ PrefabInstance:
     - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_Name
       value: MainCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 9071249628431401955, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f353615c121e4344923c96d65e538f1, type: 3}

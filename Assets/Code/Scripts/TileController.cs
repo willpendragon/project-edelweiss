@@ -17,12 +17,12 @@ public class TileController : MonoBehaviour
         red,
         blue
     }
-    
+
     public TileStatus currentTileStatus;
     public TileAlignment currentTileAlignment;
     public float proximityDistance = 1.5f;
     public GameObject detectedUnit;
-    
+
     [SerializeField] ParticleSystem redParticle;
     [SerializeField] ParticleSystem blueParticle;
 
@@ -30,9 +30,28 @@ public class TileController : MonoBehaviour
     {
         currentTileAlignment = TileAlignment.neutral;
     }
+
+    private void OnEnable()
+    {
+        Deity.OnDeityJudgment += AttackUnit;
+    }
+
+    private void OnDisable()
+    {
+        Deity.OnDeityJudgment -= AttackUnit;
+    }
     void Update()
     {
         SetTileStatus();
+    }
+
+    public void AttackUnit()
+    {
+        if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.blue)
+        {
+            Destroy(detectedUnit);
+        }
+        Debug.Log("Attacking Unit");
     }
 
     public bool IsTileOccupied()
@@ -54,7 +73,7 @@ public class TileController : MonoBehaviour
         return false;
     }
     public void SetTileStatus()
-    {   
+    {
         if (IsTileOccupied())
         {
             currentTileStatus = TileStatus.occupied;
@@ -64,11 +83,11 @@ public class TileController : MonoBehaviour
                 //Debug.Log(this.gameObject + " occupied by a friendly Unit");
             }
         }
-        else 
+        else
         {
             currentTileStatus = TileStatus.free;
             //Debug.Log(this.gameObject + " is NOT occupied by a friendly Unit");
-            
+
         }
     }
     public void ActivateRedParticle()
