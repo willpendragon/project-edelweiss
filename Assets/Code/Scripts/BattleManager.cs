@@ -61,6 +61,15 @@ public class BattleManager : MonoBehaviour
         turnDisplay.text = "Player Turn";
         turnCounter += 1;
     }
+
+    public void OnEnable()
+    {
+        Moveset.OnPlayerTurnIsOver += PassTurnToEnemies;
+    }
+    public void OnDisable()
+    {
+        Moveset.OnPlayerTurnIsOver -= PassTurnToEnemies;
+    }
     void Update()
     {
         //Checks whether the Player has reached "0" HP. If that's the case, triggers the End of Battle screen

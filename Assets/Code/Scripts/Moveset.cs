@@ -9,6 +9,8 @@ public class Moveset : Player
     [SerializeField] TileSelector tileSelector;
     [SerializeField] GameObject playerModel;
 
+    public delegate void PlayerTurnIsOver();
+    public static event PlayerTurnIsOver OnPlayerTurnIsOver;
     public void SelectCurrentTarget(GameObject selectedCurrentTarget)
     {
         currentTarget = selectedCurrentTarget;
@@ -36,7 +38,8 @@ public class Moveset : Player
             currentTarget.GetComponent<Enemy>().TakeDamage(attackPower - attackModifier);
             currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
             deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-            SwitchToEnemyTurn();
+            //SwitchToEnemyTurn();
+            OnPlayerTurnIsOver();
             Debug.Log("Red attack");
         }
         else
@@ -52,7 +55,7 @@ public class Moveset : Player
         currentTarget.GetComponent<Enemy>().TakeDamage(attackPower + 10);
         currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
         deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-        SwitchToEnemyTurn();
+        OnPlayerTurnIsOver();
         Debug.Log("Blue attack");
     }
     else
@@ -68,7 +71,7 @@ public class Moveset : Player
         UpdatePlayerShieldDisplay();
         currentAttackAlignmentType = attackAlignmentType.blue;
         deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-        SwitchToEnemyTurn();
+        OnPlayerTurnIsOver();
         Debug.Log("Shield Increased");
     }
     else

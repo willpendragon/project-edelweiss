@@ -17,7 +17,7 @@ public enum blackListedAlignment
 }
 public class Deity : MonoBehaviour
 {
-    
+
     public blackListedAlignment currentBlacklistedAlignment;
     public alignmentType deityAlignment;
     public List<GameObject> sinnersList;
@@ -140,20 +140,6 @@ public class Deity : MonoBehaviour
     public void DeityJudgmentMove()
     {
         OnDeityJudgment();
-        /*
-        //Scans for Player's and Companions
-        if (player.unitCurrentTile.currentTileAlignment == TileController.TileAlignment.blue)
-        {
-            //If Player's current Tile is Blue, deal a vast amount of damage multiplied by the Player's accrued Red Enmity
-            player.healthPoints -= 100 * player.GetComponent<SinTracker>().redEnmity;
-            Debug.Log("Deity hit the Player with its Judgment");
-        }
-        else if (player.unitCurrentTile.currentTileAlignment == TileController.TileAlignment.red)
-        {
-            //If Player's current Tile is Red, spare the Player's from the damage
-            Debug.Log("The Player was spared from the Deity's judgment");
-        }
-        */
     }
     IEnumerator ResetDeityAttack()
     //This coroutine triggers at the end of the Deity's attack, resetting the UI displays and the VFX.

@@ -43,12 +43,6 @@ public class Player : MonoBehaviour
         UpdatePlayerHealthDisplay();
         UpdatePlayerShieldDisplay();
     }
-
-    public void SwitchToEnemyTurn()
-    {
-        battleManager.PassTurnToEnemies(); 
-    }
-
     public void UpdatePlayerHealthDisplay()
     {
         playerHealthPointsDisplay.text = healthPoints.ToString();
