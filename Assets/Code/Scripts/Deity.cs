@@ -31,7 +31,14 @@ public class Deity : MonoBehaviour
     public delegate void DeityJudgment();
     public static event DeityJudgment OnDeityJudgment;
 
-
+    private void OnEnable()
+    {
+        EnemyTurnManager.OnDeityTurn += DeityBehaviour;
+    }
+    private void OnDisable()
+    {
+        EnemyTurnManager.OnDeityTurn -= DeityBehaviour;
+    }
     public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
     //This function keeps track of the behaviour of the Player during the gameplay and increases the Enmity
     //value in relation to the type of the Move chosen by the Player.
@@ -54,6 +61,9 @@ public class Deity : MonoBehaviour
     //A simple method that informs the Deity logic. Needs refactoring after prototyping.
     //Consider changing the current implementation with a system based on Switch/Case.
     {
+        StartCoroutine("EndDeityTurn");
+        Debug.Log("Deity Behaviour");
+        /*
         if (battleManager.turnCounter >= 3 && battleManager.turnCounter < 5 && player.GetComponent<SinTracker>().redEnmity < 5)
         {
             DeityAttack();
@@ -95,6 +105,7 @@ public class Deity : MonoBehaviour
                 //battleManager.PassTurnToPlayer();
             }
         }
+        */
     }
     public void DeityAttack()
     //A simple attack from the Deity that deals damage to the Player after checking it's accrued enmity.
@@ -155,7 +166,7 @@ public class Deity : MonoBehaviour
     }
 
     IEnumerator EndDeityTurn()
-    {
+    {   
         yield return new WaitForSeconds(1f);
         battleManager.PassTurnToPlayer();
     }

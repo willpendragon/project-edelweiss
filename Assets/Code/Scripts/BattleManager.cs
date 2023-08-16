@@ -109,12 +109,13 @@ public class BattleManager : MonoBehaviour
         Debug.Log("Passing turn to Enemies");
         enemyTurnManager.EnemyTurnSequence();
     }
-    IEnumerator PassTurnToDeity()
+    /*IEnumerator PassTurnToDeity()
     {
         //Hands the turn to the Deity after the Enemies Turn.
-        yield return new WaitForSeconds(enemyTurnDuration);
+        yield return new WaitForSeconds(0);
         deity.DeityBehaviour();
     }
+    */
 
     public void PassTurnToPlayer()
     {

@@ -51,6 +51,7 @@ public void Attack()
     if (this.gameObject.tag != "DeadEnemy")
     {
         player.healthPoints -= attackPower;
+        //I can create an event for this on the Player.
         player.UpdatePlayerHealthDisplay();
         player.PlayHurtAnimation();
         attackVFX.transform.position = player.transform.position;

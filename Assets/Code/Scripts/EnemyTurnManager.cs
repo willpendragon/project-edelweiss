@@ -9,6 +9,8 @@ public class EnemyTurnManager : MonoBehaviour
     public int currentEnemyTurnIndex;
     public BattleManager battleManager;
     [SerializeField] float singleEnemyturnDuration;
+    public delegate void DeityTurn();
+    public static event DeityTurn OnDeityTurn;
 
     public void Start()
     {
@@ -46,7 +48,9 @@ public class EnemyTurnManager : MonoBehaviour
             yield return new WaitForSeconds(singleEnemyturnDuration);
             currentEnemyTurnIndex++;
         }
-        battleManager.StartCoroutine("PassTurnToDeity");
-        Debug.Log("Enemy turns are over.");
+        OnDeityTurn();
+        //battleManager.StartCoroutine("PassTurnToDeity");
+        Debug.Log("Enemy turns are over. Passing turn to Deity");
+
     }
 }

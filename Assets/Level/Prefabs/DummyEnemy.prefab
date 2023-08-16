@@ -229,6 +229,9 @@ MonoBehaviour:
   opportunityCounter: {fileID: 7140207064783089265}
   enemyAnimator: {fileID: 8412792004116243812}
   attackVFX: {fileID: 7409700727255174258}
+  enemyAttack:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8766345972400913689
 MonoBehaviour:
   m_ObjectHideFlags: 0
