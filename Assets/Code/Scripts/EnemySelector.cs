@@ -26,22 +26,34 @@ public class EnemySelector : MonoBehaviour
     
     void OnMouseOver()
     {
-        if (currentCursorStatus != CursorStatus.selected)
+        if (currentCursorStatus == CursorStatus.deselected)
         {
             cursor.color = new Color (0,0,0,1);
         }
     }
     void OnMouseDown()
     {
-        cursor.color = Color.green;
-        currentCursorStatus = CursorStatus.selected;
-        moveset.SelectCurrentTarget(this.gameObject);
-        Debug.Log(this.gameObject);
+        if (currentCursorStatus == CursorStatus.deselected && moveset.currentTarget == null)
+        {
+            cursor.color = Color.green;
+            currentCursorStatus = CursorStatus.selected;
+            moveset.SelectCurrentTarget(this.gameObject);
+            Debug.Log(this.gameObject);
+        }
+        else if (currentCursorStatus == CursorStatus.selected)
+        {
+            cursor.color = new Color(0, 0, 0, 0);
+            currentCursorStatus = CursorStatus.deselected;
+            moveset.SelectCurrentTarget(null);
+            Debug.Log("Deselected target");
+        }
     }
 
     void OnMouseExit()
     {
-        cursor.color = new Color (0,0,0,0);
-        currentCursorStatus = CursorStatus.deselected;
+        if (currentCursorStatus == CursorStatus.deselected)
+        {
+            cursor.color = new Color(0, 0, 0, 0);
+        }
     }
 }
