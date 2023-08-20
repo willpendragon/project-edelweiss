@@ -14,12 +14,4 @@ public void SetIsCurrentNodeBool()
     isCurrentNode = true;
 }
 
-/*public void Update()
-{
-    if (isCurrentNode == true)
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
-}
-*/
 }

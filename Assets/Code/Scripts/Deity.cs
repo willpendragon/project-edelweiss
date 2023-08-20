@@ -15,6 +15,14 @@ public enum blackListedAlignment
     red,
     blue
 }
+
+public enum DeityState
+{
+    indifferent,
+    aggressive,
+    gridaltering
+}
+
 public class Deity : MonoBehaviour
 {
 
@@ -28,9 +36,10 @@ public class Deity : MonoBehaviour
     [SerializeField] float enmity;
     [SerializeField] GameObject deityAttackVFX;
     [SerializeField] GameObject deityFieldEffectVFX;
+    public DeityState currentDeityState;
+
     public delegate void DeityJudgment();
     public static event DeityJudgment OnDeityJudgment;
-
     private void OnEnable()
     {
         EnemyTurnManager.OnDeityTurn += DeityBehaviour;
@@ -63,49 +72,32 @@ public class Deity : MonoBehaviour
     {
         StartCoroutine("EndDeityTurn");
         Debug.Log("Deity Behaviour");
-        /*
-        if (battleManager.turnCounter >= 3 && battleManager.turnCounter < 5 && player.GetComponent<SinTracker>().redEnmity < 5)
+        //At Turn 1 & 2, this Deity stays Indifferent and just observes the battlefield.
+        if (battleManager.turnCounter == 1 || battleManager.turnCounter == 2)
+        {
+            currentDeityState = DeityState.indifferent;
+        }
+        //At Turn 3, this Deity casts a Deity Field Effect on the battlefield.
+        else if (battleManager.turnCounter == 3)
+        {
+            DeityFieldEffect();
+        }
+        //At Turn 4 & 5, this Deity casts a powerful attack (Blizzard).
+        else if (battleManager.turnCounter == 4 || battleManager.turnCounter == 5)
         {
             DeityAttack();
-            StartCoroutine("EndDeityTurn");
-            //battleManager.PassTurnToPlayer();
         }
-        else if (battleManager.turnCounter == 5)
+        //From Turn 6 until Turn 8, the Deity controls the Battleground grids and change the tiles alignment to Blue.
+        else if (battleManager.turnCounter <= 8)
         {
             DeityGridAlteration();
-            StartCoroutine("EndDeityTurn");
-            //battleManager.PassTurnToPlayer();
         }
-        else if (battleManager.turnCounter == 6)
+        //At Turn 9, the the Deity unleashes the Judgment move. If the Player survives, they won the battle.
+        else if (battleManager.turnCounter == 9)
         {
             DeityJudgmentMove();
-            StartCoroutine("EndDeityTurn");
-            //battleManager.PassTurnToPlayer();
+            Debug.Log("Deity Judgment attack");
         }
-        else if (battleManager.turnCounter < 3)
-        {
-            {
-                deityAttackNotification.text = "The Deity is preparing to unleash its attack";
-                StartCoroutine("EndDeityTurn");
-                //battleManager.PassTurnToPlayer();
-            }
-        }
-        else if (battleManager.turnCounter >= 3 && player.GetComponent<SinTracker>().redEnmity >= 5)
-        {
-            if (battleManager.fieldEffectStatus == FieldEffectStatus.inactive)
-            {
-                DeityFieldEffect();
-                StartCoroutine("EndDeityTurn");
-                //battleManager.PassTurnToPlayer();
-            }
-            else
-            {
-                DeityAttack();
-                StartCoroutine("EndDeityTurn");
-                //battleManager.PassTurnToPlayer();
-            }
-        }
-        */
     }
     public void DeityAttack()
     //A simple attack from the Deity that deals damage to the Player after checking it's accrued enmity.
@@ -140,7 +132,7 @@ public class Deity : MonoBehaviour
     {
         TileController[] tileControllers = FindObjectsOfType<TileController>();
         int tileNumber = tileControllers.Length;
-        int selectedTileIndex = Random.Range(1, tileNumber);
+        int selectedTileIndex = Random.Range(0, tileNumber);
         TileController selectedTileController = tileControllers[selectedTileIndex].GetComponent<TileController>();
 
         if (selectedTileController.currentTileAlignment == TileController.TileAlignment.neutral)

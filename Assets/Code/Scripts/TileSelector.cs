@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class TileSelector : MonoBehaviour
 {
+    public enum TileCursorActivationStatus
+    {
+        tileCursorIsActive,
+        tileCursorIsNotActive,
+    }
     public enum TileCursorStatus
     {
         tileIsSelected,
@@ -11,32 +16,44 @@ public class TileSelector : MonoBehaviour
     }
     [SerializeField] SpriteRenderer tileCursor;
     [SerializeField] TileCursorStatus currentTileCursorStatus;
+    [SerializeField] TileCursorActivationStatus currentTileCursorActivationStatus;
     public Moveset moveset;
     // Start is called before the first frame update
     void Start()
     {
+        currentTileCursorActivationStatus = TileCursorActivationStatus.tileCursorIsNotActive;
         moveset = GameObject.FindGameObjectWithTag("Player").GetComponent<Moveset>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        Moveset.OnPlayerChangesPosition += ActivateTileCursor;
     }
-    
+    private void OnDisable()
+    {
+        Moveset.OnPlayerChangesPosition -= ActivateTileCursor;
+    }
+    void ActivateTileCursor()
+    {
+        currentTileCursorActivationStatus = TileCursorActivationStatus.tileCursorIsActive;
+    }
+
     void OnMouseOver()
     {
-        if (currentTileCursorStatus != TileCursorStatus.tileIsSelected)
+        if (currentTileCursorStatus != TileCursorStatus.tileIsSelected && currentTileCursorActivationStatus == TileCursorActivationStatus.tileCursorIsActive)
         {
             tileCursor.color = new Color (0,0,0,1);
         }
     }
     void OnMouseDown()
     {
-        tileCursor.color = Color.green;
-        currentTileCursorStatus = TileCursorStatus.tileIsSelected;
-        moveset.SelectCurrentPosition(this.gameObject);
-        Debug.Log(this.gameObject);
+        if (currentTileCursorActivationStatus == TileCursorActivationStatus.tileCursorIsActive)
+        {
+            tileCursor.color = Color.green;
+            currentTileCursorStatus = TileCursorStatus.tileIsSelected;
+            moveset.SelectCurrentPosition(this.gameObject);
+            Debug.Log(this.gameObject);
+        }
     }
 
     void OnMouseExit()

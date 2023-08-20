@@ -11,6 +11,9 @@ public class Moveset : Player
 
     public delegate void PlayerTurnIsOver();
     public static event PlayerTurnIsOver OnPlayerTurnIsOver;
+
+    public delegate void PlayerChangesPosition();
+    public static event PlayerChangesPosition OnPlayerChangesPosition;
     public void SelectCurrentTarget(GameObject selectedCurrentTarget)
     {
         currentTarget = selectedCurrentTarget;
@@ -24,8 +27,11 @@ public class Moveset : Player
         else
         {
             currentPosition = selectedCurrentTile;
+            selectedCurrentTile.GetComponent<TileController>().detectedUnit = this.gameObject;
             //this.gameObject.transform.position = currentPosition.transform.position;
-            playerModel.transform.position = currentPosition.transform.position;
+            //Possible solution: scan all of the other tiles and remove from them the Player.
+            player.transform.position = currentPosition.transform.position;
+
         }
     }
     public void RedAttack()
@@ -34,11 +40,10 @@ public class Moveset : Player
         {
             battleInterface.SetMovePanelName("Red Attack");
             currentAttackAlignmentType = attackAlignmentType.red;
-            CalculateModifier();
-            currentTarget.GetComponent<Enemy>().TakeDamage(attackPower - attackModifier);
+            //CalculateModifier();
+            currentTarget.GetComponent<Enemy>().TakeDamage(attackPower);
             currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
             deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-            //SwitchToEnemyTurn();
             OnPlayerTurnIsOver();
             Debug.Log("Red attack");
         }
@@ -80,7 +85,7 @@ public class Moveset : Player
 
     public void ChangePosition()
     {
-        //Activate Tile Selector
+        OnPlayerChangesPosition();
     }
     public void CalculateModifier()
     {
