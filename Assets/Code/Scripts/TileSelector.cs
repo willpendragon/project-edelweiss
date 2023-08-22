@@ -28,14 +28,22 @@ public class TileSelector : MonoBehaviour
     private void OnEnable()
     {
         Moveset.OnPlayerChangesPosition += ActivateTileCursor;
+        Moveset.OnPlayerMovementModeEnd += DeactivateTileCursor;
     }
     private void OnDisable()
     {
         Moveset.OnPlayerChangesPosition -= ActivateTileCursor;
+        Moveset.OnPlayerMovementModeEnd -= DeactivateTileCursor;
+
     }
     void ActivateTileCursor()
     {
         currentTileCursorActivationStatus = TileCursorActivationStatus.tileCursorIsActive;
+    }
+
+    void DeactivateTileCursor()
+    {
+        currentTileCursorActivationStatus = TileCursorActivationStatus.tileCursorIsNotActive;
     }
 
     void OnMouseOver()

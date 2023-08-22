@@ -11,31 +11,57 @@ public class BattleInterface : MonoBehaviour
     [SerializeField] Image moveNamePanel;
     [SerializeField] Image fieldEffectIcon;
     [SerializeField] BattleManager battleManager;
-public void SetMovePanelName(string currentMoveName)
-{
-    moveName.text = currentMoveName;
-    moveNamePanel.color = new Color (1,1,1,1);
-    StartCoroutine("ResetMovePanel");
-}
+    [SerializeField] TextMeshProUGUI playerActionText;
+    [SerializeField] GameObject playerActionPanel;
+    [SerializeField] TextMeshProUGUI battlefieldTextNotifications;
 
-IEnumerator ResetMovePanel()
-{
-    yield return new WaitForSeconds(2);
-    moveName.text = "";
-    moveNamePanel.color = new Color (1,1,1,0);
-}
-
-public void Update()
-{
-    if (battleManager.fieldEffectStatus == FieldEffectStatus.active)
+    private void OnEnable()
     {
-        ShowFieldEffectIcon();
-        Debug.Log("Show Field Effect Icon");
+        Moveset.OnPlayerChangesPosition += ChangePlayerActionModeText;
+        Moveset.OnPlayerMovementModeEnd += DeactivatePlayerActionModePanel;
     }
-}
+    private void OnDisable()
+    {
+        Moveset.OnPlayerChangesPosition -= ChangePlayerActionModeText;
+        Moveset.OnPlayerMovementModeEnd -= DeactivatePlayerActionModePanel;
+    }
+    public void SetMovePanelName(string currentMoveName)
+    {
+        moveName.text = currentMoveName;
+        moveNamePanel.color = new Color(1, 1, 1, 1);
+        StartCoroutine("ResetMovePanel");
+    }
 
-public void ShowFieldEffectIcon()
-{
-    fieldEffectIcon.color = new Color (255,255,255,255);
-}
+    IEnumerator ResetMovePanel()
+    {
+        yield return new WaitForSeconds(2);
+        moveName.text = "";
+        moveNamePanel.color = new Color(1, 1, 1, 0);
+    }
+
+    public void Update()
+    {
+        if (battleManager.fieldEffectStatus == FieldEffectStatus.active)
+        {
+            ShowFieldEffectIcon();
+            Debug.Log("Show Field Effect Icon");
+        }
+    }
+
+    public void ShowFieldEffectIcon()
+    {
+        fieldEffectIcon.color = new Color(255, 255, 255, 255);
+    }
+
+    public void ChangePlayerActionModeText()
+    {
+        playerActionPanel.SetActive(true);
+        playerActionText.text = "Movement Mode";
+    }
+
+    public void DeactivatePlayerActionModePanel()
+    {
+        battlefieldTextNotifications.text = "Player Is Unable to Move";
+        playerActionPanel.SetActive(false);
+    }
 }

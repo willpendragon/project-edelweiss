@@ -14,6 +14,9 @@ public class Moveset : Player
 
     public delegate void PlayerChangesPosition();
     public static event PlayerChangesPosition OnPlayerChangesPosition;
+
+    public delegate void PlayerMovementModeEnd();
+    public static event PlayerMovementModeEnd OnPlayerMovementModeEnd;
     public void SelectCurrentTarget(GameObject selectedCurrentTarget)
     {
         currentTarget = selectedCurrentTarget;
@@ -23,7 +26,7 @@ public class Moveset : Player
         if (selectedCurrentTile.GetComponent<TileController>().currentTileStatus == TileController.TileStatus.occupied)
         {
             Debug.Log("Tile occupied. Can't move the character here.");
-        } 
+        }
         else
         {
             currentPosition = selectedCurrentTile;
@@ -48,50 +51,64 @@ public class Moveset : Player
             Debug.Log("Red attack");
         }
         else
-        Debug.Log("Not able to attack");
+            Debug.Log("Not able to attack");
     }
 
     public void BlueAttack()
     {
         if (battleManager.currentTurnOrder == TurnOrder.playerTurn && currentTarget != null)
-    {
-        battleInterface.SetMovePanelName("Blue Attack");
-        currentAttackAlignmentType = attackAlignmentType.blue;
-        currentTarget.GetComponent<Enemy>().TakeDamage(attackPower + 10);
-        currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
-        deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-        OnPlayerTurnIsOver();
-        Debug.Log("Blue attack");
-    }
-    else
-    Debug.Log("Not able to attack");
+        {
+            battleInterface.SetMovePanelName("Blue Attack");
+            currentAttackAlignmentType = attackAlignmentType.blue;
+            currentTarget.GetComponent<Enemy>().TakeDamage(attackPower + 10);
+            currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
+            deity.SinTracker(currentAttackAlignmentType, this.gameObject);
+            OnPlayerTurnIsOver();
+            Debug.Log("Blue attack");
+        }
+        else
+            Debug.Log("Not able to attack");
     }
 
     public void Protection()
     {
         battleInterface.SetMovePanelName("Protection");
         if (battleManager.currentTurnOrder == TurnOrder.playerTurn)
-    {
-        shield += 10;
-        UpdatePlayerShieldDisplay();
-        currentAttackAlignmentType = attackAlignmentType.blue;
-        deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-        OnPlayerTurnIsOver();
-        Debug.Log("Shield Increased");
-    }
-    else
-    Debug.Log("Not able to execute move");
+        {
+            shield += 10;
+            UpdatePlayerShieldDisplay();
+            currentAttackAlignmentType = attackAlignmentType.blue;
+            deity.SinTracker(currentAttackAlignmentType, this.gameObject);
+            OnPlayerTurnIsOver();
+            Debug.Log("Shield Increased");
+        }
+        else
+            Debug.Log("Not able to execute move");
     }
 
     public void ChangePosition()
     {
-        OnPlayerChangesPosition();
-    }
-    public void CalculateModifier()
-    {
-        if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.iceMist)
+        if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.noFieldEffect)
         {
-            attackModifier = 10;
+            OnPlayerChangesPosition();
         }
+            if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.iceMist)
+        {
+            int changePositionChance = Random.Range(0, 3);
+            if (changePositionChance >= 2)
+            {
+                OnPlayerChangesPosition();
+            }
+            else
+            {
+                OnPlayerMovementModeEnd();
+                Debug.Log("Can't move the Player on the battlefield");
+            }
+        }
+    }
+
+    public void EndMovementMode()
+    {
+        OnPlayerMovementModeEnd();
     }
 }
