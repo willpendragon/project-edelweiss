@@ -58,24 +58,6 @@ public class TileController : MonoBehaviour
         }
     }
 
-    public bool IsTileOccupied()
-    {
-        GameObject[] playerUnitsToDetect = GameObject.FindGameObjectsWithTag("Player");
-        GameObject[] assistantUnitsToDetect = GameObject.FindGameObjectsWithTag("Companion");
-        GameObject[] unitsToDetect = playerUnitsToDetect.Concat(assistantUnitsToDetect).ToArray();
-
-        foreach (var unitToDetect in unitsToDetect)
-        {
-            float distance = Vector3.Distance(transform.position, unitToDetect.transform.position);
-            detectedUnit = unitToDetect;
-            if (distance <= proximityDistance)
-            {
-                return true;
-            }
-        }
-        //If no GameObject has been found within proximity, the Tiles is not occupied
-        return false;
-    }
     public void SetTileStatus()
     {
         if (IsTileOccupied())
@@ -93,6 +75,24 @@ public class TileController : MonoBehaviour
             //Debug.Log(this.gameObject + " is NOT occupied by a friendly Unit");
 
         }
+    }
+    public bool IsTileOccupied()
+    {
+        GameObject[] playerUnitsToDetect = GameObject.FindGameObjectsWithTag("Player");
+        GameObject[] assistantUnitsToDetect = GameObject.FindGameObjectsWithTag("Companion");
+        GameObject[] unitsToDetect = playerUnitsToDetect.Concat(assistantUnitsToDetect).ToArray();
+
+        foreach (var unitToDetect in unitsToDetect)
+        {
+            float distance = Vector3.Distance(this.transform.position, unitToDetect.transform.position);
+            if (distance <= proximityDistance)
+            {
+                detectedUnit = unitToDetect;
+                return true;
+            }
+        }
+        //If no GameObject has been found within proximity, the Tiles is not occupied
+        return false;
     }
     public void ActivateRedParticle()
     {

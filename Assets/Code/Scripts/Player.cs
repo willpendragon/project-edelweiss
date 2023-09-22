@@ -66,6 +66,6 @@ public class Player : MonoBehaviour
 
     public void SetUnitCurrentTile(TileController currentTile)
     {
-        currentTile = unitCurrentTile;
+        unitCurrentTile = currentTile;
     }
 }
