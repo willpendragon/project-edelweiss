@@ -14,22 +14,30 @@ public class BattleInterface : MonoBehaviour
     [SerializeField] TextMeshProUGUI playerActionText;
     [SerializeField] GameObject playerActionPanel;
     [SerializeField] TextMeshProUGUI battlefieldTextNotifications;
+    [SerializeField] TextMeshPro deityJudgmentLimitText;
 
     private void OnEnable()
     {
         Moveset.OnPlayerChangesPosition += ChangePlayerActionModeText;
         Moveset.OnPlayerMovementModeEnd += DeactivatePlayerActionModePanel;
+        Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
     }
     private void OnDisable()
     {
         Moveset.OnPlayerChangesPosition -= ChangePlayerActionModeText;
         Moveset.OnPlayerMovementModeEnd -= DeactivatePlayerActionModePanel;
+        Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
     }
     public void SetMovePanelName(string currentMoveName)
     {
         moveName.text = currentMoveName;
         moveNamePanel.color = new Color(1, 1, 1, 1);
         StartCoroutine("ResetMovePanel");
+    }
+
+    public void SetDeityJudgmentCounter(int judgmentTurnLimitNumber)
+    {
+        //Set on interface;
     }
 
     IEnumerator ResetMovePanel()

@@ -34,7 +34,6 @@ public class Moveset : Player
             //this.gameObject.transform.position = currentPosition.transform.position;
             //Possible solution: scan all of the other tiles and remove from them the Player.
             player.transform.position = currentPosition.transform.position;
-
         }
     }
     public void RedAttack()
@@ -88,11 +87,15 @@ public class Moveset : Player
 
     public void ChangePosition()
     {
-        if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.noFieldEffect)
+        if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.noFieldEffect && this.player.GetComponent<UnitStatusController>().unitCurrentStatus == UnitStatus.basic)
         {
             OnPlayerChangesPosition();
         }
-            if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.iceMist)
+        if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.noFieldEffect && this.player.GetComponent<UnitStatusController>().unitCurrentStatus == UnitStatus.stun)
+        {
+            Debug.Log("Unable to change position");
+        }
+        if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.iceMist)
         {
             int changePositionChance = Random.Range(0, 3);
             if (changePositionChance >= 2)

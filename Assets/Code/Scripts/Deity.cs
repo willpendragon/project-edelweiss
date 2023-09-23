@@ -36,10 +36,14 @@ public class Deity : MonoBehaviour
     [SerializeField] float enmity;
     [SerializeField] GameObject deityAttackVFX;
     [SerializeField] GameObject deityFieldEffectVFX;
+    public int judgmentTurnLimit;
     public DeityState currentDeityState;
 
     public delegate void DeityJudgment();
     public static event DeityJudgment OnDeityJudgment;
+
+    public delegate void DeityJudgmentCounterUpdate(int judgmentTurnLimitNumber);
+    public static event DeityJudgmentCounterUpdate OnDeityJudgmentCounterUpdate;
     private void OnEnable()
     {
         EnemyTurnManager.OnDeityTurn += DeityBehaviour;
@@ -47,6 +51,11 @@ public class Deity : MonoBehaviour
     private void OnDisable()
     {
         EnemyTurnManager.OnDeityTurn -= DeityBehaviour;
+    }
+
+    public void Start()
+    {
+        OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
     }
     public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
     //This function keeps track of the behaviour of the Player during the gameplay and increases the Enmity
@@ -92,8 +101,8 @@ public class Deity : MonoBehaviour
         {
             DeityGridAlteration();
         }
-        //At Turn 9, the the Deity unleashes the Judgment move. If the Player survives, they won the battle.
-        else if (battleManager.turnCounter == 9)
+        //At Turn 9, the Deity unleashes the Judgment move. If the Player survives, they won the battle.
+        else if (battleManager.turnCounter == judgmentTurnLimit)
         {
             DeityJudgmentMove();
             Debug.Log("Deity Judgment attack");
