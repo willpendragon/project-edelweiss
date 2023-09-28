@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] TextMeshProUGUI opportunityCounter;
     [SerializeField] Animator enemyAnimator;
     [SerializeField] ParticleSystem attackVFX;
+    [SerializeField] int minEnemyMoveRollRange;
+    [SerializeField] int maxEnemyMoveRollRange;
 
     public void Start()
     {
@@ -51,11 +53,23 @@ public class Enemy : MonoBehaviour
         if (this.gameObject.tag != "DeadEnemy")
         {
             player.healthPoints -= attackPower;
-            player.GetComponent<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
             //I can create an event for this on the Player.
             player.UpdatePlayerHealthDisplay();
             player.PlayHurtAnimation();
+            attackVFX.transform.position = player.transform.position;
+            attackVFX.Play();
+        }
+    }
+
+    public void StunAbility()
+    {
+        if (this.gameObject.tag != "DeadEnemy")
+        {
+            player.GetComponent<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
             player.GetComponent<UnitStatusController>().UnitStun.Invoke();
+            //I can create an event for this on the Player.
+            //player.UpdatePlayerHealthDisplay();
+            player.PlayHurtAnimation();
             attackVFX.transform.position = player.transform.position;
             attackVFX.Play();
         }
@@ -64,7 +78,16 @@ public class Enemy : MonoBehaviour
     public void EnemyTurnEvents()
     {
         //Decide the next move based on the battlefield situation and character attitude
-        Attack();
+        if (EnemyMoveRoll() <= 6)
+        {
+            Attack();
+            Debug.Log("Enemy Attack Roll");
+        }
+        else if (EnemyMoveRoll() <= 12)
+        {
+            Debug.Log("Enemy Stun Ability Roll");
+            StunAbility();
+        }
         opportunity -= 1;
         UpdateOpportunityDisplay();
     }
@@ -72,5 +95,12 @@ public class Enemy : MonoBehaviour
     public void UpdateOpportunityDisplay()
     {
         opportunityCounter.text = opportunity.ToString();
+    }
+
+    public int EnemyMoveRoll()
+    {
+        Debug.Log("Rolling Enemy move");
+        int enemyMoveRoll = Random.Range(minEnemyMoveRollRange, maxEnemyMoveRollRange);
+        return enemyMoveRoll;
     }
 }

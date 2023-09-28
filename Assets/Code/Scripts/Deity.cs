@@ -102,7 +102,7 @@ public class Deity : MonoBehaviour
             DeityGridAlteration();
         }
         //At Turn 9, the Deity unleashes the Judgment move. If the Player survives, they won the battle.
-        else if (battleManager.turnCounter == judgmentTurnLimit)
+        else if (battleManager.turnCounter == 9)
         {
             DeityJudgmentMove();
             Debug.Log("Deity Judgment attack");
@@ -165,9 +165,11 @@ public class Deity : MonoBehaviour
         //battleManager.turnCounter = 0;
         //battleManager.turnTracker.text = "0";
     }
-
     IEnumerator EndDeityTurn()
-    {   
+    {
+        Debug.Log("Ending Deity Turn");
+        judgmentTurnLimit--;
+        OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
         yield return new WaitForSeconds(1f);
         battleManager.PassTurnToPlayer();
     }

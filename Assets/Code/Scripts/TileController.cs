@@ -47,14 +47,17 @@ public class TileController : MonoBehaviour
 
     public void AttackUnit()
     {
-        if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.blue)
+        if (detectedUnit != null)
         {
-            Debug.Log("Detected Player on cursed Tile during Judgment move. Player loses the battle.");
-            //Destroy(detectedUnit, 3);
-        }
-        else if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.neutral)
-        {
-            Debug.Log("The Player escaped. Player wins the battle");
+            if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.blue)
+            {
+                Debug.Log("Detected Player on cursed Tile during Judgment move. Player loses the battle.");
+                //Destroy(detectedUnit, 3);
+            }
+            else if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.neutral)
+            {
+                Debug.Log("The Player escaped. Player wins the battle");
+            }
         }
     }
 

@@ -11,11 +11,16 @@ public class EnemyTurnManager : MonoBehaviour
     [SerializeField] float singleEnemyturnDuration;
     public delegate void DeityTurn();
     public static event DeityTurn OnDeityTurn;
-
+    public GameObject deity;
     public void Start()
     {
+        AddEnemiesToQueue();
+        deity = GameObject.FindGameObjectWithTag("Deity");
+    }
+    public void AddEnemiesToQueue()
+    {
         GameObject[] enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
-        enemiesInQueue = new List<Enemy>();        
+        enemiesInQueue = new List<Enemy>();
         //Convert the array of Enemy GameObjects to a List<Enemy>
         foreach (GameObject enemyGameObject in enemiesOnBattlefield)
         {
@@ -29,7 +34,9 @@ public class EnemyTurnManager : MonoBehaviour
                 Debug.Log("No Enemies found");
             }
         }
+
     }
+
     public void EnemyTurnSequence()
     {
         enemiesInQueue.Sort((a, b) => b.speed.CompareTo(a.speed));
@@ -43,14 +50,20 @@ public class EnemyTurnManager : MonoBehaviour
         {
             Enemy currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
             Debug.Log("Current Turn: " + currentEnemy.name);
-            currentEnemy.Attack();
+            currentEnemy.EnemyTurnEvents();
             //Add the logic for the Enemy's turn here
             yield return new WaitForSeconds(singleEnemyturnDuration);
             currentEnemyTurnIndex++;
         }
-        OnDeityTurn();
-        //battleManager.StartCoroutine("PassTurnToDeity");
-        Debug.Log("Enemy turns are over. Passing turn to Deity");
-
+        if (deity != null)
+        {
+            OnDeityTurn();
+            //battleManager.StartCoroutine("PassTurnToDeity");
+            Debug.Log("Enemy turns are over. Passing turn to Deity");
+        }
+        else if (deity == null)
+        {
+            battleManager.PassTurnToPlayer();
+        }
     }
 }

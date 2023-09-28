@@ -51,9 +51,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: maxEnemyMoveRollRange
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: minEnemyMoveRollRange
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: m_Name
-      value: DummyEnemy
+      value: DummyEnemy Variant 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}

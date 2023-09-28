@@ -14,7 +14,7 @@ public class BattleInterface : MonoBehaviour
     [SerializeField] TextMeshProUGUI playerActionText;
     [SerializeField] GameObject playerActionPanel;
     [SerializeField] TextMeshProUGUI battlefieldTextNotifications;
-    [SerializeField] TextMeshPro deityJudgmentLimitText;
+    [SerializeField] TextMeshProUGUI deityJudgmentLimitText;
 
     private void OnEnable()
     {
@@ -37,7 +37,8 @@ public class BattleInterface : MonoBehaviour
 
     public void SetDeityJudgmentCounter(int judgmentTurnLimitNumber)
     {
-        //Set on interface;
+        deityJudgmentLimitText.text = judgmentTurnLimitNumber.ToString();
+        Debug.Log("Setting Judgment Turn Warning");
     }
 
     IEnumerator ResetMovePanel()

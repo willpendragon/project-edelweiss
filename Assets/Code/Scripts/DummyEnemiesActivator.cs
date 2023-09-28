@@ -8,13 +8,15 @@ public class DummyEnemiesActivator : MonoBehaviour
     public GameObject dummyEnemyOne;
     public GameObject dummyEnemyTwo;
     public GameObject dummyEnemyThree;
-public void PopulateBattleWithDummyEnemies()
-{
+    [SerializeField] EnemyTurnManager enemyTurnManager;
+    public void PopulateBattleWithDummyEnemies()
+    {
         battleManager.enemyOne = dummyEnemyOne;
         battleManager.enemyTwo = dummyEnemyTwo;
         battleManager.enemyThree = dummyEnemyThree;
         battleManager.battleBeginsScreen.SetActive(false);
         battleManager.SpawnEnemies();
-
-}
+        enemyTurnManager.AddEnemiesToQueue();
+        battleManager.enabled = true;
+    }
 }
