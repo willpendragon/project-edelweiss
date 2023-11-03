@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Moveset : Player
@@ -17,6 +18,9 @@ public class Moveset : Player
 
     public delegate void PlayerMovementModeEnd();
     public static event PlayerMovementModeEnd OnPlayerMovementModeEnd;
+
+    public delegate void PlayerMeleeAttack(Transform enemyTargetTransform);
+    public static event PlayerMeleeAttack OnPlayerMeleeAttack;
     public void SelectCurrentTarget(GameObject selectedCurrentTarget)
     {
         currentTarget = selectedCurrentTarget;
@@ -40,14 +44,24 @@ public class Moveset : Player
     {
         if (battleManager.currentTurnOrder == TurnOrder.playerTurn && currentTarget != null)
         {
-            battleInterface.SetMovePanelName("Red Attack");
-            currentAttackAlignmentType = attackAlignmentType.red;
-            //CalculateModifier();
-            currentTarget.GetComponent<Enemy>().TakeDamage(attackPower);
-            currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
-            deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-            OnPlayerTurnIsOver();
-            Debug.Log("Red attack");
+            if (manaPoints > 0)
+            {
+                battleInterface.SetMovePanelName("Red Attack");
+                currentAttackAlignmentType = attackAlignmentType.red;
+                //CalculateModifier();
+                currentTarget.GetComponent<Enemy>().TakeDamage(attackPower);
+                currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
+                deity.SinTracker(currentAttackAlignmentType, this.gameObject);
+                OnPlayerTurnIsOver();
+                OnPlayerMeleeAttack(currentTarget.transform);
+                player.gameObject.GetComponentInChildren<Moveset>().manaPoints -= 10;
+                UpdateManaPointsDisplay();
+                Debug.Log("Red attack");
+            }
+            else
+            {
+                Debug.Log("Not enough Mana to perform the Red Attack");
+            }
         }
         else
             Debug.Log("Not able to attack");
@@ -57,13 +71,22 @@ public class Moveset : Player
     {
         if (battleManager.currentTurnOrder == TurnOrder.playerTurn && currentTarget != null)
         {
-            battleInterface.SetMovePanelName("Blue Attack");
-            currentAttackAlignmentType = attackAlignmentType.blue;
-            currentTarget.GetComponent<Enemy>().TakeDamage(attackPower + 10);
-            currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
-            deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-            OnPlayerTurnIsOver();
-            Debug.Log("Blue attack");
+            if (manaPoints > 0)
+            {
+                battleInterface.SetMovePanelName("Blue Attack");
+                currentAttackAlignmentType = attackAlignmentType.blue;
+                currentTarget.GetComponent<Enemy>().TakeDamage(attackPower + 10);
+                currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
+                deity.SinTracker(currentAttackAlignmentType, this.gameObject);
+                OnPlayerTurnIsOver();
+                player.gameObject.GetComponentInChildren<Moveset>().manaPoints -= 5;
+                UpdateManaPointsDisplay();
+                Debug.Log("Blue attack");
+            }
+            else
+            {
+                Debug.Log("Not enough Mana to perform the Blue Attack");
+            }
         }
         else
             Debug.Log("Not able to attack");

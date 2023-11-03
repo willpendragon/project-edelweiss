@@ -18,7 +18,7 @@ public enum FieldEffectStatus
 }
 public class BattleManager : MonoBehaviour
 {
-    [SerializeField] Player player;
+    public Player player;
     public GameObject enemyOne;
     public GameObject enemyTwo;
     public GameObject enemyThree;
@@ -34,11 +34,15 @@ public class BattleManager : MonoBehaviour
     public int turnCounter;
     public GameObject[] enemiesOnBattlefield;
     public Deity deity;
-    public TurnOrder currentTurnOrder; 
+    public TurnOrder currentTurnOrder;
     public EnemySelection enemySelection;
     public FieldEffectStatus fieldEffectStatus;
     private GameManager gameManager;
     public EnemyTurnManager enemyTurnManager;
+
+    public delegate void BattleEnd(float finalPlayerHealth);
+    public static event BattleEnd OnBattleEnd;
+
     void Awake()
     {
         //Looks for a GameObject holding the Enemy selected before entering the Battle Node.
@@ -53,7 +57,6 @@ public class BattleManager : MonoBehaviour
         //Looks for the Game Manager at the start of the battle.
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         SpawnEnemies();
-
         battleBeginsScreen.SetActive(true);
         StartCoroutine("DeactivateBattleBeginsScreen");
         enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
@@ -65,10 +68,13 @@ public class BattleManager : MonoBehaviour
     public void OnEnable()
     {
         Moveset.OnPlayerTurnIsOver += PassTurnToEnemies;
+        TileController.OnPlayerEscapedFromJudgmentAttack += ShowBattleIsOverScreen;
     }
     public void OnDisable()
     {
         Moveset.OnPlayerTurnIsOver -= PassTurnToEnemies;
+        TileController.OnPlayerEscapedFromJudgmentAttack += ShowBattleIsOverScreen;
+
     }
     void Update()
     {
@@ -76,18 +82,18 @@ public class BattleManager : MonoBehaviour
         //with a notification telling about the Player's defeat.
         if (player.healthPoints <= 0)
         {
-            battleIsOverScreen.transform.localScale = new Vector3(1,1,1);
-            battleInterface.battleEndResult.text = "Player Defeat";   
+            battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
+            battleInterface.battleEndResult.text = "Player Defeat";
         }
         CheckEnemies();
-    }    
+    }
     public void SpawnEnemies()
     {
         //Makes the Enemies from the Selection appear on the Battlefield at specific spots.
         Instantiate(enemyOne, enemyOneSpot);
         Instantiate(enemyTwo, enemyTwoSpot);
         Instantiate(enemyThree, enemyThreeSpot);
-    }    
+    }
     public void CheckEnemies()
     {
         //This method scans the Battlefield for Enemies that have been tagged as DeadEnemy.
@@ -97,9 +103,11 @@ public class BattleManager : MonoBehaviour
         if (enemiesOnBattlefield.Length == deadEnemies.Length)
         {
             gameManager.MarkCurrentNodeAsCompleted();
-            battleIsOverScreen.transform.localScale = new Vector3(1,1,1);
+            battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
             battleInterface.battleEndResult.text = "The Enemy was defeated";
-        }  
+            //Sends an Event at the end of the battle and communicates the final HP of the Player at the end of the battle.
+            OnBattleEnd(player.healthPoints);
+        }
     }
     public void PassTurnToEnemies()
     {
@@ -119,10 +127,10 @@ public class BattleManager : MonoBehaviour
 
     public void PassTurnToPlayer()
     {
-         //Hands the turn to the Player.
+        //Hands the turn to the Player.
         currentTurnOrder = TurnOrder.playerTurn;
         UpdateTurnCounter();
-        Debug.Log("Turn Passed to Player");    
+        Debug.Log("Turn Passed to Player");
     }
 
     public bool AllEnemiesOpportunityZero()
@@ -143,7 +151,7 @@ public class BattleManager : MonoBehaviour
     {
         turnDisplay.text = "Player Turn";
         turnCounter += 1;
-        turnTracker.text = turnCounter.ToString(); 
+        turnTracker.text = turnCounter.ToString();
     }
 
     public void RestoreOpportunityEnemies()
@@ -160,5 +168,10 @@ public class BattleManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         battleBeginsScreen.SetActive(false);
+    }
+
+    public void ShowBattleIsOverScreen()
+    {
+        battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
     }
 }

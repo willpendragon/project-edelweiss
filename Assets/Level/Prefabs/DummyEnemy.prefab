@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 5009294011632168287}
   - component: {fileID: 5009294011632168283}
   - component: {fileID: 8766345972400913689}
+  - component: {fileID: 7714452247050051452}
   m_Layer: 0
   m_Name: DummyEnemy
   m_TagString: Enemy
@@ -229,9 +230,24 @@ MonoBehaviour:
   opportunityCounter: {fileID: 7140207064783089265}
   enemyAnimator: {fileID: 8412792004116243812}
   attackVFX: {fileID: 7409700727255174258}
-  enemyAttack:
+  minEnemyMoveRollRange: 1
+  maxEnemyMoveRollRange: 20
+  enemyOriginalPosition: {x: 0, y: 0, z: 0}
+  EnemyMeleeAttack:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7714452247050051452}
+        m_TargetAssemblyTypeName: BattleFeedbackControllerEnemy, Assembly-CSharp
+        m_MethodName: MoveEnemyUnitNearPlayerTarget
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8766345972400913689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,6 +263,20 @@ MonoBehaviour:
   cursor: {fileID: 1211854442075370701}
   currentCursorStatus: 1
   moveset: {fileID: 0}
+--- !u!114 &7714452247050051452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009294011632168286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36537da3c27d54e4889f7162982ddbba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyUnit: {fileID: 5009294011632168286}
+  restoreEnemyUnitPositionCooldown: 1
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

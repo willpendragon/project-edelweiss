@@ -18,16 +18,17 @@ public enum fieldEffect
 
 }
 
-
 public class Player : MonoBehaviour
 
 {
     public Enemy enemyTarget;
     public float attackPower;
     public float healthPoints;
+    public float manaPoints;
     public attackAlignmentType currentAttackAlignmentType;
     public TextMeshProUGUI playerHealthPointsDisplay;
-    public TextMeshProUGUI playerShieldDisplay;    
+    public TextMeshProUGUI playerShieldDisplay;
+    public TextMeshProUGUI playerManaPointsDisplay;
     public GameObject currentTarget;
     public GameObject currentPosition;
     public BattleManager battleManager;
@@ -42,7 +43,9 @@ public class Player : MonoBehaviour
     {
         UpdatePlayerHealthDisplay();
         UpdatePlayerShieldDisplay();
+        UpdateManaPointsDisplay();
     }
+
     public void UpdatePlayerHealthDisplay()
     {
         playerHealthPointsDisplay.text = healthPoints.ToString();
@@ -51,7 +54,10 @@ public class Player : MonoBehaviour
     {
         playerShieldDisplay.text = shield.ToString();
     }
-
+    public void UpdateManaPointsDisplay()
+    {
+        playerManaPointsDisplay.text = manaPoints.ToString();
+    }
     public void PlayHurtAnimation()
     {
         playerAnimator.SetBool("Hurt", true);
@@ -63,7 +69,6 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(1);
         playerAnimator.SetBool("Hurt", false);
     }
-
     public void SetUnitCurrentTile(TileController currentTile)
     {
         unitCurrentTile = currentTile;

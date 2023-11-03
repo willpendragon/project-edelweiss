@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] ParticleSystem attackVFX;
     [SerializeField] int minEnemyMoveRollRange;
     [SerializeField] int maxEnemyMoveRollRange;
+    public Vector3 enemyOriginalPosition;
+
+    public UnityEvent<Transform> EnemyMeleeAttack;
 
     public void Start()
     {
@@ -25,6 +29,7 @@ public class Enemy : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
         opportunityCounter.text = opportunity.ToString();
+        enemyOriginalPosition = this.gameObject.transform.position;
     }
 
     public void Update()
@@ -56,8 +61,10 @@ public class Enemy : MonoBehaviour
             //I can create an event for this on the Player.
             player.UpdatePlayerHealthDisplay();
             player.PlayHurtAnimation();
-            attackVFX.transform.position = player.transform.position;
+            attackVFX.transform.position = player.GetComponent<Player>().unitCurrentTile.transform.position;
             attackVFX.Play();
+            EnemyMeleeAttack.Invoke(player.GetComponent<Player>().unitCurrentTile.transform);
+            Debug.Log("Enemy Attacking");
         }
     }
 

@@ -17,8 +17,8 @@ public class GameManager : MonoBehaviour
         }
         Destroy(this.gameObject);
     }
-
     public void MarkCurrentNodeAsCompleted()
+
     {
         currentNode.nodeCompleted = true;
     }

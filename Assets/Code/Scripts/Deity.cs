@@ -38,24 +38,35 @@ public class Deity : MonoBehaviour
     [SerializeField] GameObject deityFieldEffectVFX;
     public int judgmentTurnLimit;
     public DeityState currentDeityState;
+    public int judgmentAttackPower = 1000;
 
     public delegate void DeityJudgment();
     public static event DeityJudgment OnDeityJudgment;
 
     public delegate void DeityJudgmentCounterUpdate(int judgmentTurnLimitNumber);
     public static event DeityJudgmentCounterUpdate OnDeityJudgmentCounterUpdate;
+
     private void OnEnable()
     {
         EnemyTurnManager.OnDeityTurn += DeityBehaviour;
+        TileController.OnJudgmentAttackSuccessful += ApplyJudgmentAttackDamage;
     }
     private void OnDisable()
     {
         EnemyTurnManager.OnDeityTurn -= DeityBehaviour;
+        TileController.OnJudgmentAttackSuccessful -= ApplyJudgmentAttackDamage;
     }
 
     public void Start()
     {
+
+        battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
         OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
+    }
+
+    public void Update()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
     public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
     //This function keeps track of the behaviour of the Player during the gameplay and increases the Enmity
@@ -173,5 +184,11 @@ public class Deity : MonoBehaviour
         yield return new WaitForSeconds(1f);
         battleManager.PassTurnToPlayer();
     }
+
+    public void ApplyJudgmentAttackDamage()
+    {
+        player.GetComponent<Player>().healthPoints = judgmentAttackPower;
+        //Multiply for the Enmity Value the Player accrued towards this Deity
+    }    
 }
 

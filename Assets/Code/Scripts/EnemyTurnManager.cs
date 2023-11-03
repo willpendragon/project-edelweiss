@@ -15,6 +15,9 @@ public class EnemyTurnManager : MonoBehaviour
     public void Start()
     {
         AddEnemiesToQueue();
+    }
+    public void Update()
+    {
         deity = GameObject.FindGameObjectWithTag("Deity");
     }
     public void AddEnemiesToQueue()
@@ -64,6 +67,7 @@ public class EnemyTurnManager : MonoBehaviour
         else if (deity == null)
         {
             battleManager.PassTurnToPlayer();
+            Debug.Log("No Deity on the battlefield. Passing turn to the Player");
         }
     }
 }

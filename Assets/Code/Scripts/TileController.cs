@@ -23,6 +23,13 @@ public class TileController : MonoBehaviour
     public float proximityDistance = 1.5f;
     public GameObject detectedUnit;
 
+    public delegate void PlayerEscapedFromJudgmentAttack();
+    public static event PlayerEscapedFromJudgmentAttack OnPlayerEscapedFromJudgmentAttack;
+    
+    public delegate void JudgmentAttackSuccessful();
+    public static event JudgmentAttackSuccessful OnJudgmentAttackSuccessful;
+
+
     [SerializeField] ParticleSystem redParticle;
     [SerializeField] ParticleSystem blueParticle;
 
@@ -51,12 +58,13 @@ public class TileController : MonoBehaviour
         {
             if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.blue)
             {
-                Debug.Log("Detected Player on cursed Tile during Judgment move. Player loses the battle.");
-                //Destroy(detectedUnit, 3);
+                Debug.Log("Detected Player on cursed Tile during Judgment move.");
+                OnJudgmentAttackSuccessful();
             }
             else if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.neutral)
             {
                 Debug.Log("The Player escaped. Player wins the battle");
+                OnPlayerEscapedFromJudgmentAttack();
             }
         }
     }
