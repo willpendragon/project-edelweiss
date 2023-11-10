@@ -6,6 +6,7 @@ public class BattleFeedbackController : MonoBehaviour
 {
     public GameObject playerUnit;
     public float restorePlayerUnitPositionCooldown;
+    public GameObject castSpellVFX;
 
     public void OnEnable()
     {
@@ -15,29 +16,26 @@ public class BattleFeedbackController : MonoBehaviour
     {
         Moveset.OnPlayerMeleeAttack -= MovePlayerUnitNearEnemyTarget;
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     void MovePlayerUnitNearEnemyTarget(Transform enemyTargetPosition)
     {
         playerUnit.transform.position = enemyTargetPosition.position;
         StartCoroutine("RestorePlayerUnitPosition");
         Debug.Log("Player Unit Melee Attack Feedback Test");
     }
-
     IEnumerator RestorePlayerUnitPosition()
     {
         yield return new WaitForSeconds(restorePlayerUnitPositionCooldown);
         Debug.Log("Restoring Player Unit Position");
         playerUnit.transform.position = playerUnit.GetComponent<Player>().unitCurrentTile.transform.position;
     }
-
-    // Update is called once per frame
-    void Update()
+    public void TriggerCastSpellVFX()
     {
-
+        GameObject castSpellVFXInstance = GameObject.Instantiate(castSpellVFX, this.transform);
+        StartCoroutine(DestroyTriggerCastSpellVFX(castSpellVFXInstance));
+    }
+    IEnumerator DestroyTriggerCastSpellVFX(GameObject castSpellVFXInstance)
+    {
+        yield return new WaitForSeconds(1);
+        Destroy(castSpellVFXInstance);
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Moveset : Player
 {
@@ -9,6 +10,9 @@ public class Moveset : Player
     [SerializeField] Player player;
     [SerializeField] TileSelector tileSelector;
     [SerializeField] GameObject playerModel;
+    [SerializeField] int opportunityPoints;
+    [SerializeField] int maximumOpportunityPoints;
+    [SerializeField] float endPlayerTurnDelay;
 
     public delegate void PlayerTurnIsOver();
     public static event PlayerTurnIsOver OnPlayerTurnIsOver;
@@ -21,6 +25,8 @@ public class Moveset : Player
 
     public delegate void PlayerMeleeAttack(Transform enemyTargetTransform);
     public static event PlayerMeleeAttack OnPlayerMeleeAttack;
+
+    public UnityEvent CastingSpell;
     public void SelectCurrentTarget(GameObject selectedCurrentTarget)
     {
         currentTarget = selectedCurrentTarget;
@@ -35,10 +41,18 @@ public class Moveset : Player
         {
             currentPosition = selectedCurrentTile;
             selectedCurrentTile.GetComponent<TileController>().detectedUnit = this.gameObject;
-            //this.gameObject.transform.position = currentPosition.transform.position;
-            //Possible solution: scan all of the other tiles and remove from them the Player.
             player.transform.position = currentPosition.transform.position;
         }
+    }
+    public void MeleeAttack()
+    {
+        battleInterface.SetMovePanelName("Melee Attack");
+        currentTarget.GetComponent<Enemy>().TakeDamage(meleeAttackPower);
+        currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
+        opportunityPoints--;
+        OnPlayerMeleeAttack(currentTarget.transform);
+        CheckOpportunityPoints();
+        Debug.Log("Melee Attack");
     }
     public void RedAttack()
     {
@@ -48,14 +62,14 @@ public class Moveset : Player
             {
                 battleInterface.SetMovePanelName("Red Attack");
                 currentAttackAlignmentType = attackAlignmentType.red;
-                //CalculateModifier();
                 currentTarget.GetComponent<Enemy>().TakeDamage(attackPower);
                 currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
                 deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-                OnPlayerTurnIsOver();
+                opportunityPoints--;
                 OnPlayerMeleeAttack(currentTarget.transform);
                 player.gameObject.GetComponentInChildren<Moveset>().manaPoints -= 10;
                 UpdateManaPointsDisplay();
+                CheckOpportunityPoints();
                 Debug.Log("Red attack");
             }
             else
@@ -78,9 +92,11 @@ public class Moveset : Player
                 currentTarget.GetComponent<Enemy>().TakeDamage(attackPower + 10);
                 currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
                 deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-                OnPlayerTurnIsOver();
+                opportunityPoints--;
                 player.gameObject.GetComponentInChildren<Moveset>().manaPoints -= 5;
                 UpdateManaPointsDisplay();
+                CastingSpell.Invoke();
+                CheckOpportunityPoints();
                 Debug.Log("Blue attack");
             }
             else
@@ -101,7 +117,8 @@ public class Moveset : Player
             UpdatePlayerShieldDisplay();
             currentAttackAlignmentType = attackAlignmentType.blue;
             deity.SinTracker(currentAttackAlignmentType, this.gameObject);
-            OnPlayerTurnIsOver();
+            opportunityPoints--;
+            CheckOpportunityPoints();
             Debug.Log("Shield Increased");
         }
         else
@@ -113,6 +130,7 @@ public class Moveset : Player
         if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.noFieldEffect && this.player.GetComponent<UnitStatusController>().unitCurrentStatus == UnitStatus.basic)
         {
             OnPlayerChangesPosition();
+            opportunityPoints--;
         }
         if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.noFieldEffect && this.player.GetComponent<UnitStatusController>().unitCurrentStatus == UnitStatus.stun)
         {
@@ -124,6 +142,7 @@ public class Moveset : Player
             if (changePositionChance >= 2)
             {
                 OnPlayerChangesPosition();
+                opportunityPoints--;
             }
             else
             {
@@ -133,8 +152,24 @@ public class Moveset : Player
         }
     }
 
+    public void CheckOpportunityPoints()
+    {
+        if (opportunityPoints == 0)
+        {
+            StartCoroutine(EndPlayerTurn());
+        }
+    }
+    IEnumerator EndPlayerTurn()
+    {
+        yield return new WaitForSeconds(endPlayerTurnDelay);
+        OnPlayerTurnIsOver();
+    }
     public void EndMovementMode()
     {
         OnPlayerMovementModeEnd();
+    }
+    public void RestoreOpportunityPoints()
+    {
+        opportunityPoints = maximumOpportunityPoints;
     }
 }

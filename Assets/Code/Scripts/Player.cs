@@ -15,36 +15,40 @@ public enum fieldEffect
 {
     noFieldEffect,
     iceMist
-
 }
 
 public class Player : MonoBehaviour
 
 {
-    public Enemy enemyTarget;
+    [Header("Player Statistics")]
     public float attackPower;
+    public float meleeAttackPower;
     public float healthPoints;
     public float manaPoints;
+    public int attackModifier;
+    public float shield;
+    public float coins;
+    public float playerExperiencePoints;
+
+    [Header("Deity System Parameters")]
     public attackAlignmentType currentAttackAlignmentType;
+    public Deity deity;
+    public fieldEffect currentFieldEffect;
+
+    [Header("UI")]
     public TextMeshProUGUI playerHealthPointsDisplay;
     public TextMeshProUGUI playerShieldDisplay;
     public TextMeshProUGUI playerManaPointsDisplay;
-    public GameObject currentTarget;
-    public GameObject currentPosition;
-    public BattleManager battleManager;
-    public Deity deity;
-    public fieldEffect currentFieldEffect;
-    public int attackModifier;
-    public float shield;
-    public TileController unitCurrentTile;
-    [SerializeField] Animator playerAnimator;
 
-    public void Start()
-    {
-        UpdatePlayerHealthDisplay();
-        UpdatePlayerShieldDisplay();
-        UpdateManaPointsDisplay();
-    }
+    [Header("Gameplay Logic")]
+    public Enemy enemyTarget;
+    public BattleManager battleManager;
+    public GameObject currentTarget;
+    public TileController unitCurrentTile;
+
+    [Header("Presentation")]
+    public GameObject currentPosition;
+    [SerializeField] Animator playerAnimator;
 
     public void UpdatePlayerHealthDisplay()
     {
@@ -63,7 +67,6 @@ public class Player : MonoBehaviour
         playerAnimator.SetBool("Hurt", true);
         StartCoroutine("ResetPlayerHurtAnimation");
     }
-
     IEnumerator ResetPlayerHurtAnimation()
     {
         yield return new WaitForSeconds(1);

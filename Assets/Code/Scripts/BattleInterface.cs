@@ -15,6 +15,7 @@ public class BattleInterface : MonoBehaviour
     [SerializeField] GameObject playerActionPanel;
     [SerializeField] TextMeshProUGUI battlefieldTextNotifications;
     [SerializeField] TextMeshProUGUI deityJudgmentLimitText;
+    [SerializeField] Player player;
 
     private void OnEnable()
     {
@@ -29,6 +30,14 @@ public class BattleInterface : MonoBehaviour
         Moveset.OnPlayerMovementModeEnd -= DeactivatePlayerActionModePanel;
         Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
         TileController.OnPlayerEscapedFromJudgmentAttack -= JudgmentAttackFailed;
+    }
+
+    private void Start()
+    {
+        player.UpdatePlayerHealthDisplay();
+        player.UpdatePlayerShieldDisplay();
+        player.UpdateManaPointsDisplay();
+        Debug.Log("Test Moveset Bug");
     }
     public void SetMovePanelName(string currentMoveName)
     {

@@ -7,6 +7,8 @@ public class EnemySelection : MonoBehaviour
     public GameObject enemyOne;
     public GameObject enemyTwo;
     public GameObject enemyThree;
+    public GameObject enemyFour;
+    public GameObject enemyFive;
 
     public EnemySelection preliminaryEnemySelection;
 
@@ -15,5 +17,7 @@ public class EnemySelection : MonoBehaviour
         enemyOne = preliminaryEnemySelection.enemyOne;
         enemyTwo = preliminaryEnemySelection.enemyTwo;
         enemyThree = preliminaryEnemySelection.enemyThree;
+        enemyFour = preliminaryEnemySelection.enemyFour;
+        enemyFive = preliminaryEnemySelection.enemyFive;
     }
 }

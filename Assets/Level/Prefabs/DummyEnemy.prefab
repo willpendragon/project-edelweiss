@@ -221,18 +221,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthPoints: 50
   attackPower: 5
+  speed: 0
   player: {fileID: 0}
   opportunity: 1
-  speed: 0
-  enemyMoveElapsingTime: 2
-  healthPointsCounter: {fileID: 4714583909786951188}
   battleManager: {fileID: 0}
-  opportunityCounter: {fileID: 7140207064783089265}
-  enemyAnimator: {fileID: 8412792004116243812}
-  attackVFX: {fileID: 7409700727255174258}
   minEnemyMoveRollRange: 1
   maxEnemyMoveRollRange: 20
+  enemyMoveElapsingTime: 2
+  enemyAnimator: {fileID: 8412792004116243812}
+  attackVFX: {fileID: 7409700727255174258}
   enemyOriginalPosition: {x: 0, y: 0, z: 0}
+  healthPointsCounter: {fileID: 4714583909786951188}
+  opportunityCounter: {fileID: 7140207064783089265}
+  enemyCoinsReward: 10
+  enemyExperienceReward: 10
   EnemyMeleeAttack:
     m_PersistentCalls:
       m_Calls:
@@ -240,6 +242,21 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: BattleFeedbackControllerEnemy, Assembly-CSharp
         m_MethodName: MoveEnemyUnitNearPlayerTarget
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  EnemyTakingDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5009294011632168283}
+        m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
+        m_MethodName: EnemyTakesDamage
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

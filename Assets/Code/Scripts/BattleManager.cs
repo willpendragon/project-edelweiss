@@ -22,9 +22,13 @@ public class BattleManager : MonoBehaviour
     public GameObject enemyOne;
     public GameObject enemyTwo;
     public GameObject enemyThree;
+    public GameObject enemyFour;
+    public GameObject enemyFive;
     [SerializeField] Transform enemyOneSpot;
     [SerializeField] Transform enemyTwoSpot;
     [SerializeField] Transform enemyThreeSpot;
+    [SerializeField] Transform enemyFourSpot;
+    [SerializeField] Transform enemyFiveSpot;
     [SerializeField] Image battleIsOverScreen;
     public GameObject battleBeginsScreen;
     [SerializeField] float enemyTurnDuration;
@@ -40,8 +44,20 @@ public class BattleManager : MonoBehaviour
     private GameManager gameManager;
     public EnemyTurnManager enemyTurnManager;
 
-    public delegate void BattleEnd(float finalPlayerHealth);
+    public delegate void SavePlayerHealth(float finalPlayerHealth);
+    public static event SavePlayerHealth OnSavePlayerHealth;
+
+    public delegate void SavePlayerCoinsReward(float coinsReward);
+    public static event SavePlayerCoinsReward OnSavePlayerCoinsReward;
+
+    public delegate void SavePlayerExperienceReward(float experienceReward);
+    public static event SavePlayerExperienceReward OnSavePlayerExperienceReward;
+
+    public delegate void BattleEnd();
     public static event BattleEnd OnBattleEnd;
+
+    public UnityEvent PlayerTurnStarts;
+    public UnityEvent PlayerTurnEnds;
 
     void Awake()
     {
@@ -51,6 +67,8 @@ public class BattleManager : MonoBehaviour
         enemyOne = enemySelection.enemyOne;
         enemyTwo = enemySelection.enemyTwo;
         enemyThree = enemySelection.enemyThree;
+        enemyFour = enemySelection.enemyFour;
+        enemyFive = enemySelection.enemyFive;
     }
     void Start()
     {
@@ -68,24 +86,18 @@ public class BattleManager : MonoBehaviour
     public void OnEnable()
     {
         Moveset.OnPlayerTurnIsOver += PassTurnToEnemies;
+//        Moveset.OnCheckEnemies += CheckEnemies;
         TileController.OnPlayerEscapedFromJudgmentAttack += ShowBattleIsOverScreen;
+        Enemy.OnCheckPlayer += CheckPlayer;
+        Enemy.OnCheckEnemiesOnBattlefield += CheckEnemies;
     }
     public void OnDisable()
     {
         Moveset.OnPlayerTurnIsOver -= PassTurnToEnemies;
-        TileController.OnPlayerEscapedFromJudgmentAttack += ShowBattleIsOverScreen;
-
-    }
-    void Update()
-    {
-        //Checks whether the Player has reached "0" HP. If that's the case, triggers the End of Battle screen
-        //with a notification telling about the Player's defeat.
-        if (player.healthPoints <= 0)
-        {
-            battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
-            battleInterface.battleEndResult.text = "Player Defeat";
-        }
-        CheckEnemies();
+ //       Moveset.OnCheckEnemies -= CheckEnemies;
+        TileController.OnPlayerEscapedFromJudgmentAttack -= ShowBattleIsOverScreen;
+        Enemy.OnCheckPlayer -= CheckPlayer;
+        Enemy.OnCheckEnemiesOnBattlefield -= CheckEnemies;
     }
     public void SpawnEnemies()
     {
@@ -93,6 +105,8 @@ public class BattleManager : MonoBehaviour
         Instantiate(enemyOne, enemyOneSpot);
         Instantiate(enemyTwo, enemyTwoSpot);
         Instantiate(enemyThree, enemyThreeSpot);
+        Instantiate(enemyFour, enemyFourSpot);
+        Instantiate(enemyFive, enemyFiveSpot);
     }
     public void CheckEnemies()
     {
@@ -102,35 +116,48 @@ public class BattleManager : MonoBehaviour
         GameObject[] deadEnemies = GameObject.FindGameObjectsWithTag("DeadEnemy");
         if (enemiesOnBattlefield.Length == deadEnemies.Length)
         {
+            //If all of the enemies on the battlefield are dead, the Battle End gameplay sequence starts.
             gameManager.MarkCurrentNodeAsCompleted();
             battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
             battleInterface.battleEndResult.text = "The Enemy was defeated";
             //Sends an Event at the end of the battle and communicates the final HP of the Player at the end of the battle.
-            OnBattleEnd(player.healthPoints);
+            OnBattleEnd();
+            StartCoroutine("SendStatsSavingEvents");
+        }
+    }
+    IEnumerator SendStatsSavingEvents()
+    {
+        yield return new WaitForSeconds(0.5f);
+        OnSavePlayerHealth(player.healthPoints);
+        OnSavePlayerCoinsReward(player.coins);
+        OnSavePlayerExperienceReward(player.playerExperiencePoints);
+    }
+    public void CheckPlayer()
+    {
+        //Checks whether the Player has reached "0" HP. If that's the case, triggers the End of Battle screen
+        //with a notification telling about the Player's defeat.
+        if (player.healthPoints <= 0)
+        {
+            battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
+            battleInterface.battleEndResult.text = "Player Defeat";
         }
     }
     public void PassTurnToEnemies()
     {
         //Hands the turn to the Enemies.
+        PlayerTurnEnds.Invoke();
         currentTurnOrder = TurnOrder.enemyTurn;
         turnDisplay.text = "Enemy Turn";
         Debug.Log("Passing turn to Enemies");
         enemyTurnManager.EnemyTurnSequence();
     }
-    /*IEnumerator PassTurnToDeity()
-    {
-        //Hands the turn to the Deity after the Enemies Turn.
-        yield return new WaitForSeconds(0);
-        deity.DeityBehaviour();
-    }
-    */
-
     public void PassTurnToPlayer()
     {
         //Hands the turn to the Player.
         currentTurnOrder = TurnOrder.playerTurn;
         UpdateTurnCounter();
         Debug.Log("Turn Passed to Player");
+        PlayerTurnStarts.Invoke();
     }
 
     public bool AllEnemiesOpportunityZero()
