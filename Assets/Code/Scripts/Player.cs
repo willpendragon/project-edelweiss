@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
 
     [Header("Presentation")]
     public GameObject currentPosition;
-    [SerializeField] Animator playerAnimator;
+    public Animator playerAnimator;
 
     public void UpdatePlayerHealthDisplay()
     {

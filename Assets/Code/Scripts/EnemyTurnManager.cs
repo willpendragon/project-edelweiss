@@ -37,16 +37,13 @@ public class EnemyTurnManager : MonoBehaviour
                 Debug.Log("No Enemies found");
             }
         }
-
     }
-
     public void EnemyTurnSequence()
     {
         enemiesInQueue.Sort((a, b) => b.speed.CompareTo(a.speed));
         currentEnemyTurnIndex = 0;
         StartCoroutine(ExecuteTurns());
     }
-
     private IEnumerator ExecuteTurns()
     {
         while (currentEnemyTurnIndex < enemiesInQueue.Count)

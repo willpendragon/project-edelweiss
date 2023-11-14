@@ -544,6 +544,7 @@ GameObject:
   - component: {fileID: 2012499427021812749}
   - component: {fileID: 2012499427021812748}
   - component: {fileID: 1763800100307365573}
+  - component: {fileID: 5760770538341861912}
   m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Player
@@ -645,22 +646,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a88a9c368034417448bfc3ccad02f03d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyTarget: {fileID: 0}
   attackPower: 20
+  meleeAttackPower: 0
   healthPoints: 1000
   manaPoints: 100
+  attackModifier: 0
+  shield: 10
+  coins: 0
+  playerExperiencePoints: 0
   currentAttackAlignmentType: 0
+  deity: {fileID: 0}
+  currentFieldEffect: 0
   playerHealthPointsDisplay: {fileID: 2012499426294546467}
   playerShieldDisplay: {fileID: 2012499425627166128}
   playerManaPointsDisplay: {fileID: 146907294077192137}
-  currentTarget: {fileID: 0}
-  currentPosition: {fileID: 0}
+  enemyTarget: {fileID: 0}
   battleManager: {fileID: 0}
-  deity: {fileID: 0}
-  currentFieldEffect: 0
-  attackModifier: 0
-  shield: 10
+  currentTarget: {fileID: 0}
   unitCurrentTile: {fileID: 0}
+  currentPosition: {fileID: 0}
   playerAnimator: {fileID: 9071249628424122401}
 --- !u!114 &2012499427021812978
 MonoBehaviour:
@@ -690,27 +694,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cbb9a0b8e936824db5bc9737140bbdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyTarget: {fileID: 0}
   attackPower: 20
+  meleeAttackPower: 0
   healthPoints: 1000
   manaPoints: 100
+  attackModifier: 0
+  shield: 10
+  coins: 0
+  playerExperiencePoints: 0
   currentAttackAlignmentType: 0
+  deity: {fileID: 0}
+  currentFieldEffect: 0
   playerHealthPointsDisplay: {fileID: 2012499426294546467}
   playerShieldDisplay: {fileID: 2012499425627166128}
   playerManaPointsDisplay: {fileID: 146907294077192137}
-  currentTarget: {fileID: 0}
-  currentPosition: {fileID: 0}
+  enemyTarget: {fileID: 0}
   battleManager: {fileID: 0}
-  deity: {fileID: 0}
-  currentFieldEffect: 0
-  attackModifier: 0
-  shield: 10
+  currentTarget: {fileID: 0}
   unitCurrentTile: {fileID: 0}
+  currentPosition: {fileID: 0}
   playerAnimator: {fileID: 0}
   battleInterface: {fileID: 0}
   player: {fileID: 2012499427021812979}
   tileSelector: {fileID: 0}
   playerModel: {fileID: 9071249628431401955}
+  opportunityPoints: 0
+  maximumOpportunityPoints: 0
+  endPlayerTurnDelay: 0
+  CastingSpell:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2012499427021812748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,6 +769,24 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   unitCurrentStatus: 1
+--- !u!114 &5760770538341861912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012499427021812980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37d6d513ba2279641b1d07a5d08d66dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentDeity: {fileID: 3348349630364506734, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
+  deitySummoningSpot: {fileID: 0}
+  deityPowerLoadingBarSlider: {fileID: 0}
+  deityAttackFeedback: {fileID: 0}
+  deityAttackFeedbackTimeToDeactivation: 1
+  useDeityAttack: {fileID: 0}
 --- !u!1 &3049811748764850042
 GameObject:
   m_ObjectHideFlags: 0

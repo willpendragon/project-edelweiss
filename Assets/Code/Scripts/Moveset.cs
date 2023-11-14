@@ -50,10 +50,17 @@ public class Moveset : Player
         currentTarget.GetComponent<Enemy>().TakeDamage(meleeAttackPower);
         currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
         opportunityPoints--;
-        OnPlayerMeleeAttack(currentTarget.transform);
         CheckOpportunityPoints();
+        //playerAnimator.SetTrigger("edelweiss_melee");
+        StartCoroutine("SendMeleeAttackFeedback");
         Debug.Log("Melee Attack");
     }
+    IEnumerator SendMeleeAttackFeedback()
+    {
+        yield return new WaitForSeconds(0.4f);
+        OnPlayerMeleeAttack(currentTarget.transform);
+    }
+
     public void RedAttack()
     {
         if (battleManager.currentTurnOrder == TurnOrder.playerTurn && currentTarget != null)
