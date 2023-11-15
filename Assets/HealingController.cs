@@ -7,6 +7,9 @@ public class HealingController : MonoBehaviour
 {
     public UnityEvent<float> HealingPlayer;
 
+    public delegate void SavePoint(float savedPlayerHealth);
+    public static event SavePoint OnSavePoint;
+
     public Player player;
     [SerializeField] float healingAmount;
     [SerializeField] float healingPrice;
@@ -15,5 +18,6 @@ public class HealingController : MonoBehaviour
     {
         player.healthPoints += healingAmount;
         player.coins -= healingPrice;
+        OnSavePoint(player.healthPoints);
     }
 }

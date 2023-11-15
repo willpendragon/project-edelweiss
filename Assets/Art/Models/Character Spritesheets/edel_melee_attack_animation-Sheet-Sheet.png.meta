@@ -119,10 +119,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_0
       rect:
         serializedVersion: 2
-        x: 15
+        x: 16
         y: 12
-        width: 35
-        height: 78
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,10 +140,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_1
       rect:
         serializedVersion: 2
-        x: 79
+        x: 128
         y: 12
-        width: 35
-        height: 78
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,10 +161,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_2
       rect:
         serializedVersion: 2
-        x: 142
+        x: 238
         y: 12
-        width: 36
-        height: 78
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,10 +182,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_3
       rect:
         serializedVersion: 2
-        x: 206
+        x: 350
         y: 12
-        width: 36
-        height: 78
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,10 +203,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_4
       rect:
         serializedVersion: 2
-        x: 268
+        x: 460
         y: 12
-        width: 38
-        height: 78
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,10 +224,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_5
       rect:
         serializedVersion: 2
-        x: 331
+        x: 571
         y: 12
-        width: 39
-        height: 80
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -245,10 +245,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_6
       rect:
         serializedVersion: 2
-        x: 396
+        x: 684
         y: 14
-        width: 37
-        height: 78
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -266,10 +266,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_7
       rect:
         serializedVersion: 2
-        x: 461
+        x: 797
         y: 14
-        width: 39
-        height: 78
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -287,9 +287,9 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_8
       rect:
         serializedVersion: 2
-        x: 526
+        x: 910
         y: 16
-        width: 38
+        width: 76
         height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -308,10 +308,10 @@ TextureImporter:
       name: edel_melee_attack_animation-Sheet-Sheet_9
       rect:
         serializedVersion: 2
-        x: 591
+        x: 1023
         y: 17
-        width: 38
-        height: 75
+        width: 76
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -321,6 +321,111 @@ TextureImporter:
       bones: []
       spriteID: b3890c7fb0f51114fb103ef113410b74
       internalID: -2115446994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: edel_melee_attack_animation-Sheet-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 1135
+        y: 17
+        width: 76
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4bcc2706d7ae1e84aa9d5d5115606474
+      internalID: 878652210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: edel_melee_attack_animation-Sheet-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 1247
+        y: 17
+        width: 76
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fef22007bb214124f91fc0a5c2d8b624
+      internalID: 1536619223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: edel_melee_attack_animation-Sheet-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 1356
+        y: 17
+        width: 76
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3728e06bb76fbd4da94d4f23089c1df
+      internalID: -1942977880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: edel_melee_attack_animation-Sheet-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 1471
+        y: 17
+        width: 76
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90c0c86614a85e24392f49f5a204570e
+      internalID: -1979672607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: edel_melee_attack_animation-Sheet-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 1586
+        y: 17
+        width: 81
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e56420dbfebc934f8dcf11deed22519
+      internalID: 1289124843
       vertices: []
       indices: 
       edges: []
@@ -337,15 +442,20 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       edel_melee_attack_animation-Sheet-Sheet_8: -1194232424
+      edel_melee_attack_animation-Sheet-Sheet_12: -1942977880
       edel_melee_attack_animation-Sheet-Sheet_1: 1054209888
+      edel_melee_attack_animation-Sheet-Sheet_14: 1289124843
       edel_melee_attack_animation-Sheet-Sheet_3: 631273559
       edel_melee_attack_animation-Sheet-Sheet_4: 2021613827
       edel_melee_attack_animation-Sheet-Sheet_6: -1481090482
       edel_melee_attack_animation-Sheet-Sheet_5: -57095674
       edel_melee_attack_animation-Sheet-Sheet_2: 1377298900
       edel_melee_attack_animation-Sheet-Sheet_7: -11961085
+      edel_melee_attack_animation-Sheet-Sheet_10: 878652210
       edel_melee_attack_animation-Sheet-Sheet_9: -2115446994
+      edel_melee_attack_animation-Sheet-Sheet_13: -1979672607
       edel_melee_attack_animation-Sheet-Sheet_0: 940755939
+      edel_melee_attack_animation-Sheet-Sheet_11: 1536619223
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

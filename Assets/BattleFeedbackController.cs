@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class BattleFeedbackController : MonoBehaviour
 {
     public GameObject playerUnit;
     public float restorePlayerUnitPositionCooldown;
     public GameObject castSpellVFX;
+    public PlayableDirector mainCharacterPlayableDirector;
 
     public void OnEnable()
     {
@@ -19,6 +21,7 @@ public class BattleFeedbackController : MonoBehaviour
     void MovePlayerUnitNearEnemyTarget(Transform enemyTargetPosition)
     {
         playerUnit.transform.position = enemyTargetPosition.position;
+        mainCharacterPlayableDirector.Play();
         StartCoroutine("RestorePlayerUnitPosition");
         Debug.Log("Player Unit Melee Attack Feedback Test");
     }

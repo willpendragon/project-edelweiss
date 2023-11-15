@@ -23,6 +23,8 @@ public class BattleInterface : MonoBehaviour
         Moveset.OnPlayerMovementModeEnd += DeactivatePlayerActionModePanel;
         Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
         TileController.OnPlayerEscapedFromJudgmentAttack += JudgmentAttackFailed;
+        Deity.OnDeityNotificationUpdate += SetDeityNotification;
+        Deity.OnDeityFieldEffectActivation += ShowFieldEffectIcon;
     }
     private void OnDisable()
     {
@@ -30,6 +32,8 @@ public class BattleInterface : MonoBehaviour
         Moveset.OnPlayerMovementModeEnd -= DeactivatePlayerActionModePanel;
         Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
         TileController.OnPlayerEscapedFromJudgmentAttack -= JudgmentAttackFailed;
+        Deity.OnDeityNotificationUpdate -= SetDeityNotification;
+        Deity.OnDeityFieldEffectActivation -= ShowFieldEffectIcon;
     }
 
     private void Start()
@@ -51,21 +55,16 @@ public class BattleInterface : MonoBehaviour
         deityJudgmentLimitText.text = judgmentTurnLimitNumber.ToString();
         Debug.Log("Setting Judgment Turn Warning");
     }
+    public void SetDeityNotification(string deityNotification)
+    {
+        battlefieldTextNotifications.text = deityNotification;  
+    }
 
     IEnumerator ResetMovePanel()
     {
         yield return new WaitForSeconds(2);
         moveName.text = "";
         moveNamePanel.color = new Color(1, 1, 1, 0);
-    }
-
-    public void Update()
-    {
-        if (battleManager.fieldEffectStatus == FieldEffectStatus.active)
-        {
-            ShowFieldEffectIcon();
-            Debug.Log("Show Field Effect Icon");
-        }
     }
 
     public void ShowFieldEffectIcon()

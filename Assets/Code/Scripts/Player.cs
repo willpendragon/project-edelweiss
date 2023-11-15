@@ -50,6 +50,17 @@ public class Player : MonoBehaviour
     public GameObject currentPosition;
     public Animator playerAnimator;
 
+    public void OnEnable()
+    {
+        Deity.OnDeityFieldEffectActivation += SetPlayerCurrentFieldEffectStatus;
+        Deity.OnDeityFieldEffectActivation += PlayHurtAnimation;
+    }
+    public void OnDisable()
+    {
+        Deity.OnDeityFieldEffectActivation -= SetPlayerCurrentFieldEffectStatus;
+        Deity.OnDeityFieldEffectActivation -= PlayHurtAnimation;
+
+    }
     public void UpdatePlayerHealthDisplay()
     {
         playerHealthPointsDisplay.text = healthPoints.ToString();
@@ -75,5 +86,9 @@ public class Player : MonoBehaviour
     public void SetUnitCurrentTile(TileController currentTile)
     {
         unitCurrentTile = currentTile;
+    }
+    public void SetPlayerCurrentFieldEffectStatus()
+    {
+        currentFieldEffect = fieldEffect.iceMist;
     }
 }

@@ -12,7 +12,16 @@ public class SummoningController : MonoBehaviour
     public ParticleSystem deityAttackFeedback;
     [SerializeField] float deityAttackFeedbackTimeToDeactivation;
     public Button useDeityAttack;
+    public bool deityPowerLoadingBarSliderIsActive;
 
+    public void OnEnable()
+    {
+        BattleManager.OnChargeDeityPowerLoadingBar += IncreaseDeityPowerLoadingBar;
+    }
+    public void OnDisable()
+    {
+        BattleManager.OnChargeDeityPowerLoadingBar -= IncreaseDeityPowerLoadingBar;
+    }
     public void Start()
     {
         if (currentDeity != null)
@@ -26,6 +35,7 @@ public class SummoningController : MonoBehaviour
         {
             Debug.Log("Summon Deity on Battlefield");
             GameObject deityInstance = Instantiate(currentDeity, deitySummoningSpot);
+            deityPowerLoadingBarSliderIsActive = true;
         }
         else
         {
@@ -34,13 +44,17 @@ public class SummoningController : MonoBehaviour
     }
     public void UpdateDeityPowerLoadingBar()
     {
-        deityPowerLoadingBarSlider.value = 0;
-        deityPowerLoadingBarSlider.maxValue = 3;
+        if (deityPowerLoadingBarSlider != null)
+        {
+            deityPowerLoadingBarSlider.value = 0;
+            deityPowerLoadingBarSlider.maxValue = 3;
+        }
     }
     public void UseDeityAttack()
     {
         //Play Deity Attack Feedback
         deityAttackFeedback.Play();
+        Debug.Log("Unleashing Deity Attack on Battlefield");
         //Apply Damage to Enemies
         //Reset Deity Power Loading Bar
         deityPowerLoadingBarSlider.value = 0;
@@ -48,7 +62,10 @@ public class SummoningController : MonoBehaviour
     }
     public void IncreaseDeityPowerLoadingBar()
     {
-        deityPowerLoadingBarSlider.value += 1;
+        if (deityPowerLoadingBarSliderIsActive == true)
+        {
+            deityPowerLoadingBarSlider.value += 1;
+        }
     }
     IEnumerator StopDeityAttackFeedback()
     {

@@ -20,12 +20,14 @@ public class PlayerStatsSaver : MonoBehaviour
         BattleManager.OnSavePlayerHealth += SavePlayerHealth;
         BattleManager.OnSavePlayerCoinsReward += SaveCoins;
         BattleManager.OnSavePlayerExperienceReward += SavePlayerExperience;
+        HealingController.OnSavePoint += SavePlayerHealth;
     }
     public void OnDisable()
     {
         BattleManager.OnSavePlayerHealth -= SavePlayerHealth;
         BattleManager.OnSavePlayerCoinsReward -= SaveCoins;
         BattleManager.OnSavePlayerExperienceReward -= SavePlayerExperience;
+        HealingController.OnSavePoint -= SavePlayerHealth;
     }
     public void SavePlayerHealth(float finalPlayerHealth)
     {

@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2012499427021812749, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: healthPoints
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812976, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -172,6 +176,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812976, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499427021812979, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: healthPoints
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}

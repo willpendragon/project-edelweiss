@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using static Deity;
 
 public enum alignmentType
 {
@@ -45,6 +46,12 @@ public class Deity : MonoBehaviour
 
     public delegate void DeityJudgmentCounterUpdate(int judgmentTurnLimitNumber);
     public static event DeityJudgmentCounterUpdate OnDeityJudgmentCounterUpdate;
+
+    public delegate void DeityNotificationUpdate(string deityNotificationText);
+    public static event DeityNotificationUpdate OnDeityNotificationUpdate;
+
+    public delegate void DeityFieldEffectActivation();
+    public static event DeityFieldEffectActivation OnDeityFieldEffectActivation;
 
     private void OnEnable()
     {
@@ -128,21 +135,20 @@ public class Deity : MonoBehaviour
         }
         player.healthPoints -= 10 * player.GetComponent<SinTracker>().redEnmity;
         player.UpdatePlayerHealthDisplay();
-        deityAttackNotification.text = "The Deity has Attacked";
+        OnDeityNotificationUpdate("The Deity has Attacked");
         StartCoroutine("ResetDeityAttack");
     }
 
     public void DeityFieldEffect()
     //A simple effect provoked by the Deity that affects the Units on the Battlefield with varying effects.
     {
-        if (deityFieldEffectVFX != null)
+        /*if (deityFieldEffectVFX != null)
         {
             deityFieldEffectVFX.SetActive(true);
         }
-        player.currentFieldEffect = fieldEffect.iceMist;
-        player.UpdatePlayerHealthDisplay();
-        player.PlayHurtAnimation();
-        deityAttackNotification.text = "The Deity has created a Field Effect";
+        */
+        OnDeityFieldEffectActivation();
+        OnDeityNotificationUpdate("The Deity has created a Field Effect");
         battleManager.fieldEffectStatus = FieldEffectStatus.active;
         StartCoroutine("ResetDeityAttack");
     }
@@ -172,7 +178,8 @@ public class Deity : MonoBehaviour
         {
             deityAttackVFX.SetActive(false);
         }
-        deityAttackNotification.text = "";
+        OnDeityNotificationUpdate("The Deity has created a Field Effect");
+        //deityAttackNotification.text = "";
         //battleManager.turnCounter = 0;
         //battleManager.turnTracker.text = "0";
     }
@@ -189,6 +196,6 @@ public class Deity : MonoBehaviour
     {
         player.GetComponent<Player>().healthPoints = judgmentAttackPower;
         //Multiply for the Enmity Value the Player accrued towards this Deity
-    }    
+    }
 }
 
