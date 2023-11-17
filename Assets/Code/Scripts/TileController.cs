@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using RPGCharacterAnims.Actions;
 
 public class TileController : MonoBehaviour
 {
@@ -25,10 +26,9 @@ public class TileController : MonoBehaviour
 
     public delegate void PlayerEscapedFromJudgmentAttack();
     public static event PlayerEscapedFromJudgmentAttack OnPlayerEscapedFromJudgmentAttack;
-    
+
     public delegate void JudgmentAttackSuccessful();
     public static event JudgmentAttackSuccessful OnJudgmentAttackSuccessful;
-
 
     [SerializeField] ParticleSystem redParticle;
     [SerializeField] ParticleSystem blueParticle;
@@ -42,7 +42,6 @@ public class TileController : MonoBehaviour
     {
         Deity.OnDeityJudgment += AttackUnit;
     }
-
     private void OnDisable()
     {
         Deity.OnDeityJudgment -= AttackUnit;
@@ -51,24 +50,21 @@ public class TileController : MonoBehaviour
     {
         SetTileStatus();
     }
-
     public void AttackUnit()
     {
         if (detectedUnit != null)
         {
             if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.blue)
             {
-                Debug.Log("Detected Player on cursed Tile during Judgment move.");
                 OnJudgmentAttackSuccessful();
             }
             else if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.neutral)
             {
-                Debug.Log("The Player escaped. Player wins the battle");
                 OnPlayerEscapedFromJudgmentAttack();
+                //Use this event to display a "Missed" attack notification after the attack happened.
             }
         }
     }
-
     public void SetTileStatus()
     {
         if (IsTileOccupied())

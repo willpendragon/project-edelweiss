@@ -26,7 +26,8 @@ public class Player : MonoBehaviour
     public float healthPoints;
     public float manaPoints;
     public int attackModifier;
-    public float shield;
+    public float unitAmorRating;
+    public float unitShield;
     public float coins;
     public float playerExperiencePoints;
 
@@ -59,7 +60,6 @@ public class Player : MonoBehaviour
     {
         Deity.OnDeityFieldEffectActivation -= SetPlayerCurrentFieldEffectStatus;
         Deity.OnDeityFieldEffectActivation -= PlayHurtAnimation;
-
     }
     public void UpdatePlayerHealthDisplay()
     {
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
     }
     public void UpdatePlayerShieldDisplay()
     {
-        playerShieldDisplay.text = shield.ToString();
+        playerShieldDisplay.text = unitShield.ToString();
     }
     public void UpdateManaPointsDisplay()
     {

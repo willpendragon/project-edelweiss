@@ -20,6 +20,6 @@ public class SceneLoader : MonoBehaviour
     public void LoadScene()
     {
         //Communicate with GameManager and set the parameter of the battle
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadSceneAsync(sceneName);
     }
 }

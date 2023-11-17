@@ -22,7 +22,6 @@ public class BattleInterface : MonoBehaviour
         Moveset.OnPlayerChangesPosition += ChangePlayerActionModeText;
         Moveset.OnPlayerMovementModeEnd += DeactivatePlayerActionModePanel;
         Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
-        TileController.OnPlayerEscapedFromJudgmentAttack += JudgmentAttackFailed;
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
         Deity.OnDeityFieldEffectActivation += ShowFieldEffectIcon;
     }
@@ -31,11 +30,9 @@ public class BattleInterface : MonoBehaviour
         Moveset.OnPlayerChangesPosition -= ChangePlayerActionModeText;
         Moveset.OnPlayerMovementModeEnd -= DeactivatePlayerActionModePanel;
         Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
-        TileController.OnPlayerEscapedFromJudgmentAttack -= JudgmentAttackFailed;
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
         Deity.OnDeityFieldEffectActivation -= ShowFieldEffectIcon;
     }
-
     private void Start()
     {
         player.UpdatePlayerHealthDisplay();
@@ -57,7 +54,7 @@ public class BattleInterface : MonoBehaviour
     }
     public void SetDeityNotification(string deityNotification)
     {
-        battlefieldTextNotifications.text = deityNotification;  
+        battlefieldTextNotifications.text = deityNotification;
     }
 
     IEnumerator ResetMovePanel()
@@ -83,11 +80,12 @@ public class BattleInterface : MonoBehaviour
         battlefieldTextNotifications.text = "Player Is Unable to Move";
         playerActionPanel.SetActive(false);
     }
-
+    /*
     public void JudgmentAttackFailed()
     {
         battleEndResult.text = "The Player escaped";
         GameManager gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         gameManager.MarkCurrentNodeAsCompleted();
     }
+    */
 }

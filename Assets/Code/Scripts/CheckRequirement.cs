@@ -7,30 +7,33 @@ public class CheckRequirement : MonoBehaviour
     public NodeController previousNode;
     public SceneLoader sceneLoader;
     public GameManager gameManager;
+    private float loadingBattleSceneWaitTime = 1;
 
-public void CheckPreviousNode()
-{
-    if (previousNode.nodeCompleted == true || this.gameObject.GetComponent<NodeController>().isStartingNode == true)
+    public delegate void LoadingBattle();
+    public static event LoadingBattle OnLoadingBattle;
+
+    public void CheckPreviousNode()
     {
-        StartCoroutine("LoadBattleScene");
-        Debug.Log("You can proceed to next level");
+        if (previousNode.nodeCompleted == true || this.gameObject.GetComponent<NodeController>().isStartingNode == true)
+        {
+            StartCoroutine("LoadBattleScene");
+            Debug.Log("You can proceed to next level");
+        }
+        else
+        {
+            Debug.Log("You don't meet the prerequisites to enter the next level");
+        }
     }
-    else
+
+    public void SetCurrentNode()
     {
-        Debug.Log("You don't meet the prerequisites to enter the next level");
+        gameManager.currentNode = this.gameObject.GetComponent<NodeController>();
+        gameManager.currentNode.SetIsCurrentNodeBool();
     }
-}
-
-public void SetCurrentNode()
-{
-    gameManager.currentNode = this.gameObject.GetComponent<NodeController>();
-    gameManager.currentNode.SetIsCurrentNodeBool();
-    //this.gameObject.tag = "CurrentNode";
-
-}
-IEnumerator LoadBattleScene()
-{
-    yield return new WaitForSeconds(5);
-    sceneLoader.LoadScene();
-}
+    IEnumerator LoadBattleScene()
+    {
+        OnLoadingBattle();
+        yield return new WaitForSeconds(loadingBattleSceneWaitTime);
+        sceneLoader.LoadScene();
+    }
 }

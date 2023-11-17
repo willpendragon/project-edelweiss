@@ -68,6 +68,7 @@ public class Deity : MonoBehaviour
     {
 
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
+        OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
         OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
     }
 

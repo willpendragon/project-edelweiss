@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using static UnityEditor.PlayerSettings;
 
 public enum TurnOrder
 {
@@ -56,6 +57,9 @@ public class BattleManager : MonoBehaviour
     public delegate void BattleEnd();
     public static event BattleEnd OnBattleEnd;
 
+    public delegate void BattleEndResultsScreen(string battleEndMessage);
+    public static event BattleEndResultsScreen OnBattleEndResultsScreen;
+
     public delegate void ChargeDeityPowerLoadingBar();
     public static event ChargeDeityPowerLoadingBar OnChargeDeityPowerLoadingBar;
 
@@ -89,16 +93,12 @@ public class BattleManager : MonoBehaviour
     public void OnEnable()
     {
         Moveset.OnPlayerTurnIsOver += PassTurnToEnemies;
-//        Moveset.OnCheckEnemies += CheckEnemies;
-        TileController.OnPlayerEscapedFromJudgmentAttack += ShowBattleIsOverScreen;
         Enemy.OnCheckPlayer += CheckPlayer;
         Enemy.OnCheckEnemiesOnBattlefield += CheckEnemies;
     }
     public void OnDisable()
     {
         Moveset.OnPlayerTurnIsOver -= PassTurnToEnemies;
- //       Moveset.OnCheckEnemies -= CheckEnemies;
-        TileController.OnPlayerEscapedFromJudgmentAttack -= ShowBattleIsOverScreen;
         Enemy.OnCheckPlayer -= CheckPlayer;
         Enemy.OnCheckEnemiesOnBattlefield -= CheckEnemies;
     }
@@ -121,10 +121,8 @@ public class BattleManager : MonoBehaviour
         {
             //If all of the enemies on the battlefield are dead, the Battle End gameplay sequence starts.
             gameManager.MarkCurrentNodeAsCompleted();
-            battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
-            battleInterface.battleEndResult.text = "The Enemy was defeated";
             //Sends an Event at the end of the battle and communicates the final HP of the Player at the end of the battle.
-            OnBattleEnd();
+            OnBattleEndResultsScreen("The Enemy was defeated");
             StartCoroutine("SendStatsSavingEvents");
         }
     }
@@ -141,8 +139,7 @@ public class BattleManager : MonoBehaviour
         //with a notification telling about the Player's defeat.
         if (player.healthPoints <= 0)
         {
-            battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
-            battleInterface.battleEndResult.text = "Player Defeat";
+            OnBattleEndResultsScreen("Player Defeat");
         }
     }
     public void PassTurnToEnemies()
@@ -177,7 +174,6 @@ public class BattleManager : MonoBehaviour
         }
         return true;
     }
-
     public void UpdateTurnCounter()
     {
         turnDisplay.text = "Player Turn";
@@ -199,10 +195,5 @@ public class BattleManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         battleBeginsScreen.SetActive(false);
-    }
-
-    public void ShowBattleIsOverScreen()
-    {
-        battleIsOverScreen.transform.localScale = new Vector3(1, 1, 1);
     }
 }

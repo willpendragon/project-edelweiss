@@ -33,7 +33,7 @@ public class EnemySelector : MonoBehaviour
     }
     void OnMouseDown()
     {
-        if (currentCursorStatus == CursorStatus.deselected && moveset.currentTarget == null)
+        if (currentCursorStatus == CursorStatus.deselected && moveset.player.currentTarget == null)
         {
             cursor.color = Color.green;
             currentCursorStatus = CursorStatus.selected;

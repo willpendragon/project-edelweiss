@@ -25,11 +25,12 @@ public class Enemy : MonoBehaviour
     [SerializeField] ParticleSystem attackVFX;
     public Vector3 enemyOriginalPosition;
 
-    [Header("UI")]
+    [Header("Enemy UI")]
     [SerializeField] TextMeshProUGUI healthPointsCounter;
     [SerializeField] TextMeshProUGUI opportunityCounter;
+    [SerializeField] TextMeshProUGUI receivedDamageCounter;
 
-    [Header("Rewards")]
+    [Header("Rewards for the Player")]
     public float enemyCoinsReward;
     public float enemyExperienceReward;
 
@@ -60,6 +61,9 @@ public class Enemy : MonoBehaviour
     {
         healthPoints -= receivedDamage;
         Debug.Log("Enemy damage =" + receivedDamage);
+        UpdateEnemyHealthDisplay();
+        UpdateEnemyReceivedDamageDisplay(receivedDamage);
+        EnemyTakingDamage.Invoke();
         Invoke("EnemyTakesDamage", 0.5f);
     }
     public void EnemyTakesDamage()
@@ -80,12 +84,25 @@ public class Enemy : MonoBehaviour
         healthPointsCounter.text = healthPoints.ToString();
     }
 
+    public void UpdateEnemyReceivedDamageDisplay(float receivedDamage)
+    {
+        receivedDamageCounter.text = receivedDamage.ToString();
+        StartCoroutine("ResetReceivedDamageDisplay");
+    }
+
+    IEnumerator ResetReceivedDamageDisplay()
+    {
+        yield return new WaitForSeconds(1);
+        receivedDamageCounter.text = "";
+    }
     public void Attack()
     {
         if (this.gameObject.tag != "DeadEnemy")
         {
-            player.healthPoints -= attackPower;
-            //I can create an event for this on the Player.
+            const float targetUnitReductionFactor = 0.05f;
+            float damageReductionFactor = (1.0f  - (player.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
+            float reducedDamage = attackPower * damageReductionFactor;
+            player.healthPoints -= (reducedDamage);
             player.UpdatePlayerHealthDisplay();
             player.PlayHurtAnimation();
             attackVFX.transform.position = player.GetComponent<Player>().unitCurrentTile.transform.position;
@@ -95,15 +112,12 @@ public class Enemy : MonoBehaviour
             Debug.Log("Enemy Attacking");
         }
     }
-
     public void StunAbility()
     {
         if (this.gameObject.tag != "DeadEnemy")
         {
             player.GetComponent<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
             player.GetComponent<UnitStatusController>().UnitStun.Invoke();
-            //I can create an event for this on the Player.
-            //player.UpdatePlayerHealthDisplay();
             player.PlayHurtAnimation();
             attackVFX.transform.position = player.transform.position;
             attackVFX.Play();

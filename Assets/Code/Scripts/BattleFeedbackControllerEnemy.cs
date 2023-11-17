@@ -7,8 +7,6 @@ public class BattleFeedbackControllerEnemy : MonoBehaviour
     public GameObject enemyUnit;
     public float restoreEnemyUnitPositionCooldown;
 
-    // Start is called before the first frame update
-
     public void MoveEnemyUnitNearPlayerTarget(Transform playerUnitTargetTransform)
     {
         enemyUnit.transform.position = playerUnitTargetTransform.position;
@@ -22,12 +20,6 @@ public class BattleFeedbackControllerEnemy : MonoBehaviour
         Debug.Log("Restoring Enemy Unit Position");
         this.gameObject.transform.position = enemyUnit.GetComponent<Enemy>().enemyOriginalPosition;
         //enemyUnit.transform.position
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
 }

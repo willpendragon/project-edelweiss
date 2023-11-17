@@ -4,15 +4,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Moveset : Player
+public class Moveset : MonoBehaviour
 {
     [SerializeField] BattleInterface battleInterface;
-    [SerializeField] Player player;
+    public Player player;
     [SerializeField] TileSelector tileSelector;
     [SerializeField] GameObject playerModel;
     [SerializeField] int opportunityPoints;
     [SerializeField] int maximumOpportunityPoints;
     [SerializeField] float endPlayerTurnDelay;
+    [SerializeField] float protectionShieldIncreaseValue;
 
     public delegate void PlayerTurnIsOver();
     public static event PlayerTurnIsOver OnPlayerTurnIsOver;
@@ -29,7 +30,7 @@ public class Moveset : Player
     public UnityEvent CastingSpell;
     public void SelectCurrentTarget(GameObject selectedCurrentTarget)
     {
-        currentTarget = selectedCurrentTarget;
+        player.currentTarget = selectedCurrentTarget;
     }
     public void SelectCurrentPosition(GameObject selectedCurrentTile)
     {
@@ -39,43 +40,57 @@ public class Moveset : Player
         }
         else
         {
-            currentPosition = selectedCurrentTile;
+            player.currentPosition = selectedCurrentTile;
             selectedCurrentTile.GetComponent<TileController>().detectedUnit = this.gameObject;
-            player.transform.position = currentPosition.transform.position;
+            player.transform.position = player.currentPosition.transform.position;
         }
     }
     public void MeleeAttack()
     {
-        battleInterface.SetMovePanelName("Melee Attack");
-        currentTarget.GetComponent<Enemy>().TakeDamage(meleeAttackPower);
-        currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
-        opportunityPoints--;
-        CheckOpportunityPoints();
-        //playerAnimator.SetTrigger("edelweiss_melee");
-        StartCoroutine("SendMeleeAttackFeedback");
-        Debug.Log("Melee Attack");
+        if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.iceMist)
+        {
+            int meleeAttackChance = Random.Range(0, 3);
+            if (meleeAttackChance >= 2)
+            {
+                battleInterface.SetMovePanelName("Melee Attack");
+                player.currentTarget.GetComponent<Enemy>().TakeDamage(player.meleeAttackPower);
+                //currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
+                opportunityPoints--;
+                CheckOpportunityPoints();
+                //playerAnimator.SetTrigger("edelweiss_melee");
+                StartCoroutine("SendMeleeAttackFeedback");
+                Debug.Log("Melee Attack");
+
+                OnPlayerChangesPosition();
+                opportunityPoints--;
+            }
+            else
+            {
+                Debug.Log("This unit is unable to perform a Melee Attack");
+            }
+        }
     }
     IEnumerator SendMeleeAttackFeedback()
     {
-        yield return new WaitForSeconds(0.4f);
-        OnPlayerMeleeAttack(currentTarget.transform);
+        yield return new WaitForSeconds(0.1f);
+        OnPlayerMeleeAttack(player.currentTarget.transform);
     }
 
     public void RedAttack()
     {
-        if (battleManager.currentTurnOrder == TurnOrder.playerTurn && currentTarget != null)
+        if (player.battleManager.currentTurnOrder == TurnOrder.playerTurn && player.currentTarget != null)
         {
-            if (manaPoints > 0)
+            if (player.manaPoints > 0)
             {
                 battleInterface.SetMovePanelName("Red Attack");
-                currentAttackAlignmentType = attackAlignmentType.red;
-                currentTarget.GetComponent<Enemy>().TakeDamage(attackPower);
-                currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
-                deity.SinTracker(currentAttackAlignmentType, this.gameObject);
+                player.currentAttackAlignmentType = attackAlignmentType.red;
+                player.currentTarget.GetComponent<Enemy>().TakeDamage(player.attackPower);
+                //currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
+                player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
                 opportunityPoints--;
-                OnPlayerMeleeAttack(currentTarget.transform);
-                player.gameObject.GetComponentInChildren<Moveset>().manaPoints -= 10;
-                UpdateManaPointsDisplay();
+                OnPlayerMeleeAttack(player.currentTarget.transform);
+                player.gameObject.GetComponentInChildren<Moveset>().player.manaPoints -= 10;
+                player.UpdateManaPointsDisplay();
                 CheckOpportunityPoints();
                 Debug.Log("Red attack");
             }
@@ -90,18 +105,17 @@ public class Moveset : Player
 
     public void BlueAttack()
     {
-        if (battleManager.currentTurnOrder == TurnOrder.playerTurn && currentTarget != null)
+        if (player.battleManager.currentTurnOrder == TurnOrder.playerTurn && player.currentTarget != null)
         {
-            if (manaPoints > 0)
+            if (player.manaPoints > 0)
             {
                 battleInterface.SetMovePanelName("Blue Attack");
-                currentAttackAlignmentType = attackAlignmentType.blue;
-                currentTarget.GetComponent<Enemy>().TakeDamage(attackPower + 10);
-                currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
-                deity.SinTracker(currentAttackAlignmentType, this.gameObject);
+                player.currentAttackAlignmentType = attackAlignmentType.blue;
+                player.currentTarget.GetComponent<Enemy>().TakeDamage(player.attackPower + 10);
+                player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
                 opportunityPoints--;
-                player.gameObject.GetComponentInChildren<Moveset>().manaPoints -= 5;
-                UpdateManaPointsDisplay();
+                player.gameObject.GetComponentInChildren<Moveset>().player.manaPoints -= 5;
+                player.UpdateManaPointsDisplay();
                 CastingSpell.Invoke();
                 CheckOpportunityPoints();
                 Debug.Log("Blue attack");
@@ -118,12 +132,12 @@ public class Moveset : Player
     public void Protection()
     {
         battleInterface.SetMovePanelName("Protection");
-        if (battleManager.currentTurnOrder == TurnOrder.playerTurn)
+        if (player.battleManager.currentTurnOrder == TurnOrder.playerTurn)
         {
-            shield += 10;
-            UpdatePlayerShieldDisplay();
-            currentAttackAlignmentType = attackAlignmentType.blue;
-            deity.SinTracker(currentAttackAlignmentType, this.gameObject);
+            player.unitShield += protectionShieldIncreaseValue;
+            player.UpdatePlayerShieldDisplay();
+            player.currentAttackAlignmentType = attackAlignmentType.blue;
+            player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
             opportunityPoints--;
             CheckOpportunityPoints();
             Debug.Log("Shield Increased");

@@ -9,6 +9,7 @@ public class BattleFeedbackController : MonoBehaviour
     public float restorePlayerUnitPositionCooldown;
     public GameObject castSpellVFX;
     public PlayableDirector mainCharacterPlayableDirector;
+    public Vector3 unitOriginalPosition;
 
     public void OnEnable()
     {
@@ -18,9 +19,14 @@ public class BattleFeedbackController : MonoBehaviour
     {
         Moveset.OnPlayerMeleeAttack -= MovePlayerUnitNearEnemyTarget;
     }
+    public void Start()
+    {
+        unitOriginalPosition = this.gameObject.transform.position;
+    }
     void MovePlayerUnitNearEnemyTarget(Transform enemyTargetPosition)
     {
-        playerUnit.transform.position = enemyTargetPosition.position;
+        Vector3 playerUnitPosition = new Vector3(enemyTargetPosition.position.x, playerUnit.transform.position.y, enemyTargetPosition.transform.position.z);
+        playerUnit.transform.position = playerUnitPosition;
         mainCharacterPlayableDirector.Play();
         StartCoroutine("RestorePlayerUnitPosition");
         Debug.Log("Player Unit Melee Attack Feedback Test");
@@ -29,7 +35,8 @@ public class BattleFeedbackController : MonoBehaviour
     {
         yield return new WaitForSeconds(restorePlayerUnitPositionCooldown);
         Debug.Log("Restoring Player Unit Position");
-        playerUnit.transform.position = playerUnit.GetComponent<Player>().unitCurrentTile.transform.position;
+        playerUnit.transform.position = unitOriginalPosition;
+        //playerUnit.GetComponent<Player>().unitCurrentTile.transform.position;
     }
     public void TriggerCastSpellVFX()
     {
