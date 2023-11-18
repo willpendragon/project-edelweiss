@@ -1,25 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
     [SerializeField] string sceneName;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private float loadingBattleSceneWaitTime = 1;
 
-    // Update is called once per frame
-    void Update()
+    public delegate void LoadingScene();
+    public static event LoadingScene OnLoadingScene;
+    public void ChangeScene()
     {
-        
+        OnLoadingScene();
+        StartCoroutine("LoadScene");
     }
-    public void LoadScene()
+    IEnumerator LoadScene()
     {
-        //Communicate with GameManager and set the parameter of the battle
+        yield return new WaitForSeconds(loadingBattleSceneWaitTime);
         SceneManager.LoadSceneAsync(sceneName);
     }
 }

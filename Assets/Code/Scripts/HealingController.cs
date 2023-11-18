@@ -16,8 +16,11 @@ public class HealingController : MonoBehaviour
 
     public void HealPlayer()
     {
-        player.healthPoints += healingAmount;
-        player.coins -= healingPrice;
-        OnSavePoint(player.healthPoints);
+        if (player.coins > 0 && player.coins >= healingAmount)
+        {
+            player.healthPoints += healingAmount;
+            player.coins -= healingPrice;
+            OnSavePoint(player.healthPoints);
+        }
     }
 }

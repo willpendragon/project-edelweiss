@@ -47,28 +47,27 @@ public class Moveset : MonoBehaviour
     }
     public void MeleeAttack()
     {
-        if (this.gameObject.GetComponent<Player>().currentFieldEffect == fieldEffect.iceMist)
+        Debug.Log("Melee Attack");
+        if (player.currentFieldEffect == fieldEffect.iceMist)
         {
             int meleeAttackChance = Random.Range(0, 3);
             if (meleeAttackChance >= 2)
             {
-                battleInterface.SetMovePanelName("Melee Attack");
-                player.currentTarget.GetComponent<Enemy>().TakeDamage(player.meleeAttackPower);
-                //currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
-                opportunityPoints--;
-                CheckOpportunityPoints();
-                //playerAnimator.SetTrigger("edelweiss_melee");
-                StartCoroutine("SendMeleeAttackFeedback");
-                Debug.Log("Melee Attack");
-
-                OnPlayerChangesPosition();
-                opportunityPoints--;
-            }
-            else
-            {
                 Debug.Log("This unit is unable to perform a Melee Attack");
             }
         }
+        else if (player.currentFieldEffect == fieldEffect.noFieldEffect)
+        {
+            PerformMeleeAttack();
+        }
+    }
+    public void PerformMeleeAttack()
+    {
+        battleInterface.SetMovePanelName("Melee Attack");
+        player.currentTarget.GetComponent<Enemy>().TakeDamage(player.meleeAttackPower);
+        opportunityPoints--;
+        CheckOpportunityPoints();
+        StartCoroutine("SendMeleeAttackFeedback");
     }
     IEnumerator SendMeleeAttackFeedback()
     {

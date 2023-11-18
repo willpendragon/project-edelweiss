@@ -9,13 +9,14 @@ public class LoadingScreen : MonoBehaviour
     public Image loadingScreenPanel;
     public Canvas loadingScreenCanvas;
     public TextMeshProUGUI nowLoadingText;
+
     private void OnEnable()
     {
-        CheckRequirement.OnLoadingBattle += ShowLoadingScreenUI;
+        SceneLoader.OnLoadingScene += ShowLoadingScreenUI;
     }
     private void OnDisable()
     {
-        CheckRequirement.OnLoadingBattle -= ShowLoadingScreenUI;
+        SceneLoader.OnLoadingScene -= ShowLoadingScreenUI;
     }
     void ShowLoadingScreenUI()
     {

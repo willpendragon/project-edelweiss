@@ -123,6 +123,7 @@ public class BattleManager : MonoBehaviour
             gameManager.MarkCurrentNodeAsCompleted();
             //Sends an Event at the end of the battle and communicates the final HP of the Player at the end of the battle.
             OnBattleEndResultsScreen("The Enemy was defeated");
+            OnBattleEnd();
             StartCoroutine("SendStatsSavingEvents");
         }
     }

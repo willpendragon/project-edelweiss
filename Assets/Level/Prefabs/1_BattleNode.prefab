@@ -47,6 +47,8 @@ MonoBehaviour:
   enemyOne: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
   enemyTwo: {fileID: 5147203796786549252, guid: fb44d29c5900bc445abe290940fb487c, type: 3}
   enemyThree: {fileID: 8194179579621356911, guid: e2d5e0f6a4ecbbd4fa91bedaf9149e08, type: 3}
+  enemyFour: {fileID: 0}
+  enemyFive: {fileID: 0}
   preliminaryEnemySelection: {fileID: 7702915620874654751}
 --- !u!1 &7702915621007286934
 GameObject:
@@ -389,8 +391,6 @@ GameObject:
   - component: {fileID: 7702915622509012121}
   - component: {fileID: 7702915622509012103}
   - component: {fileID: 7702915622509012102}
-  - component: {fileID: 8242987565493477719}
-  - component: {fileID: 8719030674875582977}
   m_Layer: 5
   m_Name: 1_BattleNode
   m_TagString: Untagged
@@ -459,33 +459,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8242987565493477719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7702915622509012120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef2d1f67c57445f4dbddbab0caf70661, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nodeCompleted: 0
-  nodeNumber: 1
---- !u!114 &8719030674875582977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7702915622509012120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3811ed88b380a6c4289563e2608c12c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  requirementNumber: 0
 --- !u!1 &7702915622603991928
 GameObject:
   m_ObjectHideFlags: 0
