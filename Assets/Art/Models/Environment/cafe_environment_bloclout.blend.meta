@@ -3,7 +3,27 @@ guid: a4f0eb993b6d6524eb08ff1730e4dd1a
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: floor
+    second: {fileID: 2100000, guid: 82d3b8818266ef54392cb5b806463d94, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: floor.001
+    second: {fileID: 2100000, guid: bf98591880c5ff54599392d147ddb149, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tea_table_pixel_texture
+    second: {fileID: 2100000, guid: 0e5ff2a61481d3343af4b9d3782377a7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: walls
+    second: {fileID: 2100000, guid: 4af9e346478f8534da2385c32b787640, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
