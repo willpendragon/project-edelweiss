@@ -9,13 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12673d6b5f9288c46af637a315350bd8, type: 3}
-  m_Name: TileData
+  m_Script: {fileID: 11500000, guid: 3fefbf6998d53fe45ba97e63239c2b6a, type: 3}
+  m_Name: Level 2
   m_EditorClassIdentifier: 
-  baseTiles: []
-  hasTooltip: 0
-  tooltipName: 
-  tooltipDescription: 
-  MoveCost: 1
-  Tiles3D:
-  - {fileID: 2100000, guid: 43d4b2e16f989704996f46561fcd4efe, type: 2}
+  EnemyTypeIds: 00000000000000000100000000000000
+  UnitCoordinates:
+  - {x: 1, y: 1}
+  - {x: 2, y: 2}
+  - {x: 3, y: 3}
+  - {x: 4, y: 4}

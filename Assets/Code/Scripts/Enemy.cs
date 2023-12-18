@@ -30,6 +30,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] TextMeshProUGUI opportunityCounter;
     [SerializeField] TextMeshProUGUI receivedDamageCounter;
 
+    public int unitMovementLimit;
+    public int currentXCoordinate;
+    public int currentYCoordinate;
+
     [Header("Rewards for the Player")]
     public float enemyCoinsReward;
     public float enemyExperienceReward;
@@ -105,9 +109,10 @@ public class Enemy : MonoBehaviour
             player.healthPoints -= (reducedDamage);
             player.UpdatePlayerHealthDisplay();
             player.PlayHurtAnimation();
-            attackVFX.transform.position = player.GetComponent<Player>().unitCurrentTile.transform.position;
+            attackVFX.transform.position = player.GetComponent<Player>().transform.position;
+            //Rework to spanw on the Player's tile position
             attackVFX.Play();
-            EnemyMeleeAttack.Invoke(player.GetComponent<Player>().unitCurrentTile.transform);
+            EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
             OnCheckPlayer();
             Debug.Log("Enemy Attacking");
         }

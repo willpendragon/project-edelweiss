@@ -4,8 +4,22 @@ using UnityEngine;
 using System.Linq;
 using RPGCharacterAnims.Actions;
 
+
+
+public enum SingleTileStatus
+{
+    selectionModeActive,
+    attackSelectionModeActive
+}
+
+public enum SingleTileCondition
+{
+    free,
+    occupied
+}
 public class TileController : MonoBehaviour
 {
+
     public enum TileStatus
     {
         free,
@@ -23,12 +37,25 @@ public class TileController : MonoBehaviour
     public TileAlignment currentTileAlignment;
     public float proximityDistance = 1.5f;
     public GameObject detectedUnit;
+    public int tileXCoordinate;
+    public int tileYCoordinate;
+    public SingleTileStatus currentSingleTileStatus;
+    public SingleTileCondition currentSingleTileCondition;
+
+    // A* Pathfinding properties
+    public int gCost;
+    public int hCost;
+    public int FCost { get { return gCost + hCost; } }
+    public TileController parent;
 
     public delegate void PlayerEscapedFromJudgmentAttack();
     public static event PlayerEscapedFromJudgmentAttack OnPlayerEscapedFromJudgmentAttack;
 
     public delegate void JudgmentAttackSuccessful();
     public static event JudgmentAttackSuccessful OnJudgmentAttackSuccessful;
+
+    public delegate void TileClicked(int x, int y);
+    public static event TileClicked OnTileClicked;
 
     [SerializeField] ParticleSystem redParticle;
     [SerializeField] ParticleSystem blueParticle;
@@ -48,7 +75,7 @@ public class TileController : MonoBehaviour
     }
     void Update()
     {
-        SetTileStatus();
+        //SetTileStatus();
     }
     public void AttackUnit()
     {
@@ -65,6 +92,7 @@ public class TileController : MonoBehaviour
             }
         }
     }
+    /*
     public void SetTileStatus()
     {
         if (IsTileOccupied())
@@ -83,6 +111,7 @@ public class TileController : MonoBehaviour
 
         }
     }
+    */
     public bool IsTileOccupied()
     {
         GameObject[] playerUnitsToDetect = GameObject.FindGameObjectsWithTag("Player");
@@ -112,4 +141,10 @@ public class TileController : MonoBehaviour
         blueParticle.Play();
         currentTileAlignment = TileAlignment.blue;
     }
-}
+
+    public void OnMouseDown()
+    {
+            Debug.Log("Clicked on Tile at Grid Coordinates: " + tileXCoordinate + ", " + tileYCoordinate);
+            OnTileClicked?.Invoke(tileXCoordinate, tileYCoordinate);
+        }
+    }

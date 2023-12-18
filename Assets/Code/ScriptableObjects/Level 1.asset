@@ -9,8 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: TileList
-  m_EditorClassIdentifier: Assembly-CSharp::TileDataRuntimeSet
-  items:
-  - {fileID: 11400000, guid: 178a55896f7a8df4ab5486a6fe472f21, type: 2}
+  m_Script: {fileID: 11500000, guid: 3fefbf6998d53fe45ba97e63239c2b6a, type: 3}
+  m_Name: Level 1
+  m_EditorClassIdentifier: 
+  EnemyTypeIds: 000000000100000002000000
+  UnitCoordinates:
+  - {x: 1, y: 1}
+  - {x: 2, y: 2}
+  - {x: 3, y: 3}

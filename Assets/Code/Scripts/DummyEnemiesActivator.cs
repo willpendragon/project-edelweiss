@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DummyEnemiesActivator : MonoBehaviour
 {
+    /*
     public BattleManager battleManager;
     public GameObject dummyEnemyOne;
     public GameObject dummyEnemyTwo;
@@ -19,4 +20,5 @@ public class DummyEnemiesActivator : MonoBehaviour
         enemyTurnManager.AddEnemiesToQueue();
         battleManager.enabled = true;
     }
+    */
 }

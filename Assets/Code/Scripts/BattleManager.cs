@@ -20,17 +20,19 @@ public enum FieldEffectStatus
 public class BattleManager : MonoBehaviour
 {
     public Player player;
-    public GameObject enemyOne;
-    public GameObject enemyTwo;
-    public GameObject enemyThree;
-    public GameObject enemyFour;
-    public GameObject enemyFive;
-    [SerializeField] Transform enemyOneSpot;
-    [SerializeField] Transform enemyTwoSpot;
-    [SerializeField] Transform enemyThreeSpot;
-    [SerializeField] Transform enemyFourSpot;
-    [SerializeField] Transform enemyFiveSpot;
-    [SerializeField] Image battleIsOverScreen;
+    /*
+     * public GameObject enemyOne;
+     * public GameObject enemyTwo;
+     * public GameObject enemyThree;
+     * public GameObject enemyFour;
+     * public GameObject enemyFive;
+     * [SerializeField] Transform enemyOneSpot;
+     * [SerializeField] Transform enemyTwoSpot;
+     * [SerializeField] Transform enemyThreeSpot;
+     * [SerializeField] Transform enemyFourSpot;
+     * [SerializeField] Transform enemyFiveSpot;
+     * [SerializeField] Image battleIsOverScreen;
+    */
     public GameObject battleBeginsScreen;
     [SerializeField] float enemyTurnDuration;
     [SerializeField] BattleInterface battleInterface;
@@ -68,14 +70,8 @@ public class BattleManager : MonoBehaviour
 
     void Awake()
     {
-        //Looks for a GameObject holding the Enemy selected before entering the Battle Node.
-        //Consider refactoring this in a way that allows to use the Nodes on the GameManager.
-        enemySelection = GameObject.FindGameObjectWithTag("EnemySelection").GetComponent<EnemySelection>();
-        enemyOne = enemySelection.enemyOne;
-        enemyTwo = enemySelection.enemyTwo;
-        enemyThree = enemySelection.enemyThree;
-        enemyFour = enemySelection.enemyFour;
-        enemyFive = enemySelection.enemyFive;
+
+        enemiesOnBattlefield = GameManager._instance.currentEnemySelection;
     }
     void Start()
     {
@@ -105,11 +101,11 @@ public class BattleManager : MonoBehaviour
     public void SpawnEnemies()
     {
         //Makes the Enemies from the Selection appear on the Battlefield at specific spots.
-        Instantiate(enemyOne, enemyOneSpot);
-        Instantiate(enemyTwo, enemyTwoSpot);
-        Instantiate(enemyThree, enemyThreeSpot);
-        Instantiate(enemyFour, enemyFourSpot);
-        Instantiate(enemyFive, enemyFiveSpot);
+
+        foreach (var enemy in enemiesOnBattlefield)
+        {
+            Instantiate(enemy);
+        }
     }
     public void CheckEnemies()
     {

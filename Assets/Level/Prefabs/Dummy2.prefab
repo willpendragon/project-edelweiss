@@ -1,12 +1,28 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &3761355290424154161
+--- !u!1001 &210011986481823578
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: positionIndex
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: unitMovementLimit
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: startingXCoordinate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: startingYCoordinate
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168282, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -53,36 +69,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: enemyCoinsReward
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-      propertyPath: enemyExperienceReward
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-      propertyPath: maxEnemyMoveRollRange
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-      propertyPath: minEnemyMoveRollRange
+      propertyPath: startingXCoordinate
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: startingYCoordinate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: enemyExperienceReward
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: m_Name
-      value: DummyEnemy Variant 3
+      value: DummyEnemy Variant 2
       objectReference: {fileID: 0}
     - target: {fileID: 7714452247050051452, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: enemyUnit
       value: 
-      objectReference: {fileID: 8194179579621356911}
+      objectReference: {fileID: 5147203796786549252}
     - target: {fileID: 7714452247050051452, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: restorePlayerUnitPositionCooldown
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
---- !u!1 &8194179579621356911 stripped
+--- !u!1 &5147203796786549252 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-  m_PrefabInstance: {fileID: 3761355290424154161}
+  m_PrefabInstance: {fileID: 210011986481823578}
   m_PrefabAsset: {fileID: 0}

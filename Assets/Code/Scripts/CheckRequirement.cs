@@ -8,6 +8,11 @@ public class CheckRequirement : MonoBehaviour
     public SceneLoader sceneLoader;
     public GameManager gameManager;
 
+    public void Start()
+    {
+        sceneLoader = GameObject.FindGameObjectWithTag("SceneLoader").GetComponent<SceneLoader>();
+        gameManager = GameManager._instance;
+    }
     public void CheckPreviousNode()
     {
         if (previousNode.nodeCompleted == true || this.gameObject.GetComponent<NodeController>().isStartingNode == true)
