@@ -57,6 +57,9 @@ public class TileController : MonoBehaviour
     public delegate void TileClicked(int x, int y);
     public static event TileClicked OnTileClicked;
 
+    public delegate Unit TileClickedAttackMode(int x, int y);
+    public static event TileClickedAttackMode OnTileClickedAttackMode;
+
     [SerializeField] ParticleSystem redParticle;
     [SerializeField] ParticleSystem blueParticle;
 
@@ -93,6 +96,7 @@ public class TileController : MonoBehaviour
         }
     }
     /*
+    
     public void SetTileStatus()
     {
         if (IsTileOccupied())
@@ -111,7 +115,6 @@ public class TileController : MonoBehaviour
 
         }
     }
-    */
     public bool IsTileOccupied()
     {
         GameObject[] playerUnitsToDetect = GameObject.FindGameObjectsWithTag("Player");
@@ -130,6 +133,7 @@ public class TileController : MonoBehaviour
         //If no GameObject has been found within proximity, the Tiles is not occupied
         return false;
     }
+    */
     public void ActivateRedParticle()
     {
         redParticle.Play();
@@ -144,7 +148,12 @@ public class TileController : MonoBehaviour
 
     public void OnMouseDown()
     {
-            Debug.Log("Clicked on Tile at Grid Coordinates: " + tileXCoordinate + ", " + tileYCoordinate);
-            OnTileClicked?.Invoke(tileXCoordinate, tileYCoordinate);
+        Debug.Log("Clicked on Tile at Grid Coordinates: " + tileXCoordinate + ", " + tileYCoordinate);
+        OnTileClicked?.Invoke(tileXCoordinate, tileYCoordinate);
+        if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
+        {
+            Unit targetUnit = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
+            Debug.Log("Found Unit" + targetUnit);
         }
     }
+}

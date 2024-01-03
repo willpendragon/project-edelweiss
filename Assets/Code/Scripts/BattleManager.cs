@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
-using static UnityEditor.PlayerSettings;
+//using static UnityEditor.PlayerSettings;
 
 public enum TurnOrder
 {
@@ -68,6 +68,8 @@ public class BattleManager : MonoBehaviour
     public UnityEvent PlayerTurnStarts;
     public UnityEvent PlayerTurnEnds;
 
+    public GridManager gridManager;
+
     void Awake()
     {
 
@@ -101,11 +103,18 @@ public class BattleManager : MonoBehaviour
     public void SpawnEnemies()
     {
         //Makes the Enemies from the Selection appear on the Battlefield at specific spots.
+        /*
 
         foreach (var enemy in enemiesOnBattlefield)
         {
-            Instantiate(enemy);
+            Debug.Log("Spawning Enemies");
+            Transform tileSpawnPosition = gridManager.GetTileControllerInstance(enemy.GetComponent<Unit>().startingXCoordinate, enemy.GetComponent<Unit>().startingYCoordinate).transform;
+            TileController enemyControlledTile = tileSpawnPosition.GetComponent<TileController>();
+            enemyControlledTile.detectedUnit = enemy;
+            Instantiate(enemy, tileSpawnPosition);
+
         }
+        */
     }
     public void CheckEnemies()
     {

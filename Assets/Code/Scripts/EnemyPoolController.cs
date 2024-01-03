@@ -8,7 +8,7 @@ public class EnemyPoolController : MonoBehaviour
 {
     public GameObject[] EnemyPoolGameObjects;
     // Start is called before the first frame update
-    void Awake()
+    void OnEnable()
     {
         SpawnEnemies();
     }
@@ -25,7 +25,21 @@ public class EnemyPoolController : MonoBehaviour
 
             unitComponent.startingXCoordinate = (int)coords.x;
             unitComponent.startingYCoordinate = (int)coords.y;
+            SetTileDetectedUnit(unitComponent, spawnedEnemy);
         }
+    }
 
+    void SetTileDetectedUnit(Unit unitComponent, GameObject spawnedEnemy)
+    {
+        Transform tileSpawnPosition = GridManager.Instance.GetTileControllerInstance(unitComponent.startingXCoordinate, unitComponent.startingYCoordinate).transform;
+        TileController enemyControlledTile = tileSpawnPosition.GetComponent<TileController>();
+        enemyControlledTile.detectedUnit = spawnedEnemy;
+        StartCoroutine(SetEnemyTilesAsOccupied(enemyControlledTile));
+    }
+
+    IEnumerator SetEnemyTilesAsOccupied(TileController enemyControlledTile)
+    {
+        yield return new WaitForSeconds(0.5f);
+        enemyControlledTile.currentSingleTileCondition = SingleTileCondition.occupied;
     }
 }

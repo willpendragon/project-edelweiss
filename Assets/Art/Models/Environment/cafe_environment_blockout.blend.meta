@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a4f0eb993b6d6524eb08ff1730e4dd1a
+guid: 5d272442cb4d8bf42a57885bd7f2aaec
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,23 +7,33 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: floor
-    second: {fileID: 2100000, guid: 82d3b8818266ef54392cb5b806463d94, type: 2}
+      name: curtains_top_material
+    second: {fileID: 2100000, guid: b911adab62de4064faaed59f06f82cd9, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: floor.001
-    second: {fileID: 2100000, guid: bf98591880c5ff54599392d147ddb149, type: 2}
+      name: pixel_floor_material
+    second: {fileID: 2100000, guid: 0207b687fae139846890c6cd9c204d9f, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: tea_table_pixel_texture
-    second: {fileID: 2100000, guid: 0e5ff2a61481d3343af4b9d3782377a7, type: 2}
+      name: pixel_tea_table_material
+    second: {fileID: 2100000, guid: 0994081dbcf2ea64c8ad0cf7682ccf42, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: walls
-    second: {fileID: 2100000, guid: 4af9e346478f8534da2385c32b787640, type: 2}
+      name: pixel_walls_material
+    second: {fileID: 2100000, guid: 107907b4c23f3c142bec5526757cf5d2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: window_small
+    second: {fileID: 2100000, guid: 72b25b5d0c1facc478b0f2cace6d9a42, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: windows.png
+    second: {fileID: 2100000, guid: 610b4e26851ba1941b8c3eba84427435, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

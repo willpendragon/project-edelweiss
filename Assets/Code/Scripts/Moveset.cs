@@ -34,7 +34,7 @@ public class Moveset : MonoBehaviour
     }
     public void SelectCurrentPosition(GameObject selectedCurrentTile)
     {
-        if (selectedCurrentTile.GetComponent<TileController>().currentTileStatus == TileController.TileStatus.occupied)
+        /*if (selectedCurrentTile.GetComponent<TileController>().currentTileStatus == TileController.TileStatus.occupied)
         {
             Debug.Log("Tile occupied. Can't move the character here.");
         }
@@ -44,6 +44,7 @@ public class Moveset : MonoBehaviour
             selectedCurrentTile.GetComponent<TileController>().detectedUnit = this.gameObject;
             player.transform.position = player.currentPosition.transform.position;
         }
+        */
     }
     public void MeleeAttack()
     {

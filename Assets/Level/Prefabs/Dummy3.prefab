@@ -87,9 +87,17 @@ PrefabInstance:
       propertyPath: minEnemyMoveRollRange
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168284, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: m_Name
-      value: DummyEnemy Variant 3
+      value: Dummy3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168287, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7714452247050051452, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: enemyUnit

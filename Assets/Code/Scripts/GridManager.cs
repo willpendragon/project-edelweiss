@@ -129,6 +129,21 @@ public class GridManager : MonoBehaviour
     public void MoveCurrentPlayerUnit(int targetX, int targetY)
     {
         currentPlayerUnit.GetComponent<Unit>().MoveUnit(targetX, targetY);
+        TileController finalDestinationTile = GetTileControllerInstance(targetX, targetY);
+        if (currentPlayerUnit.GetComponent<Unit>().ownedTile == null)
+        {
+            currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
+            currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
+            currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+        }
+        else
+        {
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = null;
+                currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+        }
         Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
     }
     public Vector3 GetWorldPositionFromGridCoordinates(int x, int y)

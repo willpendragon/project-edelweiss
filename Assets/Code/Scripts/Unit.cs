@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -12,6 +13,8 @@ public class Unit : MonoBehaviour
     //public GridManager gridManager;
     public int startingXCoordinate;
     public int startingYCoordinate;
+    public UnitTemplate unitTemplate;
+    public TileController ownedTile;
 
     public void OnEnable()
     {
@@ -50,7 +53,8 @@ public class Unit : MonoBehaviour
                 // Update current grid coordinates
                 currentXCoordinate = tile.tileXCoordinate;
                 currentYCoordinate = tile.tileYCoordinate;
-
+                //tile.GetComponent<TileController>().detectedUnit = this.gameObject;
+                //030120240216 Removed because otherwise every tile of the movement path gets its DetectedUnit set as the moving Unit. 
                 Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
             }
         }
