@@ -15,6 +15,7 @@ public class Unit : MonoBehaviour
     public int startingYCoordinate;
     public UnitTemplate unitTemplate;
     public TileController ownedTile;
+    public float unitHealth;
 
     public void OnEnable()
     {

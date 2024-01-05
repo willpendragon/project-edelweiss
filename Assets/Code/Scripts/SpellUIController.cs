@@ -12,7 +12,7 @@ public class SpellUIController : MonoBehaviour
     void Start()
     {
         List<Spell> spells = GetCharacterSpells();
-
+        //Generates Buttons linked to each Spell.
         foreach (Spell spell in spells)
         {
             GameObject spellButtonInstance = Instantiate(spellButtonPrefab, spellMenuContainer);
@@ -24,6 +24,7 @@ public class SpellUIController : MonoBehaviour
 
     }
 
+    //Retrieves a list of Spell from the Active Character.
     public List<Spell> GetCharacterSpells()
     {
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");

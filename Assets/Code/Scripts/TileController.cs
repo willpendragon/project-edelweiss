@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using RPGCharacterAnims.Actions;
-
-
+using Unity.VisualScripting;
 
 public enum SingleTileStatus
 {
     selectionModeActive,
-    attackSelectionModeActive
+    attackSelectionModeActive,
+    attackSelectionModeWaitingForConfirmation
 }
 
 public enum SingleTileCondition
@@ -41,6 +41,7 @@ public class TileController : MonoBehaviour
     public int tileYCoordinate;
     public SingleTileStatus currentSingleTileStatus;
     public SingleTileCondition currentSingleTileCondition;
+    public GameObject targetIcon;
 
     // A* Pathfinding properties
     public int gCost;
@@ -59,6 +60,9 @@ public class TileController : MonoBehaviour
 
     public delegate Unit TileClickedAttackMode(int x, int y);
     public static event TileClickedAttackMode OnTileClickedAttackMode;
+
+    public delegate void TileConfirmedAttackMode();
+    public static event TileConfirmedAttackMode OnTileConfirmedAttackMode;
 
     [SerializeField] ParticleSystem redParticle;
     [SerializeField] ParticleSystem blueParticle;
@@ -148,12 +152,26 @@ public class TileController : MonoBehaviour
 
     public void OnMouseDown()
     {
-        Debug.Log("Clicked on Tile at Grid Coordinates: " + tileXCoordinate + ", " + tileYCoordinate);
-        OnTileClicked?.Invoke(tileXCoordinate, tileYCoordinate);
-        if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
+        //Debug.Log("Clicked on Tile at Grid Coordinates: " + tileXCoordinate + ", " + tileYCoordinate);
+        if (currentSingleTileStatus == SingleTileStatus.selectionModeActive)
+        {
+            OnTileClicked?.Invoke(tileXCoordinate, tileYCoordinate);
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
         {
             Unit targetUnit = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
-            Debug.Log("Found Unit" + targetUnit);
+            if (targetUnit != null)
+            {
+                TileController targetUnitTileController = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
+                targetUnitTileController.currentSingleTileStatus = SingleTileStatus.attackSelectionModeWaitingForConfirmation;
+                targetUnitTileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+                GameObject newTargetIcon = Instantiate(targetIcon, targetUnit.transform.localPosition + (targetUnit.transform.up * 2), Quaternion.identity);
+                Debug.Log("Set Unit" + targetUnit.gameObject.name + " as current Target");
+            }
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
+        {
+            OnTileConfirmedAttackMode();
         }
     }
 }

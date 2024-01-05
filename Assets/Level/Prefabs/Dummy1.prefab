@@ -314,6 +314,8 @@ MonoBehaviour:
   startingXCoordinate: 0
   startingYCoordinate: 0
   unitTemplate: {fileID: 0}
+  ownedTile: {fileID: 0}
+  unitHealth: 100
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0
@@ -5769,7 +5771,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5818257739549344241, guid: 26bc2984159d1de42bb4b27680704b5a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.014253423
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5818257739549344241, guid: 26bc2984159d1de42bb4b27680704b5a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5777,7 +5779,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5818257739549344241, guid: 26bc2984159d1de42bb4b27680704b5a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.36741674
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5818257739549344241, guid: 26bc2984159d1de42bb4b27680704b5a, type: 3}
       propertyPath: m_LocalRotation.w
