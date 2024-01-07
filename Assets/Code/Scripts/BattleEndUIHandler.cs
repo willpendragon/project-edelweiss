@@ -20,6 +20,8 @@ public class BattleEndUIHandler : MonoBehaviour
     {
         BattleManager.OnBattleEndResultsScreen -= DisplayBattleEndScreen;
     }
+    //At the end of the Battle, the Camera focuses on the Player Party and a
+    //UI overlay appears (using Size scaling) with the results of the Battle.
     public void DisplayBattleEndScreen(string battleEndMessage)
     {
         battleCameraPlayableDirector.Play();

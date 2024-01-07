@@ -48,7 +48,6 @@ public class GridManager : MonoBehaviour
     {
         TileController.OnTileClicked += MoveCurrentPlayerUnit;
     }
-
     private void OnDisable()
     {
         TileController.OnTileClicked -= MoveCurrentPlayerUnit;
@@ -138,11 +137,11 @@ public class GridManager : MonoBehaviour
         }
         else
         {
-                currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-                currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = null;
-                currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
-                currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
-                currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+            currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+            currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = null;
+            currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
+            currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
+            currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
         }
         Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
     }

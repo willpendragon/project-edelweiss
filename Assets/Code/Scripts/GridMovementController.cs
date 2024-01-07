@@ -7,15 +7,12 @@ using UnityEngine;
 public class GridMovementController : MonoBehaviour
 {
     public GridManager gridManager;
-    //public GameObject currentPlayerUnit;
 
     public void OnEnable()
     {
-        //TileController.OnTileClicked += MoveCurrentPlayerUnit;
     }
     public void OnDisable()
     {
-        //TileController.OnTileClicked -= MoveCurrentPlayerUnit;
     }
 
     public List<TileController> FindPath(int startX, int startY, int targetX, int targetY)
@@ -129,11 +126,4 @@ public class GridMovementController : MonoBehaviour
             return 14 * distY + 10 * (distX - distY);
         return 14 * distX + 10 * (distY - distX);
     }
-    /*
-    public void MoveCurrentPlayerUnit(Vector2 tileCoordinates)
-    {
-        currentPlayerUnit.GetComponent<PlayerUnit>().MoveUnit(tileCoordinates);
-        Debug.Log("Moving Player Unit");
-    }
-    */
 }

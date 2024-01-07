@@ -29,6 +29,7 @@ public class SpellcastingController : MonoBehaviour
     }
     public void SetTargetedUnit(Unit targetedUnit)
     {
+        //Sets the currently Targeted Enemy.
         currentTargetedUnit = targetedUnit;
     }
     public void UseCurrentSpellOnCurrentTarget()

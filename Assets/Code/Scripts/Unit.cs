@@ -7,15 +7,18 @@ public class Unit : MonoBehaviour
 {
 
     public int unitMovementLimit;
-    //public GridMovementController gridMovementController;
     public int currentXCoordinate;
     public int currentYCoordinate;
-    //public GridManager gridManager;
     public int startingXCoordinate;
     public int startingYCoordinate;
+    
     public UnitTemplate unitTemplate;
+
     public TileController ownedTile;
+
+    //Player Stats    
     public float unitHealth;
+    public int opportunityPoints;
 
     public void OnEnable()
     {

@@ -71,7 +71,6 @@ public class TileController : MonoBehaviour
     {
         currentTileAlignment = TileAlignment.neutral;
     }
-
     private void OnEnable()
     {
         Deity.OnDeityJudgment += AttackUnit;
@@ -99,45 +98,6 @@ public class TileController : MonoBehaviour
             }
         }
     }
-    /*
-    
-    public void SetTileStatus()
-    {
-        if (IsTileOccupied())
-        {
-            currentTileStatus = TileStatus.occupied;
-            if (detectedUnit.GetComponent<Player>() == true)
-            {
-                detectedUnit.GetComponent<Player>().SetUnitCurrentTile(this.gameObject.GetComponent<TileController>());
-                //Debug.Log(this.gameObject + " occupied by a friendly Unit");
-            }
-        }
-        else
-        {
-            currentTileStatus = TileStatus.free;
-            //Debug.Log(this.gameObject + " is NOT occupied by a friendly Unit");
-
-        }
-    }
-    public bool IsTileOccupied()
-    {
-        GameObject[] playerUnitsToDetect = GameObject.FindGameObjectsWithTag("Player");
-        GameObject[] assistantUnitsToDetect = GameObject.FindGameObjectsWithTag("Companion");
-        GameObject[] unitsToDetect = playerUnitsToDetect.Concat(assistantUnitsToDetect).ToArray();
-
-        foreach (var unitToDetect in unitsToDetect)
-        {
-            float distance = Vector3.Distance(this.transform.position, unitToDetect.transform.position);
-            if (distance <= proximityDistance)
-            {
-                detectedUnit = unitToDetect;
-                return true;
-            }
-        }
-        //If no GameObject has been found within proximity, the Tiles is not occupied
-        return false;
-    }
-    */
     public void ActivateRedParticle()
     {
         redParticle.Play();
