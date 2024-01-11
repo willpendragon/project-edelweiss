@@ -9,7 +9,15 @@ public class SpellUIController : MonoBehaviour
     public GameObject spellButtonPrefab;
     public Transform spellMenuContainer;
 
-    void Start()
+    public void OnEnable()
+    {
+        UnitSelectionController.OnActiveCharacterSelected += PopulateCharacterSpellsMenu;
+    }
+    public void OnDisable()
+    {
+        UnitSelectionController.OnActiveCharacterSelected += PopulateCharacterSpellsMenu;
+    }
+    void PopulateCharacterSpellsMenu()
     {
         List<Spell> spells = GetCharacterSpells();
         //Generates Buttons linked to each Spell.
@@ -18,7 +26,6 @@ public class SpellUIController : MonoBehaviour
             GameObject spellButtonInstance = Instantiate(spellButtonPrefab, spellMenuContainer);
             Button currentSpellButton = spellButtonInstance.GetComponent<Button>();
             currentSpellButton.GetComponentInChildren<Text>().text = spell.spellName;
-
             currentSpellButton.onClick.AddListener(() => spellCastingController.CastSpell(spell));
         }
 

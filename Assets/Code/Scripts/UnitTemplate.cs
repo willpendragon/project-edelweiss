@@ -6,6 +6,10 @@ using UnityEngine;
 public class UnitTemplate : ScriptableObject
 {
     public string unitName;
-    public SpriteRenderer unitSpriteRenderer;
+    public Sprite unitPortrait;
     public List<Spell> spellsList;
+    public int unitHealthPoints;
+    public int unitManaPoints;
+    public int unitOpportunityPoints;
+    public int unitShieldPoints;
 }

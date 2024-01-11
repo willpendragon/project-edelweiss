@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 
 public enum SingleTileStatus
 {
+    characterSelectionModeActive,
     selectionModeActive,
     attackSelectionModeActive,
     attackSelectionModeWaitingForConfirmation
@@ -112,6 +113,10 @@ public class TileController : MonoBehaviour
 
     public void OnMouseDown()
     {
+        if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
+        {
+            Debug.Log("Unable to Select Tile");
+        }
         //Debug.Log("Clicked on Tile at Grid Coordinates: " + tileXCoordinate + ", " + tileYCoordinate);
         if (currentSingleTileStatus == SingleTileStatus.selectionModeActive)
         {
