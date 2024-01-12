@@ -127,22 +127,27 @@ public class GridManager : MonoBehaviour
     }
     public void MoveCurrentPlayerUnit(int targetX, int targetY)
     {
+        //Add check for Current Player Unit to avoid Null Ref error if clicking on a Tile while the Active Character Unit is not set.
         currentPlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         currentPlayerUnit.GetComponent<Unit>().MoveUnit(targetX, targetY);
         TileController finalDestinationTile = GetTileControllerInstance(targetX, targetY);
-        if (currentPlayerUnit.GetComponent<Unit>().ownedTile == null)
+        /*if (currentPlayerUnit.GetComponent<Unit>().ownedTile == null)
         {
             currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
             currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
             currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
         }
         else
+        */
         {
-            currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-            currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = null;
-            currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
-            currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
-            currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+            if (finalDestinationTile.detectedUnit == null)
+            {
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = null;
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+            }
         }
         Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
     }
