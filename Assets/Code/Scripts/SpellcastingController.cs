@@ -35,7 +35,8 @@ public class SpellcastingController : MonoBehaviour
     public void UseCurrentSpellOnCurrentTarget()
     {
         //Spell damage calculation Logic
-        currentTargetedUnit.unitHealth -= currentSelectedSpell.damage;
+        currentTargetedUnit.unitHealth -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
         currentTargetedUnit.gameObject.GetComponent<Enemy>().EnemyTakingDamage.Invoke();
+        Debug.Log("Using Spell on Enemy");
     }
 }

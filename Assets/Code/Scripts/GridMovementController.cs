@@ -8,13 +8,6 @@ public class GridMovementController : MonoBehaviour
 {
     public GridManager gridManager;
 
-    public void OnEnable()
-    {
-    }
-    public void OnDisable()
-    {
-    }
-
     public List<TileController> FindPath(int startX, int startY, int targetX, int targetY)
     {
         TileController startTile = GridManager.Instance.GetTileControllerInstance(startX, startY);

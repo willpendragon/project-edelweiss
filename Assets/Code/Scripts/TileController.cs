@@ -75,15 +75,14 @@ public class TileController : MonoBehaviour
     private void OnEnable()
     {
         Deity.OnDeityJudgment += AttackUnit;
+        SwitchGridToMoveSelectionMode.OnMoveButtonPressed += SwitchTileToSelectionMode;
     }
     private void OnDisable()
     {
         Deity.OnDeityJudgment -= AttackUnit;
+        SwitchGridToMoveSelectionMode.OnMoveButtonPressed -= SwitchTileToSelectionMode;
     }
-    void Update()
-    {
-        //SetTileStatus();
-    }
+
     public void AttackUnit()
     {
         if (detectedUnit != null)
@@ -103,14 +102,12 @@ public class TileController : MonoBehaviour
     {
         redParticle.Play();
         currentTileAlignment = TileAlignment.red;
-
     }
     public void ActivateBlueParticle()
     {
         blueParticle.Play();
         currentTileAlignment = TileAlignment.blue;
     }
-
     public void OnMouseDown()
     {
         if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
@@ -138,5 +135,9 @@ public class TileController : MonoBehaviour
         {
             OnTileConfirmedAttackMode();
         }
+    }
+    public void SwitchTileToSelectionMode()
+    {
+        currentSingleTileStatus = SingleTileStatus.selectionModeActive;
     }
 }
