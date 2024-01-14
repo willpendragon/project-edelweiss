@@ -10,7 +10,8 @@ public enum SingleTileStatus
     characterSelectionModeActive,
     selectionModeActive,
     attackSelectionModeActive,
-    attackSelectionModeWaitingForConfirmation
+    attackSelectionModeWaitingForConfirmation,
+    attackSelectionModeConfirmedTarget
 }
 
 public enum SingleTileCondition

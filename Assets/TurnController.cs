@@ -25,7 +25,7 @@ public class TurnController : MonoBehaviour
     {
         for (int i = 0; i < playerUnitsOnBattlefield.Length; i++)
         {
-            if (playerUnitsOnBattlefield[i].GetComponent<Unit>().opportunityPoints >= 1)
+            if (playerUnitsOnBattlefield[i].GetComponent<Unit>().unitOpportunityPoints >= 1)
             {
                 Debug.Log("Player Turn is still active");
             }

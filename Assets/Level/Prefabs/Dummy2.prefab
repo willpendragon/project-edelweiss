@@ -12,6 +12,10 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: unitTemplate
+      value: 
+      objectReference: {fileID: 11400000, guid: e84592f8d54933c4fabf8768acab6403, type: 2}
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: positionIndex
       value: 2
       objectReference: {fileID: 0}

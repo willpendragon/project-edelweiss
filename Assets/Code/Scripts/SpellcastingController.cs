@@ -34,9 +34,37 @@ public class SpellcastingController : MonoBehaviour
     }
     public void UseCurrentSpellOnCurrentTarget()
     {
-        //Spell damage calculation Logic
-        currentTargetedUnit.unitHealth -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
-        currentTargetedUnit.gameObject.GetComponent<Enemy>().EnemyTakingDamage.Invoke();
-        Debug.Log("Using Spell on Enemy");
+        if (CheckActivePlayerUnitOpportunityPoints())
+        {
+            //Spell damage calculation logic
+            currentTargetedUnit.unitHealthPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
+            currentTargetedUnit.gameObject.GetComponent<Enemy>().EnemyTakingDamage.Invoke();
+            SpendPlayerManaPoints();
+            SpendPlayerUnitOpportunityPoints();
+            Debug.Log("Using Spell on Enemy");
+        }
+        else
+        {
+            Debug.Log("Active Player Unit does not have enough Opportunity Points");
+        }
+    }
+    public bool CheckActivePlayerUnitOpportunityPoints()
+    {
+        if (GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public void SpendPlayerManaPoints()
+    {
+        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitManaPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.manaPointsCost;
+    }
+    public void SpendPlayerUnitOpportunityPoints()
+    {
+        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.opportunityPointsCost;
     }
 }

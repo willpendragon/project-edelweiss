@@ -9,10 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afbece5401784534d8edde489d315add, type: 3}
-  m_Name: Spell 1
+  m_Script: {fileID: 11500000, guid: 10f59b06a46d8d842a35a787e59b306d, type: 3}
+  m_Name: UnitTemplate_DummyEnemy1
   m_EditorClassIdentifier: 
-  spellName: Spell 1
-  damage: 5
-  manaPointsCost: 3
-  opportunityPointsCost: 2
+  unitName: Dummy Enemy 1
+  unitPortrait: {fileID: 0}
+  spellsList: []
+  unitHealthPoints: 10
+  unitManaPoints: 10
+  unitOpportunityPoints: 10
+  unitShieldPoints: 10

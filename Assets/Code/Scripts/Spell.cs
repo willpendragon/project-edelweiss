@@ -7,6 +7,7 @@ public class Spell : ScriptableObject
 {
     public string spellName;
     public int damage;
-    public int manaCost;
+    public int manaPointsCost;
+    public int opportunityPointsCost;
     // Add more spell properties as needed
 }

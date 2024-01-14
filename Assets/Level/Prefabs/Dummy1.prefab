@@ -313,9 +313,12 @@ MonoBehaviour:
   currentYCoordinate: 0
   startingXCoordinate: 0
   startingYCoordinate: 0
-  unitTemplate: {fileID: 0}
+  unitTemplate: {fileID: 11400000, guid: e84592f8d54933c4fabf8768acab6403, type: 2}
   ownedTile: {fileID: 0}
-  unitHealth: 100
+  unitHealthPoints: 0
+  unitOpportunityPoints: 0
+  unitManaPoints: 0
+  unitShieldPoints: 0
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

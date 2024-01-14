@@ -30,10 +30,10 @@ public class PlayerProfileController : MonoBehaviour
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
         activeCharacterName.text = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitName;
-        activeCharacterHealthPoints.text = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints.ToString();
-        activeCharacterManaPoints.text = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitManaPoints.ToString();
-        activeCharacterShieldPoints.text = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitShieldPoints.ToString();
-        activeCharacterOpportunityPoints.text = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitOpportunityPoints.ToString();
+        activeCharacterHealthPoints.text = activePlayerUnit.GetComponent<Unit>().unitHealthPoints.ToString();
+        activeCharacterManaPoints.text = activePlayerUnit.GetComponent<Unit>().unitManaPoints.ToString();
+        activeCharacterShieldPoints.text = activePlayerUnit.GetComponent<Unit>().unitShieldPoints.ToString();
+        activeCharacterOpportunityPoints.text = activePlayerUnit.GetComponent<Unit>().unitOpportunityPoints.ToString();
     }
 
     void ResetPlayerProfile()

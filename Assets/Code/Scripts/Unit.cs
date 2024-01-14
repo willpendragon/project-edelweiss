@@ -11,14 +11,16 @@ public class Unit : MonoBehaviour
     public int currentYCoordinate;
     public int startingXCoordinate;
     public int startingYCoordinate;
-    
+
     public UnitTemplate unitTemplate;
 
     public TileController ownedTile;
 
     //Player Stats    
-    public float unitHealth;
-    public int opportunityPoints;
+    public float unitHealthPoints;
+    public int unitOpportunityPoints;
+    public float unitManaPoints;
+    public float unitShieldPoints;
 
     public void OnEnable()
     {
@@ -27,6 +29,14 @@ public class Unit : MonoBehaviour
     public void OnDisable()
     {
         GridManager.OnSetUnitInitialPositionOnGrid -= SetUnitInitialPositionOnGrid;
+    }
+
+    public void Start()
+    {
+        unitHealthPoints = unitTemplate.unitHealthPoints;
+        unitManaPoints = unitTemplate.unitManaPoints;
+        unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
+        unitShieldPoints = unitTemplate.unitShieldPoints;
     }
 
     public void SetUnitInitialPositionOnGrid()

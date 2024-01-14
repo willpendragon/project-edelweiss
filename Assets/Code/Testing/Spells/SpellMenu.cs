@@ -35,7 +35,7 @@ public class SpellMenu : MonoBehaviour
     void CastSpell(Spell spell)
     {
         // Implement spell casting logic here
-        Debug.Log("Casting " + spell.spellName + " with damage: " + spell.damage + " and mana cost: " + spell.manaCost);
+        Debug.Log("Casting " + spell.spellName + " with damage: " + spell.damage + " and mana cost: " + spell.manaPointsCost);
         // Execute your spell logic, e.g., dealing damage to enemies, consuming mana, etc.
     }
 }
