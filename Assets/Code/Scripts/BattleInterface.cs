@@ -24,6 +24,7 @@ public class BattleInterface : MonoBehaviour
         Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
         Deity.OnDeityFieldEffectActivation += ShowFieldEffectIcon;
+        SpellcastingController.OnCastedSpellTextNotification += SetSpellNameOnNotificationPanel;
     }
     private void OnDisable()
     {
@@ -32,6 +33,7 @@ public class BattleInterface : MonoBehaviour
         Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
         Deity.OnDeityFieldEffectActivation -= ShowFieldEffectIcon;
+        SpellcastingController.OnCastedSpellTextNotification -= SetSpellNameOnNotificationPanel;
     }
     private void Start()
     {
@@ -40,11 +42,17 @@ public class BattleInterface : MonoBehaviour
         player.UpdateManaPointsDisplay();
         Debug.Log("Test Moveset Bug");
     }
-    public void SetMovePanelName(string currentMoveName)
+    /*public void SetMovePanelName(string currentMoveName)
     {
         moveName.text = currentMoveName;
         moveNamePanel.color = new Color(1, 1, 1, 1);
         StartCoroutine("ResetMovePanel");
+    }
+    */
+
+    public void SetSpellNameOnNotificationPanel(string spellName)
+    {
+        battlefieldTextNotifications.text = spellName;
     }
 
     public void SetDeityJudgmentCounter(int judgmentTurnLimitNumber)

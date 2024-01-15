@@ -42717,8 +42717,8 @@ GameObject:
   - component: {fileID: 1680276141}
   - component: {fileID: 1680276142}
   m_Layer: 5
-  m_Name: ActiveUnitProfile
-  m_TagString: Untagged
+  m_Name: ActiveCharacterUnitProfile
+  m_TagString: ActiveCharacterUnitProfile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42788,6 +42788,10 @@ MonoBehaviour:
   activeCharacterManaPoints: {fileID: 75973537}
   activeCharacterShieldPoints: {fileID: 915701008}
   activeCharacterOpportunityPoints: {fileID: 474985408}
+  activeCharacterHealthPointsSlider: {fileID: 1213462840}
+  activeCharacterManaPointsSlider: {fileID: 774860702}
+  activeCharacterShieldPointsSlider: {fileID: 975032998}
+  activeCharacterOpportunityPointsSlider: {fileID: 1685454693}
 --- !u!1 &1685454691
 GameObject:
   m_ObjectHideFlags: 0

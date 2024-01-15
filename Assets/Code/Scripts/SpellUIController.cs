@@ -34,7 +34,7 @@ public class SpellUIController : MonoBehaviour
     public void ResetCharacterSpellsMenu()
     {
         GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
-        foreach (var  playerUISpellButton in playerUISpellButtons)
+        foreach (var playerUISpellButton in playerUISpellButtons)
         {
             Destroy(playerUISpellButton);
         }

@@ -6,6 +6,14 @@ public class SpellcastingController : MonoBehaviour
 {
     public delegate void CastingSpell();
     public static event CastingSpell OnCastingSpell;
+
+    public delegate void CastedSpell();
+    public static event CastedSpell OnCastedSpell;
+
+    public delegate void CastedSpellTextNotification(string spellName);
+    public static event CastedSpellTextNotification OnCastedSpellTextNotification;
+
+
     public Unit currentTargetedUnit;
     public Spell currentSelectedSpell;
     public void OnEnable()
@@ -41,6 +49,8 @@ public class SpellcastingController : MonoBehaviour
             currentTargetedUnit.gameObject.GetComponent<Enemy>().EnemyTakingDamage.Invoke();
             SpendPlayerManaPoints();
             SpendPlayerUnitOpportunityPoints();
+            OnCastedSpell();
+            OnCastedSpellTextNotification(GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.name);
             Debug.Log("Using Spell on Enemy");
         }
         else

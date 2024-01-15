@@ -64,7 +64,7 @@ public class Moveset : MonoBehaviour
     }
     public void PerformMeleeAttack()
     {
-        battleInterface.SetMovePanelName("Melee Attack");
+        //battleInterface.SetMovePanelName("Melee Attack");
         player.currentTarget.GetComponent<Enemy>().TakeDamage(player.meleeAttackPower);
         opportunityPoints--;
         CheckOpportunityPoints();
@@ -82,7 +82,7 @@ public class Moveset : MonoBehaviour
         {
             if (player.manaPoints > 0)
             {
-                battleInterface.SetMovePanelName("Red Attack");
+                //battleInterface.SetMovePanelName("Red Attack");
                 player.currentAttackAlignmentType = attackAlignmentType.red;
                 player.currentTarget.GetComponent<Enemy>().TakeDamage(player.attackPower);
                 //currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
@@ -109,7 +109,7 @@ public class Moveset : MonoBehaviour
         {
             if (player.manaPoints > 0)
             {
-                battleInterface.SetMovePanelName("Blue Attack");
+                //battleInterface.SetMovePanelName("Blue Attack");
                 player.currentAttackAlignmentType = attackAlignmentType.blue;
                 player.currentTarget.GetComponent<Enemy>().TakeDamage(player.attackPower + 10);
                 player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
@@ -131,7 +131,7 @@ public class Moveset : MonoBehaviour
 
     public void Protection()
     {
-        battleInterface.SetMovePanelName("Protection");
+        //battleInterface.SetMovePanelName("Protection");
         if (player.battleManager.currentTurnOrder == TurnOrder.playerTurn)
         {
             player.unitShield += protectionShieldIncreaseValue;

@@ -13,19 +13,29 @@ public class PlayerProfileController : MonoBehaviour
     public TextMeshProUGUI activeCharacterManaPoints;
     public TextMeshProUGUI activeCharacterShieldPoints;
     public TextMeshProUGUI activeCharacterOpportunityPoints;
+    public Slider activeCharacterHealthPointsSlider;
+    public Slider activeCharacterManaPointsSlider;
+    public Slider activeCharacterShieldPointsSlider;
+    public Slider activeCharacterOpportunityPointsSlider;
+
     public void OnEnable()
     {
-        UnitSelectionController.OnActiveCharacterSelected += PopulatePlayerProfile;
+        UnitSelectionController.OnActiveCharacterSelected += UpdatePlayerProfile;
+        UnitSelectionController.OnActiveCharacterSelected += InitializePlayerProfileSliders;
         UnitSelectionController.OnActiveCharacterDeselected += ResetPlayerProfile;
-
+        SpellcastingController.OnCastedSpell += UpdatePlayerProfile;
+        SpellcastingController.OnCastedSpell += UpdatePlayerProfileSliders;
     }
     public void OnDisable()
     {
-        UnitSelectionController.OnActiveCharacterSelected -= PopulatePlayerProfile;
+        UnitSelectionController.OnActiveCharacterSelected -= UpdatePlayerProfile;
+        UnitSelectionController.OnActiveCharacterSelected -= InitializePlayerProfileSliders;
         UnitSelectionController.OnActiveCharacterDeselected -= ResetPlayerProfile;
+        SpellcastingController.OnCastedSpell -= UpdatePlayerProfile;
+        SpellcastingController.OnCastedSpell -= UpdatePlayerProfileSliders;
 
     }
-    void PopulatePlayerProfile()
+    public void UpdatePlayerProfile()
     {
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
@@ -34,6 +44,28 @@ public class PlayerProfileController : MonoBehaviour
         activeCharacterManaPoints.text = activePlayerUnit.GetComponent<Unit>().unitManaPoints.ToString();
         activeCharacterShieldPoints.text = activePlayerUnit.GetComponent<Unit>().unitShieldPoints.ToString();
         activeCharacterOpportunityPoints.text = activePlayerUnit.GetComponent<Unit>().unitOpportunityPoints.ToString();
+    }
+
+    public void InitializePlayerProfileSliders()
+    {
+        GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        activeCharacterHealthPointsSlider.maxValue = activePlayerUnit.GetComponent<Unit>().unitHealthPoints;
+        activeCharacterManaPointsSlider.maxValue = activePlayerUnit.GetComponent<Unit>().unitManaPoints;
+        activeCharacterShieldPointsSlider.maxValue = activePlayerUnit.GetComponent<Unit>().unitShieldPoints;
+        activeCharacterOpportunityPointsSlider.maxValue = activePlayerUnit.GetComponent<Unit>().unitOpportunityPoints;
+        activeCharacterHealthPointsSlider.value = activePlayerUnit.GetComponent<Unit>().unitHealthPoints;
+        activeCharacterManaPointsSlider.value = activePlayerUnit.GetComponent<Unit>().unitManaPoints;
+        activeCharacterShieldPointsSlider.value = activePlayerUnit.GetComponent<Unit>().unitShieldPoints;
+        activeCharacterOpportunityPointsSlider.value = activePlayerUnit.GetComponent<Unit>().unitOpportunityPoints;
+    }
+
+    public void UpdatePlayerProfileSliders()
+    {
+        GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        activeCharacterHealthPointsSlider.value = activePlayerUnit.GetComponent<Unit>().unitHealthPoints;
+        activeCharacterManaPointsSlider.value = activePlayerUnit.GetComponent<Unit>().unitManaPoints;
+        activeCharacterShieldPointsSlider.value = activePlayerUnit.GetComponent<Unit>().unitShieldPoints;
+        activeCharacterOpportunityPointsSlider.value = activePlayerUnit.GetComponent<Unit>().unitOpportunityPoints;
     }
 
     void ResetPlayerProfile()
