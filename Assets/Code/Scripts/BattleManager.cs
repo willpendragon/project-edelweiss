@@ -150,6 +150,7 @@ public class BattleManager : MonoBehaviour
     }
     public void PassTurnToEnemies()
     {
+        //DEPRECATED
         //Hands the turn to the Enemies.
         PlayerTurnEnds.Invoke();
         currentTurnOrder = TurnOrder.enemyTurn;

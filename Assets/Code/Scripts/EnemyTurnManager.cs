@@ -12,6 +12,17 @@ public class EnemyTurnManager : MonoBehaviour
     public delegate void DeityTurn();
     public static event DeityTurn OnDeityTurn;
     public GameObject deity;
+
+    public void OnEnable()
+    {
+        TurnController.OnEnemyTurnSwap += EnemyTurnSequence;
+    }
+
+    public void OnDisable()
+    {
+        TurnController.OnEnemyTurnSwap -= EnemyTurnSequence;
+    }
+
     public void Start()
     {
         AddEnemiesToQueue();
@@ -66,6 +77,7 @@ public class EnemyTurnManager : MonoBehaviour
         {
             battleManager.PassTurnToPlayer();
             Debug.Log("No Deity on the battlefield. Passing turn to the Player");
+            //Reenable Player UI. Replenish Player Opportunity Points.
         }
     }
 }

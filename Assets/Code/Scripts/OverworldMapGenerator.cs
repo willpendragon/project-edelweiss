@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OverworldMapGenerator : MonoBehaviour
 {
@@ -16,7 +17,8 @@ public class OverworldMapGenerator : MonoBehaviour
             mapNode.GetComponent<EnemySelection>().EnemyCoordinates = level.UnitCoordinates;
             mapNode.GetComponent<EnemySelection>().levelData = level;
             //Add Offset
-            Instantiate(mapNode, mapNodeTransform);
+            Vector3 mapNodePosition = mapNodeTransform.position;
+            Instantiate(mapNode, mapNodePosition, Quaternion.identity);
         }
     }
 }

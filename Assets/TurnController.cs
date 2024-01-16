@@ -13,6 +13,10 @@ public class TurnController : MonoBehaviour
         deityTurn
 
     }
+    public delegate void EnemyTurn(string enemyTurn);
+    public static event EnemyTurn OnEnemyTurn;
+    public delegate void EnemyTurnSwap();
+    public static event EnemyTurnSwap OnEnemyTurnSwap;
 
     public Turn currentTurn;
     public GameObject[] playerUnitsOnBattlefield;
@@ -36,6 +40,9 @@ public class TurnController : MonoBehaviour
     {
         if (playerUnitsOnBattlefield.All(player => player.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting))
         {
+            //Disable Player UI
+            OnEnemyTurn("Enemy Turn");
+            OnEnemyTurnSwap();
             Debug.Log("Player Turn is over. Hand over turn to the Enemy Party");
         }
     }
