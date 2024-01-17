@@ -26,10 +26,12 @@ public class TurnController : MonoBehaviour
     public void OnEnable()
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatus;
+        Enemy.OnCheckPlayer += PlayerGameOverCheck;
     }
     public void OnDisable()
     {
         UnitSelectionController.OnUnitWaiting -= CheckPlayerUnitsStatus;
+        Enemy.OnCheckPlayer -= PlayerGameOverCheck;
     }
     void Start()
     {
@@ -44,6 +46,24 @@ public class TurnController : MonoBehaviour
             OnEnemyTurn("Enemy Turn");
             OnEnemyTurnSwap();
             Debug.Log("Player Turn is over. Hand over turn to the Enemy Party");
+        }
+    }
+
+    public void PlayerGameOverCheck()
+    {
+        if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Player Party was defeated");
+            //Activate Game Over UI
+            //Active Game Over Flow
+        }
+    }
+    public void RestorePlayerUnitsOpportunityPoints()
+    {
+        foreach (var playerUnit in playerUnitsOnBattlefield)
+        {
+            Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
+            playerUnitComponent.unitOpportunityPoints = playerUnit.GetComponent<UnitTemplate>().unitOpportunityPoints;
         }
     }
     /*

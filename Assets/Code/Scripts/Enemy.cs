@@ -4,6 +4,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
 using static Enemy;
+using UnityEditor.SearchService;
+using System.Linq;
+using static GridTargetingController;
 
 public class Enemy : MonoBehaviour
 {
@@ -99,20 +102,20 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(1);
         receivedDamageCounter.text = "";
     }
-    public void Attack()
+    public void Attack(Unit targetUnit)
     {
         if (this.gameObject.tag != "DeadEnemy")
         {
-            const float targetUnitReductionFactor = 0.05f;
-            float damageReductionFactor = (1.0f  - (player.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
-            float reducedDamage = attackPower * damageReductionFactor;
-            player.healthPoints -= (reducedDamage);
-            player.UpdatePlayerHealthDisplay();
-            player.PlayHurtAnimation();
-            attackVFX.transform.position = player.GetComponent<Player>().transform.position;
-            //Rework to spanw on the Player's tile position
+            //const float targetUnitReductionFactor = 0.05f;
+            //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
+            float reducedDamage = attackPower; //* damageReductionFactor//
+            targetUnit.unitHealthPoints -= (reducedDamage);
+            //targetUnit.UpdatePlayerHealthDisplay();
+            //targetUnit.PlayHurtAnimation();
+            attackVFX.transform.position = targetUnit.transform.position;
+            //Rework for VFX to spawn directly on the Player's tile position
             attackVFX.Play();
-            EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
+            //EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
             OnCheckPlayer();
             Debug.Log("Enemy Attacking");
         }
@@ -121,21 +124,23 @@ public class Enemy : MonoBehaviour
     {
         if (this.gameObject.tag != "DeadEnemy")
         {
-            player.GetComponent<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
-            player.GetComponent<UnitStatusController>().UnitStun.Invoke();
-            player.PlayHurtAnimation();
+            /*targetUnit.GetComponent<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
+            targetUnit.GetComponent<UnitStatusController>().UnitStun.Invoke();
+            targetUnit.PlayHurtAnimation();
             attackVFX.transform.position = player.transform.position;
             attackVFX.Play();
+            */
             OnCheckPlayer();
         }
     }
 
     public void EnemyTurnEvents()
     {
+        Unit targetUnit = SelectTargetUnit();
         //Decide the next move based on the battlefield situation and character attitude
         if (EnemyMoveRoll() <= 6)
         {
-            Attack();
+            Attack(targetUnit);
             Debug.Log("Enemy Attack Roll");
         }
         else if (EnemyMoveRoll() <= 12)
@@ -157,5 +162,16 @@ public class Enemy : MonoBehaviour
         Debug.Log("Rolling Enemy move");
         int enemyMoveRoll = Random.Range(minEnemyMoveRollRange, maxEnemyMoveRollRange);
         return enemyMoveRoll;
+    }
+    public Unit SelectTargetUnit()
+    {
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+
+        Unit unitWithHighestHP = playerUnitsOnBattlefield
+        .Select(go => go.GetComponent<Unit>())
+        .Where(unit => unit != null)
+        .OrderByDescending(unit => unit.unitHealthPoints)
+        .FirstOrDefault();
+        return unitWithHighestHP;
     }
 }

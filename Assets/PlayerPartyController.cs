@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class PlayerPartyController : MonoBehaviour
 {
+    public GameObject[] playerUnitsOnBattlefield;
     // Start is called before the first frame update
     void Start()
     {
-        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Player");
+        playerUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Player");
         foreach (var playerUnit in playerUnitsOnBattlefield)
         {
             if (playerUnit.GetComponent<Unit>() != null)
@@ -17,5 +18,4 @@ public class PlayerPartyController : MonoBehaviour
             }
         }
     }
-
 }

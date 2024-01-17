@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
+    public enum UnitLifeCondition
+    {
+        unitDead,
+        unitAlive
+    }
 
     public int unitMovementLimit;
     public int currentXCoordinate;
@@ -22,6 +27,8 @@ public class Unit : MonoBehaviour
     public float unitManaPoints;
     public float unitShieldPoints;
 
+    public UnitLifeCondition currentUnitLifeCondition;
+
     public void OnEnable()
     {
         GridManager.OnSetUnitInitialPositionOnGrid += SetUnitInitialPositionOnGrid;
@@ -37,6 +44,7 @@ public class Unit : MonoBehaviour
         unitManaPoints = unitTemplate.unitManaPoints;
         unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
         unitShieldPoints = unitTemplate.unitShieldPoints;
+        currentUnitLifeCondition = UnitLifeCondition.unitAlive;
     }
 
     public void SetUnitInitialPositionOnGrid()

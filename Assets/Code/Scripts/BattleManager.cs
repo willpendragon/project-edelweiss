@@ -20,19 +20,6 @@ public enum FieldEffectStatus
 public class BattleManager : MonoBehaviour
 {
     public Player player;
-    /*
-     * public GameObject enemyOne;
-     * public GameObject enemyTwo;
-     * public GameObject enemyThree;
-     * public GameObject enemyFour;
-     * public GameObject enemyFive;
-     * [SerializeField] Transform enemyOneSpot;
-     * [SerializeField] Transform enemyTwoSpot;
-     * [SerializeField] Transform enemyThreeSpot;
-     * [SerializeField] Transform enemyFourSpot;
-     * [SerializeField] Transform enemyFiveSpot;
-     * [SerializeField] Image battleIsOverScreen;
-    */
     public GameObject battleBeginsScreen;
     [SerializeField] float enemyTurnDuration;
     [SerializeField] BattleInterface battleInterface;
@@ -91,13 +78,13 @@ public class BattleManager : MonoBehaviour
     public void OnEnable()
     {
         Moveset.OnPlayerTurnIsOver += PassTurnToEnemies;
-        Enemy.OnCheckPlayer += CheckPlayer;
+        /*Enemy.OnCheckPlayer += CheckPlayer;*/
         Enemy.OnCheckEnemiesOnBattlefield += CheckEnemies;
     }
     public void OnDisable()
     {
         Moveset.OnPlayerTurnIsOver -= PassTurnToEnemies;
-        Enemy.OnCheckPlayer -= CheckPlayer;
+        /*Enemy.OnCheckPlayer -= CheckPlayer;*/
         Enemy.OnCheckEnemiesOnBattlefield -= CheckEnemies;
     }
     public void SpawnEnemies()
