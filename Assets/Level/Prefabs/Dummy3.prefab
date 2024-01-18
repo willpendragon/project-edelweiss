@@ -14,7 +14,7 @@ PrefabInstance:
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitTemplate
       value: 
-      objectReference: {fileID: 11400000, guid: e84592f8d54933c4fabf8768acab6403, type: 2}
+      objectReference: {fileID: 11400000, guid: d58a773ea7748e54ba1b4b49570112e2, type: 2}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: positionIndex
       value: 1
@@ -76,6 +76,10 @@ PrefabInstance:
       value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: attackVFXAnimator
+      value: 
+      objectReference: {fileID: 2579693216120635807, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: startingXCoordinate
       value: 1
       objectReference: {fileID: 0}
@@ -94,6 +98,30 @@ PrefabInstance:
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: minEnemyMoveRollRange
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: EnemyTakingDamage.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: EnemyTakingDamage.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: EnemyTakingDamage.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4680147610183204181}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: EnemyTakingDamage.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetTrigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: EnemyTakingDamage.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Animator, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: EnemyTakingDamage.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: enemyHurt
       objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168284, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: m_Enabled
@@ -117,6 +145,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+--- !u!95 &4680147610183204181 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8412792004116243812, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+  m_PrefabInstance: {fileID: 3761355290424154161}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8194179579621356911 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}

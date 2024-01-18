@@ -53,6 +53,9 @@ public class Deity : MonoBehaviour
     public delegate void DeityFieldEffectActivation();
     public static event DeityFieldEffectActivation OnDeityFieldEffectActivation;
 
+    public delegate void PlayerTurn();
+    public static event PlayerTurn OnPlayerTurn;
+
     private void OnEnable()
     {
         EnemyTurnManager.OnDeityTurn += DeityBehaviour;
@@ -190,7 +193,7 @@ public class Deity : MonoBehaviour
         judgmentTurnLimit--;
         OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
         yield return new WaitForSeconds(1f);
-        battleManager.PassTurnToPlayer();
+        OnPlayerTurn();
     }
 
     public void ApplyJudgmentAttackDamage()

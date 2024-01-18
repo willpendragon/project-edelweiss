@@ -5,12 +5,16 @@ using System.Linq;
 
 public class EnemyTurnManager : MonoBehaviour
 {
-    public List<Enemy> enemiesInQueue;
+    public List<EnemyAgent> enemiesInQueue;
     public int currentEnemyTurnIndex;
     public BattleManager battleManager;
     [SerializeField] float singleEnemyturnDuration;
     public delegate void DeityTurn();
     public static event DeityTurn OnDeityTurn;
+
+    public delegate void PlayerTurn();
+    public static event PlayerTurn OnPlayerTurn;
+    
     public GameObject deity;
 
     public void OnEnable()
@@ -35,11 +39,11 @@ public class EnemyTurnManager : MonoBehaviour
     public void AddEnemiesToQueue()
     {
         GameObject[] enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
-        enemiesInQueue = new List<Enemy>();
+        enemiesInQueue = new List<EnemyAgent>();
         //Convert the array of Enemy GameObjects to a List<Enemy>
         foreach (GameObject enemyGameObject in enemiesOnBattlefield)
         {
-            Enemy enemyComponent = enemyGameObject.GetComponent<Enemy>();
+            EnemyAgent enemyComponent = enemyGameObject.GetComponent<EnemyAgent>();
             if (enemyComponent != null)
             {
                 enemiesInQueue.Add(enemyComponent);
@@ -60,7 +64,7 @@ public class EnemyTurnManager : MonoBehaviour
     {
         while (currentEnemyTurnIndex < enemiesInQueue.Count)
         {
-            Enemy currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
+            EnemyAgent currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
             Debug.Log("Current Turn: " + currentEnemy.name);
             currentEnemy.EnemyTurnEvents();
             //Add the logic for the Enemy's turn here
@@ -75,7 +79,7 @@ public class EnemyTurnManager : MonoBehaviour
         }
         else if (deity == null)
         {
-            battleManager.PassTurnToPlayer();
+            OnPlayerTurn();
             Debug.Log("No Deity on the battlefield. Passing turn to the Player");
             //Reenable Player UI. Replenish Player Opportunity Points.
         }

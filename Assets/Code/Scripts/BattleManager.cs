@@ -79,13 +79,13 @@ public class BattleManager : MonoBehaviour
     {
         Moveset.OnPlayerTurnIsOver += PassTurnToEnemies;
         /*Enemy.OnCheckPlayer += CheckPlayer;*/
-        Enemy.OnCheckEnemiesOnBattlefield += CheckEnemies;
+        EnemyAgent.OnCheckEnemiesOnBattlefield += CheckEnemies;
     }
     public void OnDisable()
     {
         Moveset.OnPlayerTurnIsOver -= PassTurnToEnemies;
         /*Enemy.OnCheckPlayer -= CheckPlayer;*/
-        Enemy.OnCheckEnemiesOnBattlefield -= CheckEnemies;
+        EnemyAgent.OnCheckEnemiesOnBattlefield -= CheckEnemies;
     }
     public void SpawnEnemies()
     {
@@ -159,7 +159,7 @@ public class BattleManager : MonoBehaviour
     {
         foreach (GameObject enemy in enemiesOnBattlefield)
         {
-            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            EnemyAgent enemyScript = enemy.GetComponent<EnemyAgent>();
 
             if (enemyScript != null && enemyScript.opportunity > 0)
             {
@@ -179,7 +179,7 @@ public class BattleManager : MonoBehaviour
     {
         foreach (GameObject enemy in enemiesOnBattlefield)
         {
-            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            EnemyAgent enemyScript = enemy.GetComponent<EnemyAgent>();
             enemyScript.opportunity = 1;
             enemyScript.UpdateOpportunityDisplay();
         }

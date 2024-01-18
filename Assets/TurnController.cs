@@ -26,12 +26,16 @@ public class TurnController : MonoBehaviour
     public void OnEnable()
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatus;
-        Enemy.OnCheckPlayer += PlayerGameOverCheck;
+        EnemyAgent.OnCheckPlayer += PlayerGameOverCheck;
+        EnemyTurnManager.OnPlayerTurn += RestorePlayerUnitsOpportunityPoints;
+        Deity.OnPlayerTurn += RestorePlayerUnitsOpportunityPoints;
     }
     public void OnDisable()
     {
         UnitSelectionController.OnUnitWaiting -= CheckPlayerUnitsStatus;
-        Enemy.OnCheckPlayer -= PlayerGameOverCheck;
+        EnemyAgent.OnCheckPlayer -= PlayerGameOverCheck;
+        EnemyTurnManager.OnPlayerTurn -= RestorePlayerUnitsOpportunityPoints;
+        Deity.OnPlayerTurn -= RestorePlayerUnitsOpportunityPoints;
     }
     void Start()
     {
@@ -60,10 +64,12 @@ public class TurnController : MonoBehaviour
     }
     public void RestorePlayerUnitsOpportunityPoints()
     {
+        Debug.Log("Restoring Player Opportunity");
         foreach (var playerUnit in playerUnitsOnBattlefield)
         {
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
-            playerUnitComponent.unitOpportunityPoints = playerUnit.GetComponent<UnitTemplate>().unitOpportunityPoints;
+            playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
+            playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
         }
     }
     /*

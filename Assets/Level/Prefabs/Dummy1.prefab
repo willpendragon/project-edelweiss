@@ -230,7 +230,7 @@ MonoBehaviour:
   maxEnemyMoveRollRange: 20
   enemyMoveElapsingTime: 2
   enemyAnimator: {fileID: 8412792004116243812}
-  attackVFX: {fileID: 7409700727255174258}
+  attackVFXAnimator: {fileID: 2579693216120635807, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
   enemyOriginalPosition: {x: 0, y: 0, z: 0}
   healthPointsCounter: {fileID: 4714583909786951188}
   opportunityCounter: {fileID: 7140207064783089265}
@@ -258,18 +258,6 @@ MonoBehaviour:
   EnemyTakingDamage:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5009294011632168283}
-        m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
-        m_MethodName: EnemyTakesDamage
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 8412792004116243812}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: SetTrigger
@@ -313,12 +301,13 @@ MonoBehaviour:
   currentYCoordinate: 0
   startingXCoordinate: 0
   startingYCoordinate: 0
-  unitTemplate: {fileID: 11400000, guid: e84592f8d54933c4fabf8768acab6403, type: 2}
+  unitTemplate: {fileID: 11400000, guid: d58a773ea7748e54ba1b4b49570112e2, type: 2}
   ownedTile: {fileID: 0}
   unitHealthPoints: 0
   unitOpportunityPoints: 0
   unitManaPoints: 0
   unitShieldPoints: 0
+  currentUnitLifeCondition: 0
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

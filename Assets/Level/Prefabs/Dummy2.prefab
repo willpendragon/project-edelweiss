@@ -14,7 +14,7 @@ PrefabInstance:
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitTemplate
       value: 
-      objectReference: {fileID: 11400000, guid: e84592f8d54933c4fabf8768acab6403, type: 2}
+      objectReference: {fileID: 11400000, guid: d58a773ea7748e54ba1b4b49570112e2, type: 2}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: positionIndex
       value: 2
@@ -79,6 +79,10 @@ PrefabInstance:
       propertyPath: enemyCoinsReward
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: attackVFXAnimator
+      value: 
+      objectReference: {fileID: 2579693216120635807, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: startingXCoordinate
       value: 1

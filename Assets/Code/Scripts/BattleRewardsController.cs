@@ -10,14 +10,14 @@ public class BattleRewardsController : MonoBehaviour
 
     public void OnEnable()
     {
-        Enemy.OnCoinsReward += AddCoinsRewardToCoinsRewardPool;
-        Enemy.OnExperienceReward += AddExperienceRewardToExperienceRewardPool;
+        EnemyAgent.OnCoinsReward += AddCoinsRewardToCoinsRewardPool;
+        EnemyAgent.OnExperienceReward += AddExperienceRewardToExperienceRewardPool;
         BattleManager.OnBattleEnd += ApplyRewardsToPlayer;
     }
     public void OnDisable()
     {
-        Enemy.OnCoinsReward -= AddCoinsRewardToCoinsRewardPool;
-        Enemy.OnExperienceReward -= AddExperienceRewardToExperienceRewardPool;
+        EnemyAgent.OnCoinsReward -= AddCoinsRewardToCoinsRewardPool;
+        EnemyAgent.OnExperienceReward -= AddExperienceRewardToExperienceRewardPool;
         BattleManager.OnBattleEnd -= ApplyRewardsToPlayer;
     }
 

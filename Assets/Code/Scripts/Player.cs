@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
     public TextMeshProUGUI playerManaPointsDisplay;
 
     [Header("Gameplay Logic")]
-    public Enemy enemyTarget;
+    //public Enemy enemyTarget;
     public BattleManager battleManager;
     public GameObject currentTarget;
     public TileController unitCurrentTile;

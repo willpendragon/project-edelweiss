@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
-using static Enemy;
+//using static Enemy;
 using UnityEditor.SearchService;
 using System.Linq;
 using static GridTargetingController;
+using Unity.VisualScripting;
 
-public class Enemy : MonoBehaviour
+public class EnemyAgent : MonoBehaviour
 {
+
     [Header("Unit Statistics")]
+    //To be reworked. Should uniform and make the Enemy take the statistics from its own Scriptable Object template.
     public float healthPoints;
     public float attackPower = 5;
     public int speed;
 
     [Header("Gameplay Logic")]
+    //To be reworked. Player is a Unit now.
     public Player player;
     public int opportunity;
     [SerializeField] BattleManager battleManager;
@@ -25,7 +29,7 @@ public class Enemy : MonoBehaviour
     [Header("Presentation")]
     [SerializeField] float enemyMoveElapsingTime;
     [SerializeField] Animator enemyAnimator;
-    [SerializeField] ParticleSystem attackVFX;
+    [SerializeField] GameObject attackVFXAnimator;
     public Vector3 enemyOriginalPosition;
 
     [Header("Enemy UI")]
@@ -59,20 +63,29 @@ public class Enemy : MonoBehaviour
     public void Start()
     {
         UpdateEnemyHealthDisplay();
+        //Need to create a new Display (Final Fantasy Tactics style)
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        //Irrelevant. Player is a Unit now.
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
+        //Irrelevant. BattleManager is a Singleton now.
         opportunityCounter.text = opportunity.ToString();
         enemyOriginalPosition = this.gameObject.transform.position;
+        //Irrelevant. I'm using the Grid Manager for controlling positions.
     }
-    public void TakeDamage(float receivedDamage)
+
+    //Receiving Damage Logic
+    /*public void TakeDamage(float receivedDamage)
     {
         healthPoints -= receivedDamage;
+        Debug.Log("Receiving Damage from Player");
+        //Should take damage away from the Unit HP, not the EnemyAgent class
         Debug.Log("Enemy damage =" + receivedDamage);
         UpdateEnemyHealthDisplay();
         UpdateEnemyReceivedDamageDisplay(receivedDamage);
         EnemyTakingDamage.Invoke();
         Invoke("EnemyTakesDamage", 0.5f);
     }
+ 
     public void EnemyTakesDamage()
     {
         if (healthPoints <= 0)
@@ -85,23 +98,50 @@ public class Enemy : MonoBehaviour
             OnCheckEnemiesOnBattlefield();
         }
     }
+    */
 
-    public void UpdateEnemyHealthDisplay()
+    //Enemy Turn Sequence
+    public void EnemyTurnEvents()
     {
-        healthPointsCounter.text = healthPoints.ToString();
+        Unit targetUnit = SelectTargetUnit();
+        //Decide the next move based on the battlefield situation and character attitude
+        if (EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
+        {
+            Attack(targetUnit);
+            Debug.Log("Enemy uses Attack");
+        }
+        else if (EnemyMoveRoll() <= maxEnemyMoveRollRange / 2)
+        {
+            Debug.Log("Enemy Uses Stun Ability");
+            StunAbility();
+        }
+        //Define Opportunity Spending for the Enemy consistently with the Player
+        opportunity -= 1;
+        UpdateOpportunityDisplay();
     }
 
-    public void UpdateEnemyReceivedDamageDisplay(float receivedDamage)
+    //Rolls the Move the Enemy is going to use
+    public int EnemyMoveRoll()
     {
-        receivedDamageCounter.text = receivedDamage.ToString();
-        StartCoroutine("ResetReceivedDamageDisplay");
+        Debug.Log("Rolling Enemy move");
+        int enemyMoveRoll = Random.Range(minEnemyMoveRollRange, maxEnemyMoveRollRange);
+        return enemyMoveRoll;
     }
 
-    IEnumerator ResetReceivedDamageDisplay()
+    //Selects the Target the Enemy is going to use
+    public Unit SelectTargetUnit()
     {
-        yield return new WaitForSeconds(1);
-        receivedDamageCounter.text = "";
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+
+        Unit unitWithHighestHP = playerUnitsOnBattlefield
+        .Select(go => go.GetComponent<Unit>())
+        .Where(unit => unit != null)
+        .OrderByDescending(unit => unit.unitHealthPoints)
+        .FirstOrDefault();
+        return unitWithHighestHP;
     }
+
+    //Enemy Base Moveset
     public void Attack(Unit targetUnit)
     {
         if (this.gameObject.tag != "DeadEnemy")
@@ -112,9 +152,10 @@ public class Enemy : MonoBehaviour
             targetUnit.unitHealthPoints -= (reducedDamage);
             //targetUnit.UpdatePlayerHealthDisplay();
             //targetUnit.PlayHurtAnimation();
-            attackVFX.transform.position = targetUnit.transform.position;
+            GameObject localAttackVFXAnimator = Instantiate(attackVFXAnimator, targetUnit.transform);
             //Rework for VFX to spawn directly on the Player's tile position
-            attackVFX.Play();
+            localAttackVFXAnimator.GetComponent<Animator>().SetTrigger("BaseAnimation");
+            Destroy(localAttackVFXAnimator, 1);
             //EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
             OnCheckPlayer();
             Debug.Log("Enemy Attacking");
@@ -134,44 +175,26 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void EnemyTurnEvents()
+    //I should create a separe class for controlling the Enemy Details UI
+    public void UpdateEnemyHealthDisplay()
     {
-        Unit targetUnit = SelectTargetUnit();
-        //Decide the next move based on the battlefield situation and character attitude
-        if (EnemyMoveRoll() <= 6)
-        {
-            Attack(targetUnit);
-            Debug.Log("Enemy Attack Roll");
-        }
-        else if (EnemyMoveRoll() <= 12)
-        {
-            Debug.Log("Enemy Stun Ability Roll");
-            StunAbility();
-        }
-        opportunity -= 1;
-        UpdateOpportunityDisplay();
+        healthPointsCounter.text = healthPoints.ToString();
+    }
+
+    public void UpdateEnemyReceivedDamageDisplay(float receivedDamage)
+    {
+        receivedDamageCounter.text = receivedDamage.ToString();
+        StartCoroutine("ResetReceivedDamageDisplay");
+    }
+
+    IEnumerator ResetReceivedDamageDisplay()
+    {
+        yield return new WaitForSeconds(1);
+        receivedDamageCounter.text = "";
     }
 
     public void UpdateOpportunityDisplay()
     {
         opportunityCounter.text = opportunity.ToString();
-    }
-
-    public int EnemyMoveRoll()
-    {
-        Debug.Log("Rolling Enemy move");
-        int enemyMoveRoll = Random.Range(minEnemyMoveRollRange, maxEnemyMoveRollRange);
-        return enemyMoveRoll;
-    }
-    public Unit SelectTargetUnit()
-    {
-        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
-
-        Unit unitWithHighestHP = playerUnitsOnBattlefield
-        .Select(go => go.GetComponent<Unit>())
-        .Where(unit => unit != null)
-        .OrderByDescending(unit => unit.unitHealthPoints)
-        .FirstOrDefault();
-        return unitWithHighestHP;
     }
 }

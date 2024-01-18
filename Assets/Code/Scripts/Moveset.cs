@@ -65,7 +65,7 @@ public class Moveset : MonoBehaviour
     public void PerformMeleeAttack()
     {
         //battleInterface.SetMovePanelName("Melee Attack");
-        player.currentTarget.GetComponent<Enemy>().TakeDamage(player.meleeAttackPower);
+        //player.currentTarget.GetComponent<EnemyAgent>().TakeDamage(player.meleeAttackPower);
         opportunityPoints--;
         CheckOpportunityPoints();
         StartCoroutine("SendMeleeAttackFeedback");
@@ -84,7 +84,7 @@ public class Moveset : MonoBehaviour
             {
                 //battleInterface.SetMovePanelName("Red Attack");
                 player.currentAttackAlignmentType = attackAlignmentType.red;
-                player.currentTarget.GetComponent<Enemy>().TakeDamage(player.attackPower);
+                //player.currentTarget.GetComponent<EnemyAgent>().TakeDamage(player.attackPower);
                 //currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
                 player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
                 opportunityPoints--;
@@ -111,7 +111,7 @@ public class Moveset : MonoBehaviour
             {
                 //battleInterface.SetMovePanelName("Blue Attack");
                 player.currentAttackAlignmentType = attackAlignmentType.blue;
-                player.currentTarget.GetComponent<Enemy>().TakeDamage(player.attackPower + 10);
+                //player.currentTarget.GetComponent<EnemyAgent>().TakeDamage(player.attackPower + 10);
                 player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
                 opportunityPoints--;
                 player.gameObject.GetComponentInChildren<Moveset>().player.manaPoints -= 5;

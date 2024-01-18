@@ -18,7 +18,7 @@ public class BattleFeedbackControllerEnemy : MonoBehaviour
     {
         yield return new WaitForSeconds(restoreEnemyUnitPositionCooldown);
         Debug.Log("Restoring Enemy Unit Position");
-        this.gameObject.transform.position = enemyUnit.GetComponent<Enemy>().enemyOriginalPosition;
+        this.gameObject.transform.position = enemyUnit.GetComponent<EnemyAgent>().enemyOriginalPosition;
         //enemyUnit.transform.position
     }
 
