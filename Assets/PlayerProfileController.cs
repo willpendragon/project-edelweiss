@@ -37,6 +37,7 @@ public class PlayerProfileController : MonoBehaviour
     }
     public void UpdatePlayerProfile()
     {
+        this.GetComponent<RectTransform>().localScale = new Vector3 (1, 1, 1);
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
         activeCharacterName.text = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitName;
@@ -71,6 +72,7 @@ public class PlayerProfileController : MonoBehaviour
     void ResetPlayerProfile()
     {
         //GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        this.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = null;
         activeCharacterName.text = "";
         activeCharacterHealthPoints.text = "";

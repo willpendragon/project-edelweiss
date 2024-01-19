@@ -118,7 +118,7 @@ PrefabInstance:
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: EnemyTakingDamage.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 4680147610183204181}
+      objectReference: {fileID: 0}
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: EnemyTakingDamage.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetTrigger
@@ -153,11 +153,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
---- !u!95 &4680147610183204181 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 8412792004116243812, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-  m_PrefabInstance: {fileID: 3761355290424154161}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8194179579621356911 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}

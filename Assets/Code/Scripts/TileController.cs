@@ -140,7 +140,7 @@ public class TileController : MonoBehaviour
     }
     public void OnMouseOver()
     {
-        if (Input.GetMouseButton(1) && currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
+        if (Input.GetMouseButton(1) /*&& currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation*/)
         {
             DeselectTile();
         }

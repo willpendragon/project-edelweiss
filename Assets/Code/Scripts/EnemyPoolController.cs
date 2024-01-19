@@ -34,6 +34,7 @@ public class EnemyPoolController : MonoBehaviour
         Transform tileSpawnPosition = GridManager.Instance.GetTileControllerInstance(unitComponent.startingXCoordinate, unitComponent.startingYCoordinate).transform;
         TileController enemyControlledTile = tileSpawnPosition.GetComponent<TileController>();
         enemyControlledTile.detectedUnit = spawnedEnemy;
+        unitComponent.ownedTile = enemyControlledTile;
         StartCoroutine(SetEnemyTilesAsOccupied(enemyControlledTile));
     }
 

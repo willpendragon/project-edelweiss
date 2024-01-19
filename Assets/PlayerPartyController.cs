@@ -15,6 +15,7 @@ public class PlayerPartyController : MonoBehaviour
             {
                 TileController playerUnitTileController = GridManager.Instance.GetTileControllerInstance(playerUnit.GetComponent<Unit>().startingXCoordinate, playerUnit.GetComponent<Unit>().startingYCoordinate);
                 playerUnitTileController.detectedUnit = playerUnit;
+                playerUnit.GetComponent<Unit>().ownedTile = playerUnitTileController;
             }
         }
     }
