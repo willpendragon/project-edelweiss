@@ -8,16 +8,7 @@ public class SpellUIController : MonoBehaviour
     public SpellcastingController spellCastingController;
     public GameObject spellButtonPrefab;
     public Transform spellMenuContainer;
-    /*
-    public void OnEnable()
-    {
-        UnitSelectionController.OnActiveCharacterSelected += PopulateCharacterSpellsMenu;
-    }
-    public void OnDisable()
-    {
-        UnitSelectionController.OnActiveCharacterSelected += PopulateCharacterSpellsMenu;
-    }
-    */
+
     public void PopulateCharacterSpellsMenu()
     {
         List<Spell> spells = GetCharacterSpells();

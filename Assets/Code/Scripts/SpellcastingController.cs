@@ -45,7 +45,7 @@ public class SpellcastingController : MonoBehaviour
         if (CheckActivePlayerUnitOpportunityPoints())
         {
             //Spell damage calculation logic
-            currentTargetedUnit.unitHealthPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
+            currentTargetedUnit.HealthPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
             currentTargetedUnit.gameObject.GetComponent<EnemyAgent>().EnemyTakingDamage.Invoke();
             SpendPlayerManaPoints();
             SpendPlayerUnitOpportunityPoints();
@@ -56,6 +56,8 @@ public class SpellcastingController : MonoBehaviour
         else
         {
             Debug.Log("Active Player Unit does not have enough Opportunity Points");
+            //TileController targetUnitTileController = GridManager.Instance.GetTileControllerInstance(currentTargetedUnit.GetComponent<Unit>().currentXCoordinate, currentTargetedUnit.GetComponent<Unit>().currentYCoordinate);
+            //targetUnitTileController.DeselectTile();
         }
     }
     public bool CheckActivePlayerUnitOpportunityPoints()

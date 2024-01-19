@@ -53,7 +53,10 @@ public class Deity : MonoBehaviour
     public delegate void DeityFieldEffectActivation();
     public static event DeityFieldEffectActivation OnDeityFieldEffectActivation;
 
-    public delegate void PlayerTurn();
+    public delegate void PlayerTurnSwap();
+    public static event PlayerTurnSwap OnPlayerTurnSwap;
+
+    public delegate void PlayerTurn(string playerTurn);
     public static event PlayerTurn OnPlayerTurn;
 
     private void OnEnable()
@@ -193,8 +196,9 @@ public class Deity : MonoBehaviour
         judgmentTurnLimit--;
         OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
         yield return new WaitForSeconds(1f);
-        OnPlayerTurn();
-    }
+        OnPlayerTurnSwap();
+        OnPlayerTurn("Player Turn");
+}
 
     public void ApplyJudgmentAttackDamage()
     {

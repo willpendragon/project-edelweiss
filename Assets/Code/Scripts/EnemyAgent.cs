@@ -149,7 +149,7 @@ public class EnemyAgent : MonoBehaviour
             //const float targetUnitReductionFactor = 0.05f;
             //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
             float reducedDamage = attackPower; //* damageReductionFactor//
-            targetUnit.unitHealthPoints -= (reducedDamage);
+            targetUnit.HealthPoints -= (reducedDamage);
             //targetUnit.UpdatePlayerHealthDisplay();
             //targetUnit.PlayHurtAnimation();
             GameObject localAttackVFXAnimator = Instantiate(attackVFXAnimator, targetUnit.transform);

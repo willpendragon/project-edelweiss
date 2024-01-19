@@ -15,6 +15,7 @@ public class TurnController : MonoBehaviour
     }
     public delegate void EnemyTurn(string enemyTurn);
     public static event EnemyTurn OnEnemyTurn;
+
     public delegate void EnemyTurnSwap();
     public static event EnemyTurnSwap OnEnemyTurnSwap;
 
@@ -27,15 +28,15 @@ public class TurnController : MonoBehaviour
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatus;
         EnemyAgent.OnCheckPlayer += PlayerGameOverCheck;
-        EnemyTurnManager.OnPlayerTurn += RestorePlayerUnitsOpportunityPoints;
-        Deity.OnPlayerTurn += RestorePlayerUnitsOpportunityPoints;
+        EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
+        Deity.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
     }
     public void OnDisable()
     {
         UnitSelectionController.OnUnitWaiting -= CheckPlayerUnitsStatus;
         EnemyAgent.OnCheckPlayer -= PlayerGameOverCheck;
-        EnemyTurnManager.OnPlayerTurn -= RestorePlayerUnitsOpportunityPoints;
-        Deity.OnPlayerTurn -= RestorePlayerUnitsOpportunityPoints;
+        EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
+        Deity.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
     }
     void Start()
     {
@@ -60,6 +61,10 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party was defeated");
             //Activate Game Over UI
             //Active Game Over Flow
+        }
+        else
+        {
+            Debug.Log("Player Party is still active");
         }
     }
     public void RestorePlayerUnitsOpportunityPoints()

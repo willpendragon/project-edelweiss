@@ -9,12 +9,16 @@ public class EnemyTurnManager : MonoBehaviour
     public int currentEnemyTurnIndex;
     public BattleManager battleManager;
     [SerializeField] float singleEnemyturnDuration;
+
     public delegate void DeityTurn();
     public static event DeityTurn OnDeityTurn;
 
-    public delegate void PlayerTurn();
+    public delegate void PlayerTurn(string playerTurn);
     public static event PlayerTurn OnPlayerTurn;
-    
+
+    public delegate void PlayerTurnSwap();
+    public static event PlayerTurnSwap OnPlayerTurnSwap;
+
     public GameObject deity;
 
     public void OnEnable()
@@ -79,7 +83,8 @@ public class EnemyTurnManager : MonoBehaviour
         }
         else if (deity == null)
         {
-            OnPlayerTurn();
+            OnPlayerTurn("Player Turn");
+            OnPlayerTurnSwap();
             Debug.Log("No Deity on the battlefield. Passing turn to the Player");
             //Reenable Player UI. Replenish Player Opportunity Points.
         }

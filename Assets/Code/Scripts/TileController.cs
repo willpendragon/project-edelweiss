@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using RPGCharacterAnims.Actions;
 using Unity.VisualScripting;
+using JetBrains.Annotations;
 
 public enum SingleTileStatus
 {
@@ -111,16 +112,16 @@ public class TileController : MonoBehaviour
     }
     public void OnMouseDown()
     {
-        if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
+        if (Input.GetMouseButton(0) && currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
         {
             Debug.Log("Unable to Select Tile");
         }
         //Debug.Log("Clicked on Tile at Grid Coordinates: " + tileXCoordinate + ", " + tileYCoordinate);
-        if (currentSingleTileStatus == SingleTileStatus.selectionModeActive)
+        if (Input.GetMouseButton(0) && currentSingleTileStatus == SingleTileStatus.selectionModeActive)
         {
             OnTileClicked?.Invoke(tileXCoordinate, tileYCoordinate);
         }
-        else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
+        else if (Input.GetMouseButton(0) && currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
         {
             Unit targetUnit = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
             if (targetUnit != null)
@@ -132,13 +133,29 @@ public class TileController : MonoBehaviour
                 Debug.Log("Set Unit" + targetUnit.gameObject.name + " as current Target");
             }
         }
-        else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
+        else if (Input.GetMouseButton(0) && currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
         {
             OnTileConfirmedAttackMode();
+        }
+    }
+    public void OnMouseOver()
+    {
+        if (Input.GetMouseButton(1) && currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
+        {
+            DeselectTile();
         }
     }
     public void SwitchTileToSelectionMode()
     {
         currentSingleTileStatus = SingleTileStatus.selectionModeActive;
+        Debug.Log("Switching tiles to selection Mode");
+    }
+    public void DeselectTile()
+    {
+        TileController targetUnitTileController = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
+        targetUnitTileController.currentSingleTileStatus = SingleTileStatus.attackSelectionModeActive;
+        targetUnitTileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.white;
+        Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+        Debug.Log("Deselected Unit");
     }
 }

@@ -308,6 +308,9 @@ MonoBehaviour:
   unitManaPoints: 0
   unitShieldPoints: 0
   currentUnitLifeCondition: 0
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

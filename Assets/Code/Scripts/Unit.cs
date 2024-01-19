@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
+
+[System.Serializable]
+public class HealthChangeEvent : UnityEvent<float> { }
+
 
 public class Unit : MonoBehaviour
 {
@@ -28,6 +33,22 @@ public class Unit : MonoBehaviour
     public float unitShieldPoints;
 
     public UnitLifeCondition currentUnitLifeCondition;
+
+    public HealthChangeEvent onHealthChanged = new HealthChangeEvent();
+
+    public float HealthPoints
+    {
+        get { return unitHealthPoints; }
+        set
+        {
+            if (unitHealthPoints != value)
+            {
+                unitHealthPoints = value;
+                onHealthChanged?.Invoke(unitHealthPoints);
+                CheckUnitHealthStatus();
+            }
+        }
+    }
 
     public void OnEnable()
     {
@@ -83,6 +104,17 @@ public class Unit : MonoBehaviour
         else
         {
             Debug.Log("No valid path found or path exceeds movement limit.");
+        }
+    }
+    public void CheckUnitHealthStatus()
+    {
+        if (unitHealthPoints >= 0)
+        {
+            Debug.Log("Unit is Still Alive");
+        }
+        else
+        {
+            Debug.Log("This Unit has died");
         }
     }
 }
