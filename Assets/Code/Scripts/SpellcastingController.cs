@@ -48,7 +48,8 @@ public class SpellcastingController : MonoBehaviour
             {
                 //Spell damage calculation logic
                 currentTargetedUnit.HealthPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
-                currentTargetedUnit.gameObject.GetComponent<EnemyAgent>().EnemyTakingDamage.Invoke();
+                //This is a legacy method that applies the damage on the Enemy and executes the Enemy damaged feedback
+                //currentTargetedUnit.gameObject.GetComponent<EnemyAgent>().EnemyTakingDamage.Invoke();
                 SpendPlayerManaPoints();
                 SpendPlayerUnitOpportunityPoints();
                 OnCastedSpell();

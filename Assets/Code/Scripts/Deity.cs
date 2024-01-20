@@ -80,7 +80,7 @@ public class Deity : MonoBehaviour
 
     public void Update()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
     public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
     //This function keeps track of the behaviour of the Player during the gameplay and increases the Enmity

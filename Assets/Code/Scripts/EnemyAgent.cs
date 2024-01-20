@@ -14,9 +14,10 @@ public class EnemyAgent : MonoBehaviour
 
     [Header("Unit Statistics")]
     //To be reworked. Should uniform and make the Enemy take the statistics from its own Scriptable Object template.
-    public float healthPoints;
-    public float attackPower = 5;
+    /*public float healthPoints;
+    */
     public int speed;
+    public float attackPower = 5;
 
     [Header("Gameplay Logic")]
     //To be reworked. Player is a Unit now.
@@ -62,7 +63,7 @@ public class EnemyAgent : MonoBehaviour
 
     public void Start()
     {
-        UpdateEnemyHealthDisplay();
+        //UpdateEnemyHealthDisplay();
         //Need to create a new Display (Final Fantasy Tactics style)
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         //Irrelevant. Player is a Unit now.
@@ -176,10 +177,11 @@ public class EnemyAgent : MonoBehaviour
     }
 
     //I should create a separe class for controlling the Enemy Details UI
-    public void UpdateEnemyHealthDisplay()
+    /*public void UpdateEnemyHealthDisplay()
     {
         healthPointsCounter.text = healthPoints.ToString();
     }
+    */
 
     public void UpdateEnemyReceivedDamageDisplay(float receivedDamage)
     {

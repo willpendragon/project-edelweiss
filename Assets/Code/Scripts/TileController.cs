@@ -125,7 +125,7 @@ public class TileController : MonoBehaviour
         {
             if (detectedUnit != null)
             {
-                if (detectedUnit.gameObject.tag != "Enemy" && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
+                if (detectedUnit.gameObject.tag != "Enemy" && detectedUnit.gameObject.tag != "ActivePlayerUnit" && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
                 {
                     Debug.Log("Clicking on a Tile with Player Unit on it");
                     GridManager.Instance.currentPlayerUnit = detectedUnit;
@@ -180,17 +180,39 @@ public class TileController : MonoBehaviour
         {
             if (detectedUnit.tag == "ActivePlayerUnit" || detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting)
             {
-                Debug.Log("Reset Unit Selection"); OnDeselectedTileWithUnit();
+                Debug.Log("Reset Unit Selection");
+                //Sends a message that resets the Unit Profile UI
+                OnDeselectedTileWithUnit();
                 currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
                 detectedUnit.GetComponent<UnitSelectionController>().ResetUnitSelection();
             }
         }
         else if
-            (Input.GetMouseButton(1) && detectedUnit.tag == "Enemy")
+            (Input.GetMouseButton(1) && detectedUnit.tag == "Enemy" || Input.GetMouseButton(1) && detectedUnit.tag == "Player" || Input.GetMouseButton(1) && detectedUnit.tag == "ActivePlayerUnit")
         {
             Debug.Log("Reset Unit Selection");
             OnDeselectedTileWithUnit();
-            currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+            if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
+            {
+                currentSingleTileStatus = SingleTileStatus.attackSelectionModeActive;
+                detectedUnit.GetComponent<Unit>().ownedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.white;
+                GameObject[] enemyTargetIcons = GameObject.FindGameObjectsWithTag("EnemyTargetIcon");
+                foreach (GameObject enemyTargetIcon in enemyTargetIcons)
+                {
+                    Destroy(enemyTargetIcon);
+                }
+                GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
+                foreach (var tile in tiles)
+                {
+                    tile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+                }    
+            }
+            else if (currentSingleTileStatus == SingleTileStatus.selectedPlayerUnitOccupiedTile)
+            {
+                currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+                detectedUnit.GetComponent<Unit>().ownedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.white;
+            }
+
             //detectedUnit.GetComponent<UnitSelectionController>().ResetUnitSelection();
         }
     }
