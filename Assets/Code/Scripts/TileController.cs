@@ -125,9 +125,10 @@ public class TileController : MonoBehaviour
         {
             if (detectedUnit != null)
             {
-                if (detectedUnit.gameObject.tag != "Enemy")
+                if (detectedUnit.gameObject.tag != "Enemy" && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
                 {
                     Debug.Log("Clicking on a Tile with Player Unit on it");
+                    GridManager.Instance.currentPlayerUnit = detectedUnit;
                     currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
                     OnClickedTileWithUnit(detectedUnit);
                     detectedUnit.tag = "ActivePlayerUnit";
@@ -136,6 +137,7 @@ public class TileController : MonoBehaviour
                 }
                 else
                 {
+                    //Just displays the profile of the Unit sitting on the Clicked Tile
                     OnClickedTileWithUnit(detectedUnit);
                 }
             }
@@ -174,16 +176,24 @@ public class TileController : MonoBehaviour
 
     public void OnMouseOver()
     {
-        if (Input.GetMouseButton(1) && detectedUnit.tag == "ActivePlayerUnit" && currentSingleTileStatus == SingleTileStatus.selectedPlayerUnitOccupiedTile)
+        if (Input.GetMouseButton(1) && currentSingleTileStatus == SingleTileStatus.selectedPlayerUnitOccupiedTile)
+        {
+            if (detectedUnit.tag == "ActivePlayerUnit" || detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting)
+            {
+                Debug.Log("Reset Unit Selection"); OnDeselectedTileWithUnit();
+                currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+                detectedUnit.GetComponent<UnitSelectionController>().ResetUnitSelection();
+            }
+        }
+        else if
+            (Input.GetMouseButton(1) && detectedUnit.tag == "Enemy")
         {
             Debug.Log("Reset Unit Selection");
             OnDeselectedTileWithUnit();
             currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
-            detectedUnit.GetComponent<UnitSelectionController>().ResetUnitSelection();
+            //detectedUnit.GetComponent<UnitSelectionController>().ResetUnitSelection();
         }
-
     }
-
     public void SwitchTileToSelectionMode()
     {
         currentSingleTileStatus = SingleTileStatus.selectionModeActive;

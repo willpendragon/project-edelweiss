@@ -147,6 +147,12 @@ public class GridManager : MonoBehaviour
                 currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
                 currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
                 currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
+                foreach (var tile in tiles)
+                {
+                    tile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+                }
+                currentPlayerUnit.GetComponent<Unit>().ownedTile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
             }
         }
         Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
