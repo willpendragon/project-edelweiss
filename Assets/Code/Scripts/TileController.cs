@@ -10,6 +10,7 @@ public enum SingleTileStatus
 {
     characterSelectionModeActive,
     selectionModeActive,
+    selectedPlayerUnitOccupiedTile,
     attackSelectionModeActive,
     attackSelectionModeWaitingForConfirmation,
     attackSelectionModeConfirmedTarget
@@ -70,6 +71,12 @@ public class TileController : MonoBehaviour
     [SerializeField] ParticleSystem redParticle;
     [SerializeField] ParticleSystem blueParticle;
 
+    public delegate void ClickedTileWithUnit(GameObject detectedUnit);
+    public static event ClickedTileWithUnit OnClickedTileWithUnit;
+
+    public delegate void DeselectedTileWithUnit();
+    public static event DeselectedTileWithUnit OnDeselectedTileWithUnit;
+
     void Start()
     {
         currentTileAlignment = TileAlignment.neutral;
@@ -110,10 +117,28 @@ public class TileController : MonoBehaviour
         blueParticle.Play();
         currentTileAlignment = TileAlignment.blue;
     }
+
+    //Should Move this into a different component class
     public void OnMouseDown()
     {
         if (Input.GetMouseButton(0) && currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
         {
+            if (detectedUnit != null)
+            {
+                if (detectedUnit.gameObject.tag != "Enemy")
+                {
+                    Debug.Log("Clicking on a Tile with Player Unit on it");
+                    currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
+                    OnClickedTileWithUnit(detectedUnit);
+                    detectedUnit.tag = "ActivePlayerUnit";
+                    detectedUnit.GetComponent<UnitSelectionController>().GenerateGameplayButtons();
+                    detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
+                }
+                else
+                {
+                    OnClickedTileWithUnit(detectedUnit);
+                }
+            }
             Debug.Log("Unable to Select Tile");
         }
         //Debug.Log("Clicked on Tile at Grid Coordinates: " + tileXCoordinate + ", " + tileYCoordinate);
@@ -138,13 +163,27 @@ public class TileController : MonoBehaviour
             OnTileConfirmedAttackMode();
         }
     }
-    public void OnMouseOver()
+    /*public void OnMouseOver()
     {
-        if (Input.GetMouseButton(1) /*&& currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation*/)
+        if (Input.GetMouseButton(1) /*&& currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
         {
             DeselectTile();
         }
     }
+*/
+
+    public void OnMouseOver()
+    {
+        if (Input.GetMouseButton(1) && detectedUnit.tag == "ActivePlayerUnit" && currentSingleTileStatus == SingleTileStatus.selectedPlayerUnitOccupiedTile)
+        {
+            Debug.Log("Reset Unit Selection");
+            OnDeselectedTileWithUnit();
+            currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+            detectedUnit.GetComponent<UnitSelectionController>().ResetUnitSelection();
+        }
+
+    }
+
     public void SwitchTileToSelectionMode()
     {
         currentSingleTileStatus = SingleTileStatus.selectionModeActive;

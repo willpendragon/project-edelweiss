@@ -9,9 +9,9 @@ public class SpellUIController : MonoBehaviour
     public GameObject spellButtonPrefab;
     public Transform spellMenuContainer;
 
-    public void PopulateCharacterSpellsMenu()
+    public void PopulateCharacterSpellsMenu(GameObject detectedUnit)
     {
-        List<Spell> spells = GetCharacterSpells();
+        List<Spell> spells = GetCharacterSpells(detectedUnit);
         //Generates Buttons linked to each Spell.
         foreach (Spell spell in spells)
         {
@@ -32,10 +32,10 @@ public class SpellUIController : MonoBehaviour
     }
 
     //Retrieves a list of Spell from the Active Character.
-    public List<Spell> GetCharacterSpells()
+    public List<Spell> GetCharacterSpells(GameObject detectedUnit)
     {
-        GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-        List<Spell> activePlayerUnitSpellsList = activePlayerUnit.GetComponent<Unit>().unitTemplate.spellsList;
+        //GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        List<Spell> activePlayerUnitSpellsList = detectedUnit.GetComponent<Unit>().unitTemplate.spellsList;
         return activePlayerUnitSpellsList;
     }
 }

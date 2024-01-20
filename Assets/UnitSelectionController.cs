@@ -12,11 +12,11 @@ public class UnitSelectionController : MonoBehaviour
         unitDeselected,
         unitWaiting
     }
-    public delegate void ActiveCharacterSelected();
-    public static event ActiveCharacterSelected OnActiveCharacterSelected;
+    //public delegate void ActiveCharacterSelected();
+    //public static event ActiveCharacterSelected OnActiveCharacterSelected;
 
-    public delegate void ActiveCharacterDeselected();
-    public static event ActiveCharacterDeselected OnActiveCharacterDeselected;
+    //public delegate void ActiveCharacterDeselected();
+    //public static event ActiveCharacterDeselected OnActiveCharacterDeselected;
 
     public delegate void UnitWaiting();
     public static event UnitWaiting OnUnitWaiting;
@@ -31,18 +31,17 @@ public class UnitSelectionController : MonoBehaviour
     {
         currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
     }
-    private void OnMouseDown()
+    /*private void OnMouseDown()
     {
         if (currentUnitSelectionStatus == UnitSelectionStatus.unitDeselected && GridManager.Instance.currentPlayerUnit == null)
         {
             this.gameObject.tag = "ActivePlayerUnit";
             GameObject newActiveCharacterSelectorIcon = Instantiate(activeCharacterSelectorIcon, transform.localPosition + (transform.up * 3), Quaternion.identity);
-            GenerateMoveButton();
-            GenerateWaitButton();
+            GenerateGameplayButtons();
             currentUnitSelectionStatus = UnitSelectionStatus.unitSelected;
             GridManager.Instance.currentPlayerUnit = this.gameObject;
-            unitSpellUIController.PopulateCharacterSpellsMenu();
-            OnActiveCharacterSelected();
+            //unitSpellUIController.PopulateCharacterSpellsMenu();
+            //OnActiveCharacterSelected();
         }
         else if (currentUnitSelectionStatus == UnitSelectionStatus.unitSelected)
         {
@@ -51,12 +50,27 @@ public class UnitSelectionController : MonoBehaviour
             this.gameObject.tag = "Player";
             GridManager.Instance.currentPlayerUnit = null;
             currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
-            OnActiveCharacterDeselected();
+            //OnActiveCharacterDeselected();
         }
         else if (currentUnitSelectionStatus == UnitSelectionStatus.unitWaiting)
         {
             Debug.Log("Unit is waiting");
         }
+    }
+    */
+    public void ResetUnitSelection()
+    {
+        Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+        unitSpellUIController.ResetCharacterSpellsMenu();
+        this.gameObject.tag = "Player";
+        GridManager.Instance.currentPlayerUnit = null;
+        currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
+    }
+
+    public void GenerateGameplayButtons()
+    {
+        GenerateMoveButton();
+        GenerateWaitButton();
     }
     public void GenerateMoveButton()
     {
@@ -74,7 +88,7 @@ public class UnitSelectionController : MonoBehaviour
         this.gameObject.tag = "Player";
         GridManager.Instance.currentPlayerUnit = null;
         currentUnitSelectionStatus = UnitSelectionStatus.unitWaiting;
-        OnActiveCharacterDeselected();
+        //OnActiveCharacterDeselected();
         OnUnitWaiting();
     }
 }

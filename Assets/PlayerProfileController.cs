@@ -20,31 +20,36 @@ public class PlayerProfileController : MonoBehaviour
 
     public void OnEnable()
     {
-        UnitSelectionController.OnActiveCharacterSelected += UpdatePlayerProfile;
-        UnitSelectionController.OnActiveCharacterSelected += InitializePlayerProfileSliders;
-        UnitSelectionController.OnActiveCharacterDeselected += ResetPlayerProfile;
-        SpellcastingController.OnCastedSpell += UpdatePlayerProfile;
+        //UnitSelectionController.OnActiveCharacterSelected += UpdatePlayerProfile;
+        //UnitSelectionController.OnActiveCharacterSelected += InitializePlayerProfileSliders;
+        //UnitSelectionController.OnActiveCharacterDeselected += ResetPlayerProfile;
+        //SpellcastingController.OnCastedSpell += UpdatePlayerProfile;
         SpellcastingController.OnCastedSpell += UpdatePlayerProfileSliders;
+        TileController.OnClickedTileWithUnit += UpdatePlayerProfile;
+        TileController.OnDeselectedTileWithUnit += ResetPlayerProfile;
+
     }
     public void OnDisable()
     {
-        UnitSelectionController.OnActiveCharacterSelected -= UpdatePlayerProfile;
-        UnitSelectionController.OnActiveCharacterSelected -= InitializePlayerProfileSliders;
-        UnitSelectionController.OnActiveCharacterDeselected -= ResetPlayerProfile;
-        SpellcastingController.OnCastedSpell -= UpdatePlayerProfile;
+        //UnitSelectionController.OnActiveCharacterSelected -= UpdatePlayerProfile;
+        //UnitSelectionController.OnActiveCharacterSelected -= InitializePlayerProfileSliders;
+        //UnitSelectionController.OnActiveCharacterDeselected -= ResetPlayerProfile;
+        //SpellcastingController.OnCastedSpell -= UpdatePlayerProfile;
+        TileController.OnClickedTileWithUnit -= UpdatePlayerProfile;
+        TileController.OnDeselectedTileWithUnit -= ResetPlayerProfile;
         SpellcastingController.OnCastedSpell -= UpdatePlayerProfileSliders;
 
     }
-    public void UpdatePlayerProfile()
+    public void UpdatePlayerProfile(GameObject detectedUnit)
     {
-        this.GetComponent<RectTransform>().localScale = new Vector3 (1, 1, 1);
-        GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-        activeCharacterPortrait.GetComponent<Image>().overrideSprite = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
-        activeCharacterName.text = activePlayerUnit.GetComponent<Unit>().unitTemplate.unitName;
-        activeCharacterHealthPoints.text = activePlayerUnit.GetComponent<Unit>().unitHealthPoints.ToString();
-        activeCharacterManaPoints.text = activePlayerUnit.GetComponent<Unit>().unitManaPoints.ToString();
-        activeCharacterShieldPoints.text = activePlayerUnit.GetComponent<Unit>().unitShieldPoints.ToString();
-        activeCharacterOpportunityPoints.text = activePlayerUnit.GetComponent<Unit>().unitOpportunityPoints.ToString();
+        this.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        GameObject activePlayerUnit = detectedUnit;//GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        activeCharacterPortrait.GetComponent<Image>().overrideSprite = detectedUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
+        activeCharacterName.text = detectedUnit.GetComponent<Unit>().unitTemplate.unitName;
+        activeCharacterHealthPoints.text = detectedUnit.GetComponent<Unit>().unitHealthPoints.ToString();
+        activeCharacterManaPoints.text = detectedUnit.GetComponent<Unit>().unitManaPoints.ToString();
+        activeCharacterShieldPoints.text = detectedUnit.GetComponent<Unit>().unitShieldPoints.ToString();
+        activeCharacterOpportunityPoints.text = detectedUnit.GetComponent<Unit>().unitOpportunityPoints.ToString();
     }
 
     public void InitializePlayerProfileSliders()
