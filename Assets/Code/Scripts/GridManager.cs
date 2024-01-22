@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -15,6 +16,8 @@ public class GridManager : MonoBehaviour
     public float inBetweenTilesXOffset;
     public float inBetweenTilesYOffset;
     public GameObject currentPlayerUnit;
+
+    public TileController[] gridTileControllers;
 
     private Dictionary<PositionKey, TileController> gridMapDictionary = new Dictionary<PositionKey, TileController>();
     public GridMovementController gridMovementController;
@@ -43,6 +46,17 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         OnSetUnitInitialPositionOnGrid();
+        gridTileControllers = GameObject.FindObjectsOfType<TileController>();
+        SwitchToCharacterSelectionMove();
+    }
+
+    public void SwitchToCharacterSelectionMove()
+    {
+        foreach (var tileController in gridTileControllers)
+        {
+            tileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.yellow;
+            tileController.currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+        }
     }
     private void OnEnable()
     {

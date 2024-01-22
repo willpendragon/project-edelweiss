@@ -31,33 +31,7 @@ public class UnitSelectionController : MonoBehaviour
     {
         currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
     }
-    /*private void OnMouseDown()
-    {
-        if (currentUnitSelectionStatus == UnitSelectionStatus.unitDeselected && GridManager.Instance.currentPlayerUnit == null)
-        {
-            this.gameObject.tag = "ActivePlayerUnit";
-            GameObject newActiveCharacterSelectorIcon = Instantiate(activeCharacterSelectorIcon, transform.localPosition + (transform.up * 3), Quaternion.identity);
-            GenerateGameplayButtons();
-            currentUnitSelectionStatus = UnitSelectionStatus.unitSelected;
-            GridManager.Instance.currentPlayerUnit = this.gameObject;
-            //unitSpellUIController.PopulateCharacterSpellsMenu();
-            //OnActiveCharacterSelected();
-        }
-        else if (currentUnitSelectionStatus == UnitSelectionStatus.unitSelected)
-        {
-            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
-            unitSpellUIController.ResetCharacterSpellsMenu();
-            this.gameObject.tag = "Player";
-            GridManager.Instance.currentPlayerUnit = null;
-            currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
-            //OnActiveCharacterDeselected();
-        }
-        else if (currentUnitSelectionStatus == UnitSelectionStatus.unitWaiting)
-        {
-            Debug.Log("Unit is waiting");
-        }
-    }
-    */
+
     public void ResetUnitSelection()
     {
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
@@ -88,7 +62,6 @@ public class UnitSelectionController : MonoBehaviour
         this.gameObject.tag = "Player";
         GridManager.Instance.currentPlayerUnit = null;
         currentUnitSelectionStatus = UnitSelectionStatus.unitWaiting;
-        //OnActiveCharacterDeselected();
         OnUnitWaiting();
     }
 }
