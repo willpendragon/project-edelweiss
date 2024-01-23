@@ -24,10 +24,9 @@ public class PlayerProfileController : MonoBehaviour
         //UnitSelectionController.OnActiveCharacterSelected += InitializePlayerProfileSliders;
         //UnitSelectionController.OnActiveCharacterDeselected += ResetPlayerProfile;
         //SpellcastingController.OnCastedSpell += UpdatePlayerProfile;
-        SpellcastingController.OnCastedSpell += UpdatePlayerProfileSliders;
         TileController.OnClickedTileWithUnit += UpdatePlayerProfile;
         TileController.OnDeselectedTileWithUnit += ResetPlayerProfile;
-
+        SpellcastingController.OnCastedSpell += UpdatePlayerProfileSliders;
     }
     public void OnDisable()
     {
@@ -38,11 +37,10 @@ public class PlayerProfileController : MonoBehaviour
         TileController.OnClickedTileWithUnit -= UpdatePlayerProfile;
         TileController.OnDeselectedTileWithUnit -= ResetPlayerProfile;
         SpellcastingController.OnCastedSpell -= UpdatePlayerProfileSliders;
-
     }
     public void UpdatePlayerProfile(GameObject detectedUnit)
     {
-        this.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        //this.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         GameObject activePlayerUnit = detectedUnit;//GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = detectedUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
         activeCharacterName.text = detectedUnit.GetComponent<Unit>().unitTemplate.unitName;
@@ -77,12 +75,12 @@ public class PlayerProfileController : MonoBehaviour
     void ResetPlayerProfile()
     {
         //GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-        this.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
+        /*this.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = null;
         activeCharacterName.text = "";
         activeCharacterHealthPoints.text = "";
         activeCharacterManaPoints.text = "";
         activeCharacterShieldPoints.text = "";
-        activeCharacterOpportunityPoints.text = "";
+        activeCharacterOpportunityPoints.text = "";*/
     }
 }

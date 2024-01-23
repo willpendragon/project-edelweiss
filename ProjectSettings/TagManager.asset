@@ -16,9 +16,12 @@ TagManager:
   - Tile
   - ActivePlayerCharacterSelectionIcon
   - PlayerUISpellButton
-  - ActiveCharacterUnitProfile
   - PlayerPartyController
   - EnemyTargetIcon
+  - BattleInterfaceCanvas
+  - CharacterUnitProfile
+  - ActiveCharacterUnitProfile
+  - EnemyUnitProfile
   layers:
   - Default
   - TransparentFX

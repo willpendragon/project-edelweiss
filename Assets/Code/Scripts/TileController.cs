@@ -9,6 +9,7 @@ using UnityEditor.Experimental.GraphView;
 using System;
 using UnityEditor;
 using UnityEngine.TextCore.Text;
+using UnityEngine.UI;
 
 public enum SingleTileStatus
 {
@@ -50,6 +51,7 @@ public class TileController : MonoBehaviour
     public SingleTileStatus currentSingleTileStatus;
     public SingleTileCondition currentSingleTileCondition;
     public GameObject targetIcon;
+    public GameObject currentlySelectedUnitPanel;
 
     // A* Pathfinding properties
     public int gCost;
@@ -137,11 +139,15 @@ public class TileController : MonoBehaviour
             //Tile should have a Detected Unit
             if (detectedUnit != null)
             {
-                //If the Detected Unit is not an Player Unit
+                //If the Detected Unit is a Player Unit
                 if (detectedUnit.gameObject.tag == "Player")
                 {
+                    //If the Grid Manager has not currently an Active Player Unit
                     if (GridManager.Instance.currentPlayerUnit == null)
                     {
+                        GameObject newCurrentlySelectedUnitPanel = Instantiate(currentlySelectedUnitPanel, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+                        newCurrentlySelectedUnitPanel.tag = "ActiveCharacterUnitProfile";
+                        newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
                         Debug.Log("Clicked on a Tile with Player Unit on it");
                         //Unit becomes the Active Player Unit in the GridManager
                         GridManager.Instance.currentPlayerUnit = detectedUnit;
@@ -157,8 +163,11 @@ public class TileController : MonoBehaviour
                 }
                 else if (detectedUnit.gameObject.tag == "Enemy")
                 {
+                    GameObject newCurrentlySelectedUnitPanel = Instantiate(currentlySelectedUnitPanel, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+                    newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
+                    newCurrentlySelectedUnitPanel.tag = "EnemyUnitProfile";
+                    OnClickedTileWithUnit(detectedUnit);
                     //Just displays the profile of the Enemy Unit sitting on the Clicked Tile
-                    //To implement
                     Debug.Log("Clicked on Enemy Unit");
                 }
 
@@ -169,12 +178,12 @@ public class TileController : MonoBehaviour
             }
         }
 
-        //The Player left clicks on a Tile while ATTACK SELECTION MODE (aka, Targeting during Spells) is Active
+        //The Player left clicks on a Tile with an Enemy on it while ATTACK SELECTION MODE (aka, Targeting during Spells) is Active
         else if (Input.GetMouseButton(0) && currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
         {
             //The System retrieves the coordinates from the Grid and sets the corresponding Unit as the Target
             Unit targetUnit = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
-            if (targetUnit != null)
+            if (targetUnit != null && targetUnit.tag == "Enemy")
             {
                 //The System retrieves the Tile Controller Instance from the Target Unit
                 TileController targetUnitTileController = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
@@ -202,10 +211,11 @@ public class TileController : MonoBehaviour
             if (detectedUnit.tag == "ActivePlayerUnit")
             {
                 Debug.Log("Active Player Unit Selection. Resets the Active Player Unit Selection");
-                //Sends a message that resets the Unit Profile UI
                 GridManager.Instance.currentPlayerUnit = null;
                 detectedUnit.tag = "Player";
-                OnDeselectedTileWithUnit();
+                //Sends a message that resets the Unit Profile UI 23012024 Edited out
+                //OnDeselectedTileWithUnit();
+                Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
                 currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
                 detectedUnit.GetComponent<UnitSelectionController>().ResetUnitSelection();
             }
@@ -217,8 +227,9 @@ public class TileController : MonoBehaviour
         }
 
         else if (Input.GetMouseButton(1) && detectedUnit.tag == "Enemy")
-        //What happens if the Player is standing with the Mouse and clicks with the Right Button on a Tile occupied by an Enemy
+        //What happens if the Player is standing with the Mouse and clicks with the Right Button on a Tile occupied by an Enemy 
         {
+            //During Single Target Spell Selection Mode
             if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
             {
                 currentSingleTileStatus = SingleTileStatus.attackSelectionModeActive;
@@ -237,18 +248,25 @@ public class TileController : MonoBehaviour
                 GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
                 foreach (var tile in tiles)
                 {
+                    //Switches all Tiles to Character Selection Mode except the one occupied by the Active Player Unit (targeting the Enemy)
                     tile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
                     GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
                 }
             }
             else
             {
-                OnDeselectedTileWithUnit();
+                Destroy(GameObject.FindGameObjectWithTag("EnemyUnitProfile"));
+                //OnDeselectedTileWithUnit();
                 Debug.Log("Found Enemy Unit. Resetting Enemy character profile panel");
             }
         }
-
+        else if (Input.GetMouseButton(1) && detectedUnit == null)
+        {
+            Debug.Log("No Unit Found");
+        }
     }
+
+
     public void SwitchTileToSelectionMode()
     {
         currentSingleTileStatus = SingleTileStatus.selectionModeActive;
