@@ -40,6 +40,7 @@ public class Deity : MonoBehaviour
     public int judgmentTurnLimit;
     public DeityState currentDeityState;
     public int judgmentAttackPower = 1000;
+    public List<SpellAlignment> hatedSpellAlignments;
 
     public delegate void DeityJudgment();
     public static event DeityJudgment OnDeityJudgment;
@@ -198,7 +199,7 @@ public class Deity : MonoBehaviour
         yield return new WaitForSeconds(1f);
         OnPlayerTurnSwap();
         OnPlayerTurn("Player Turn");
-}
+    }
 
     public void ApplyJudgmentAttackDamage()
     {

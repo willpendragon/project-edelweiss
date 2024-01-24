@@ -55,6 +55,21 @@ public class SpellcastingController : MonoBehaviour
                 OnCastedSpell();
                 OnCastedSpellTextNotification(GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.name);
                 Debug.Log("Using Spell on Enemy");
+                Deity unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity;
+                if (unboundDeity != null)
+                {
+                    //Looks for the Unbound Deity on the Battlefield
+                    SpellAlignment spellAlignment = GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.alignment;
+                    //Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments
+                    if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
+                    {
+                        Debug.Log("Hated Alignment. Deity becomes angrier");
+                    }
+                    else
+                    {
+                        Debug.Log("Not Hated Alignment. Nothing happens to Deity");
+                    }
+                }
             }
             else
             {
@@ -68,24 +83,24 @@ public class SpellcastingController : MonoBehaviour
             //TileController targetUnitTileController = GridManager.Instance.GetTileControllerInstance(currentTargetedUnit.GetComponent<Unit>().currentXCoordinate, currentTargetedUnit.GetComponent<Unit>().currentYCoordinate);
             //targetUnitTileController.DeselectTile();
         }
-        }
-        public bool CheckActivePlayerUnitOpportunityPoints()
+    }
+    public bool CheckActivePlayerUnitOpportunityPoints()
+    {
+        if (GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints > 0)
         {
-            if (GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
-        public void SpendPlayerManaPoints()
+        else
         {
-            GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitManaPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.manaPointsCost;
-        }
-        public void SpendPlayerUnitOpportunityPoints()
-        {
-            GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.opportunityPointsCost;
+            return false;
         }
     }
+    public void SpendPlayerManaPoints()
+    {
+        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitManaPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.manaPointsCost;
+    }
+    public void SpendPlayerUnitOpportunityPoints()
+    {
+        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.opportunityPointsCost;
+    }
+}

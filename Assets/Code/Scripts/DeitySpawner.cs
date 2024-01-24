@@ -13,12 +13,7 @@ public class DeitySpawner : MonoBehaviour
         if (deityRoll <= 6 && deityRoll >= 3)
         {
             Instantiate(deity, deitySpawnPosition);
+            GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = deity.GetComponent<Deity>();
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
