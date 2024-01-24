@@ -36,6 +36,8 @@ public class Unit : MonoBehaviour
 
     public HealthChangeEvent onHealthChanged = new HealthChangeEvent();
 
+    public GameObject unitProfilePanel;
+
     public float HealthPoints
     {
         get { return unitHealthPoints; }
