@@ -154,7 +154,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             if (detectedUnit != null)
             {
                 //If the Tile has a Detected Unit and is a Player Unit
-                if (detectedUnit.gameObject.tag == "Player")
+                if (detectedUnit.gameObject.tag == "Player" && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
                 {
                     //If the Grid Manager has not currently an Active Player Unit
                     if (GridManager.Instance.currentPlayerUnit == null)
@@ -218,8 +218,10 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         //The Player left clicks on a Tile with an Enemy on it while ATTACK SELECTION MODE (aka, Targeting during Spells) is Active
         else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
         {
-            //The System retrieves the coordinates from the Grid and sets the corresponding Unit as the Target
+            GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitAttacking;
+            //The System sets the Active Character Unit as Attacking
             Unit targetUnit = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
+            //The System retrieves the coordinates from the Grid and sets the corresponding Unit as the Target
             if (targetUnit != null && targetUnit.tag == "Enemy")
             {
                 //The System retrieves the Tile Controller Instance from the Target Unit
@@ -231,22 +233,29 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                 //A Red selector icon spawns over the Target Unit's head.
                 GameObject newTargetIcon = Instantiate(targetIcon, targetUnit.transform.localPosition + (targetUnit.transform.up * 2), Quaternion.identity);
                 Debug.Log("Set Unit" + targetUnit.gameObject.name + " as current Target");
+
+                GameObject newCurrentlySelectedEnemyUnitPanel = Instantiate(currentlySelectedUnitPanel, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+                newCurrentlySelectedEnemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
+                newCurrentlySelectedEnemyUnitPanel.tag = "TargetedEnemyUnitProfile";
+                detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedEnemyUnitPanel;
+                OnClickedTileWithUnit(detectedUnit);
             }
         }
         //If the Target is already waiting for confirmation, I can attack that target.
         else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
         {
+            //Play VFX Feedback on Enemy Target
             OnTileConfirmedAttackMode();
         }
     }
     private void HandleTileDeselection()
     {
         //This is the logic that happens when the Player clicks the Right Mouse Button and is usually employed to deselect Units, whether Units or Enemies.
-        Debug.Log("Tile deselected with Right Click");
+        Debug.Log("Pressed Right Click on Tile");
         if (currentSingleTileStatus == SingleTileStatus.selectedPlayerUnitOccupiedTile)
         //What happens if the Player clicks with the Right button when the Tile is marked as occupied by a SELECTED (Active) Player Unit
         {
-            if (detectedUnit.tag == "ActivePlayerUnit")
+            if (detectedUnit.tag == "ActivePlayerUnit" && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitAttacking)
             {
                 Debug.Log("Active Player Unit Selection. Resets the Active Player Unit Selection");
                 GridManager.Instance.currentPlayerUnit = null;
@@ -278,13 +287,15 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             //During Single Target Spell Selection Mode
             if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
             {
-                currentSingleTileStatus = SingleTileStatus.attackSelectionModeActive;
+                detectedUnit.GetComponent<Unit>().ownedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.white;
+                currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
                 //The Enemy Target Icon disappears
                 GameObject[] enemyTargetIcons = GameObject.FindGameObjectsWithTag("EnemyTargetIcon");
                 foreach (GameObject enemyTargetIcon in enemyTargetIcons)
                 {
                     Destroy(enemyTargetIcon);
                 }
+                Destroy(GameObject.FindGameObjectWithTag("TargetedEnemyUnitProfile"));
             }
             else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
             {
@@ -298,6 +309,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                     tile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
                     GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
                 }
+                Destroy(GameObject.FindGameObjectWithTag("TargetedEnemyUnitProfile"));
             }
             else
             {

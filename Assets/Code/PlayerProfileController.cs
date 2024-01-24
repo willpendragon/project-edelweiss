@@ -82,6 +82,18 @@ public class PlayerProfileController : MonoBehaviour
             currentProfileOwner = ProfileOwner.activePlayerUnit;
 
         }
+
+        else if (detectedUnit.tag == "TargetedEnemyUnitProfile" && currentProfileOwner != ProfileOwner.enemyUnit)
+        {
+            activeCharacterPortrait.GetComponent<Image>().overrideSprite = detectedUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
+            activeCharacterName.text = detectedUnit.GetComponent<Unit>().unitTemplate.unitName;
+            activeCharacterHealthPoints.text = detectedUnit.GetComponent<Unit>().unitHealthPoints.ToString();
+            activeCharacterManaPoints.text = detectedUnit.GetComponent<Unit>().unitManaPoints.ToString();
+            activeCharacterShieldPoints.text = detectedUnit.GetComponent<Unit>().unitShieldPoints.ToString();
+            activeCharacterOpportunityPoints.text = detectedUnit.GetComponent<Unit>().unitOpportunityPoints.ToString();
+            currentProfileOwner = ProfileOwner.activePlayerUnit;
+
+        }
         //GameObject activePlayerUnit = detectedUnit;//GameObject.FindGameObjectWithTag("ActivePlayerUnit");
     }
 

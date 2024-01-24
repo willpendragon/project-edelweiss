@@ -304,9 +304,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 893d95329389088439ac1f4d67aad545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthPoints: 50
-  attackPower: 5
   speed: 0
+  attackPower: 5
   player: {fileID: 0}
   opportunity: 1
   battleManager: {fileID: 0}
@@ -395,6 +394,7 @@ MonoBehaviour:
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
+  unitProfilePanel: {fileID: 0}
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

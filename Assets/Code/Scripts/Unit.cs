@@ -116,6 +116,8 @@ public class Unit : MonoBehaviour
         }
         else
         {
+            GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
+            currentUnitLifeCondition = UnitLifeCondition.unitDead;
             Debug.Log("This Unit has died");
         }
     }

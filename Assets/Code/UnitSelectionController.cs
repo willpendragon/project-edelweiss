@@ -10,6 +10,7 @@ public class UnitSelectionController : MonoBehaviour
     {
         unitSelected,
         unitDeselected,
+        unitAttacking,
         unitWaiting
     }
     //public delegate void ActiveCharacterSelected();
@@ -26,6 +27,7 @@ public class UnitSelectionController : MonoBehaviour
     public GameObject waitButton;
     public UnitSelectionStatus currentUnitSelectionStatus;
     public SpellUIController unitSpellUIController;
+    public SpriteRenderer unitSprite;
 
     public void Start()
     {
@@ -60,8 +62,11 @@ public class UnitSelectionController : MonoBehaviour
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
         unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = "Player";
+        this.
+        unitSprite.material.color = Color.grey;
         GridManager.Instance.currentPlayerUnit = null;
         currentUnitSelectionStatus = UnitSelectionStatus.unitWaiting;
+        Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
         OnUnitWaiting();
     }
 }
