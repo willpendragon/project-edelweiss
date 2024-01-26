@@ -32,6 +32,9 @@ public class Unit : MonoBehaviour
     public float unitManaPoints;
     public float unitShieldPoints;
 
+    public delegate void CheckGameOver();
+    public static event CheckGameOver OnCheckGameOver;
+
     public UnitLifeCondition currentUnitLifeCondition;
 
     public HealthChangeEvent onHealthChanged = new HealthChangeEvent();
@@ -121,6 +124,7 @@ public class Unit : MonoBehaviour
             Debug.Log("This Unit has died");
             Destroy(unitProfilePanel);
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+            OnCheckGameOver();
         }
     }
 }

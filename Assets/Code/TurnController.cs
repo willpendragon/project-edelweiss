@@ -21,27 +21,32 @@ public class TurnController : MonoBehaviour
 
     public Turn currentTurn;
     public GameObject[] playerUnitsOnBattlefield;
+    public GameObject[] enemyUnitsOnBattlefield;
 
     // Start is called before the first frame update
 
     public void OnEnable()
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatus;
-        EnemyAgent.OnCheckPlayer += PlayerGameOverCheck;
+        //EnemyAgent.OnCheckPlayer += PlayerGameOverCheck;
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
+        Unit.OnCheckGameOver += GameOverCheck;
     }
     public void OnDisable()
     {
         UnitSelectionController.OnUnitWaiting -= CheckPlayerUnitsStatus;
-        EnemyAgent.OnCheckPlayer -= PlayerGameOverCheck;
+        //EnemyAgent.OnCheckPlayer -= PlayerGameOverCheck;
         EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
+        Unit.OnCheckGameOver -= GameOverCheck;
+
     }
     void Start()
     {
         currentTurn = Turn.playerTurn;
         playerUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Player");
+        enemyUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
     }
     public void CheckPlayerUnitsStatus()
     {
@@ -65,6 +70,34 @@ public class TurnController : MonoBehaviour
         else
         {
             Debug.Log("Player Party is still active");
+        }
+    }
+
+    public void GameOverCheck()
+    {
+        if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Enemy Party was defeated");
+            //Activate Game Over UI
+            //Active Game Over Flow
+        }
+        else if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Enemy Party is still in game");
+            //Activate Game Over UI
+            //Active Game Over Flow
+        }
+        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Player Party was defeated");
+            //Activate Game Over UI
+            //Active Game Over Flow
+        }
+        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Player Party is still in game");
+            //Activate Game Over UI
+            //Active Game Over Flow
         }
     }
     public void RestorePlayerUnitsOpportunityPoints()

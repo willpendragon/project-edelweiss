@@ -157,7 +157,7 @@ public class EnemyAgent : MonoBehaviour
             localAttackVFXAnimator.GetComponent<Animator>().SetTrigger("BaseAnimation");
             Destroy(localAttackVFXAnimator, 1);
             //EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
-            OnCheckPlayer();
+            //OnCheckPlayer();
             Debug.Log("Enemy Attacking");
         }
     }
@@ -171,7 +171,7 @@ public class EnemyAgent : MonoBehaviour
             attackVFX.transform.position = player.transform.position;
             attackVFX.Play();
             */
-            OnCheckPlayer();
+            //OnCheckPlayer();
         }
     }
 
