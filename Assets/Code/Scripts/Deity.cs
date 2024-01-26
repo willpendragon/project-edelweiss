@@ -5,7 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using static Deity;
 
-public enum alignmentType
+/*public enum alignmentType
 {
     red,
     blue
@@ -17,6 +17,7 @@ public enum blackListedAlignment
     blue
 }
 
+*/
 public enum DeityState
 {
     indifferent,
@@ -27,14 +28,14 @@ public enum DeityState
 public class Deity : MonoBehaviour
 {
 
-    public blackListedAlignment currentBlacklistedAlignment;
-    public alignmentType deityAlignment;
+    //public blackListedAlignment currentBlacklistedAlignment;
+    //public alignmentType deityAlignment;
     public List<GameObject> sinnersList;
     public Player player;
     public TextMeshProUGUI deityAttackNotification;
     public BattleManager battleManager;
     public BattleInterface battleInterface;
-    [SerializeField] float enmity;
+    public float enmity;
     [SerializeField] GameObject deityAttackVFX;
     [SerializeField] GameObject deityFieldEffectVFX;
     public int judgmentTurnLimit;
@@ -60,6 +61,9 @@ public class Deity : MonoBehaviour
     public delegate void PlayerTurn(string playerTurn);
     public static event PlayerTurn OnPlayerTurn;
 
+    public delegate void DeitySpawn(GameObject deity);
+    public static event DeitySpawn OnDeitySpawn;
+
     private void OnEnable()
     {
         EnemyTurnManager.OnDeityTurn += DeityBehaviour;
@@ -73,7 +77,7 @@ public class Deity : MonoBehaviour
 
     public void Start()
     {
-
+        OnDeitySpawn(this.gameObject);
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
         OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
         OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
@@ -83,7 +87,7 @@ public class Deity : MonoBehaviour
     {
         //player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
-    public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
+    /*public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
     //This function keeps track of the behaviour of the Player during the gameplay and increases the Enmity
     //value in relation to the type of the Move chosen by the Player.
     {
@@ -100,6 +104,7 @@ public class Deity : MonoBehaviour
             unit.GetComponent<SinTracker>().IncreaseEnmity(deityAlignment);
         }
     }
+    */
 
     public void DeityBehaviour()
     //A simple method that informs the Deity logic. Needs refactoring after prototyping.

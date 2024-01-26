@@ -9,25 +9,26 @@ public class SinTracker : MonoBehaviour
     public float blueEnmity;
     [SerializeField] TextMeshProUGUI enmityScoreRed;
     [SerializeField] TextMeshProUGUI enmityScoreBlue;
-    
-public void IncreaseEnmity(alignmentType deityAlignment)
-{
-    switch(deityAlignment)
+
+    /*public void IncreaseEnmity(alignmentType deityAlignment)
     {
-        case alignmentType.red:
-            redEnmity += 1;
-            UpdateEnmityScore();
-            break;
-        case alignmentType.blue:
-            blueEnmity += 1;
-            UpdateEnmityScore();
-            break;
+        switch(deityAlignment)
+        {
+            case alignmentType.red:
+                redEnmity += 1;
+                UpdateEnmityScore();
+                break;
+            case alignmentType.blue:
+                blueEnmity += 1;
+                UpdateEnmityScore();
+                break;
+        }
     }
-}
-public void UpdateEnmityScore()
-{
-    enmityScoreRed.text = redEnmity.ToString();
-    enmityScoreBlue.text = blueEnmity.ToString();
-}
+    */
+    public void UpdateEnmityScore()
+    {
+        enmityScoreRed.text = redEnmity.ToString();
+        enmityScoreBlue.text = blueEnmity.ToString();
+    }
 }
 

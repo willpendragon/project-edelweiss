@@ -12,6 +12,9 @@ public class SpellcastingController : MonoBehaviour
 
     public Unit currentTargetedUnit;
     public Spell currentSelectedSpell;
+
+    public delegate void CastedSpellTypeHatedbyDeity();
+    public static event CastedSpellTypeHatedbyDeity OnCastedSpellTypeHatedbyDeity;
     public void OnEnable()
     {
         GridTargetingController.OnTargetedUnit += SetTargetedUnit;
@@ -62,6 +65,8 @@ public class SpellcastingController : MonoBehaviour
                     //Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments
                     if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
                     {
+                        float enmityIncrease = GameObject.FindGameObjectWithTag("Deity").GetComponent<Deity>().enmity++;
+                        OnCastedSpellTypeHatedbyDeity();
                         Debug.Log("Hated Alignment. Deity becomes angrier");
                     }
                     else

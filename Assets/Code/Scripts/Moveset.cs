@@ -86,7 +86,7 @@ public class Moveset : MonoBehaviour
                 player.currentAttackAlignmentType = attackAlignmentType.red;
                 //player.currentTarget.GetComponent<EnemyAgent>().TakeDamage(player.attackPower);
                 //currentTarget.GetComponent<Enemy>().UpdateEnemyHealthDisplay();
-                player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
+                //player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
                 opportunityPoints--;
                 OnPlayerMeleeAttack(player.currentTarget.transform);
                 player.gameObject.GetComponentInChildren<Moveset>().player.manaPoints -= 10;
@@ -112,7 +112,7 @@ public class Moveset : MonoBehaviour
                 //battleInterface.SetMovePanelName("Blue Attack");
                 player.currentAttackAlignmentType = attackAlignmentType.blue;
                 //player.currentTarget.GetComponent<EnemyAgent>().TakeDamage(player.attackPower + 10);
-                player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
+                //player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
                 opportunityPoints--;
                 player.gameObject.GetComponentInChildren<Moveset>().player.manaPoints -= 5;
                 player.UpdateManaPointsDisplay();
@@ -137,7 +137,7 @@ public class Moveset : MonoBehaviour
             player.unitShield += protectionShieldIncreaseValue;
             player.UpdatePlayerShieldDisplay();
             player.currentAttackAlignmentType = attackAlignmentType.blue;
-            player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
+            //player.deity.SinTracker(player.currentAttackAlignmentType, this.gameObject);
             opportunityPoints--;
             CheckOpportunityPoints();
             Debug.Log("Shield Increased");

@@ -96,7 +96,7 @@ public class Unit : MonoBehaviour
 
                 // Convert grid coordinates back to world position for actual movement
                 Vector3 worldPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate);
-                transform.position = worldPosition;
+                transform.position = worldPosition + new Vector3(0, transform.localScale.y / 2, 0);
 
                 // Update current grid coordinates
                 currentXCoordinate = tile.tileXCoordinate;
