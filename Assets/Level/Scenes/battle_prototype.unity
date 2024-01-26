@@ -1828,15 +1828,15 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 5df72e7ee931de640876d70637e88ac2, type: 2}
     - target: {fileID: 7563733636471064578, guid: bc62281fdd4fddb4daf7fae8fc10e642, type: 3}
       propertyPath: unitMovementLimit
-      value: 8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7563733636471064578, guid: bc62281fdd4fddb4daf7fae8fc10e642, type: 3}
       propertyPath: startingXCoordinate
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7563733636471064578, guid: bc62281fdd4fddb4daf7fae8fc10e642, type: 3}
       propertyPath: startingYCoordinate
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7563733636471064578, guid: bc62281fdd4fddb4daf7fae8fc10e642, type: 3}
       propertyPath: gridMovementController

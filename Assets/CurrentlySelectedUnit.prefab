@@ -169,7 +169,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6254837134825323597
 RectTransform:
   m_ObjectHideFlags: 0
@@ -487,6 +487,7 @@ MonoBehaviour:
   activeCharacterManaPointsSlider: {fileID: 6254837136158420259}
   activeCharacterShieldPointsSlider: {fileID: 6254837135821918235}
   activeCharacterOpportunityPointsSlider: {fileID: 6254837134989884888}
+  currentProfileOwner: 0
 --- !u!1 &6254837134989884894
 GameObject:
   m_ObjectHideFlags: 0
@@ -1782,7 +1783,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6254837136136088361
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2281,7 +2282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6254837136307634466
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2575,7 +2576,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6254837136354740832
 RectTransform:
   m_ObjectHideFlags: 0

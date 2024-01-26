@@ -181,7 +181,6 @@ public class BattleManager : MonoBehaviour
         {
             EnemyAgent enemyScript = enemy.GetComponent<EnemyAgent>();
             enemyScript.opportunity = 1;
-            enemyScript.UpdateOpportunityDisplay();
         }
     }
 

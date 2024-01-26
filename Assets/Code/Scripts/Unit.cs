@@ -110,15 +110,17 @@ public class Unit : MonoBehaviour
     }
     public void CheckUnitHealthStatus()
     {
-        if (unitHealthPoints >= 0)
+        if (unitHealthPoints > 0)
         {
             Debug.Log("Unit is Still Alive");
         }
-        else
+        else if (unitHealthPoints <= 0)
         {
             GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
             Debug.Log("This Unit has died");
+            Destroy(unitProfilePanel);
+            Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
         }
     }
 }

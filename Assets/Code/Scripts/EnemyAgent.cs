@@ -118,7 +118,6 @@ public class EnemyAgent : MonoBehaviour
         }
         //Define Opportunity Spending for the Enemy consistently with the Player
         opportunity -= 1;
-        UpdateOpportunityDisplay();
     }
 
     //Rolls the Move the Enemy is going to use
@@ -176,27 +175,4 @@ public class EnemyAgent : MonoBehaviour
         }
     }
 
-    //I should create a separe class for controlling the Enemy Details UI
-    /*public void UpdateEnemyHealthDisplay()
-    {
-        healthPointsCounter.text = healthPoints.ToString();
-    }
-    */
-
-    public void UpdateEnemyReceivedDamageDisplay(float receivedDamage)
-    {
-        receivedDamageCounter.text = receivedDamage.ToString();
-        StartCoroutine("ResetReceivedDamageDisplay");
-    }
-
-    IEnumerator ResetReceivedDamageDisplay()
-    {
-        yield return new WaitForSeconds(1);
-        receivedDamageCounter.text = "";
-    }
-
-    public void UpdateOpportunityDisplay()
-    {
-        opportunityCounter.text = opportunity.ToString();
-    }
 }

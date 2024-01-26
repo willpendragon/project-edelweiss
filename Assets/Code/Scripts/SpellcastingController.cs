@@ -7,12 +7,8 @@ public class SpellcastingController : MonoBehaviour
     public delegate void CastingSpell();
     public static event CastingSpell OnCastingSpell;
 
-    public delegate void CastedSpell();
-    public static event CastedSpell OnCastedSpell;
-
     public delegate void CastedSpellTextNotification(string spellName);
     public static event CastedSpellTextNotification OnCastedSpellTextNotification;
-
 
     public Unit currentTargetedUnit;
     public Spell currentSelectedSpell;
@@ -52,7 +48,10 @@ public class SpellcastingController : MonoBehaviour
                 //currentTargetedUnit.gameObject.GetComponent<EnemyAgent>().EnemyTakingDamage.Invoke();
                 SpendPlayerManaPoints();
                 SpendPlayerUnitOpportunityPoints();
-                OnCastedSpell();
+                GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(GridManager.Instance.currentPlayerUnit.GetComponent<Unit>());
+                //Updates the Active Player Unit Profile Panel
+                currentTargetedUnit.GetComponent<Unit>().unitProfilePanel.GetComponent<PlayerProfileController>().UpdateTargetedUnitProfile(currentTargetedUnit.GetComponent<Unit>());
+                //Updates the Enemy Unit Profile Panel
                 OnCastedSpellTextNotification(GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.name);
                 Debug.Log("Using Spell on Enemy");
                 Deity unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity;
