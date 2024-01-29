@@ -8,16 +8,15 @@ public class DeityEnmityTrackerController : MonoBehaviour
 {
     public void OnEnable()
     {
-        Deity.OnDeitySpawn += SetDeity;
+        //Deity.OnDeitySpawn += SetDeity;
         SpellcastingController.OnCastedSpellTypeHatedbyDeity += UpdateDeityEnmityTracker;
     }
     public void OnDisable()
     {
-        Deity.OnDeitySpawn -= SetDeity;
+        //Deity.OnDeitySpawn -= SetDeity;
         SpellcastingController.OnCastedSpellTypeHatedbyDeity -= UpdateDeityEnmityTracker;
     }
-
-    public TextMeshProUGUI deityEnmityTracker;
+    public TextMeshProUGUI deityEnmityPointsCounter;
     public Deity deity;
     public void SetDeity(GameObject deityGO)
     {
@@ -25,6 +24,7 @@ public class DeityEnmityTrackerController : MonoBehaviour
     }
     public void UpdateDeityEnmityTracker()
     {
-        deityEnmityTracker.text = deity.enmity.ToString();
+        Debug.Log("Updating Enmity Tracker");
+        deityEnmityPointsCounter.text = deity.enmity.ToString();
     }
 }

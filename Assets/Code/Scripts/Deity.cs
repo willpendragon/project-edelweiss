@@ -40,8 +40,11 @@ public class Deity : MonoBehaviour
     [SerializeField] GameObject deityFieldEffectVFX;
     public int judgmentTurnLimit;
     public DeityState currentDeityState;
-    public int judgmentAttackPower = 1000;
+    //public int judgmentAttackPower = 1000;
     public List<SpellAlignment> hatedSpellAlignments;
+    public GameObject deityEnmityTracker;
+    public float enmityThreshold;
+    public float deitySpecialAttackPower;
 
     public delegate void DeityJudgment();
     public static event DeityJudgment OnDeityJudgment;
@@ -67,27 +70,32 @@ public class Deity : MonoBehaviour
     private void OnEnable()
     {
         EnemyTurnManager.OnDeityTurn += DeityBehaviour;
-        TileController.OnJudgmentAttackSuccessful += ApplyJudgmentAttackDamage;
+        //TileController.OnJudgmentAttackSuccessful += ApplyJudgmentAttackDamage;
     }
     private void OnDisable()
     {
         EnemyTurnManager.OnDeityTurn -= DeityBehaviour;
-        TileController.OnJudgmentAttackSuccessful -= ApplyJudgmentAttackDamage;
+        //TileController.OnJudgmentAttackSuccessful -= ApplyJudgmentAttackDamage;
     }
 
     public void Start()
     {
-        OnDeitySpawn(this.gameObject);
+        //OnDeitySpawn(this.gameObject);
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
         OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
         OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
+        GameObject newDeityEnmityTracker = GameObject.FindGameObjectWithTag("TurnTrackerDetailsContainer");
+        //Finds the Turn Tracker Details Panel where to instance the Deity Enmity Tracker
+        newDeityEnmityTracker = Instantiate(deityEnmityTracker, newDeityEnmityTracker.transform);
+        newDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().SetDeity(this.gameObject);
+        newDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
+        deityEnmityTracker = newDeityEnmityTracker;
     }
 
-    public void Update()
+    /*public void Update()
     {
-        //player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
-    /*public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
+    public void SinTracker(attackAlignmentType currentAttackAlignmentType, GameObject unit)
     //This function keeps track of the behaviour of the Player during the gameplay and increases the Enmity
     //value in relation to the type of the Move chosen by the Player.
     {
@@ -112,31 +120,23 @@ public class Deity : MonoBehaviour
     {
         StartCoroutine("EndDeityTurn");
         Debug.Log("Deity Behaviour");
-        //At Turn 1 & 2, this Deity stays Indifferent and just observes the battlefield.
-        if (battleManager.turnCounter == 1 || battleManager.turnCounter == 2)
+        if (PerformDeityEnmityCheck())
         {
-            currentDeityState = DeityState.indifferent;
+            //currentDeityState = DeityState.indifferent;
+            GameObject newDeityAttackVFX = Instantiate(deityAttackVFX, transform);
+            Destroy(newDeityAttackVFX, 3);
+            Debug.Log("Deity Attacks");
+            GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+            foreach (var playerUnit in playerUnitsOnBattlefield)
+            {
+                playerUnit.GetComponent<Unit>().unitHealthPoints -= deitySpecialAttackPower;
+            }
+            enmity = 0;
+            deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
         }
-        //At Turn 3, this Deity casts a Deity Field Effect on the battlefield.
-        else if (battleManager.turnCounter == 3)
+        else
         {
-            DeityFieldEffect();
-        }
-        //At Turn 4 & 5, this Deity casts a powerful attack (Blizzard).
-        else if (battleManager.turnCounter == 4 || battleManager.turnCounter == 5)
-        {
-            DeityAttack();
-        }
-        //From Turn 6 until Turn 8, the Deity controls the Battleground grids and change the tiles alignment to Blue.
-        else if (battleManager.turnCounter <= 8)
-        {
-            DeityGridAlteration();
-        }
-        //At Turn 9, the Deity unleashes the Judgment move. If the Player survives, they won the battle.
-        else if (battleManager.turnCounter == 9)
-        {
-            DeityJudgmentMove();
-            Debug.Log("Deity Judgment attack");
+            Debug.Log("Deity doesn't do anything");
         }
     }
     public void DeityAttack()
@@ -152,14 +152,14 @@ public class Deity : MonoBehaviour
         StartCoroutine("ResetDeityAttack");
     }
 
-    public void DeityFieldEffect()
+    /*public void DeityFieldEffect()
     //A simple effect provoked by the Deity that affects the Units on the Battlefield with varying effects.
     {
         /*if (deityFieldEffectVFX != null)
         {
             deityFieldEffectVFX.SetActive(true);
         }
-        */
+        
         OnDeityFieldEffectActivation();
         OnDeityNotificationUpdate("The Deity has created a Field Effect");
         battleManager.fieldEffectStatus = FieldEffectStatus.active;
@@ -183,6 +183,7 @@ public class Deity : MonoBehaviour
     {
         OnDeityJudgment();
     }
+
     IEnumerator ResetDeityAttack()
     //This coroutine triggers at the end of the Deity's attack, resetting the UI displays and the VFX.
     {
@@ -196,20 +197,36 @@ public class Deity : MonoBehaviour
         //battleManager.turnCounter = 0;
         //battleManager.turnTracker.text = "0";
     }
+    */
     IEnumerator EndDeityTurn()
     {
-        Debug.Log("Ending Deity Turn");
-        judgmentTurnLimit--;
+        //judgmentTurnLimit--;
         OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
         yield return new WaitForSeconds(1f);
+        Debug.Log("Ending Deity Turn");
         OnPlayerTurnSwap();
         OnPlayerTurn("Player Turn");
     }
 
-    public void ApplyJudgmentAttackDamage()
+    /*public void ApplyJudgmentAttackDamage()
     {
         player.GetComponent<Player>().healthPoints = judgmentAttackPower;
         //Multiply for the Enmity Value the Player accrued towards this Deity
+    }
+    */
+    public bool PerformDeityEnmityCheck()
+    {
+        if (enmity >= enmityThreshold)
+        {
+            //Deity Attacks
+            return true;
+        }
+        else
+
+        {
+            //Deity doesn't Attack
+            return false;
+        }
     }
 }
 
