@@ -203,6 +203,7 @@ GameObject:
   - component: {fileID: 5009294011632168283}
   - component: {fileID: 7714452247050051452}
   - component: {fileID: 3031252642805861247}
+  - component: {fileID: 361118017173477511}
   m_Layer: 0
   m_Name: Dummy1
   m_TagString: Enemy
@@ -353,6 +354,7 @@ MonoBehaviour:
           m_StringArgument: enemyHurt
           m_BoolArgument: 0
         m_CallState: 2
+  unitStunStatusIcon: {fileID: 3406946445924013396, guid: e9adfb87616477e4784c4a1060a542fd, type: 3}
 --- !u!114 &7714452247050051452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +397,23 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   unitProfilePanel: {fileID: 0}
+  unitStatusController: {fileID: 361118017173477511}
+--- !u!114 &361118017173477511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009294011632168286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd44dfaa069c60d47b66eef555019be8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnitStun:
+    m_PersistentCalls:
+      m_Calls: []
+  unitCurrentStatus: 1
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

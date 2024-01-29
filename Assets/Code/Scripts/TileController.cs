@@ -200,7 +200,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                         Debug.Log("Clicked on a Tile with Player Unit on it");
                     }
                 }
-                else if (detectedUnit.gameObject.tag == "Enemy")
+                else if (detectedUnit.gameObject.tag == "Enemy" && detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+                //Doesn't select the Enemy Unit if it is dead.
                 {
                     if (detectedUnit.GetComponent<Unit>().unitProfilePanel == null)
                     {
@@ -230,7 +231,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             //The System sets the Active Character Unit as Attacking
             Unit targetUnit = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
             //The System retrieves the coordinates from the Grid and sets the corresponding Unit as the Target
-            if (targetUnit != null && targetUnit.tag == "Enemy")
+            if (targetUnit != null && targetUnit.tag == "Enemy" && targetUnit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+            //Selects the Enemy Unit is present on the tile and it's not already dead.
             {
                 //The System retrieves the Tile Controller Instance from the Target Unit
                 TileController targetUnitTileController = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);

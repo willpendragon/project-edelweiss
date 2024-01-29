@@ -61,63 +61,38 @@ public class EnemyAgent : MonoBehaviour
     public UnityEvent<Transform> EnemyMeleeAttack;
     public UnityEvent EnemyTakingDamage;
 
+    public GameObject unitStunStatusIcon;
+
     public void Start()
     {
-        //UpdateEnemyHealthDisplay();
-        //Need to create a new Display (Final Fantasy Tactics style)
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        //Irrelevant. Player is a Unit now.
-        battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
-        //Irrelevant. BattleManager is a Singleton now.
         opportunityCounter.text = opportunity.ToString();
-        enemyOriginalPosition = this.gameObject.transform.position;
-        //Irrelevant. I'm using the Grid Manager for controlling positions.
     }
-
-    //Receiving Damage Logic
-    /*public void TakeDamage(float receivedDamage)
-    {
-        healthPoints -= receivedDamage;
-        Debug.Log("Receiving Damage from Player");
-        //Should take damage away from the Unit HP, not the EnemyAgent class
-        Debug.Log("Enemy damage =" + receivedDamage);
-        UpdateEnemyHealthDisplay();
-        UpdateEnemyReceivedDamageDisplay(receivedDamage);
-        EnemyTakingDamage.Invoke();
-        Invoke("EnemyTakesDamage", 0.5f);
-    }
- 
-    public void EnemyTakesDamage()
-    {
-        if (healthPoints <= 0)
-        {
-            enemyAnimator.SetInteger("animation", 5);
-            healthPointsCounter.text = "Dead";
-            this.gameObject.tag = "DeadEnemy";
-            OnExperienceReward(enemyExperienceReward);
-            OnCoinsReward(enemyCoinsReward);
-            OnCheckEnemiesOnBattlefield();
-        }
-    }
-    */
 
     //Enemy Turn Sequence
     public void EnemyTurnEvents()
     {
-        Unit targetUnit = SelectTargetUnit();
-        //Decide the next move based on the battlefield situation and character attitude
-        if (EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
+        if (this.gameObject.tag != "DeadEnemy" && this.gameObject.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+        //The Enemy Unit doesn't evaluate the next move if it's dead.
         {
-            Attack(targetUnit);
-            Debug.Log("Enemy uses Attack");
+            Unit targetUnit = SelectTargetUnit();
+            //Decide the next move based on the battlefield situation and character attitude
+            if (EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
+            {
+                Attack(targetUnit);
+                Debug.Log("Enemy Attack Roll");
+            }
+            else if (EnemyMoveRoll() <= maxEnemyMoveRollRange / 2)
+            {
+                Debug.Log("Enemy Stun Ability Roll");
+                StunAbility(targetUnit);
+            }
+            //Define Opportunity Spending for the Enemy consistently with the Player
+            opportunity -= 1;
         }
-        else if (EnemyMoveRoll() <= maxEnemyMoveRollRange / 2)
+        else
         {
-            Debug.Log("Enemy Uses Stun Ability");
-            StunAbility();
+            Debug.Log("Enemy Unit is dead and can't attack anymore");
         }
-        //Define Opportunity Spending for the Enemy consistently with the Player
-        opportunity -= 1;
     }
 
     //Rolls the Move the Enemy is going to use
@@ -144,35 +119,30 @@ public class EnemyAgent : MonoBehaviour
     //Enemy Base Moveset
     public void Attack(Unit targetUnit)
     {
-        if (this.gameObject.tag != "DeadEnemy")
-        {
-            //const float targetUnitReductionFactor = 0.05f;
-            //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
-            float reducedDamage = attackPower; //* damageReductionFactor//
-            targetUnit.HealthPoints -= (reducedDamage);
-            //targetUnit.UpdatePlayerHealthDisplay();
-            //targetUnit.PlayHurtAnimation();
-            GameObject localAttackVFXAnimator = Instantiate(attackVFXAnimator, targetUnit.transform);
-            //Rework for VFX to spawn directly on the Player's tile position
-            localAttackVFXAnimator.GetComponent<Animator>().SetTrigger("BaseAnimation");
-            Destroy(localAttackVFXAnimator, 1);
-            //EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
-            //OnCheckPlayer();
-            Debug.Log("Enemy Attacking");
-        }
+        //const float targetUnitReductionFactor = 0.05f;
+        //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
+        float reducedDamage = attackPower; //* damageReductionFactor//
+        targetUnit.HealthPoints -= (reducedDamage);
+        //targetUnit.UpdatePlayerHealthDisplay();
+        //targetUnit.PlayHurtAnimation();
+        GameObject localAttackVFXAnimator = Instantiate(attackVFXAnimator, targetUnit.transform);
+        //Rework for VFX to spawn directly on the Player's tile position
+        localAttackVFXAnimator.GetComponent<Animator>().SetTrigger("BaseAnimation");
+        Destroy(localAttackVFXAnimator, 1);
+        //EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
+        //OnCheckPlayer();
+        Debug.Log("Enemy Attacking");
     }
-    public void StunAbility()
+    public void StunAbility(Unit targetUnit)
     {
-        if (this.gameObject.tag != "DeadEnemy")
-        {
-            /*targetUnit.GetComponent<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
-            targetUnit.GetComponent<UnitStatusController>().UnitStun.Invoke();
-            targetUnit.PlayHurtAnimation();
-            attackVFX.transform.position = player.transform.position;
-            attackVFX.Play();
-            */
-            //OnCheckPlayer();
-        }
+        targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
+        targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
+        Instantiate(unitStunStatusIcon, targetUnit.transform);
+        //targetUnit.PlayHurtAnimation();
+        //attackVFX.transform.position = player.transform.position;
+        //attackVFX.Play();
+
+
     }
 
 }

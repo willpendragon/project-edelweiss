@@ -41,6 +41,8 @@ public class Unit : MonoBehaviour
 
     public GameObject unitProfilePanel;
 
+    public UnitStatusController unitStatusController;
+
     public float HealthPoints
     {
         get { return unitHealthPoints; }

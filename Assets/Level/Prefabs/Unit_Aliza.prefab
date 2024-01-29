@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 556079661300770190}
   - component: {fileID: 556079661300770177}
   - component: {fileID: 556079661300770176}
+  - component: {fileID: 6889659664313542865}
   m_Layer: 0
   m_Name: Unit_Aliza
   m_TagString: Player
@@ -66,6 +67,8 @@ MonoBehaviour:
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
+  unitProfilePanel: {fileID: 0}
+  unitStatusController: {fileID: 6889659664313542865}
 --- !u!114 &3856404906980969926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,6 +141,23 @@ MonoBehaviour:
   waitButton: {fileID: 6278539958340940975, guid: 0504fc7049432f846b5f4ee879490c8e, type: 3}
   currentUnitSelectionStatus: 0
   unitSpellUIController: {fileID: 556079661300770177}
+  unitSprite: {fileID: 0}
+--- !u!114 &6889659664313542865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556079660409014919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd44dfaa069c60d47b66eef555019be8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnitStun:
+    m_PersistentCalls:
+      m_Calls: []
+  unitCurrentStatus: 1
 --- !u!1 &556079661349572503
 GameObject:
   m_ObjectHideFlags: 0

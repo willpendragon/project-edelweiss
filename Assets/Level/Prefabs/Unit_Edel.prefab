@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7441471170864787523}
   - component: {fileID: 7441471170864787522}
   - component: {fileID: 7441471170864787581}
+  - component: {fileID: -6858461416225278963}
   m_Layer: 0
   m_Name: Unit_Edel
   m_TagString: Player
@@ -66,6 +67,8 @@ MonoBehaviour:
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
+  unitProfilePanel: {fileID: 0}
+  unitStatusController: {fileID: -6858461416225278963}
 --- !u!114 &892227224226316687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,6 +112,7 @@ MonoBehaviour:
   waitButton: {fileID: 6278539958340940975, guid: 0504fc7049432f846b5f4ee879490c8e, type: 3}
   currentUnitSelectionStatus: 0
   unitSpellUIController: {fileID: 7441471170864787522}
+  unitSprite: {fileID: 0}
 --- !u!114 &7441471170864787522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,6 +142,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTargetedUnit: {fileID: 0}
   currentSelectedSpell: {fileID: 0}
+--- !u!114 &-6858461416225278963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4490924161125975758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd44dfaa069c60d47b66eef555019be8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnitStun:
+    m_PersistentCalls:
+      m_Calls: []
+  unitCurrentStatus: 1
 --- !u!1 &7441471170850171257
 GameObject:
   m_ObjectHideFlags: 0
