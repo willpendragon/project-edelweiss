@@ -9,6 +9,11 @@ public enum SpellAlignment
     darkness,
     electricity
 }
+public enum SpellType
+{
+    singleTarget,
+    aoe,
+}
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spell")]
 public class Spell : ScriptableObject
 {
@@ -17,5 +22,6 @@ public class Spell : ScriptableObject
     public int manaPointsCost;
     public int opportunityPointsCost;
     public SpellAlignment alignment;
+    public SpellType spellType;
     // Add more spell properties as needed
 }

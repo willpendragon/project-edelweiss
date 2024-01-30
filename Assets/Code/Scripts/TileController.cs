@@ -11,6 +11,7 @@ using UnityEditor;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static TileController;
 
 
 public enum SingleTileStatus
@@ -18,9 +19,14 @@ public enum SingleTileStatus
     characterSelectionModeActive,
     selectionModeActive,
     selectedPlayerUnitOccupiedTile,
+
     attackSelectionModeActive,
     attackSelectionModeWaitingForConfirmation,
-    attackSelectionModeConfirmedTarget
+    attackSelectionModeConfirmedTarget,
+
+    aoeAttackSelectionModeActive,
+    aoeAttackSelectionModeWaitingForConfirmation,
+    aoeAttackSelectionModeConfirmedTarget,
 }
 
 public enum SingleTileCondition
@@ -75,6 +81,15 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public delegate void TileConfirmedAttackMode();
     public static event TileConfirmedAttackMode OnTileConfirmedAttackMode;
+
+    public delegate void TileConfirmedAOESpellMode();
+    public static event TileConfirmedAOESpellMode OnTileConfirmedAOESpellMode;
+
+    public delegate Unit TileClickedAOESpellMode(int x, int y);
+    public static event TileClickedAOESpellMode OnTileClickedAOESpellMode;
+
+    public delegate void TileWaitingForConfirmationAOESpellMode(TileController spellEpicenterTarget);
+    public static event TileWaitingForConfirmationAOESpellMode OnTileWaitingForConfirmationAOESpellMode;
 
     [SerializeField] ParticleSystem redParticle;
     [SerializeField] ParticleSystem blueParticle;
@@ -256,8 +271,33 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
         {
             //Play VFX Feedback on Enemy Target
-            OnTileConfirmedAttackMode();
+            OnTileConfirmedAOESpellMode();
             OnUpdateEnemyTargetUnitProfile(detectedUnit);
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.aoeAttackSelectionModeActive)
+        {
+            GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitAttacking;
+            //The System sets the Active Character Unit as Attacking
+            Unit epicenterTarget = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
+            Debug.Log("Selected AOE Spell Epicenter" + epicenterTarget);
+            //Retrieves the Epicenter of the AOE Attack.
+            if (epicenterTarget != null)
+            {
+                TileController epicenterTargetTileController = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
+                epicenterTargetTileController.currentSingleTileStatus = SingleTileStatus.aoeAttackSelectionModeWaitingForConfirmation;
+                OnTileWaitingForConfirmationAOESpellMode(epicenterTargetTileController);
+
+                foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(epicenterTargetTileController))
+                {
+                    tile.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+                }
+                Debug.Log("Selected AOE Spell Area");
+            }
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.aoeAttackSelectionModeWaitingForConfirmation)
+        {
+            Debug.Log("Confirming use AOE Spell Mode");
+            OnTileConfirmedAOESpellMode();
         }
     }
     private void HandleTileDeselection()

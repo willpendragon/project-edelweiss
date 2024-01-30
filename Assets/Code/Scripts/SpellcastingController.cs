@@ -7,11 +7,15 @@ public class SpellcastingController : MonoBehaviour
     public delegate void CastingSpell();
     public static event CastingSpell OnCastingSpell;
 
+    public delegate void CastingSpellAOE();
+    public static event CastingSpellAOE OnCastingSpellAOE;
+
     public delegate void CastedSpellTextNotification(string spellName);
     public static event CastedSpellTextNotification OnCastedSpellTextNotification;
 
     public Unit currentTargetedUnit;
     public Spell currentSelectedSpell;
+    public TileController aoeSpellEpicenterTile;
 
     public delegate void CastedSpellTypeHatedbyDeity();
     public static event CastedSpellTypeHatedbyDeity OnCastedSpellTypeHatedbyDeity;
@@ -19,20 +23,35 @@ public class SpellcastingController : MonoBehaviour
     {
         GridTargetingController.OnTargetedUnit += SetTargetedUnit;
         TileController.OnTileConfirmedAttackMode += UseCurrentSpellOnCurrentTarget;
+        TileController.OnTileConfirmedAOESpellMode += UseCurrentSpellOnCurrentTargets;
+        TileController.OnTileWaitingForConfirmationAOESpellMode += SetAOESpellEpicenter;
+
     }
     public void OnDisable()
     {
         GridTargetingController.OnTargetedUnit -= SetTargetedUnit;
         TileController.OnTileConfirmedAttackMode -= UseCurrentSpellOnCurrentTarget;
+        TileController.OnTileConfirmedAOESpellMode += UseCurrentSpellOnCurrentTargets;
+        TileController.OnTileWaitingForConfirmationAOESpellMode -= SetAOESpellEpicenter;
 
     }
     public void CastSpell(Spell castedSpell)
     {
         //Sends an event delegate that activates the Attack Selection Mode on the Grid Targeting Controller.
         //Sets the current Target Enemy and the current Spell
-        OnCastingSpell();
-        currentSelectedSpell = castedSpell;
-        Debug.Log("Now Casting" + castedSpell);
+        if (castedSpell != null && castedSpell.spellType == SpellType.singleTarget)
+        {
+            OnCastingSpell();
+            currentSelectedSpell = castedSpell;
+            Debug.Log("Single Target - Now Casting" + castedSpell);
+        }
+        else if (castedSpell != null && castedSpell.spellType == SpellType.aoe)
+        {
+            OnCastingSpellAOE();
+            currentSelectedSpell = castedSpell;
+            Debug.Log("AOE - Now Casting" + castedSpell);
+        }
+
     }
     public void SetTargetedUnit(Unit targetedUnit)
     {
@@ -86,6 +105,20 @@ public class SpellcastingController : MonoBehaviour
             OnCastedSpellTextNotification("Not enough Opportunity Points");
             //TileController targetUnitTileController = GridManager.Instance.GetTileControllerInstance(currentTargetedUnit.GetComponent<Unit>().currentXCoordinate, currentTargetedUnit.GetComponent<Unit>().currentYCoordinate);
             //targetUnitTileController.DeselectTile();
+        }
+    }
+
+    public void SetAOESpellEpicenter(TileController epicenterSpellTarget)
+    {
+        aoeSpellEpicenterTile = epicenterSpellTarget;
+    }
+    public void UseCurrentSpellOnCurrentTargets()
+    {
+        foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(aoeSpellEpicenterTile))
+        {
+            Debug.Log("Using AOE Spell on Multiple Targets");
+            tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+            Destroy(tile.detectedUnit);
         }
     }
     public bool CheckActivePlayerUnitOpportunityPoints()
