@@ -110,6 +110,28 @@ public class GridMovementController : MonoBehaviour
         return neighbours;
     }
 
+    public List<TileController> GetMultipleTiles(TileController tile)
+    {
+        List<TileController> neighbours = new List<TileController>();
+
+        for (int x = -2; x <= 2; x++)
+        {
+            for (int y = -2; y <= 2; y++)
+            {
+                int checkX = tile.tileXCoordinate + x;
+                int checkY = tile.tileYCoordinate + y;
+
+                // Check if the neighbor is within the grid bounds
+                if (checkX >= 0 && checkX < gridManager.gridHorizontalSize && checkY >= 0 && checkY < gridManager.gridVerticalSize)
+                {
+                    neighbours.Add(gridManager.GetTileControllerInstance(checkX, checkY));
+                }
+            }
+        }
+
+        return neighbours;
+    }
+
     int GetDistance(TileController tileA, TileController tileB)
     {
         int distX = Mathf.Abs(tileA.tileXCoordinate - tileB.tileXCoordinate);
