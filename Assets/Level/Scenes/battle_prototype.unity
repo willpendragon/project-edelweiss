@@ -1804,6 +1804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTargetedUnit: {fileID: 0}
   currentSelectedSpell: {fileID: 0}
+  aoeSpellEpicenterTile: {fileID: 0}
 --- !u!114 &198966433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3316,6 +3317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTargetedUnit: {fileID: 0}
   currentSelectedSpell: {fileID: 0}
+  aoeSpellEpicenterTile: {fileID: 0}
 --- !u!4 &542824154
 Transform:
   m_ObjectHideFlags: 0
@@ -10610,6 +10612,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTargetedUnit: {fileID: 0}
   currentSelectedSpell: {fileID: 0}
+  aoeSpellEpicenterTile: {fileID: 0}
 --- !u!114 &1756238712
 MonoBehaviour:
   m_ObjectHideFlags: 0

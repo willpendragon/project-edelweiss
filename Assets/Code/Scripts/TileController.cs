@@ -278,21 +278,21 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         {
             GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitAttacking;
             //The System sets the Active Character Unit as Attacking
-            Unit epicenterTarget = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
-            Debug.Log("Selected AOE Spell Epicenter" + epicenterTarget);
+            //Unit epicenterTarget = OnTileClickedAttackMode?.Invoke(tileXCoordinate, tileYCoordinate);
+            //Debug.Log("Selected AOE Spell Epicenter" + epicenterTarget);
             //Retrieves the Epicenter of the AOE Attack.
-            if (epicenterTarget != null)
-            {
-                TileController epicenterTargetTileController = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
-                epicenterTargetTileController.currentSingleTileStatus = SingleTileStatus.aoeAttackSelectionModeWaitingForConfirmation;
-                OnTileWaitingForConfirmationAOESpellMode(epicenterTargetTileController);
+            //if (epicenterTarget != null)
+            //{
+            TileController epicenterTargetTileController = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
+            epicenterTargetTileController.currentSingleTileStatus = SingleTileStatus.aoeAttackSelectionModeWaitingForConfirmation;
+            OnTileWaitingForConfirmationAOESpellMode(epicenterTargetTileController);
 
-                foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(epicenterTargetTileController))
-                {
-                    tile.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
-                }
-                Debug.Log("Selected AOE Spell Area");
+            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(epicenterTargetTileController))
+            {
+                tile.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
             }
+            Debug.Log("Selected AOE Spell Area");
+            //}
         }
         else if (currentSingleTileStatus == SingleTileStatus.aoeAttackSelectionModeWaitingForConfirmation)
         {

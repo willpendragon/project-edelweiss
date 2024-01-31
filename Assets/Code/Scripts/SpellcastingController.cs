@@ -31,7 +31,7 @@ public class SpellcastingController : MonoBehaviour
     {
         GridTargetingController.OnTargetedUnit -= SetTargetedUnit;
         TileController.OnTileConfirmedAttackMode -= UseCurrentSpellOnCurrentTarget;
-        TileController.OnTileConfirmedAOESpellMode += UseCurrentSpellOnCurrentTargets;
+        TileController.OnTileConfirmedAOESpellMode -= UseCurrentSpellOnCurrentTargets;
         TileController.OnTileWaitingForConfirmationAOESpellMode -= SetAOESpellEpicenter;
 
     }
@@ -118,7 +118,6 @@ public class SpellcastingController : MonoBehaviour
         {
             Debug.Log("Using AOE Spell on Multiple Targets");
             tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
-            Destroy(tile.detectedUnit);
         }
     }
     public bool CheckActivePlayerUnitOpportunityPoints()
