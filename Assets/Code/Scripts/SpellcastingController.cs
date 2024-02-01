@@ -118,6 +118,15 @@ public class SpellcastingController : MonoBehaviour
         {
             Debug.Log("Using AOE Spell on Multiple Targets");
             tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+            if (tile.detectedUnit == null)
+            {
+                Debug.Log("No Unit found. Can't apply damage");
+            }
+            else if (tile.detectedUnit.tag == "Enemy")
+            {
+                tile.detectedUnit.GetComponent<Unit>().HealthPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
+                Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
+            }
         }
     }
     public bool CheckActivePlayerUnitOpportunityPoints()
