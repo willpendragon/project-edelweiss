@@ -23,12 +23,15 @@ public class TurnController : MonoBehaviour
     public GameObject[] playerUnitsOnBattlefield;
     public GameObject[] enemyUnitsOnBattlefield;
 
+    public delegate void BattleEnd(string battleEndMessage);
+    public static event BattleEnd OnBattleEnd;
+
     // Start is called before the first frame update
 
     public void OnEnable()
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatus;
-        //EnemyAgent.OnCheckPlayer += PlayerGameOverCheck;
+        EnemyAgent.OnCheckPlayer += PlayerGameOverCheck;
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
         Unit.OnCheckGameOver += GameOverCheck;
@@ -36,7 +39,7 @@ public class TurnController : MonoBehaviour
     public void OnDisable()
     {
         UnitSelectionController.OnUnitWaiting -= CheckPlayerUnitsStatus;
-        //EnemyAgent.OnCheckPlayer -= PlayerGameOverCheck;
+        EnemyAgent.OnCheckPlayer -= PlayerGameOverCheck;
         EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Unit.OnCheckGameOver -= GameOverCheck;
@@ -64,6 +67,7 @@ public class TurnController : MonoBehaviour
         if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Player Party was defeated");
+            OnBattleEnd("Player Party was defeated");
             //Activate Game Over UI
             //Active Game Over Flow
         }
@@ -78,6 +82,7 @@ public class TurnController : MonoBehaviour
         if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Enemy Party was defeated");
+            OnBattleEnd("Enemy Party was defeated");
             //Activate Game Over UI
             //Active Game Over Flow
         }
@@ -90,6 +95,7 @@ public class TurnController : MonoBehaviour
         else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Player Party was defeated");
+            OnBattleEnd("Player Party was defeated");
             //Activate Game Over UI
             //Active Game Over Flow
         }

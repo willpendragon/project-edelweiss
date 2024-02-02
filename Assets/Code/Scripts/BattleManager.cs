@@ -79,13 +79,13 @@ public class BattleManager : MonoBehaviour
     {
         Moveset.OnPlayerTurnIsOver += PassTurnToEnemies;
         /*Enemy.OnCheckPlayer += CheckPlayer;*/
-        EnemyAgent.OnCheckEnemiesOnBattlefield += CheckEnemies;
+        //EnemyAgent.OnCheckEnemiesOnBattlefield += CheckEnemies;
     }
     public void OnDisable()
     {
         Moveset.OnPlayerTurnIsOver -= PassTurnToEnemies;
         /*Enemy.OnCheckPlayer -= CheckPlayer;*/
-        EnemyAgent.OnCheckEnemiesOnBattlefield -= CheckEnemies;
+        //EnemyAgent.OnCheckEnemiesOnBattlefield -= CheckEnemies;
     }
     public void SpawnEnemies()
     {
@@ -103,6 +103,9 @@ public class BattleManager : MonoBehaviour
         }
         */
     }
+
+    // Legacy Method for Game Over - Enemy Defeat
+    /*
     public void CheckEnemies()
     {
         //This method scans the Battlefield for Enemies that have been tagged as DeadEnemy.
@@ -119,6 +122,7 @@ public class BattleManager : MonoBehaviour
             StartCoroutine("SendStatsSavingEvents");
         }
     }
+    */
     IEnumerator SendStatsSavingEvents()
     {
         yield return new WaitForSeconds(0.5f);

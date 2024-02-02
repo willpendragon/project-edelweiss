@@ -17,7 +17,7 @@ public class EnemyAgent : MonoBehaviour
     /*public float healthPoints;
     */
     public int speed;
-    public float attackPower = 5;
+    public float attackPower = 60;
 
     [Header("Gameplay Logic")]
     //To be reworked. Player is a Unit now.
@@ -130,7 +130,7 @@ public class EnemyAgent : MonoBehaviour
         localAttackVFXAnimator.GetComponent<Animator>().SetTrigger("BaseAnimation");
         Destroy(localAttackVFXAnimator, 1);
         //EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
-        //OnCheckPlayer();
+        OnCheckPlayer();
         Debug.Log("Enemy Attacking");
     }
     public void StunAbility(Unit targetUnit)
