@@ -30,10 +30,13 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     }
     public void HandleTileSelection()
     {
-        enemySelection.SelectedMapNode();
-        //checkRequirement.CheckPreviousNode();
-        //checkRequirement.SetCurrentNode();*/
-        GameManager._instance.currentEnemySelectionComponent = GetComponentInParent<EnemySelection>();
-        GameManager._instance.GetComponentInChildren<SceneLoader>().ChangeScene();
+        if (currentLockStatus == LockStatus.levelUnlocked)
+        {
+            enemySelection.SelectedMapNode();
+            //checkRequirement.CheckPreviousNode();
+            //checkRequirement.SetCurrentNode();*/
+            GameManager._instance.currentEnemySelectionComponent = GetComponentInParent<EnemySelection>();
+            GameManager._instance.GetComponentInChildren<SceneLoader>().ChangeScene();
+        }
     }
 }
