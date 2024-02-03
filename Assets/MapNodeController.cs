@@ -8,6 +8,14 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     public EnemySelection enemySelection;
     public CheckRequirement checkRequirement;
 
+    public enum LockStatus
+    {
+        levelLocked,
+        levelUnlocked
+    }
+
+    public LockStatus currentLockStatus;
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -22,8 +30,14 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     }
     public void HandleTileSelection()
     {
-        enemySelection.SelectedMapNode();
-        checkRequirement.CheckPreviousNode();
-        checkRequirement.SetCurrentNode();
+        if (currentLockStatus == LockStatus.levelUnlocked)
+        {
+            enemySelection.SelectedMapNode();
+            //checkRequirement.CheckPreviousNode();
+            //checkRequirement.SetCurrentNode();*/
+            GameManager._instance.currentEnemySelectionComponent = GetComponentInParent<EnemySelection>();
+            GameManager._instance.GetComponentInChildren<SceneLoader>().ChangeScene();
+
+        }
     }
 }

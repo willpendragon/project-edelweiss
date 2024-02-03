@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public NodeController currentNode;
     public static GameManager _instance;
     public GameObject[] currentEnemySelection;
+    public EnemySelection currentEnemySelectionComponent;
     public List<EnemyType> currentEnemySelectionIds;
     public List<Vector2> currentEnemySelectionCoords;
 
@@ -34,12 +35,10 @@ public class GameManager : MonoBehaviour
     {
         currentNode.nodeCompleted = true;
     }
-
     public void DefineEnemySelection(GameObject[] enemySelection)
     {
         //currentEnemySelection = enemySelection;
     }
-
     public void UpdateEnemyData(Level level)
     {
         currentEnemySelectionIds.Clear();

@@ -85,6 +85,9 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Enemy Party was defeated");
+            UnlockNextLevel(GameManager._instance.currentEnemySelectionComponent.levelNumber);
+
+
             //Activate Game Over UI
             //Active Game Over Flow
         }
@@ -106,6 +109,15 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party is still in game");
             //Activate Game Over UI
             //Active Game Over Flow
+        }
+    }
+    public void UnlockNextLevel(int currentLevelNumber)
+    {
+        int highestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel", 1);
+        if (currentLevelNumber >= highestUnlockedLevel)
+        {
+            PlayerPrefs.SetInt("HighestUnlockedLevel", currentLevelNumber + 1);
+            PlayerPrefs.Save(); // Ensure changes are saved immediately
         }
     }
     public void RestorePlayerUnitsOpportunityPoints()

@@ -10,6 +10,7 @@ public class EnemySelection : MonoBehaviour
     public List<EnemyType> EnemyTypeIds;
     public List<Vector2> EnemyCoordinates;
     public Level levelData;
+    public int levelNumber;
 
     //public delegate void SelectedMapNodeWithEnemies(GameObject[] mapNodeEnemySelection);
     //public static event SelectedMapNodeWithEnemies OnSelectedMapNodeWithEnemies;

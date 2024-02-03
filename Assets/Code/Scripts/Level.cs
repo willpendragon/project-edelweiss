@@ -14,4 +14,5 @@ public class Level : ScriptableObject
     //public GameObject[] enemySelection;
     public List<EnemyType> EnemyTypeIds;
     public List<Vector2> UnitCoordinates;
+    public int levelNumber;
 }
