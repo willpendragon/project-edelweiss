@@ -30,14 +30,8 @@ public class OverworldMapGenerator : MonoBehaviour
             if (i + 1 > highestUnlockedLevel)
             {
                 newNode.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
-                newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelLocked;
                 // Example: newNode.GetComponent<Button>().interactable = false;
                 // Or, set a locked visual state here
-            }
-            else if (i + 1 < highestUnlockedLevel)
-            {
-                newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
-
             }
         }
     }

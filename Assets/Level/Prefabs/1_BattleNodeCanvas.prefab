@@ -112,7 +112,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemySelection: {fileID: 5935151212853679583}
-  checkRequirement: {fileID: 7530335955166926432}
+  checkRequirement: {fileID: 0}
+  currentLockStatus: 0
 --- !u!1 &7530335955166926438
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,7 +124,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4929079975784051628}
   - component: {fileID: 7530335955166926433}
-  - component: {fileID: 7530335955166926432}
   - component: {fileID: 5935151212853679583}
   m_Layer: 5
   m_Name: 1_BattleNodeCanvas
@@ -163,21 +163,6 @@ MonoBehaviour:
   nodeCompleted: 0
   isCurrentNode: 0
   isStartingNode: 1
---- !u!114 &7530335955166926432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7530335955166926438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3811ed88b380a6c4289563e2608c12c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  previousNode: {fileID: 7530335955166926433}
-  sceneLoader: {fileID: 0}
-  gameManager: {fileID: 0}
 --- !u!114 &5935151212853679583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,3 +185,4 @@ MonoBehaviour:
   - {x: 3, y: 3}
   - {x: 4, y: 4}
   levelData: {fileID: 11400000, guid: 67ababc416ed1a74dae30f4250a975e8, type: 2}
+  levelNumber: 0
