@@ -59,7 +59,6 @@ public class BattleManager : MonoBehaviour
 
     void Awake()
     {
-
         enemiesOnBattlefield = GameManager._instance.currentEnemySelection;
     }
     void Start()

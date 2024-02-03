@@ -34,24 +34,26 @@ public enum SingleTileCondition
     free,
     occupied
 }
+
+public enum TileCurseStatus
+{
+    notCursed,
+    cursed
+}
 public class TileController : MonoBehaviour, IPointerClickHandler
 {
 
-    public enum TileStatus
-    {
-        free,
-        occupied
-    }
+    /*
+        public enum TileStatus
+        {
+            free,
+            occupied
+        }
 
-    public enum TileAlignment
-    {
-        neutral,
-        red,
-        blue
-    }
+    */
 
-    public TileStatus currentTileStatus;
-    public TileAlignment currentTileAlignment;
+    //public TileStatus currentTileStatus;
+    //public TileAlignment currentTileAlignment;
     public float proximityDistance = 1.5f;
     public GameObject detectedUnit;
     public int tileXCoordinate;
@@ -60,6 +62,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public SingleTileCondition currentSingleTileCondition;
     public GameObject targetIcon;
     public GameObject currentlySelectedUnitPanel;
+    public TileCurseStatus currentTileCurseStatus;
 
     // A* Pathfinding properties
     public int gCost;
@@ -105,19 +108,21 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     void Start()
     {
-        currentTileAlignment = TileAlignment.neutral;
+        //currentTileAlignment = TileAlignment.neutral;
+        currentTileCurseStatus = TileCurseStatus.notCursed;
     }
     private void OnEnable()
     {
-        Deity.OnDeityJudgment += AttackUnit;
+        //Deity.OnDeityJudgment += AttackUnit;
         SwitchGridToMoveSelectionMode.OnMoveButtonPressed += SwitchTileToSelectionMode;
     }
     private void OnDisable()
     {
-        Deity.OnDeityJudgment -= AttackUnit;
+        //Deity.OnDeityJudgment -= AttackUnit;
         SwitchGridToMoveSelectionMode.OnMoveButtonPressed -= SwitchTileToSelectionMode;
     }
 
+    /*
     public void AttackUnit()
     {
         if (detectedUnit != null)
@@ -133,6 +138,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             }
         }
     }
+  
     public void ActivateRedParticle()
     {
         redParticle.Play();
@@ -143,7 +149,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         blueParticle.Play();
         currentTileAlignment = TileAlignment.blue;
     }
-
+      */
     //Should Move this into a different component class
 
     public void OnPointerClick(PointerEventData eventData)

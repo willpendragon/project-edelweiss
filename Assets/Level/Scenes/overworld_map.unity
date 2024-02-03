@@ -2389,11 +2389,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf0db6f0b7bfb741b256ed4929692f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyOne: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-  enemyTwo: {fileID: 0}
-  enemyThree: {fileID: 0}
-  enemyFour: {fileID: 0}
-  enemyFive: {fileID: 0}
   preliminaryEnemySelection: {fileID: 677452393}
   enemySelection: []
   gridManager: {fileID: 0}
@@ -4288,6 +4283,7 @@ GameObject:
   - component: {fileID: 1559498399}
   - component: {fileID: 1559498398}
   - component: {fileID: 1559498397}
+  - component: {fileID: 1559498400}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4361,6 +4357,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1559498400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559498396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &1586494109
 GameObject:
   m_ObjectHideFlags: 0
@@ -5001,11 +5013,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf0db6f0b7bfb741b256ed4929692f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyOne: {fileID: 0}
-  enemyTwo: {fileID: 0}
-  enemyThree: {fileID: 0}
-  enemyFour: {fileID: 0}
-  enemyFive: {fileID: 0}
   preliminaryEnemySelection: {fileID: 677452393}
   enemySelection: []
   gridManager: {fileID: 0}
@@ -5789,11 +5796,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf0db6f0b7bfb741b256ed4929692f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyOne: {fileID: 0}
-  enemyTwo: {fileID: 0}
-  enemyThree: {fileID: 0}
-  enemyFour: {fileID: 0}
-  enemyFive: {fileID: 0}
   preliminaryEnemySelection: {fileID: 0}
   enemySelection: []
   gridManager: {fileID: 0}

@@ -19,6 +19,8 @@ public class TurnController : MonoBehaviour
     public delegate void EnemyTurnSwap();
     public static event EnemyTurnSwap OnEnemyTurnSwap;
 
+    public int turnCounter;
+
     public Turn currentTurn;
     public GameObject[] playerUnitsOnBattlefield;
     public GameObject[] enemyUnitsOnBattlefield;
@@ -111,27 +113,11 @@ public class TurnController : MonoBehaviour
         Debug.Log("Restoring Player Opportunity");
         foreach (var playerUnit in playerUnitsOnBattlefield)
         {
+            turnCounter++;
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
             playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
             playerUnit.GetComponent<UnitSelectionController>().unitSprite.material.color = Color.white;
         }
     }
-    /*
-    public void CheckPlayerPartyOpportunityPoints()
-    {
-        for (int i = 0; i < playerUnitsOnBattlefield.Length; i++)
-        {
-            if (playerUnitsOnBattlefield[i].GetComponent<Unit>().unitOpportunityPoints >= 1)
-            {
-                Debug.Log("Player Turn is still active");
-            }
-            else
-            {
-                Debug.Log("Hand over turn to the Enemy Party");
-            }
-        }
-    }
-    */
-
 }
