@@ -86,7 +86,13 @@ public class TurnController : MonoBehaviour
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Enemy Party was defeated");
             UnlockNextLevel(GameManager._instance.currentEnemySelectionComponent.levelNumber);
-
+            foreach (var player in playerUnitsOnBattlefield)
+            {
+                player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
+            }
+            //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
+            GameObject.FindGameObjectWithTag("PlayerStatsSaver").GetComponent<PlayerStatsSaver>().SaveCharacterData();
+            //Saving each Player's Health Points, Coins and Experience Rewards
 
             //Activate Game Over UI
             //Active Game Over Flow

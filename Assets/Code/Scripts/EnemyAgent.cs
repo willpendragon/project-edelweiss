@@ -42,9 +42,9 @@ public class EnemyAgent : MonoBehaviour
     public int currentXCoordinate;
     public int currentYCoordinate;
 
-    [Header("Rewards for the Player")]
-    public float enemyCoinsReward;
-    public float enemyExperienceReward;
+    //[Header("Rewards for the Player")]
+    //public float enemyCoinsReward;
+    //public float enemyExperiencePointsReward;
 
     public delegate void ExperienceRewardDelegate(float applicableExperienceReward);
     public static event ExperienceRewardDelegate OnExperienceReward;

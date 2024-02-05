@@ -12,29 +12,29 @@ public class BattleRewardsController : MonoBehaviour
     {
         EnemyAgent.OnCoinsReward += AddCoinsRewardToCoinsRewardPool;
         EnemyAgent.OnExperienceReward += AddExperienceRewardToExperienceRewardPool;
-        BattleManager.OnBattleEnd += ApplyRewardsToPlayer;
+        //BattleManager.OnBattleEnd += ApplyRewardsToPlayer;
     }
     public void OnDisable()
     {
         EnemyAgent.OnCoinsReward -= AddCoinsRewardToCoinsRewardPool;
         EnemyAgent.OnExperienceReward -= AddExperienceRewardToExperienceRewardPool;
-        BattleManager.OnBattleEnd -= ApplyRewardsToPlayer;
+        //BattleManager.OnBattleEnd -= ApplyRewardsToPlayer;
     }
-
-    void AddCoinsRewardToCoinsRewardPool(float coinsRewardToAdd)
+    public void AddCoinsRewardToCoinsRewardPool(float coinsRewardToAdd)
     {
         coinsRewardPool += coinsRewardToAdd;
         Debug.Log("Adding Coins Reward");
     }
-    void AddExperienceRewardToExperienceRewardPool(float experienceRewardToAdd)
+    public void AddExperienceRewardToExperienceRewardPool(float experienceRewardToAdd)
     {
         experienceRewardPool += experienceRewardToAdd;
         Debug.Log("Adding Experience Reward");
     }
-
-    void ApplyRewardsToPlayer()
+    public void ApplyRewardsToThisUnit()
     {
-        battleManager.player.playerExperiencePoints += experienceRewardPool;
-        battleManager.player.coins += coinsRewardPool;
+        //battleManager.player.playerExperiencePoints += experienceRewardPool;
+        //battleManager.player.coins += coinsRewardPool;
+        GetComponent<Unit>().unitExperiencePoints += experienceRewardPool;
+        GetComponent<Unit>().unitCoins += coinsRewardPool;
     }
 }

@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 556079660409014905}
   - component: {fileID: 3915823849096180749}
   - component: {fileID: 3856404906980969926}
-  - component: {fileID: 2911715925054862491}
   - component: {fileID: 556079661300770190}
   - component: {fileID: 556079661300770177}
   - component: {fileID: 556079661300770176}
   - component: {fileID: 6889659664313542865}
+  - component: {fileID: 880051095614148432}
   m_Layer: 0
   m_Name: Unit_Aliza
   m_TagString: Player
@@ -63,6 +63,8 @@ MonoBehaviour:
   unitOpportunityPoints: 0
   unitManaPoints: 0
   unitShieldPoints: 0
+  unitCoins: 0
+  unitExperiencePoints: 0
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
@@ -81,20 +83,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1802ea89f3831e94998ba7ffd64c3f9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!136 &2911715925054862491
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 556079660409014919}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 0.5
-  m_Height: 2.5868618
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.7934309, z: 0}
 --- !u!114 &556079661300770190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,6 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTargetedUnit: {fileID: 0}
   currentSelectedSpell: {fileID: 0}
+  aoeSpellEpicenterTile: {fileID: 0}
 --- !u!114 &556079661300770177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,6 +147,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   unitCurrentStatus: 1
+--- !u!114 &880051095614148432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556079660409014919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b05363d8d9a06343b9c6918710926bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinsRewardPool: 0
+  experienceRewardPool: 0
+  battleManager: {fileID: 0}
 --- !u!1 &556079661349572503
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +193,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 556079660910102660}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 170.14, z: 0}
 --- !u!212 &556079661349572489
 SpriteRenderer:

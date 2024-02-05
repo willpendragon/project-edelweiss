@@ -955,7 +955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333121726ca123e4fa72503fa1ad78c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1096105598}
+  player: {fileID: 0}
   battleBeginsScreen: {fileID: 463913747}
   enemyTurnDuration: 4.5
   battleInterface: {fileID: 767884334}
@@ -971,7 +971,7 @@ MonoBehaviour:
   PlayerTurnStarts:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: RestoreOpportunityPoints
         m_Mode: 1
@@ -1070,6 +1070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e921692f94d8d04a9e6d8b834e6065c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnCounter: 0
   currentTurn: 0
   playerUnitsOnBattlefield: []
   enemyUnitsOnBattlefield: []
@@ -1821,6 +1822,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   unitCurrentStatus: 1
+--- !u!114 &198966434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198966428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b05363d8d9a06343b9c6918710926bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinsRewardPool: 0
+  experienceRewardPool: 0
+  battleManager: {fileID: 0}
 --- !u!224 &205814108 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4845202476511953010, guid: aac7e1ac2cad74e4995af60c4ef12713, type: 3}
@@ -3718,7 +3734,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: ChangePosition
         m_Mode: 1
@@ -5134,7 +5150,7 @@ MonoBehaviour:
   playerActionPanel: {fileID: 621708313}
   battlefieldTextNotifications: {fileID: 35542996}
   deityJudgmentLimitText: {fileID: 496356837}
-  player: {fileID: 1096105598}
+  player: {fileID: 0}
 --- !u!114 &767884335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7430,28 +7446,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2012499427021812976, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
   m_PrefabInstance: {fileID: 2012499425961364109}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1096105598 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2012499427021812979, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
-  m_PrefabInstance: {fileID: 2012499425961364109}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2012499425961364110}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a88a9c368034417448bfc3ccad02f03d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1096105600 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2012499427021812749, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
-  m_PrefabInstance: {fileID: 2012499425961364109}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2012499425961364110}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cbb9a0b8e936824db5bc9737140bbdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1114723494
 GameObject:
   m_ObjectHideFlags: 0
@@ -7758,7 +7752,7 @@ GameObject:
   - component: {fileID: 1195676639}
   m_Layer: 0
   m_Name: PlayerStatsSaver
-  m_TagString: Untagged
+  m_TagString: PlayerStatsSaver
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8255,7 +8249,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: MeleeAttack
         m_Mode: 1
@@ -8524,7 +8518,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: Protection
         m_Mode: 1
@@ -8736,7 +8730,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: BlueAttack
         m_Mode: 1
@@ -9850,7 +9844,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: EndMovementMode
         m_Mode: 1
@@ -10245,6 +10239,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   unitCurrentStatus: 1
+--- !u!114 &1756238715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756238707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b05363d8d9a06343b9c6918710926bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinsRewardPool: 0
+  experienceRewardPool: 0
+  battleManager: {fileID: 0}
 --- !u!1 &1769259977
 GameObject:
   m_ObjectHideFlags: 3
@@ -12176,7 +12185,7 @@ PrefabInstance:
     - target: {fileID: 3348349630364506731, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
       propertyPath: player
       value: 
-      objectReference: {fileID: 1096105598}
+      objectReference: {fileID: 0}
     - target: {fileID: 3348349630364506731, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
       propertyPath: battleManager
       value: 
@@ -12301,7 +12310,7 @@ PrefabInstance:
     - target: {fileID: 4845202476511953011, guid: aac7e1ac2cad74e4995af60c4ef12713, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1096105600}
+      objectReference: {fileID: 0}
     - target: {fileID: 4845202476511953013, guid: aac7e1ac2cad74e4995af60c4ef12713, type: 3}
       propertyPath: m_Name
       value: RedAttackButton

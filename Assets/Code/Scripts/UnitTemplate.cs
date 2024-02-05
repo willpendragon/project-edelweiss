@@ -12,4 +12,7 @@ public class UnitTemplate : ScriptableObject
     public int unitManaPoints;
     public int unitOpportunityPoints;
     public int unitShieldPoints;
+    public float unitCoinsReward;
+    public float unitExperiencePointsReward;
+
 }

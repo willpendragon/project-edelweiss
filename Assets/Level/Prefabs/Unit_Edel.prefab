@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 4490924161125975600}
   - component: {fileID: 1131156884271446084}
   - component: {fileID: 892227224226316687}
-  - component: {fileID: 1264700119058741458}
   - component: {fileID: 7441471170864787523}
   - component: {fileID: 7441471170864787522}
   - component: {fileID: 7441471170864787581}
   - component: {fileID: -6858461416225278963}
+  - component: {fileID: 6513374407507057997}
   m_Layer: 0
   m_Name: Unit_Edel
   m_TagString: Player
@@ -63,6 +63,8 @@ MonoBehaviour:
   unitOpportunityPoints: 0
   unitManaPoints: 0
   unitShieldPoints: 0
+  unitCoins: 0
+  unitExperiencePoints: 0
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
@@ -81,20 +83,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1802ea89f3831e94998ba7ffd64c3f9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!136 &1264700119058741458
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4490924161125975758}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 0.5
-  m_Height: 2.5868618
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.7934309, z: 0}
 --- !u!114 &7441471170864787523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTargetedUnit: {fileID: 0}
   currentSelectedSpell: {fileID: 0}
+  aoeSpellEpicenterTile: {fileID: 0}
 --- !u!114 &-6858461416225278963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,6 +147,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   unitCurrentStatus: 1
+--- !u!114 &6513374407507057997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4490924161125975758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b05363d8d9a06343b9c6918710926bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinsRewardPool: 0
+  experienceRewardPool: 0
+  battleManager: {fileID: 0}
 --- !u!1 &7441471170850171257
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +193,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8982639508739757864}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 170.14, z: 0}
 --- !u!212 &7441471170850171258
 SpriteRenderer:

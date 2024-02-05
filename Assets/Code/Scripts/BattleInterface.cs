@@ -37,10 +37,10 @@ public class BattleInterface : MonoBehaviour
     }
     private void Start()
     {
-        player.UpdatePlayerHealthDisplay();
-        player.UpdatePlayerShieldDisplay();
-        player.UpdateManaPointsDisplay();
-        Debug.Log("Test Moveset Bug");
+        //player.UpdatePlayerHealthDisplay();
+        //player.UpdatePlayerShieldDisplay();
+        //player.UpdateManaPointsDisplay();
+        //Debug.Log("Test Moveset Bug");
     }
     /*public void SetMovePanelName(string currentMoveName)
     {

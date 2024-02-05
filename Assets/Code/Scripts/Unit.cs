@@ -31,6 +31,10 @@ public class Unit : MonoBehaviour
     public int unitOpportunityPoints;
     public float unitManaPoints;
     public float unitShieldPoints;
+    public float unitCoins;
+    public float unitExperiencePoints;
+    public float coinsReward;
+    public float experiencePointsReward;
 
     public delegate void CheckGameOver();
     public static event CheckGameOver OnCheckGameOver;
@@ -73,6 +77,9 @@ public class Unit : MonoBehaviour
         unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
         unitShieldPoints = unitTemplate.unitShieldPoints;
         currentUnitLifeCondition = UnitLifeCondition.unitAlive;
+
+        coinsReward = GetComponent<Unit>().unitTemplate.unitCoinsReward;
+        experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
     }
 
     public void SetUnitInitialPositionOnGrid()
@@ -126,6 +133,13 @@ public class Unit : MonoBehaviour
             Debug.Log("This Unit has died");
             Destroy(unitProfilePanel);
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+            if (this.gameObject.tag == "Enemy")
+            {
+                var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+                activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(coinsReward);
+                activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
+                Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
+            }
             OnCheckGameOver();
         }
     }
