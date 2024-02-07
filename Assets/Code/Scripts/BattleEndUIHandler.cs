@@ -26,7 +26,7 @@ public class BattleEndUIHandler : MonoBehaviour
     //UI overlay appears (using Size scaling) with the results of the Battle.
     public void DisplayBattleEndScreen(string battleEndMessage)
     {
-        battleCameraPlayableDirector.Play();
+        //battleCameraPlayableDirector.Play();
         battleEndMessageText.text = battleEndMessage;
         StartCoroutine("DisplayBattleEndResultsScreen");
     }

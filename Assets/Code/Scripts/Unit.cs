@@ -28,6 +28,7 @@ public class Unit : MonoBehaviour
 
     //Player Stats    
     public float unitHealthPoints;
+    public float unitMaxHealthPoints;
     public int unitOpportunityPoints;
     public float unitManaPoints;
     public float unitShieldPoints;
@@ -73,6 +74,7 @@ public class Unit : MonoBehaviour
     public void Start()
     {
         unitHealthPoints = unitTemplate.unitHealthPoints;
+        unitMaxHealthPoints = unitTemplate.unitMaxHealthPoints;
         unitManaPoints = unitTemplate.unitManaPoints;
         unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
         unitShieldPoints = unitTemplate.unitShieldPoints;

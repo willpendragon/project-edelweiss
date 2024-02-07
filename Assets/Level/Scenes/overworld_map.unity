@@ -1164,6 +1164,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Unit_Aliza
       objectReference: {fileID: 0}
+    - target: {fileID: 3915823849096180749, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
+      propertyPath: unitHealthPoints
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
 --- !u!1001 &1185951271
@@ -1173,6 +1177,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1131156884271446084, guid: 09560ee6a3ca1e64193361457ff66335, type: 3}
+      propertyPath: unitHealthPoints
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4490924161125975600, guid: 09560ee6a3ca1e64193361457ff66335, type: 3}
       propertyPath: m_RootOrder
       value: 13

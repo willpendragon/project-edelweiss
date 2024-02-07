@@ -18,6 +18,7 @@ public class DeityAnguanaBehavior : DeityBehavior
             deity.enmity = 0;
             deity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
             Debug.Log("Anguana Executes Spiteful Wave attack");
+            //07022024 Will need to add the damage taking logic for the Player Units
             // Anguana's specific behavior implementation goes here.
             // For example, checking the enmity meter and unleashing an attack.
         }

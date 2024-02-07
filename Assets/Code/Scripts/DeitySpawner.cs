@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DeitySpawner : MonoBehaviour
 {
-    [SerializeField] GameObject deity;
+    [SerializeField] GameObject[] spawnableDeities;
     [SerializeField] Transform deitySpawnPosition;
     // Start is called before the first frame update
     void Start()
@@ -12,8 +12,16 @@ public class DeitySpawner : MonoBehaviour
         var deityRoll = Random.Range(0, 7);
         if (deityRoll <= 6 && deityRoll >= 3)
         {
-            Instantiate(deity, deitySpawnPosition);
-            GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = deity.GetComponent<Deity>();
+            DeitySelector();
+            Debug.Log("Rolled Deity appearance");
         }
+    }
+    public void DeitySelector()
+    {
+        Debug.Log("Rolling which Deity will appear");
+        int deityIndex = Random.Range(0, spawnableDeities.Length);
+        GameObject spawningDeity = spawnableDeities[deityIndex];
+        Instantiate(spawningDeity, deitySpawnPosition);
+        GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = spawningDeity.GetComponent<Deity>();
     }
 }

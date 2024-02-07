@@ -61,7 +61,7 @@ public class PlayerStatsSaver : MonoBehaviour
             // Assuming default values if keys don't exist. Adjust as necessary.
             float xp = PlayerPrefs.GetFloat(baseKey + "_XP", 0); // Default to 0 if not found
             float coins = PlayerPrefs.GetFloat(baseKey + "_Coins", 0); // Default to 0 if not found
-            float healthPoints = PlayerPrefs.GetFloat(baseKey + "_HealthPoints", 0); // Default to max health points if not found
+            float healthPoints = PlayerPrefs.GetFloat(baseKey + "_HealthPoints", unit.unitTemplate.unitMaxHealthPoints); // Default to max health points if not found
 
             unit.unitExperiencePoints = xp;
             unit.unitCoins = coins; // Assuming unitCoins is the correct field for storing coins

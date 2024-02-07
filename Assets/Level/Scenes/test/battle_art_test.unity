@@ -827,18 +827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333121726ca123e4fa72503fa1ad78c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1096105598}
-  enemyOne: {fileID: 0}
-  enemyTwo: {fileID: 0}
-  enemyThree: {fileID: 0}
-  enemyFour: {fileID: 0}
-  enemyFive: {fileID: 0}
-  enemyOneSpot: {fileID: 606676848}
-  enemyTwoSpot: {fileID: 619810516}
-  enemyThreeSpot: {fileID: 406708440}
-  enemyFourSpot: {fileID: 536088311}
-  enemyFiveSpot: {fileID: 1595605656}
-  battleIsOverScreen: {fileID: 869859802}
+  player: {fileID: 0}
   battleBeginsScreen: {fileID: 463913747}
   enemyTurnDuration: 4.5
   battleInterface: {fileID: 767884334}
@@ -854,7 +843,7 @@ MonoBehaviour:
   PlayerTurnStarts:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: RestoreOpportunityPoints
         m_Mode: 1
@@ -893,6 +882,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  gridManager: {fileID: 0}
 --- !u!4 &90211750
 Transform:
   m_ObjectHideFlags: 0
@@ -10992,11 +10982,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14215c171cbcf64680297fcba39f179, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 90211749}
-  dummyEnemyOne: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-  dummyEnemyTwo: {fileID: 5147203796786549252, guid: fb44d29c5900bc445abe290940fb487c, type: 3}
-  dummyEnemyThree: {fileID: 8194179579621356911, guid: e2d5e0f6a4ecbbd4fa91bedaf9149e08, type: 3}
-  enemyTurnManager: {fileID: 90211751}
 --- !u!1 &361098905
 GameObject:
   m_ObjectHideFlags: 0
@@ -16060,7 +16045,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: RedAttack
         m_Mode: 1
@@ -17411,7 +17396,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: ChangePosition
         m_Mode: 1
@@ -22835,10 +22820,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185bfb664cf82fa4c8e29adf0232781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTileStatus: 0
-  currentTileAlignment: 0
   proximityDistance: 1.5
   detectedUnit: {fileID: 0}
+  tileXCoordinate: 0
+  tileYCoordinate: 0
+  currentSingleTileStatus: 0
+  currentSingleTileCondition: 0
+  targetIcon: {fileID: 0}
+  currentlySelectedUnitPanel: {fileID: 0}
+  currentTileCurseStatus: 0
+  gCost: 0
+  hCost: 0
+  parent: {fileID: 0}
   redParticle: {fileID: 112918976}
   blueParticle: {fileID: 780418557}
 --- !u!1 &714902639
@@ -23107,11 +23100,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14215c171cbcf64680297fcba39f179, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 90211749}
-  dummyEnemyOne: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-  dummyEnemyTwo: {fileID: 5147203796786549252, guid: fb44d29c5900bc445abe290940fb487c, type: 3}
-  dummyEnemyThree: {fileID: 8194179579621356911, guid: e2d5e0f6a4ecbbd4fa91bedaf9149e08, type: 3}
-  enemyTurnManager: {fileID: 0}
 --- !u!114 &730227997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24008,7 +23996,7 @@ MonoBehaviour:
   playerActionPanel: {fileID: 621708313}
   battlefieldTextNotifications: {fileID: 35542996}
   deityJudgmentLimitText: {fileID: 496356837}
-  player: {fileID: 1096105598}
+  player: {fileID: 0}
 --- !u!114 &767884335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29905,10 +29893,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185bfb664cf82fa4c8e29adf0232781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTileStatus: 0
-  currentTileAlignment: 0
   proximityDistance: 1.5
   detectedUnit: {fileID: 0}
+  tileXCoordinate: 0
+  tileYCoordinate: 0
+  currentSingleTileStatus: 0
+  currentSingleTileCondition: 0
+  targetIcon: {fileID: 0}
+  currentlySelectedUnitPanel: {fileID: 0}
+  currentTileCurseStatus: 0
+  gCost: 0
+  hCost: 0
+  parent: {fileID: 0}
   redParticle: {fileID: 1916949785}
   blueParticle: {fileID: 215077105}
 --- !u!1 &922938183
@@ -31009,28 +31005,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2012499427021812976, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
   m_PrefabInstance: {fileID: 2012499425961364109}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1096105598 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2012499427021812979, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
-  m_PrefabInstance: {fileID: 2012499425961364109}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2012499425961364110}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a88a9c368034417448bfc3ccad02f03d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1096105600 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2012499427021812749, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
-  m_PrefabInstance: {fileID: 2012499425961364109}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2012499425961364110}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cbb9a0b8e936824db5bc9737140bbdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1097080605
 GameObject:
   m_ObjectHideFlags: 0
@@ -31401,9 +31375,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fea609580c6e52478b4ff90f9de9571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultPlayerHealth: 0
-  defaultCoins: 0
-  defaultPlayerExperiencePoints: 0
 --- !u!4 &1195676640
 Transform:
   m_ObjectHideFlags: 0
@@ -36779,7 +36750,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: MeleeAttack
         m_Mode: 1
@@ -36913,7 +36884,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: Protection
         m_Mode: 1
@@ -37127,7 +37098,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: BlueAttack
         m_Mode: 1
@@ -37442,11 +37413,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14215c171cbcf64680297fcba39f179, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 90211749}
-  dummyEnemyOne: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-  dummyEnemyTwo: {fileID: 5147203796786549252, guid: fb44d29c5900bc445abe290940fb487c, type: 3}
-  dummyEnemyThree: {fileID: 8194179579621356911, guid: e2d5e0f6a4ecbbd4fa91bedaf9149e08, type: 3}
-  enemyTurnManager: {fileID: 0}
 --- !u!114 &1405556793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37669,10 +37635,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185bfb664cf82fa4c8e29adf0232781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTileStatus: 0
-  currentTileAlignment: 0
   proximityDistance: 1.5
   detectedUnit: {fileID: 0}
+  tileXCoordinate: 0
+  tileYCoordinate: 0
+  currentSingleTileStatus: 0
+  currentSingleTileCondition: 0
+  targetIcon: {fileID: 0}
+  currentlySelectedUnitPanel: {fileID: 0}
+  currentTileCurseStatus: 0
+  gCost: 0
+  hCost: 0
+  parent: {fileID: 0}
   redParticle: {fileID: 1260111403}
   blueParticle: {fileID: 1688795794}
 --- !u!1 &1451125272
@@ -38278,10 +38252,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185bfb664cf82fa4c8e29adf0232781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTileStatus: 0
-  currentTileAlignment: 0
   proximityDistance: 1.5
   detectedUnit: {fileID: 0}
+  tileXCoordinate: 0
+  tileYCoordinate: 0
+  currentSingleTileStatus: 0
+  currentSingleTileCondition: 0
+  targetIcon: {fileID: 0}
+  currentlySelectedUnitPanel: {fileID: 0}
+  currentTileCurseStatus: 0
+  gCost: 0
+  hCost: 0
+  parent: {fileID: 0}
   redParticle: {fileID: 403502853}
   blueParticle: {fileID: 588278670}
 --- !u!114 &1548170330
@@ -38707,7 +38689,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1096105600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Moveset, Assembly-CSharp
         m_MethodName: EndMovementMode
         m_Mode: 1
@@ -43636,7 +43618,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705384762}
-  m_LocalRotation: {x: -0.002438098, y: -0.7334764, z: -0.002630974, w: 0.6797055}
+  m_LocalRotation: {x: -0.0024380977, y: -0.7334764, z: -0.002630974, w: 0.6797055}
   m_LocalPosition: {x: 9.235524, y: -5.285242, z: -1.6729782}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -43748,7 +43730,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1096105597}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1788093697
 GameObject:
@@ -49522,11 +49504,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14215c171cbcf64680297fcba39f179, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 90211749}
-  dummyEnemyOne: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-  dummyEnemyTwo: {fileID: 5147203796786549252, guid: fb44d29c5900bc445abe290940fb487c, type: 3}
-  dummyEnemyThree: {fileID: 8194179579621356911, guid: e2d5e0f6a4ecbbd4fa91bedaf9149e08, type: 3}
-  enemyTurnManager: {fileID: 0}
 --- !u!114 &1920809887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51203,6 +51180,8 @@ MonoBehaviour:
   playerUnit: {fileID: 2012499425961364110}
   restorePlayerUnitPositionCooldown: 1
   castSpellVFX: {fileID: 1624102598683904, guid: 475b6b2fd1a7be84b943245ecbc0810a, type: 3}
+  mainCharacterPlayableDirector: {fileID: 0}
+  unitOriginalPosition: {x: 0, y: 0, z: 0}
 --- !u!1001 &3087296942157347676
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51318,7 +51297,7 @@ PrefabInstance:
     - target: {fileID: 3348349630364506731, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
       propertyPath: player
       value: 
-      objectReference: {fileID: 1096105598}
+      objectReference: {fileID: 0}
     - target: {fileID: 3348349630364506731, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
       propertyPath: battleManager
       value: 

@@ -54,7 +54,7 @@ public class GridManager : MonoBehaviour
     {
         foreach (var tileController in gridTileControllers)
         {
-            tileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.yellow;
+            //tileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.yellow;
             tileController.currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
         }
     }

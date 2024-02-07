@@ -189,7 +189,7 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator DeactivateBattleBeginsScreen()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.5f);
         battleBeginsScreen.SetActive(false);
     }
 }

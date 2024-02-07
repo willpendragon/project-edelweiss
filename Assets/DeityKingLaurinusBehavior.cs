@@ -22,6 +22,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
                 {
                     playerUnit.GetComponent<Unit>().HealthPoints -= 100;
                     //Hard coded damage. Remember to create it as a variable that I can change on the King Laurinus Behaviour Scriptable Object.
+                    //Remember to perform usual damage taking logic on the target Player Unit and consequent game over check.
                     Debug.Log("King Laurinus provokes massive Damage on the Unit");
                 }
             }
