@@ -31,11 +31,15 @@ public class SummoningController : MonoBehaviour
     }
     public void SummonDeityOnBattlefield()
     {
-        if (currentDeity != null && enemyTurnManager.deity == null)
+        GameObject currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        GameObject linkedDeity = currentActivePlayerUnit.GetComponent<SummoningController>().currentDeity;
+        if (linkedDeity != null)
         {
+            currentActivePlayerUnit.GetComponent<Unit>().unitManaPoints -= 50;
+            //Hard coded summoning price
             Debug.Log("Summon Deity on Battlefield");
-            GameObject deityInstance = Instantiate(currentDeity, deitySummoningSpot);
-            deityPowerLoadingBarSliderIsActive = true;
+            GameObject deityInstance = Instantiate(linkedDeity, deitySummoningSpot);
+            //deityPowerLoadingBarSliderIsActive = true;
         }
         else
         {

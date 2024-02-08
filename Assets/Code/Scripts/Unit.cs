@@ -141,6 +141,8 @@ public class Unit : MonoBehaviour
                 activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(coinsReward);
                 activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
                 Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
+                var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
+                deityAchievementsController.killedEnemies++;
             }
             OnCheckGameOver();
         }

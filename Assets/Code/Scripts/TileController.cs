@@ -204,6 +204,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                         detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
                         detectedUnit.GetComponent<UnitSelectionController>().GenerateGameplayButtons();
                         detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
+                        detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
                     }
                     else if (GridManager.Instance.currentPlayerUnit != null)
                     {

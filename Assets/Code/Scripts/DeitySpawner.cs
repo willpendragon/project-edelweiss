@@ -6,14 +6,23 @@ public class DeitySpawner : MonoBehaviour
 {
     [SerializeField] GameObject[] spawnableDeities;
     [SerializeField] Transform deitySpawnPosition;
+    [SerializeField] DeityAchievementsController deityAchievementsController;
     // Start is called before the first frame update
     void Start()
     {
-        var deityRoll = Random.Range(0, 7);
-        if (deityRoll <= 6 && deityRoll >= 3)
+        if (deityAchievementsController.CheckRequirements())
         {
-            DeitySelector();
-            Debug.Log("Rolled Deity appearance");
+            GameObject unboundDeity = Instantiate(spawnableDeities[0], deitySpawnPosition);
+            GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = unboundDeity.GetComponent<Deity>();
+        }
+        else
+        {
+            var deityRoll = Random.Range(0, 7);
+            if (deityRoll <= 6 && deityRoll >= 3)
+            {
+                DeitySelector();
+                Debug.Log("Rolled Deity arrival on battlefield");
+            }
         }
     }
     public void DeitySelector()

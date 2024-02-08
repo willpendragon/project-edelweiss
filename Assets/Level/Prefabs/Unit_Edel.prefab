@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 7441471170864787581}
   - component: {fileID: -6858461416225278963}
   - component: {fileID: 6513374407507057997}
+  - component: {fileID: 1485182927492220238}
+  - component: {fileID: 3656654971913035433}
   m_Layer: 0
   m_Name: Unit_Edel
   m_TagString: Player
@@ -60,11 +62,14 @@ MonoBehaviour:
   unitTemplate: {fileID: 11400000, guid: 5df72e7ee931de640876d70637e88ac2, type: 2}
   ownedTile: {fileID: 0}
   unitHealthPoints: 0
+  unitMaxHealthPoints: 0
   unitOpportunityPoints: 0
   unitManaPoints: 0
   unitShieldPoints: 0
   unitCoins: 0
   unitExperiencePoints: 0
+  coinsReward: 0
+  experiencePointsReward: 0
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
@@ -162,6 +167,41 @@ MonoBehaviour:
   coinsRewardPool: 0
   experienceRewardPool: 0
   battleManager: {fileID: 0}
+--- !u!114 &1485182927492220238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4490924161125975758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37d6d513ba2279641b1d07a5d08d66dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyTurnManager: {fileID: 0}
+  currentDeity: {fileID: 3348349630364506734, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
+  deitySummoningSpot: {fileID: 0}
+  deityPowerLoadingBarSlider: {fileID: 0}
+  deityAttackFeedback: {fileID: 0}
+  deityAttackFeedbackTimeToDeactivation: 1
+  useDeityAttack: {fileID: 0}
+  deityPowerLoadingBarSliderIsActive: 0
+--- !u!114 &3656654971913035433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4490924161125975758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5db9d0403ea7d24dbc5797da3569e5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  summoningCastingController: {fileID: 1485182927492220238}
+  summonButtonPrefab: {fileID: 6278539958340940975, guid: 6716af5b85582f142b22ded5945da45a, type: 3}
+  spellMenuContainer: {fileID: 0}
 --- !u!1 &7441471170850171257
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,23 +687,3 @@ MonoBehaviour:
   castSpellVFX: {fileID: 1624102598683904, guid: 475b6b2fd1a7be84b943245ecbc0810a, type: 3}
   mainCharacterPlayableDirector: {fileID: 7441471170930369495}
   unitOriginalPosition: {x: 0, y: 0, z: 0}
---- !u!114 &7441471170930369493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8982639508739757868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37d6d513ba2279641b1d07a5d08d66dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyTurnManager: {fileID: 0}
-  currentDeity: {fileID: 3348349630364506734, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
-  deitySummoningSpot: {fileID: 0}
-  deityPowerLoadingBarSlider: {fileID: 0}
-  deityAttackFeedback: {fileID: 0}
-  deityAttackFeedbackTimeToDeactivation: 1
-  useDeityAttack: {fileID: 0}
-  deityPowerLoadingBarSliderIsActive: 0

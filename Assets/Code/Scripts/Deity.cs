@@ -86,43 +86,7 @@ public class Deity : MonoBehaviour
         Debug.Log("Deity Behaviour");
         deityBehavior.ExecuteBehavior(this);
     }
-    /*
 
-    if (PerformDeityEnmityCheck())
-    {
-        //currentDeityState = DeityState.indifferent;
-        GameObject newDeityAttackVFX = Instantiate(deityAttackVFX, transform);
-        Destroy(newDeityAttackVFX, 3);
-        Debug.Log("Deity Attacks");
-        /*GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
-        foreach (var playerUnit in playerUnitsOnBattlefield)
-        {
-            playerUnit.GetComponent<Unit>().unitHealthPoints -= deitySpecialAttackPower;
-        }
-        *
-        deityBehavior.ExecuteBehavior(this);
-        enmity = 0;
-        deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
-    }
-    else
-    {
-        Debug.Log("Deity doesn't do anything");
-    }*/
-
-
-    /*public void DeityAttack()
-    //A simple attack from the Deity that deals damage to the Player after checking it's accrued enmity.
-    {
-        if (deityAttackVFX != null)
-        {
-            deityAttackVFX.SetActive(true);
-        }
-        player.healthPoints -= 10 * player.GetComponent<SinTracker>().redEnmity;
-        player.UpdatePlayerHealthDisplay();
-        OnDeityNotificationUpdate("The Deity has Attacked");
-        StartCoroutine("ResetDeityAttack");
-    }
-    */
     IEnumerator EndDeityTurn()
     {
         //OnDeityJudgmentCounterUpdate(judgmentTurnLimit);

@@ -62,7 +62,6 @@ public class UnitSelectionController : MonoBehaviour
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
         unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = "Player";
-        this.
         unitSprite.material.color = Color.grey;
         GridManager.Instance.currentPlayerUnit = null;
         currentUnitSelectionStatus = UnitSelectionStatus.unitWaiting;
