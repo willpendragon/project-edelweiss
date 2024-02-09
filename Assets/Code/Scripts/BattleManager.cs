@@ -88,40 +88,9 @@ public class BattleManager : MonoBehaviour
     }
     public void SpawnEnemies()
     {
-        //Makes the Enemies from the Selection appear on the Battlefield at specific spots.
-        /*
 
-        foreach (var enemy in enemiesOnBattlefield)
-        {
-            Debug.Log("Spawning Enemies");
-            Transform tileSpawnPosition = gridManager.GetTileControllerInstance(enemy.GetComponent<Unit>().startingXCoordinate, enemy.GetComponent<Unit>().startingYCoordinate).transform;
-            TileController enemyControlledTile = tileSpawnPosition.GetComponent<TileController>();
-            enemyControlledTile.detectedUnit = enemy;
-            Instantiate(enemy, tileSpawnPosition);
-
-        }
-        */
     }
 
-    // Legacy Method for Game Over - Enemy Defeat
-    /*
-    public void CheckEnemies()
-    {
-        //This method scans the Battlefield for Enemies that have been tagged as DeadEnemy.
-        //If all of the Enemy have been marked as DeadEnemy, the battle is considered finished and the
-        //end of Battle screen is triggered.
-        GameObject[] deadEnemies = GameObject.FindGameObjectsWithTag("DeadEnemy");
-        if (enemiesOnBattlefield.Length == deadEnemies.Length)
-        {
-            //If all of the enemies on the battlefield are dead, the Battle End gameplay sequence starts.
-            gameManager.MarkCurrentNodeAsCompleted();
-            //Sends an Event at the end of the battle and communicates the final HP of the Player at the end of the battle.
-            OnBattleEndResultsScreen("The Enemy was defeated");
-            OnBattleEnd();
-            StartCoroutine("SendStatsSavingEvents");
-        }
-    }
-    */
     IEnumerator SendStatsSavingEvents()
     {
         yield return new WaitForSeconds(0.5f);

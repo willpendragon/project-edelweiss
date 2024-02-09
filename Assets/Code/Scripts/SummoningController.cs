@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,14 +14,23 @@ public class SummoningController : MonoBehaviour
     [SerializeField] float deityAttackFeedbackTimeToDeactivation;
     public Button useDeityAttack;
     public bool deityPowerLoadingBarSliderIsActive;
+    public TileController summonAreaCenterTile;
+
+    public delegate void SummoningRitual();
+    public static event SummoningRitual OnSummoningRitual;
 
     public void OnEnable()
     {
         BattleManager.OnChargeDeityPowerLoadingBar += IncreaseDeityPowerLoadingBar;
+        TileController.OnTileWaitingForConfirmationSummonMode += SetSummoningCenter;
+        TileController.OnTileConfirmedSummonMode += SummonDeityOnBattlefield;
     }
     public void OnDisable()
     {
         BattleManager.OnChargeDeityPowerLoadingBar -= IncreaseDeityPowerLoadingBar;
+        TileController.OnTileWaitingForConfirmationSummonMode -= SetSummoningCenter;
+        TileController.OnTileConfirmedSummonMode -= SummonDeityOnBattlefield;
+
     }
     public void Start()
     {
@@ -29,16 +39,32 @@ public class SummoningController : MonoBehaviour
             UpdateDeityPowerLoadingBar();
         }
     }
+    public void SetSummoningCenter(TileController summonAreaCenter)
+    {
+        summonAreaCenterTile = summonAreaCenter;
+    }
+
+    public void StartSummoningRitual()
+    {
+        OnSummoningRitual();
+    }
     public void SummonDeityOnBattlefield()
     {
         GameObject currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-        GameObject linkedDeity = currentActivePlayerUnit.GetComponent<SummoningController>().currentDeity;
+        Deity linkedDeity = currentActivePlayerUnit.GetComponent<Unit>().linkedDeity;
         if (linkedDeity != null)
         {
+            Debug.Log("Start of Summon Deity on Battlefield");
+            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(summonAreaCenterTile))
+            {
+                deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
+            }
             currentActivePlayerUnit.GetComponent<Unit>().unitManaPoints -= 50;
             //Hard coded summoning price
             Debug.Log("Summon Deity on Battlefield");
-            GameObject deityInstance = Instantiate(linkedDeity, deitySummoningSpot);
+            var summonPosition = summonAreaCenterTile.transform.position + new Vector3(0, 3, 0);
+            GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
+            deityInstance.transform.localScale = new Vector3(2, 2, 2);
             //deityPowerLoadingBarSliderIsActive = true;
         }
         else

@@ -27,12 +27,17 @@ public enum SingleTileStatus
     aoeAttackSelectionModeActive,
     aoeAttackSelectionModeWaitingForConfirmation,
     aoeAttackSelectionModeConfirmedTarget,
+
+    summonAreaSelectionModeActive,
+    summonAreaSelectionModeWaitingForConfirmation,
+    summonAreaSelectionModeConfirmedTarget
 }
 
 public enum SingleTileCondition
 {
     free,
-    occupied
+    occupied,
+    occupiedByDeity
 }
 
 public enum TileCurseStatus
@@ -42,19 +47,6 @@ public enum TileCurseStatus
 }
 public class TileController : MonoBehaviour, IPointerClickHandler
 {
-
-    /*
-        public enum TileStatus
-        {
-            free,
-            occupied
-        }
-
-    */
-
-    //public TileStatus currentTileStatus;
-    //public TileAlignment currentTileAlignment;
-    public float proximityDistance = 1.5f;
     public GameObject detectedUnit;
     public int tileXCoordinate;
     public int tileYCoordinate;
@@ -69,12 +61,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public int hCost;
     public int FCost { get { return gCost + hCost; } }
     public TileController parent;
-
-    public delegate void PlayerEscapedFromJudgmentAttack();
-    public static event PlayerEscapedFromJudgmentAttack OnPlayerEscapedFromJudgmentAttack;
-
-    public delegate void JudgmentAttackSuccessful();
-    public static event JudgmentAttackSuccessful OnJudgmentAttackSuccessful;
 
     public delegate void TileClicked(int x, int y);
     public static event TileClicked OnTileClicked;
@@ -94,8 +80,11 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public delegate void TileWaitingForConfirmationAOESpellMode(TileController spellEpicenterTarget);
     public static event TileWaitingForConfirmationAOESpellMode OnTileWaitingForConfirmationAOESpellMode;
 
-    [SerializeField] ParticleSystem redParticle;
-    [SerializeField] ParticleSystem blueParticle;
+    public delegate void TileWaitingForConfirmationSummonMode(TileController summonCenterTarget);
+    public static event TileWaitingForConfirmationSummonMode OnTileWaitingForConfirmationSummonMode;
+
+    public delegate void TileConfirmedSummonMode();
+    public static event TileConfirmedSummonMode OnTileConfirmedSummonMode;
 
     public delegate void ClickedTileWithUnit(GameObject detectedUnit);
     public static event ClickedTileWithUnit OnClickedTileWithUnit;
@@ -108,49 +97,17 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     void Start()
     {
-        //currentTileAlignment = TileAlignment.neutral;
         currentTileCurseStatus = TileCurseStatus.notCursed;
     }
     private void OnEnable()
     {
-        //Deity.OnDeityJudgment += AttackUnit;
         SwitchGridToMoveSelectionMode.OnMoveButtonPressed += SwitchTileToSelectionMode;
     }
     private void OnDisable()
     {
-        //Deity.OnDeityJudgment -= AttackUnit;
         SwitchGridToMoveSelectionMode.OnMoveButtonPressed -= SwitchTileToSelectionMode;
     }
 
-    /*
-    public void AttackUnit()
-    {
-        if (detectedUnit != null)
-        {
-            if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.blue)
-            {
-                OnJudgmentAttackSuccessful();
-            }
-            else if (detectedUnit.GetComponent<Player>() == true && currentTileAlignment == TileAlignment.neutral)
-            {
-                OnPlayerEscapedFromJudgmentAttack();
-                //Use this event to display a "Missed" attack notification after the attack happened.
-            }
-        }
-    }
-  
-    public void ActivateRedParticle()
-    {
-        redParticle.Play();
-        currentTileAlignment = TileAlignment.red;
-    }
-    public void ActivateBlueParticle()
-    {
-        blueParticle.Play();
-        currentTileAlignment = TileAlignment.blue;
-    }
-      */
-    //Should Move this into a different component class
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -309,6 +266,23 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             Debug.Log("Confirming use AOE Spell Mode");
             OnTileConfirmedAOESpellMode();
         }
+        else if (currentSingleTileStatus == SingleTileStatus.summonAreaSelectionModeActive)
+        {
+            TileController summonAreaCenter = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
+            summonAreaCenter.currentSingleTileStatus = SingleTileStatus.summonAreaSelectionModeWaitingForConfirmation;
+            OnTileWaitingForConfirmationSummonMode(summonAreaCenter);
+
+            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(summonAreaCenter))
+            {
+                tile.GetComponentInChildren<MeshRenderer>().material.color = Color.magenta;
+            }
+            summonAreaCenter.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.white;
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.summonAreaSelectionModeWaitingForConfirmation)
+        {
+            Debug.Log("Confirming Summoning Zone Mode");
+            OnTileConfirmedSummonMode();
+        }
     }
     private void HandleTileDeselection()
     {
@@ -437,5 +411,11 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     {
         currentSingleTileStatus = SingleTileStatus.selectionModeActive;
         Debug.Log("Switching tiles to selection Mode");
+    }
+
+    public void SwitchTileToSummonAreaSelectionMode()
+    {
+        currentSingleTileStatus = SingleTileStatus.summonAreaSelectionModeActive;
+        Debug.Log("Switching tiles to Summoning Area selection Mode");
     }
 }

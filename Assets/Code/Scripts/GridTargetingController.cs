@@ -18,6 +18,7 @@ public class GridTargetingController : MonoBehaviour
         TileController.OnTileClickedAOESpellMode += SetUnitAsSpellEpicenter;
         SpellcastingController.OnCastingSpell += SwitchTilesToAttackSelectionMode;
         SpellcastingController.OnCastingSpellAOE += SwitchTilesToAOEAttackSelectionMode;
+        SummoningController.OnSummoningRitual += SwitchTilesToSummonZoneSelectionMode;
     }
 
     private void OnDisable()
@@ -26,7 +27,7 @@ public class GridTargetingController : MonoBehaviour
         TileController.OnTileClickedAOESpellMode -= SetUnitAsSpellEpicenter;
         SpellcastingController.OnCastingSpell -= SwitchTilesToAttackSelectionMode;
         SpellcastingController.OnCastingSpellAOE -= SwitchTilesToAOEAttackSelectionMode;
-
+        SummoningController.OnSummoningRitual -= SwitchTilesToSummonZoneSelectionMode;
     }
     public void SwitchTilesToAttackSelectionMode()
     {
@@ -48,6 +49,17 @@ public class GridTargetingController : MonoBehaviour
             Debug.Log("All Tiles on the Battlefield switched to AOE Attack Selection Mode");
         }
     }
+    public void SwitchTilesToSummonZoneSelectionMode()
+    {
+        GameObject[] battlefieldTiles = GameObject.FindGameObjectsWithTag("Tile");
+        foreach (var battlefieldTile in battlefieldTiles)
+        {
+            //Switch all Battlefield on Tiles to AOE Attack Selection Mode.
+            battlefieldTile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.summonAreaSelectionModeActive;
+            Debug.Log("All Tiles on the Battlefield switched to Summon Zone Selection Mode");
+        }
+    }
+
     public Unit SetUnitAsTarget(int tileXCoordinate, int tileYCoordinate)
     {
         Unit targetUnit = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate).GetComponent<TileController>().detectedUnit.GetComponent<Unit>();

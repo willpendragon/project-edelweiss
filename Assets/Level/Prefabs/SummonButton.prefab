@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6278539958340940979}
   - component: {fileID: 6278539958340940978}
   - component: {fileID: 6278539958340940973}
-  - component: {fileID: 7860240316070497744}
+  - component: {fileID: 371523765177005279}
   m_Layer: 5
   m_Name: SummonButton
   m_TagString: PlayerUISpellButton
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7860240316070497744
+--- !u!114 &371523765177005279
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6278539958340940975}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cb280414cd7ce7458875d8fd4137de8, type: 3}
+  m_Script: {fileID: 11500000, guid: cc524dfb01aa11e4faab37e8f6b572f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6278539958473630529

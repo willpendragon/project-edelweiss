@@ -36,6 +36,7 @@ public class Unit : MonoBehaviour
     public float unitExperiencePoints;
     public float coinsReward;
     public float experiencePointsReward;
+    public Deity linkedDeity;
 
     public delegate void CheckGameOver();
     public static event CheckGameOver OnCheckGameOver;

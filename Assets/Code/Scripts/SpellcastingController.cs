@@ -23,17 +23,15 @@ public class SpellcastingController : MonoBehaviour
     {
         GridTargetingController.OnTargetedUnit += SetTargetedUnit;
         TileController.OnTileConfirmedAttackMode += UseCurrentSpellOnCurrentTarget;
-        TileController.OnTileConfirmedAOESpellMode += UseCurrentSpellOnCurrentTargets;
         TileController.OnTileWaitingForConfirmationAOESpellMode += SetAOESpellEpicenter;
-
+        TileController.OnTileConfirmedAOESpellMode += UseCurrentSpellOnCurrentTargets;
     }
     public void OnDisable()
     {
         GridTargetingController.OnTargetedUnit -= SetTargetedUnit;
         TileController.OnTileConfirmedAttackMode -= UseCurrentSpellOnCurrentTarget;
-        TileController.OnTileConfirmedAOESpellMode -= UseCurrentSpellOnCurrentTargets;
         TileController.OnTileWaitingForConfirmationAOESpellMode -= SetAOESpellEpicenter;
-
+        TileController.OnTileConfirmedAOESpellMode -= UseCurrentSpellOnCurrentTargets;
     }
     public void CastSpell(Spell castedSpell)
     {
@@ -62,10 +60,10 @@ public class SpellcastingController : MonoBehaviour
     {
         if (CheckActivePlayerUnitOpportunityPoints())
         {
-            if ((GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitManaPoints >= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.manaPointsCost))
+            if ((GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitManaPoints >= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.manaPointsCost))
             {
                 //Spell damage calculation logic
-                currentTargetedUnit.HealthPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
+                currentTargetedUnit.HealthPoints -= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage;
                 //This is a legacy method that applies the damage on the Enemy and executes the Enemy damaged feedback
                 //currentTargetedUnit.gameObject.GetComponent<EnemyAgent>().EnemyTakingDamage.Invoke();
                 SpendPlayerManaPoints();
@@ -74,13 +72,13 @@ public class SpellcastingController : MonoBehaviour
                 //Updates the Active Player Unit Profile Panel
                 currentTargetedUnit.GetComponent<Unit>().unitProfilePanel.GetComponent<PlayerProfileController>().UpdateTargetedUnitProfile(currentTargetedUnit.GetComponent<Unit>());
                 //Updates the Enemy Unit Profile Panel
-                OnCastedSpellTextNotification(GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.name);
+                OnCastedSpellTextNotification(GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.name);
                 Debug.Log("Using Spell on Enemy");
                 Deity unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity;
                 if (unboundDeity != null)
                 {
                     //Looks for the Unbound Deity on the Battlefield
-                    SpellAlignment spellAlignment = GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.alignment;
+                    SpellAlignment spellAlignment = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.alignment;
                     //Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments
                     if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
                     {
@@ -124,7 +122,7 @@ public class SpellcastingController : MonoBehaviour
             }
             else if (tile.detectedUnit.tag == "Enemy")
             {
-                tile.detectedUnit.GetComponent<Unit>().HealthPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.damage;
+                tile.detectedUnit.GetComponent<Unit>().HealthPoints -= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage;
                 Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
             }
         }
@@ -142,10 +140,10 @@ public class SpellcastingController : MonoBehaviour
     }
     public void SpendPlayerManaPoints()
     {
-        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitManaPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.manaPointsCost;
+        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitManaPoints -= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.manaPointsCost;
     }
     public void SpendPlayerUnitOpportunityPoints()
     {
-        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints -= GridManager.Instance.currentPlayerUnit.GetComponent<SpellcastingController>().currentSelectedSpell.opportunityPointsCost;
+        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints -= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.opportunityPointsCost;
     }
 }

@@ -123,6 +123,63 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &70359042
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.585981
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.9548652
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.728158
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919251, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580817271449919253, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
+      propertyPath: m_Name
+      value: SummoningController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
 --- !u!1 &127295434
 GameObject:
   m_ObjectHideFlags: 0
@@ -1225,12 +1282,61 @@ PrefabInstance:
       propertyPath: m_Name
       value: Unit_Aliza
       objectReference: {fileID: 0}
+    - target: {fileID: 556079661300770190, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 556079661300770190, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
+      propertyPath: currentSelectedSpell
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3915823849096180749, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
       propertyPath: unitHealthPoints
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
+--- !u!1 &1110113197 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 556079660409014919, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
+  m_PrefabInstance: {fileID: 1110113196}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1110113198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110113197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37d6d513ba2279641b1d07a5d08d66dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyTurnManager: {fileID: 0}
+  currentDeity: {fileID: 3348349630364506734, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
+  deitySummoningSpot: {fileID: 0}
+  deityPowerLoadingBarSlider: {fileID: 0}
+  deityAttackFeedback: {fileID: 0}
+  deityAttackFeedbackTimeToDeactivation: 0
+  useDeityAttack: {fileID: 0}
+  deityPowerLoadingBarSliderIsActive: 0
+  summonAreaCenterTile: {fileID: 0}
+--- !u!114 &1110113199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110113197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5db9d0403ea7d24dbc5797da3569e5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  summoningCastingController: {fileID: 1110113198}
+  summonButtonPrefab: {fileID: 6278539958340940975, guid: 6716af5b85582f142b22ded5945da45a, type: 3}
+  spellMenuContainer: {fileID: 0}
 --- !u!1001 &1185951271
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1289,6 +1395,14 @@ PrefabInstance:
     - target: {fileID: 4490924161125975758, guid: 09560ee6a3ca1e64193361457ff66335, type: 3}
       propertyPath: m_Name
       value: Unit_Edel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7441471170864787581, guid: 09560ee6a3ca1e64193361457ff66335, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7441471170864787581, guid: 09560ee6a3ca1e64193361457ff66335, type: 3}
+      propertyPath: currentSelectedSpell
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09560ee6a3ca1e64193361457ff66335, type: 3}
