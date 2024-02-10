@@ -7,13 +7,34 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] GameObject[] spawnableDeities;
     [SerializeField] Transform deitySpawnPosition;
     [SerializeField] DeityAchievementsController deityAchievementsController;
+    [SerializeField] BattleManager battleManager;
     // Start is called before the first frame update
     void Start()
     {
         if (deityAchievementsController.CheckRequirements())
         {
-            GameObject unboundDeity = Instantiate(spawnableDeities[0], deitySpawnPosition);
-            GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = unboundDeity.GetComponent<Deity>();
+            //Unlocks Anguana as an Unbound Entity
+            //0 is a magic number, remove it later
+            Debug.Log("Unbound Anguana Unlocked");
+            GameObject unboundDeity = Instantiate(spawnableDeities[0]);
+            Debug.Log("Moving Unbound Anguana to Starting Position");
+            if (unboundDeity != null)
+            {
+                Debug.Log("Start of Summon Deity on Battlefield");
+                battleManager.currentBattleType = BattleType.battleWithDeity;
+                TileController deitySpawningTile = GridManager.Instance.GetTileControllerInstance(4, 8);
+                unboundDeity.transform.position = deitySpawningTile.transform.position;
+                unboundDeity.GetComponent<Unit>().ownedTile = deitySpawningTile;
+                deitySpawningTile.detectedUnit = unboundDeity.gameObject;
+                unboundDeity.GetComponent<Unit>().currentXCoordinate = deitySpawningTile.tileXCoordinate;
+                unboundDeity.GetComponent<Unit>().currentYCoordinate = deitySpawningTile.tileYCoordinate;
+                unboundDeity.gameObject.transform.localScale = new Vector3(3.5f, 3.5f, 3.5f);
+                foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+                {
+                    Destroy(enemy);
+                }
+                unboundDeity.gameObject.tag = "Enemy";
+            }
         }
         else
         {

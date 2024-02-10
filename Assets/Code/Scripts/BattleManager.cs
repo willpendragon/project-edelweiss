@@ -79,38 +79,18 @@ public class BattleManager : MonoBehaviour
     {
         //Looks for the Game Manager at the start of the battle.
         gameManager = GameManager._instance;
-        if (deityAchievementsController.CheckRequirements())
-        {
-            ActivateDeityBattle();
-            battleBeginsScreen.SetActive(true);
-            StartCoroutine("DeactivateBattleBeginsScreen");
-            enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
-            currentTurnOrder = TurnOrder.playerTurn;
-            turnDisplay.text = "Player Turn";
-            turnCounter += 1;
-        }
-        else
-        {
-            battleBeginsScreen.SetActive(true);
-            StartCoroutine("DeactivateBattleBeginsScreen");
-            enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
-            currentTurnOrder = TurnOrder.playerTurn;
-            turnDisplay.text = "Player Turn";
-            turnCounter += 1;
-        }
+        battleBeginsScreen.SetActive(true);
+        StartCoroutine("DeactivateBattleBeginsScreen");
+        enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
+
+        SetTurnOrder();
     }
 
-    public void OnEnable()
+    public void SetTurnOrder()
     {
-    }
-    public void OnDisable()
-    {
-    }
-
-    public void ActivateDeityBattle()
-    {
-        currentBattleType = BattleType.battleWithDeity;
-
+        currentTurnOrder = TurnOrder.playerTurn;
+        turnDisplay.text = "Player Turn";
+        turnCounter += 1;
     }
 
     public void PassTurnToPlayer()

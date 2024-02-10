@@ -6,10 +6,14 @@ using UnityEngine;
 public class EnemyPoolController : MonoBehaviour
 {
     public GameObject[] EnemyPoolGameObjects;
+    [SerializeField] BattleManager battleManager;
     // Start is called before the first frame update
     void OnEnable()
     {
-        SpawnEnemies();
+        if (battleManager.currentBattleType != BattleType.battleWithDeity)
+        {
+            SpawnEnemies();
+        }
     }
 
     void SpawnEnemies()

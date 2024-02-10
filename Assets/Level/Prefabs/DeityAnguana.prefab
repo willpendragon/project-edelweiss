@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3348349630364506730}
   - component: {fileID: 3348349630364506733}
   - component: {fileID: 3348349630364506732}
-  - component: {fileID: 3348349630364506735}
   - component: {fileID: 3348349630364506731}
+  - component: {fileID: -5287236863881772563}
   m_Layer: 0
   m_Name: DeityAnguana
   m_TagString: Deity
@@ -86,20 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &3348349630364506735
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3348349630364506734}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3348349630364506731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +110,41 @@ MonoBehaviour:
   enmityThreshold: 4
   deitySpecialAttackPower: 20
   deityBehavior: {fileID: 11400000, guid: 0372a198e5909a349b294db374d84b0e, type: 2}
+--- !u!114 &-5287236863881772563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3348349630364506734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9191c87aab5c6164087525c5b65d85f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitMovementLimit: 10
+  currentXCoordinate: 0
+  currentYCoordinate: 0
+  startingXCoordinate: 0
+  startingYCoordinate: 0
+  unitTemplate: {fileID: 0}
+  ownedTile: {fileID: 0}
+  unitHealthPoints: 1000
+  unitMaxHealthPoints: 1000
+  unitOpportunityPoints: 0
+  unitManaPoints: 0
+  unitShieldPoints: 0
+  unitCoins: 0
+  unitExperiencePoints: 0
+  coinsReward: 0
+  experiencePointsReward: 0
+  linkedDeity: {fileID: 0}
+  currentUnitLifeCondition: 0
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  unitProfilePanel: {fileID: 0}
+  unitStatusController: {fileID: 0}
 --- !u!1001 &3348349631370794795
 PrefabInstance:
   m_ObjectHideFlags: 0

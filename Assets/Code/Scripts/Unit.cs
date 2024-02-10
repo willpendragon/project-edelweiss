@@ -74,15 +74,19 @@ public class Unit : MonoBehaviour
 
     public void Start()
     {
-        unitHealthPoints = unitTemplate.unitHealthPoints;
-        unitMaxHealthPoints = unitTemplate.unitMaxHealthPoints;
-        unitManaPoints = unitTemplate.unitManaPoints;
-        unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
-        unitShieldPoints = unitTemplate.unitShieldPoints;
-        currentUnitLifeCondition = UnitLifeCondition.unitAlive;
+        if (unitTemplate != null)
+        {
+            unitHealthPoints = unitTemplate.unitHealthPoints;
+            unitMaxHealthPoints = unitTemplate.unitMaxHealthPoints;
+            unitManaPoints = unitTemplate.unitManaPoints;
+            unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
+            unitShieldPoints = unitTemplate.unitShieldPoints;
+            currentUnitLifeCondition = UnitLifeCondition.unitAlive;
 
-        coinsReward = GetComponent<Unit>().unitTemplate.unitCoinsReward;
-        experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
+            coinsReward = GetComponent<Unit>().unitTemplate.unitCoinsReward;
+            experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
+
+        }
     }
 
     public void SetUnitInitialPositionOnGrid()
