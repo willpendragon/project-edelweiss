@@ -21,6 +21,8 @@ public class MeleeController : MonoBehaviour
     public void OnDisable()
     {
         GridTargetingController.OnMeleeTargetedUnit -= SetTargetedUnit;
+        TileController.OnTileConfirmedMeleeMode -= ExecuteMeleeAttack;
+
     }
 
     public void StartMeleeAttack()

@@ -2907,6 +2907,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentMeleeTargetedUnit: {fileID: 0}
+  attackPower: 2
+  distanceController: {fileID: 579048936}
   targetUnit: {fileID: 0}
 --- !u!1 &588250796
 GameObject:
