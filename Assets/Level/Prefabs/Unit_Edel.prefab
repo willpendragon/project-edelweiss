@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 892227224226316687}
   - component: {fileID: 7441471170864787523}
   - component: {fileID: 7441471170864787522}
-  - component: {fileID: 7441471170864787581}
   - component: {fileID: -6858461416225278963}
   - component: {fileID: 6513374407507057997}
   - component: {fileID: 3656654971913035433}
+  - component: {fileID: 7709965231410861075}
   m_Layer: 0
   m_Name: Unit_Edel
   m_TagString: Player
@@ -69,6 +69,7 @@ MonoBehaviour:
   unitExperiencePoints: 0
   coinsReward: 0
   experiencePointsReward: 0
+  linkedDeity: {fileID: 0}
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
@@ -117,24 +118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1364625b023ee2a4b895f39866368285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellCastingController: {fileID: 7441471170864787581}
+  spellCastingController: {fileID: 0}
   spellButtonPrefab: {fileID: 6278539958340940975, guid: dcdb643eb9d225d4bbd83e3998662618, type: 3}
   spellMenuContainer: {fileID: 0}
---- !u!114 &7441471170864787581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4490924161125975758}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 537892c85a6e80a47889b9cc16665172, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentTargetedUnit: {fileID: 0}
-  currentSelectedSpell: {fileID: 0}
-  aoeSpellEpicenterTile: {fileID: 0}
 --- !u!114 &-6858461416225278963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,6 +167,18 @@ MonoBehaviour:
   summoningCastingController: {fileID: 0}
   summonButtonPrefab: {fileID: 6278539958340940975, guid: 6716af5b85582f142b22ded5945da45a, type: 3}
   spellMenuContainer: {fileID: 0}
+--- !u!114 &7709965231410861075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4490924161125975758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52e41d2df2be214aab74e1dd3f4ea2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7441471170850171257
 GameObject:
   m_ObjectHideFlags: 0

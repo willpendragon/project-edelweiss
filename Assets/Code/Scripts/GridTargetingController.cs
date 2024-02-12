@@ -6,16 +6,23 @@ using UnityEngine;
 public class GridTargetingController : MonoBehaviour
 {
     public GridManager gridManager;
+
+    public delegate void MeleeTargetedUnit(Unit meleeTargetedUnit);
+    public static event MeleeTargetedUnit OnMeleeTargetedUnit;
+
     public delegate void TargetedUnit(Unit targetedUnit);
     public static event TargetedUnit OnTargetedUnit;
+
 
     public delegate void UnitSetAsSpellEpicenter(Unit epicenterUnit);
     public static event UnitSetAsSpellEpicenter OnUnitSetAsSpellEpicenter;
 
     private void OnEnable()
     {
+        TileController.OnTileClickedMeleeMode += SetUnitAsMeleeTarget;
         TileController.OnTileClickedAttackMode += SetUnitAsTarget;
         TileController.OnTileClickedAOESpellMode += SetUnitAsSpellEpicenter;
+        MeleeController.OnMeleeAttack += SwitchTilesToMeleeSelectionMode;
         SpellcastingController.OnCastingSpell += SwitchTilesToAttackSelectionMode;
         SpellcastingController.OnCastingSpellAOE += SwitchTilesToAOEAttackSelectionMode;
         SummoningController.OnSummoningRitual += SwitchTilesToSummonZoneSelectionMode;
@@ -23,11 +30,22 @@ public class GridTargetingController : MonoBehaviour
 
     private void OnDisable()
     {
-        TileController.OnTileClickedAttackMode -= SetUnitAsTarget;
+        TileController.OnTileClickedMeleeMode -= SetUnitAsMeleeTarget;
         TileController.OnTileClickedAOESpellMode -= SetUnitAsSpellEpicenter;
+        MeleeController.OnMeleeAttack -= SwitchTilesToMeleeSelectionMode;
         SpellcastingController.OnCastingSpell -= SwitchTilesToAttackSelectionMode;
         SpellcastingController.OnCastingSpellAOE -= SwitchTilesToAOEAttackSelectionMode;
         SummoningController.OnSummoningRitual -= SwitchTilesToSummonZoneSelectionMode;
+    }
+
+    public void SwitchTilesToMeleeSelectionMode()
+    {
+        GameObject[] battlefieldTiles = GameObject.FindGameObjectsWithTag("Tile");
+        foreach (var battlefieldTile in battlefieldTiles)
+        {
+            //Switch all Battlefield on Tiles to Attack Selection Mode.
+            battlefieldTile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.meleeSelectionModeActive;
+        }
     }
     public void SwitchTilesToAttackSelectionMode()
     {
@@ -58,6 +76,13 @@ public class GridTargetingController : MonoBehaviour
             battlefieldTile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.summonAreaSelectionModeActive;
             Debug.Log("All Tiles on the Battlefield switched to Summon Zone Selection Mode");
         }
+    }
+
+    public Unit SetUnitAsMeleeTarget(int tileXCoordinate, int tileYCoordinate)
+    {
+        Unit targetUnit = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate).GetComponent<TileController>().detectedUnit.GetComponent<Unit>();
+        OnMeleeTargetedUnit(targetUnit);
+        return targetUnit;
     }
 
     public Unit SetUnitAsTarget(int tileXCoordinate, int tileYCoordinate)

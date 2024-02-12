@@ -20,6 +20,10 @@ public enum SingleTileStatus
     selectionModeActive,
     selectedPlayerUnitOccupiedTile,
 
+    meleeSelectionModeActive,
+    meleeSelectionModeWaitingForConfirmation,
+    meleeSelectionModeConfirmedTarget,
+
     attackSelectionModeActive,
     attackSelectionModeWaitingForConfirmation,
     attackSelectionModeConfirmedTarget,
@@ -65,14 +69,11 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public delegate void TileClicked(int x, int y);
     public static event TileClicked OnTileClicked;
 
+    public delegate Unit TileClickedMeleeMode(int x, int y);
+    public static event TileClickedMeleeMode OnTileClickedMeleeMode;
+
     public delegate Unit TileClickedAttackMode(int x, int y);
     public static event TileClickedAttackMode OnTileClickedAttackMode;
-
-    public delegate void TileConfirmedAttackMode();
-    public static event TileConfirmedAttackMode OnTileConfirmedAttackMode;
-
-    public delegate void TileConfirmedAOESpellMode();
-    public static event TileConfirmedAOESpellMode OnTileConfirmedAOESpellMode;
 
     public delegate Unit TileClickedAOESpellMode(int x, int y);
     public static event TileClickedAOESpellMode OnTileClickedAOESpellMode;
@@ -82,6 +83,15 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public delegate void TileWaitingForConfirmationSummonMode(TileController summonCenterTarget);
     public static event TileWaitingForConfirmationSummonMode OnTileWaitingForConfirmationSummonMode;
+
+    public delegate void TileConfirmedMeleeMode();
+    public static event TileConfirmedMeleeMode OnTileConfirmedMeleeMode;
+
+    public delegate void TileConfirmedAttackMode();
+    public static event TileConfirmedAttackMode OnTileConfirmedAttackMode;
+
+    public delegate void TileConfirmedAOESpellMode();
+    public static event TileConfirmedAOESpellMode OnTileConfirmedAOESpellMode;
 
     public delegate void TileConfirmedSummonMode();
     public static event TileConfirmedSummonMode OnTileConfirmedSummonMode;
@@ -159,6 +169,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                         //Gameplay and Spells Buttons are generated
                         detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
                         detectedUnit.GetComponent<UnitSelectionController>().GenerateGameplayButtons();
+                        detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
                         detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
                         detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
                     }
@@ -202,6 +213,34 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                 }
             }
         }
+        //The Player left clicks on a Tile with an Enemy on it while MELEE SELECTION MODE (aka, Targeting during Melee Attacks) is Active
+        else if (currentSingleTileStatus == SingleTileStatus.meleeSelectionModeActive)
+        {
+            GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitAttacking;
+            //The System sets the Active Character Unit as Attacking
+            Unit targetUnit = OnTileClickedMeleeMode?.Invoke(tileXCoordinate, tileYCoordinate);
+            //The System retrieves the coordinates from the Grid and sets the corresponding Unit as the Target
+            if (targetUnit != null && targetUnit.tag == "Enemy" && targetUnit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+            //Selects the Enemy Unit is present on the tile and it's not already dead.
+            {
+                //The System retrieves the Tile Controller Instance from the Target Unit
+                TileController targetUnitTileController = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
+                //The Tile's mode of the Target Unit and only that tile (in Single Target) becomes a Target Waiting for Confirmation
+                targetUnitTileController.currentSingleTileStatus = SingleTileStatus.meleeSelectionModeWaitingForConfirmation;
+                //The Target Unit's tile turns to Red.
+                targetUnitTileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+                //A Red selector icon spawns over the Target Unit's head.
+                GameObject newTargetIcon = Instantiate(targetIcon, targetUnit.transform.localPosition + (targetUnit.transform.up * 2), Quaternion.identity);
+                Debug.Log("Set Unit" + targetUnit.gameObject.name + " as current Target");
+                Destroy(targetUnit.GetComponent<Unit>().unitProfilePanel);
+                GameObject newCurrentlySelectedEnemyUnitPanel = Instantiate(currentlySelectedUnitPanel, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+                newCurrentlySelectedEnemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerCenter;
+                newCurrentlySelectedEnemyUnitPanel.tag = "TargetedEnemyUnitProfile";
+                detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedEnemyUnitPanel;
+                //Spawns the Enemy Target Unit Profile at the Lower Center part of the screen
+                OnClickedTileWithUnit(detectedUnit);
+            }
+        }
         //The Player left clicks on a Tile with an Enemy on it while ATTACK SELECTION MODE (aka, Targeting during Spells) is Active
         else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeActive)
         {
@@ -229,6 +268,13 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                 //Spawns the Enemy Target Unit Profile at the Lower Center part of the screen
                 OnClickedTileWithUnit(detectedUnit);
             }
+        }
+        //If the Target is already waiting for confirmation, I can attack that target.
+        else if (currentSingleTileStatus == SingleTileStatus.meleeSelectionModeWaitingForConfirmation)
+        {
+            //Play VFX Feedback on Enemy Target
+            OnTileConfirmedMeleeMode();
+            OnUpdateEnemyTargetUnitProfile(detectedUnit);
         }
         //If the Target is already waiting for confirmation, I can attack that target.
         else if (currentSingleTileStatus == SingleTileStatus.attackSelectionModeWaitingForConfirmation)
