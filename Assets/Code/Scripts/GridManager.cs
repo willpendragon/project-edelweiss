@@ -169,6 +169,7 @@ public class GridManager : MonoBehaviour
 
         }
     }
+
     public Vector3 GetWorldPositionFromGridCoordinates(int x, int y)
     {
         float worldX = x * (1 + inBetweenTilesXOffset);

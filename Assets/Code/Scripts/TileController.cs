@@ -108,7 +108,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         SwitchGridToMoveSelectionMode.OnMoveButtonPressed -= SwitchTileToSelectionMode;
     }
 
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)

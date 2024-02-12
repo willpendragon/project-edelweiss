@@ -133,8 +133,7 @@ public class GridMovementController : MonoBehaviour
 
         return neighbours;
     }
-
-    int GetDistance(TileController tileA, TileController tileB)
+    public int GetDistance(TileController tileA, TileController tileB)
     {
         int distX = Mathf.Abs(tileA.tileXCoordinate - tileB.tileXCoordinate);
         int distY = Mathf.Abs(tileA.tileYCoordinate - tileB.tileYCoordinate);

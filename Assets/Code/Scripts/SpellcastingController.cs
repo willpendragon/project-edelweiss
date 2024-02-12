@@ -19,6 +19,8 @@ public class SpellcastingController : MonoBehaviour
 
     public delegate void CastedSpellTypeHatedbyDeity();
     public static event CastedSpellTypeHatedbyDeity OnCastedSpellTypeHatedbyDeity;
+
+    public DistanceController distanceController;
     public void OnEnable()
     {
         GridTargetingController.OnTargetedUnit += SetTargetedUnit;
@@ -63,7 +65,13 @@ public class SpellcastingController : MonoBehaviour
             if ((GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitManaPoints >= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.manaPointsCost))
             {
                 //Spell damage calculation logic
-                currentTargetedUnit.HealthPoints -= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage;
+                int damage = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage;
+                if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, currentTargetedUnit.ownedTile))
+                {
+                    damage = damage * 2;
+                    Debug.Log("Applying distance multiplier");
+                }
+                currentTargetedUnit.HealthPoints -= damage;
                 //This is a legacy method that applies the damage on the Enemy and executes the Enemy damaged feedback
                 //currentTargetedUnit.gameObject.GetComponent<EnemyAgent>().EnemyTakingDamage.Invoke();
                 SpendPlayerManaPoints();
