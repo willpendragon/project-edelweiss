@@ -7,6 +7,7 @@ public class MeleeController : MonoBehaviour
 {
     public delegate void MeleeAttack();
     public static event MeleeAttack OnMeleeAttack;
+    
     public Unit currentMeleeTargetedUnit;
     //Magic number, fix later 12022024
     public float attackPower = 2;
@@ -23,7 +24,6 @@ public class MeleeController : MonoBehaviour
     {
         GridTargetingController.OnMeleeTargetedUnit -= SetTargetedUnit;
         TileController.OnTileConfirmedMeleeMode -= ExecuteMeleeAttack;
-
     }
 
     public void StartMeleeAttack()

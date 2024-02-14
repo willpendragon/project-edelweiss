@@ -13,7 +13,7 @@ public class MeleeUIController : MonoBehaviour
 
     public void AddMeleeButton()
     {
-        //Instantiates Melee Button.
+        //Instantiates the Melee Button.
         GameObject meleeButtonInstance = Instantiate(meleeButtonPrefab, spellMenuContainer);
         Button currentMeleeButton = meleeButtonInstance.GetComponent<Button>();
         //currentSpellButton.GetComponentInChildren<Text>().text = buttonName;

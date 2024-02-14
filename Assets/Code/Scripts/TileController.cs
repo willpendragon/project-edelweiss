@@ -12,6 +12,7 @@ using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using static TileController;
+using static GridTargetingController;
 
 
 public enum SingleTileStatus
@@ -31,6 +32,10 @@ public enum SingleTileStatus
     aoeAttackSelectionModeActive,
     aoeAttackSelectionModeWaitingForConfirmation,
     aoeAttackSelectionModeConfirmedTarget,
+
+    trapTileSelectionModeActive,
+    trapTileSelectionModeWaitingForConfirmation,
+    trapTileSelectionModeConfirmedTarget,
 
     summonAreaSelectionModeActive,
     summonAreaSelectionModeWaitingForConfirmation,
@@ -78,6 +83,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public delegate Unit TileClickedAOESpellMode(int x, int y);
     public static event TileClickedAOESpellMode OnTileClickedAOESpellMode;
 
+    public delegate TileController TileClickedTrapTileMode(int x, int y);
+    public static event TileClickedTrapTileMode OnTileClickedTrapTileMode;
+
     public delegate void TileWaitingForConfirmationAOESpellMode(TileController spellEpicenterTarget);
     public static event TileWaitingForConfirmationAOESpellMode OnTileWaitingForConfirmationAOESpellMode;
 
@@ -92,6 +100,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public delegate void TileConfirmedAOESpellMode();
     public static event TileConfirmedAOESpellMode OnTileConfirmedAOESpellMode;
+
+    public delegate void TileConfirmedTrapTileMode();
+    public static event TileConfirmedTrapTileMode OnTileConfirmedTrapTileMode;
 
     public delegate void TileConfirmedSummonMode();
     public static event TileConfirmedSummonMode OnTileConfirmedSummonMode;
@@ -171,7 +182,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                         detectedUnit.GetComponent<UnitSelectionController>().GenerateGameplayButtons();
                         detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
                         detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
+                        detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
                         detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
+
                     }
                     else if (GridManager.Instance.currentPlayerUnit != null)
                     {
@@ -308,9 +321,22 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         }
         else if (currentSingleTileStatus == SingleTileStatus.aoeAttackSelectionModeWaitingForConfirmation)
         {
-            Debug.Log("Confirming use AOE Spell Mode");
+            Debug.Log("Confirming use of AOE Spell Mode");
             OnTileConfirmedAOESpellMode();
         }
+        else if (currentSingleTileStatus == SingleTileStatus.trapTileSelectionModeActive)
+        {
+            TileController targetTrapTile = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
+            targetTrapTile.currentSingleTileStatus = SingleTileStatus.trapTileSelectionModeWaitingForConfirmation;
+            targetTrapTile.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.cyan;
+            OnTileClickedTrapTileMode(targetTrapTile.tileXCoordinate, targetTrapTile.tileYCoordinate);
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.trapTileSelectionModeWaitingForConfirmation)
+        {
+            Debug.Log("Confirm use of Trap Tile Action");
+            OnTileConfirmedTrapTileMode();
+        }
+
         else if (currentSingleTileStatus == SingleTileStatus.summonAreaSelectionModeActive)
         {
             TileController summonAreaCenter = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate);
@@ -456,11 +482,5 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     {
         currentSingleTileStatus = SingleTileStatus.selectionModeActive;
         Debug.Log("Switching tiles to selection Mode");
-    }
-
-    public void SwitchTileToSummonAreaSelectionMode()
-    {
-        currentSingleTileStatus = SingleTileStatus.summonAreaSelectionModeActive;
-        Debug.Log("Switching tiles to Summoning Area selection Mode");
     }
 }

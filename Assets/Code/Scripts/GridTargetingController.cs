@@ -13,28 +13,35 @@ public class GridTargetingController : MonoBehaviour
     public delegate void TargetedUnit(Unit targetedUnit);
     public static event TargetedUnit OnTargetedUnit;
 
-
     public delegate void UnitSetAsSpellEpicenter(Unit epicenterUnit);
     public static event UnitSetAsSpellEpicenter OnUnitSetAsSpellEpicenter;
+
+    public delegate void TileSetAsTrap(TileController trapTile);
+    public static event TileSetAsTrap OnTileSetAsTrap;
 
     private void OnEnable()
     {
         TileController.OnTileClickedMeleeMode += SetUnitAsMeleeTarget;
         TileController.OnTileClickedAttackMode += SetUnitAsTarget;
+        TileController.OnTileClickedTrapTileMode += SetTileAsTrapTileTarget;
         TileController.OnTileClickedAOESpellMode += SetUnitAsSpellEpicenter;
         MeleeController.OnMeleeAttack += SwitchTilesToMeleeSelectionMode;
         SpellcastingController.OnCastingSpell += SwitchTilesToAttackSelectionMode;
         SpellcastingController.OnCastingSpellAOE += SwitchTilesToAOEAttackSelectionMode;
+        TrapTileController.OnTrapTile += SwitchTilesToTrapTileSelectionMode;
         SummoningController.OnSummoningRitual += SwitchTilesToSummonZoneSelectionMode;
     }
 
     private void OnDisable()
     {
         TileController.OnTileClickedMeleeMode -= SetUnitAsMeleeTarget;
+        TileController.OnTileClickedAttackMode -= SetUnitAsTarget;
+        TileController.OnTileClickedTrapTileMode -= SetTileAsTrapTileTarget;
         TileController.OnTileClickedAOESpellMode -= SetUnitAsSpellEpicenter;
         MeleeController.OnMeleeAttack -= SwitchTilesToMeleeSelectionMode;
         SpellcastingController.OnCastingSpell -= SwitchTilesToAttackSelectionMode;
         SpellcastingController.OnCastingSpellAOE -= SwitchTilesToAOEAttackSelectionMode;
+        TrapTileController.OnTrapTile -= SwitchTilesToTrapTileSelectionMode;
         SummoningController.OnSummoningRitual -= SwitchTilesToSummonZoneSelectionMode;
     }
 
@@ -67,6 +74,17 @@ public class GridTargetingController : MonoBehaviour
             Debug.Log("All Tiles on the Battlefield switched to AOE Attack Selection Mode");
         }
     }
+    public void SwitchTilesToTrapTileSelectionMode()
+    {
+        GameObject[] battlefieldTiles = GameObject.FindGameObjectsWithTag("Tile");
+        foreach (var battlefieldTile in battlefieldTiles)
+        {
+            //Switch all Battlefield on Tiles to AOE Attack Selection Mode.
+            battlefieldTile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.trapTileSelectionModeActive;
+            Debug.Log("All Tiles on the Battlefield switched to Trap Tile Selection Mode");
+        }
+    }
+
     public void SwitchTilesToSummonZoneSelectionMode()
     {
         GameObject[] battlefieldTiles = GameObject.FindGameObjectsWithTag("Tile");
@@ -90,6 +108,13 @@ public class GridTargetingController : MonoBehaviour
         Unit targetUnit = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate).GetComponent<TileController>().detectedUnit.GetComponent<Unit>();
         OnTargetedUnit(targetUnit);
         return targetUnit;
+    }
+
+    public TileController SetTileAsTrapTileTarget(int tileXCoordinate, int tileYCoordinate)
+    {
+        TileController trapTileTarget = GridManager.Instance.GetTileControllerInstance(tileXCoordinate, tileYCoordinate).GetComponent<TileController>();
+        OnTileSetAsTrap(trapTileTarget);
+        return trapTileTarget;
     }
 
     public Unit SetUnitAsSpellEpicenter(int tileXCoordinate, int tileYCoordinate)
