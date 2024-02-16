@@ -18,7 +18,12 @@ public class SpellUIController : MonoBehaviour
             GameObject spellButtonInstance = Instantiate(spellButtonPrefab, spellMenuContainer);
             Button currentSpellButton = spellButtonInstance.GetComponent<Button>();
             currentSpellButton.GetComponentInChildren<Text>().text = spell.spellName;
-            currentSpellButton.onClick.AddListener(() => spellCastingController.CastSpell(spell));
+            if (spell.spellType == SpellType.aoe)
+            {
+                //currentSpellButton.onClick.AddListener(() => spellCastingController.CastSpell(spell));
+                currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
+                currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
+            }
         }
 
     }
@@ -37,5 +42,17 @@ public class SpellUIController : MonoBehaviour
         //GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         List<Spell> activePlayerUnitSpellsList = detectedUnit.GetComponent<Unit>().unitTemplate.spellsList;
         return activePlayerUnitSpellsList;
+    }
+
+    public void SwitchTilesToSpellMode()
+    {
+        //After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            tile.currentPlayerAction = new AOESpellPlayerAction();
+            tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            Debug.Log("Switching tiles to AOE Spell Mode");
+        }
+
     }
 }

@@ -154,4 +154,9 @@ public class SpellcastingController : MonoBehaviour
     {
         GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints -= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.opportunityPointsCost;
     }
+
+    public void SetCurrentSpell(Spell currentSpell)
+    {
+        currentSelectedSpell = currentSpell;
+    }
 }
