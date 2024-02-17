@@ -19,10 +19,10 @@ public enum SingleTileStatus
 {
     selectionMode,
     waitingForConfirmationMode,
-
     characterSelectionModeActive,
-    selectionModeActive,
     selectedPlayerUnitOccupiedTile,
+
+    selectionModeActive,
 
     meleeSelectionModeActive,
     meleeSelectionModeWaitingForConfirmation,
@@ -139,27 +139,36 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
-            {
-                CreateActivePlayerUnitProfile();
-            }
-            //HandleTileSelection();
-            else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
-            {
-                Debug.Log("Selecting Tiles in Melee Mode");
-                currentPlayerAction.Select(this);
-            }
-            else if (currentSingleTileStatus == SingleTileStatus.waitingForConfirmationMode)
-            {
-                //If Waiting for Confirmation is True
-                currentPlayerAction.Execute();
-            }
+            HandleTileSelection();
         }
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            currentPlayerAction.Deselect();
-            //HandleTileDeselection();
+            HandleTileDeselection();
         }
+    }
+
+    public void HandleTileSelection()
+    {
+        if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
+        {
+            CreateActivePlayerUnitProfile();
+        }
+        //HandleTileSelection();
+        else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
+        {
+            Debug.Log("Selecting Tiles in Melee Mode");
+            currentPlayerAction.Select(this);
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.waitingForConfirmationMode)
+        {
+            //If Waiting for Confirmation is True
+            currentPlayerAction.Execute();
+        }
+    }
+
+    public void HandleTileDeselection()
+    {
+        currentPlayerAction.Deselect();
     }
 
     public void CreateActivePlayerUnitProfile()
@@ -189,7 +198,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
         detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
     }
-
+    /*
     private void HandleTileSelection()
     {
         if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
@@ -206,7 +215,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
                     }
 
-                    /*
+                    
                     Debug.Log("Tile selected with Left Click");
                     //The Player left clicks on a Tile while the Tile is undergoing MOVE SELECTION Mode, calls the method to move to that Tile.
                     if (currentSingleTileStatus == SingleTileStatus.selectionModeActive)
@@ -549,8 +558,4 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                     Debug.Log("Switching tiles to selection Mode");
                 }
                     */
-                }
-            }
-        }
-    }
 }

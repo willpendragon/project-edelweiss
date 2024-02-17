@@ -16,21 +16,19 @@ public class MeleeUIController : MonoBehaviour
         //Instantiates the Melee Button.
         GameObject meleeButtonInstance = Instantiate(meleeButtonPrefab, spellMenuContainer);
         Button currentMeleeButton = meleeButtonInstance.GetComponent<Button>();
-        //currentSpellButton.GetComponentInChildren<Text>().text = buttonName;
-        //currentMeleeButton.onClick.AddListener(() => meleeController.StartMeleeAttack());
         currentMeleeButton.onClick.AddListener(() => SwitchTilesToMeleeMode());
-        //Better use this line to Change the currentPlayerAction for all Tiles to Melee Action
     }
 
     public void SwitchTilesToMeleeMode()
     {
-        //After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode
+        MeleePlayerAction meleePlayerActionInstance = new MeleePlayerAction();
+        //Creates a new instance of the Melee Player Action
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
-            tile.currentPlayerAction = new MeleePlayerAction();
+            tile.currentPlayerAction = meleePlayerActionInstance;
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             Debug.Log("Switching tiles to Melee Mode");
         }
-
+        //After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode and switch to the Melee Player Action
     }
 }
