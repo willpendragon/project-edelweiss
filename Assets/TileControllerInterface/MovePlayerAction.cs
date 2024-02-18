@@ -23,6 +23,7 @@ public class MovePlayerAction : IPlayerAction
             destinationTile.GetComponentInChildren<MeshRenderer>().material.color = Color.blue;
             destinationTileXCoordinate = destinationTile.tileXCoordinate;
             destinationTileYCoordinate = destinationTile.tileYCoordinate;
+            savedSelectedTile = selectedTile;
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
 
             selectionLimiter--;
