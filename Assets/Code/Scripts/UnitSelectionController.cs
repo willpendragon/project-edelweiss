@@ -45,13 +45,13 @@ public class UnitSelectionController : MonoBehaviour
 
     public void GenerateGameplayButtons()
     {
-        GenerateMoveButton();
+        //GenerateMoveButton();
         GenerateWaitButton();
     }
-    public void GenerateMoveButton()
-    {
-        GameObject newMoveButton = Instantiate(moveButton, unitSpellUIController.spellMenuContainer);
-    }
+    //public void GenerateMoveButton()
+    //{
+    //    GameObject newMoveButton = Instantiate(moveButton, unitSpellUIController.spellMenuContainer);
+    //}
     public void GenerateWaitButton()
     {
         GameObject newWaitButton = Instantiate(waitButton, unitSpellUIController.spellMenuContainer);

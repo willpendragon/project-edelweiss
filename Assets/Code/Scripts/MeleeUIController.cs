@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class MeleeUIController : MonoBehaviour
 
 {
-    public MeleeController meleeController;
+    //public MeleeController meleeController;
     public GameObject meleeButtonPrefab;
     public Transform spellMenuContainer;
     private string buttonName;

@@ -3401,6 +3401,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Unit_Edel
       objectReference: {fileID: 0}
+    - target: {fileID: 4897979359258500390, guid: 09560ee6a3ca1e64193361457ff66335, type: 3}
+      propertyPath: spellMenuContainer
+      value: 
+      objectReference: {fileID: 1270439568}
     - target: {fileID: 7441471170864787522, guid: 09560ee6a3ca1e64193361457ff66335, type: 3}
       propertyPath: spellMenuContainer
       value: 
@@ -10082,6 +10086,10 @@ PrefabInstance:
       propertyPath: linkedDeity
       value: 
       objectReference: {fileID: 3348349630364506731, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
+    - target: {fileID: 6657815281680266088, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
+      propertyPath: spellMenuContainer
+      value: 
+      objectReference: {fileID: 1270439568}
     m_RemovedComponents:
     - {fileID: 556079661300770190, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}

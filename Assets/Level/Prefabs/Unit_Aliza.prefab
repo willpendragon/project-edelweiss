@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 6889659664313542865}
   - component: {fileID: 880051095614148432}
   - component: {fileID: 991646977029179774}
+  - component: {fileID: 6657815281680266088}
   m_Layer: 0
   m_Name: Unit_Aliza
   m_TagString: Player
@@ -180,6 +181,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e52e41d2df2be214aab74e1dd3f4ea2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meleeButtonPrefab: {fileID: 0}
+  spellMenuContainer: {fileID: 0}
+--- !u!114 &6657815281680266088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556079660409014919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 446a8e1e399ce444c9766cba7cad4ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveButtonPrefab: {fileID: 6278539958340940975, guid: d5dd23d0e8c3dcd409bc6af0caf1dcad, type: 3}
+  spellMenuContainer: {fileID: 0}
 --- !u!1 &556079661349572503
 GameObject:
   m_ObjectHideFlags: 0
