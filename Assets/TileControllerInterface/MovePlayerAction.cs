@@ -46,8 +46,22 @@ public class MovePlayerAction : IPlayerAction
     {
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         //Retrieve Active Current Player
-        //Use Grid Logic to Move the Player to Destination
-        activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate);
-        Debug.Log("Moving Character Execution Logic");
+
+        if (activePlayerUnit.unitOpportunityPoints > 0)
+        {
+            //Use Grid Logic to Move the Player to Destination
+            activePlayerUnit.ownedTile.detectedUnit = null;
+            activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate);
+            activePlayerUnit.SetPosition(destinationTileXCoordinate, destinationTileYCoordinate);
+            activePlayerUnit.ownedTile = savedSelectedTile;
+            activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
+
+            activePlayerUnit.unitOpportunityPoints--;
+            Debug.Log("Moving Character Execution Logic");
+        }
+        else
+        {
+            Debug.Log("Not enough Opportunity Points on Active Player Unit");
+        }
     }
 }

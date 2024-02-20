@@ -48,20 +48,29 @@ public class MeleePlayerAction : IPlayerAction
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
-        int attackPower = 2;
-        int knockbackStrength = 2;
-        //Warning: remove magic number later
-
-        if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
+        if (activePlayerUnit.unitOpportunityPoints > 0)
         {
-            attackPower = attackPower * 2;
-            knockbackStrength = knockbackStrength * 2;
-            Debug.Log("Applying distance and knockback multiplier");
+            DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
+            int attackPower = 2;
+            int knockbackStrength = 2;
+            //Warning: remove magic number later
+
+            if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
+            {
+                attackPower = attackPower * 2;
+                knockbackStrength = knockbackStrength * 2;
+                Debug.Log("Applying distance and knockback multiplier");
+            }
+            ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
+            currentTarget.HealthPoints -= attackPower;
+            activePlayerUnit.unitOpportunityPoints--;
+            Debug.Log("Melee Execution Logic");
         }
-        ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
-        currentTarget.HealthPoints -= attackPower;
-        Debug.Log("Melee Execution Logic");
+        else
+        {
+            Debug.Log("Not enough Opportunity Points on Active Player Unit");
+        }
+
     }
 
     public void ApplyKnockback(Unit attacker, Unit defender, int knockbackStrength)
@@ -106,6 +115,8 @@ public class MeleePlayerAction : IPlayerAction
         newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
         // Move the defender to the new grid position
+        defender.ownedTile.detectedUnit = null;
+        defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y);
         defender.GetComponent<Unit>().SetPosition(newGridPos.x, newGridPos.y);
     }
 }
