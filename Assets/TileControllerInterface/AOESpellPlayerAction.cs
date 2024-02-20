@@ -17,7 +17,6 @@ public class AOESpellPlayerAction : IPlayerAction
     {
         spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
 
-
         if (selectedTile != null && selectionLimiter == 1)
         {
             savedSelectedTile = selectedTile;
@@ -51,32 +50,42 @@ public class AOESpellPlayerAction : IPlayerAction
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (spellCastingController.currentSelectedSpell.spellType == SpellType.aoe)
+        if (activePlayerUnit.unitManaPoints > 0)
         {
-            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+            if (spellCastingController.currentSelectedSpell.spellType == SpellType.aoe)
             {
-                Debug.Log("Using AOE Spell on Multiple Targets");
-                tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
-                activePlayerUnit.unitOpportunityPoints--;
-                if (tile.detectedUnit == null)
+                foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
                 {
-                    Debug.Log("No Unit found. Can't apply damage");
-                }
-                else if (tile.detectedUnit.tag == "Enemy")
-                {
-                    tile.detectedUnit.GetComponent<Unit>().TakeDamage(GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage);
+                    Debug.Log("Using AOE Spell on Multiple Targets");
+                    tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
                     activePlayerUnit.unitOpportunityPoints--;
-                    Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
+                    if (tile.detectedUnit == null)
+                    {
+                        Debug.Log("No Unit found. Can't apply damage");
+                    }
+                    else if (tile.detectedUnit.tag == "Enemy")
+                    {
+                        tile.detectedUnit.GetComponent<Unit>().TakeDamage(GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage);
+                        activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
+                        activePlayerUnit.unitOpportunityPoints--;
+                        Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
+                    }
                 }
             }
-        }
 
-        else if (spellCastingController.currentSelectedSpell.spellType == SpellType.singleTarget)
+            else if (spellCastingController.currentSelectedSpell.spellType == SpellType.singleTarget)
+            {
+                savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(spellCastingController.currentSelectedSpell.damage);
+                savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+                activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
+                activePlayerUnit.unitOpportunityPoints--;
+            }
+        }
+        else
         {
-            savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(spellCastingController.currentSelectedSpell.damage);
-            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-
+            Debug.Log("Active Player Unit has not enough Mana Points.");
         }
+
     }
     public void Deselect()
     {

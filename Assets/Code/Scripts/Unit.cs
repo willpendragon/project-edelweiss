@@ -101,6 +101,11 @@ public class Unit : MonoBehaviour
         Debug.Log("Unit receives Damage");
     }
 
+    public void SpendManaPoints(int spentManaAmount)
+    {
+        unitManaPoints -= spentManaAmount;
+    }
+
     public void MoveUnit(int targetX, int targetY)
     {
         // Convert current world position to grid coordinates
