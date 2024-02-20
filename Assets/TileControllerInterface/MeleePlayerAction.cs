@@ -62,8 +62,9 @@ public class MeleePlayerAction : IPlayerAction
                 Debug.Log("Applying distance and knockback multiplier");
             }
             ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
-            currentTarget.HealthPoints -= attackPower;
+            currentTarget.TakeDamage(attackPower);
             activePlayerUnit.unitOpportunityPoints--;
+            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
             Debug.Log("Melee Execution Logic");
         }
         else

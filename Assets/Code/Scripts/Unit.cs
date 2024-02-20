@@ -95,6 +95,12 @@ public class Unit : MonoBehaviour
         Debug.Log("Moving at Start Position");
     }
 
+    public void TakeDamage(int receivedDamage)
+    {
+        HealthPoints -= receivedDamage;
+        Debug.Log("Unit receives Damage");
+    }
+
     public void MoveUnit(int targetX, int targetY)
     {
         // Convert current world position to grid coordinates

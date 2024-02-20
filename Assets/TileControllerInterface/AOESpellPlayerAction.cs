@@ -8,37 +8,80 @@ using UnityEngine.UI;
 
 public class AOESpellPlayerAction : IPlayerAction
 {
+    public Unit currentTarget;
     public TileController savedSelectedTile;
+    public int selectionLimiter = 1;
+    SpellcastingController spellCastingController;
+
     public void Select(TileController selectedTile)
     {
-        savedSelectedTile = selectedTile;
-        foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+        spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
+
+
+        if (selectedTile != null && selectionLimiter == 1)
         {
-            tile.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
-            selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+            savedSelectedTile = selectedTile;
+
+            if (spellCastingController.currentSelectedSpell.spellType == SpellType.aoe)
+            {
+                foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+                {
+                    tile.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+                    selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+                    selectionLimiter--;
+                }
+                Debug.Log("Selected AOE Spell Range");
+            }
+            else if (spellCastingController.currentSelectedSpell.spellType == SpellType.singleTarget)
+            {
+                savedSelectedTile = selectedTile;
+
+                savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.cyan;
+                currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
+                selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+                Debug.Log("Selected Single Target Spell Range");
+                selectionLimiter--;
+            }
 
         }
-        Debug.Log("Selecting AOE Range");
+
     }
+
     public void Execute()
     {
-        foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
+        if (spellCastingController.currentSelectedSpell.spellType == SpellType.aoe)
         {
-            Debug.Log("Using AOE Spell on Multiple Targets");
-            tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
-            if (tile.detectedUnit == null)
+            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
             {
-                Debug.Log("No Unit found. Can't apply damage");
+                Debug.Log("Using AOE Spell on Multiple Targets");
+                tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+                activePlayerUnit.unitOpportunityPoints--;
+                if (tile.detectedUnit == null)
+                {
+                    Debug.Log("No Unit found. Can't apply damage");
+                }
+                else if (tile.detectedUnit.tag == "Enemy")
+                {
+                    tile.detectedUnit.GetComponent<Unit>().TakeDamage(GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage);
+                    activePlayerUnit.unitOpportunityPoints--;
+                    Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
+                }
             }
-            else if (tile.detectedUnit.tag == "Enemy")
-            {
-                tile.detectedUnit.GetComponent<Unit>().HealthPoints -= GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage;
-                Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
-            }
+        }
+
+        else if (spellCastingController.currentSelectedSpell.spellType == SpellType.singleTarget)
+        {
+            savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(spellCastingController.currentSelectedSpell.damage);
+            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+
         }
     }
     public void Deselect()
     {
+        selectionLimiter++;
+
         foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
         {
             tile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;

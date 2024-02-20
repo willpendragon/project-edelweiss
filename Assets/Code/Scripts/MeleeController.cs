@@ -5,9 +5,10 @@ using static GridTargetingController;
 
 public class MeleeController : MonoBehaviour
 {
+    /*
     public delegate void MeleeAttack();
     public static event MeleeAttack OnMeleeAttack;
-    
+
     public Unit currentMeleeTargetedUnit;
     //Magic number, fix later 12022024
     public float attackPower = 2;
@@ -42,9 +43,10 @@ public class MeleeController : MonoBehaviour
         if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, currentMeleeTargetedUnit.ownedTile))
         {
             attackPower = attackPower * 2;
+            //Warning: Magic Number
             Debug.Log("Applying distance multiplier");
         }
-        currentMeleeTargetedUnit.HealthPoints -= attackPower;
+        currentMeleeTargetedUnit.TakeDamage((int)attackPower);
         ApplyKnockback(GameObject.FindGameObjectWithTag("ActivePlayerUnit"), currentMeleeTargetedUnit.gameObject, 2);
         Debug.Log("Attacking Unit using Melee Move");
 
@@ -94,4 +96,5 @@ public class MeleeController : MonoBehaviour
         // Move the defender to the new grid position
         defender.GetComponent<Unit>().SetPosition(newGridPos.x, newGridPos.y);
     }
+    */
 }

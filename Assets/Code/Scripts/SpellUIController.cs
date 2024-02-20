@@ -24,6 +24,11 @@ public class SpellUIController : MonoBehaviour
                 currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
                 currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
             }
+            else if (spell.spellType == SpellType.singleTarget)
+            {
+                currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
+                currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
+            }
         }
 
     }
@@ -46,7 +51,7 @@ public class SpellUIController : MonoBehaviour
 
     public void SwitchTilesToSpellMode()
     {
-        //After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode
+        //After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new AOESpellPlayerAction();

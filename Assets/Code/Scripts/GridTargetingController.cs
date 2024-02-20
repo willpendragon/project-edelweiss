@@ -25,7 +25,7 @@ public class GridTargetingController : MonoBehaviour
         TileController.OnTileClickedAttackMode += SetUnitAsTarget;
         TileController.OnTileClickedTrapTileMode += SetTileAsTrapTileTarget;
         TileController.OnTileClickedAOESpellMode += SetUnitAsSpellEpicenter;
-        MeleeController.OnMeleeAttack += SwitchTilesToMeleeSelectionMode;
+        //MeleeController.OnMeleeAttack += SwitchTilesToMeleeSelectionMode;
         SpellcastingController.OnCastingSpell += SwitchTilesToAttackSelectionMode;
         SpellcastingController.OnCastingSpellAOE += SwitchTilesToAOEAttackSelectionMode;
         TrapTileController.OnTrapTile += SwitchTilesToTrapTileSelectionMode;
@@ -38,7 +38,7 @@ public class GridTargetingController : MonoBehaviour
         TileController.OnTileClickedAttackMode -= SetUnitAsTarget;
         TileController.OnTileClickedTrapTileMode -= SetTileAsTrapTileTarget;
         TileController.OnTileClickedAOESpellMode -= SetUnitAsSpellEpicenter;
-        MeleeController.OnMeleeAttack -= SwitchTilesToMeleeSelectionMode;
+        //MeleeController.OnMeleeAttack -= SwitchTilesToMeleeSelectionMode;
         SpellcastingController.OnCastingSpell -= SwitchTilesToAttackSelectionMode;
         SpellcastingController.OnCastingSpellAOE -= SwitchTilesToAOEAttackSelectionMode;
         TrapTileController.OnTrapTile -= SwitchTilesToTrapTileSelectionMode;

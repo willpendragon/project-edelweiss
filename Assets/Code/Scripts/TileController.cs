@@ -155,7 +155,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         }
         else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
         {
-            Debug.Log("Selecting Tiles in Melee Mode");
+            Debug.Log("Selecting Tiles");
             currentPlayerAction.Select(this);
         }
         else if (currentSingleTileStatus == SingleTileStatus.waitingForConfirmationMode)
