@@ -6,7 +6,11 @@ public class DeityAnguanaBehavior : DeityBehavior
 {
     public override void ExecuteBehavior(Deity deity)
     {
-        if (deity.PerformDeityEnmityCheck())
+        if (deity.deityPrayerPower > 5)
+        {
+            Debug.Log("Attacking Enemies");
+        }
+        else if (deity.PerformDeityEnmityCheck())
         {
             GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX, deity.transform);
             Destroy(newDeityAttackVFX, 3);

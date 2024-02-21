@@ -33,6 +33,7 @@ public class Deity : MonoBehaviour
     public float enmityThreshold;
     public float deitySpecialAttackPower;
 
+    public float deityPrayerPower;
     public DeityBehavior deityBehavior;
 
     public delegate void DeityJudgment();

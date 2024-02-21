@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class SummonPlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -39,6 +41,18 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
             deityInstance.transform.localScale = new Vector3(2, 2, 2);
             //deityPowerLoadingBarSliderIsActive = true;
+
+            GameObject[] summonButtons = GameObject.FindGameObjectsWithTag("SummonButton");
+            foreach (var button in summonButtons)
+            {
+                button.GetComponentInChildren<Text>().text = "Pray";
+            }
+
+            SummoningUIController[] summoningUIControllers = GameObject.FindObjectsOfType<SummoningUIController>();
+            foreach (var summoningUIController in summoningUIControllers)
+            {
+                summoningUIController.SwitchToPrayMode();
+            }
         }
         else
         {
