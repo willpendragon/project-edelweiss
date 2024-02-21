@@ -6,11 +6,11 @@ public class TrapController : MonoBehaviour
 {
     public void OnEnable()
     {
-        TurnController.OnEnemyTurnSwap += ApplyTrapEffect;
+        //TurnController.OnEnemyTurnSwap += ApplyTrapEffect;
     }
     public void OnDisable()
     {
-        TurnController.OnEnemyTurnSwap -= ApplyTrapEffect;
+        //TurnController.OnEnemyTurnSwap -= ApplyTrapEffect;
     }
     public enum TrapActivationStatus
     {
@@ -26,11 +26,12 @@ public class TrapController : MonoBehaviour
     }
     public void ApplyTrapEffect()
     {
-        if (GetComponentInParent<TileController>().detectedUnit != null && currentTrapActivationStatus == TrapActivationStatus.active)
+        Debug.Log("Applying Trap Effect to the Unit standing on the Trap Tile");
+        if (GetComponentInParent<TileController>().detectedUnit != null)
         {
             Unit detectedUnitOnTrapTile = GetComponentInParent<TileController>().detectedUnit.GetComponent<Unit>();
-            detectedUnitOnTrapTile.HealthPoints -= 10;
-            Debug.Log("Applying Trap Effect to the Unit standing on the Trap Tile");
+            detectedUnitOnTrapTile.TakeDamage(10);
+            //Beware of Magic Number
         }
     }
 }

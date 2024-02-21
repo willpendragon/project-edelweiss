@@ -60,7 +60,20 @@ public class TurnController : MonoBehaviour
             //Disable Player UI
             OnEnemyTurn("Enemy Turn");
             OnEnemyTurnSwap();
+            ApplyTrapEffects();
             Debug.Log("Player Turn is over. Hand over turn to the Enemy Party");
+        }
+    }
+
+    public void ApplyTrapEffects()
+    {
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            TrapController trapTile = tile.GetComponent<TrapController>();
+            if (trapTile != null && trapTile.currentTrapActivationStatus == TrapController.TrapActivationStatus.active)
+            {
+                trapTile.ApplyTrapEffect();
+            }
         }
     }
 
