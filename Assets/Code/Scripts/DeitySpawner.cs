@@ -21,14 +21,6 @@ public class DeitySpawner : MonoBehaviour
             if (unboundDeity != null)
             {
                 Debug.Log("Start of Summon Deity on Battlefield");
-                //battleManager.currentBattleType = BattleType.battleWithDeity;
-                //TileController deitySpawningTile = GridManager.Instance.GetTileControllerInstance(4, 8);
-                //unboundDeity.transform.position = deitySpawningTile.transform.position;
-                //unboundDeity.GetComponent<Unit>().ownedTile = deitySpawningTile;
-                //deitySpawningTile.detectedUnit = unboundDeity.gameObject;
-                //unboundDeity.GetComponent<Unit>().currentXCoordinate = deitySpawningTile.tileXCoordinate;
-                //unboundDeity.GetComponent<Unit>().currentYCoordinate = deitySpawningTile.tileYCoordinate;
-                //unboundDeity.gameObject.transform.localScale = new Vector3(3.5f, 3.5f, 3.5f);
 
                 unboundDeity.GetComponent<Unit>().MoveUnit(3, 7);
                 TileController deitySpawningTile = GridManager.Instance.GetTileControllerInstance(3, 7);
