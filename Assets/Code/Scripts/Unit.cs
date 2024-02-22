@@ -85,7 +85,6 @@ public class Unit : MonoBehaviour
 
             coinsReward = GetComponent<Unit>().unitTemplate.unitCoinsReward;
             experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
-
         }
     }
 

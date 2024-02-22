@@ -24,35 +24,29 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
     }
     public void Execute()
     {
-        GameObject currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        Deity linkedDeity = currentActivePlayerUnit.GetComponent<Unit>().linkedDeity;
-        if (linkedDeity != null)
+        Deity linkedDeity = currentActivePlayerUnit.linkedDeity;
+        if (linkedDeity != null && currentActivePlayerUnit.unitOpportunityPoints > 0)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
             foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
             }
-            currentActivePlayerUnit.GetComponent<Unit>().SpendManaPoints(50);
+            currentActivePlayerUnit.SpendManaPoints(50);
             //Beware, Magic Number
             Debug.Log("Summon Deity on Battlefield");
+
             var summonPosition = savedSelectedTile.transform.position + new Vector3(0, 3, 0);
             GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
+            currentActivePlayerUnit.linkedDeity = deityInstance.GetComponent<Deity>();
             deityInstance.transform.localScale = new Vector3(2, 2, 2);
             //deityPowerLoadingBarSliderIsActive = true;
 
-            GameObject[] summonButtons = GameObject.FindGameObjectsWithTag("SummonButton");
-            foreach (var button in summonButtons)
-            {
-                button.GetComponentInChildren<Text>().text = "Pray";
-            }
-
-            SummoningUIController[] summoningUIControllers = GameObject.FindObjectsOfType<SummoningUIController>();
-            foreach (var summoningUIController in summoningUIControllers)
-            {
-                summoningUIController.SwitchToPrayMode();
-            }
+            currentActivePlayerUnit.GetComponent<SummoningUIController>().SwitchButtonToPrayMode();
+            //22022024 This switches the Summon Button to Pray Mode only for the Active Player. Consider also spawning a Pray Button on the other Player Units.
+            currentActivePlayerUnit.unitOpportunityPoints--;
         }
         else
         {

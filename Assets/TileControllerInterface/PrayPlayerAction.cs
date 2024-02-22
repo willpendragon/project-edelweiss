@@ -17,7 +17,6 @@ public class PrayPlayerAction : IPlayerAction
             savedSelectedTile = selectedTile;
             selectionLimiter--;
         }
-
     }
 
     public void Deselect()
@@ -29,9 +28,12 @@ public class PrayPlayerAction : IPlayerAction
 
     public void Execute()
     {
+        Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
         if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity)
         {
             OnPlayerPrayer();
+            currentActivePlayerUnit.unitOpportunityPoints--;
         }
     }
 }

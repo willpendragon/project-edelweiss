@@ -10,6 +10,7 @@ public class SummoningUIController : MonoBehaviour
     public GameObject summonButtonPrefab;
     public Transform spellMenuContainer;
     public IPlayerAction currentPlayerAction;
+    public Button currentButton;
 
     public enum SummonPhase
     {
@@ -28,10 +29,10 @@ public class SummoningUIController : MonoBehaviour
     //I will need to create a Pokémon-Style menu to summon the collected deities.
     {
         GameObject summonButtonInstance = Instantiate(summonButtonPrefab, spellMenuContainer);
-        Button currentSummonButton = summonButtonInstance.GetComponent<Button>();
-        currentSummonButton.GetComponentInChildren<Text>().text = "Summon";
+        currentButton = summonButtonInstance.GetComponent<Button>();
+        currentButton.GetComponentInChildren<Text>().text = "Summon";
         //currentSummonButton.onClick.AddListener(() => summoningCastingController.StartSummoningRitual());
-        currentSummonButton.onClick.AddListener(() => SwitchTilesToSummonMode());
+        currentButton.onClick.AddListener(() => SwitchTilesToSummonMode());
     }
     public void SwitchTilesToSummonMode()
     {
@@ -46,16 +47,24 @@ public class SummoningUIController : MonoBehaviour
         //After clicking the Summon Button, all of the Grid Map tiles switch to Selection Mode and switch to the Summon Player Action
     }
 
-    public void SwitchToPrayMode()
+    public void SwitchButtonToPrayMode()
+    {
+        currentButton.GetComponentInChildren<Text>().text = "Pray";
+        currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
+        Debug.Log("Switching Summon Button to Pray Mode");
+    }
+
+    public void SwitchTilesToPrayMode()
     {
         PrayPlayerAction prayPlayerActionInstance = new PrayPlayerAction();
         //Creates a new instance of the Pray Player Action
+        currentPlayerAction = prayPlayerActionInstance;
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = prayPlayerActionInstance;
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            Debug.Log("Switching Tiles to Pray Mode");
+            Debug.Log("Switching tiles to Pray Mode");
         }
-        //After clicking the Pray Button, the Player can pray to the Deity of their choice.
     }
 }

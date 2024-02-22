@@ -16,6 +16,7 @@ public class DeityPowerController : MonoBehaviour
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         activePlayerUnit.linkedDeity.deityPrayerPower++;
+        Debug.Log("Deity Power Increases");
     }
 
 }

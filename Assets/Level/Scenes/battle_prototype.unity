@@ -10803,6 +10803,8 @@ MonoBehaviour:
   summoningCastingController: {fileID: 7580817272468375200}
   summonButtonPrefab: {fileID: 6278539958340940975, guid: 6716af5b85582f142b22ded5945da45a, type: 3}
   spellMenuContainer: {fileID: 1270439568}
+  currentButton: {fileID: 0}
+  currentSummonPhase: 0
 --- !u!114 &2122515357
 MonoBehaviour:
   m_ObjectHideFlags: 0
