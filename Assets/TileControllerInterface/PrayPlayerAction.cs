@@ -30,10 +30,14 @@ public class PrayPlayerAction : IPlayerAction
     {
         Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity)
+        if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity && currentActivePlayerUnit.unitOpportunityPoints > 0)
         {
             OnPlayerPrayer();
             currentActivePlayerUnit.unitOpportunityPoints--;
+        }
+        else
+        {
+            Debug.Log("Active Player Unit is unable to pray");
         }
     }
 }

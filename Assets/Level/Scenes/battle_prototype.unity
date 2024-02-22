@@ -3705,6 +3705,20 @@ MonoBehaviour:
   trapTileController: {fileID: 1397205222}
   trapButtonPrefab: {fileID: 6278539958340940975, guid: 04aff51fc7590564a83c6cbfb9a5ef71, type: 3}
   spellMenuContainer: {fileID: 1270439568}
+--- !u!114 &715680324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715680322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7731ee1e76bea894fbfbb8d46a516003, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capsuleCrystalButtonPrefab: {fileID: 6278539958340940975, guid: ade54f554509c584fa3e9faddae3fbbe, type: 3}
+  spellMenuContainer: {fileID: 1270439568}
 --- !u!1 &739072576
 GameObject:
   m_ObjectHideFlags: 0
@@ -7644,7 +7658,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 100
-    m_Top: 30
+    m_Top: -30
     m_Bottom: 0
   m_ChildAlignment: 8
   m_Spacing: 0
@@ -10825,6 +10839,20 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 556079661349572489, guid: 732427a4eb8642a45bcceab7849297fb, type: 3}
   m_PrefabInstance: {fileID: 2122515354}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2122515359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122515355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7731ee1e76bea894fbfbb8d46a516003, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capsuleCrystalButtonPrefab: {fileID: 6278539958340940975, guid: ade54f554509c584fa3e9faddae3fbbe, type: 3}
+  spellMenuContainer: {fileID: 1270439568}
 --- !u!1 &2130416758
 GameObject:
   m_ObjectHideFlags: 0

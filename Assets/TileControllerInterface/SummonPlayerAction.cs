@@ -8,6 +8,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
 {
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
+    public int deityLimiter = 1;
 
     public void Select(TileController selectedTile)
     {
@@ -27,7 +28,8 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
         Deity linkedDeity = currentActivePlayerUnit.linkedDeity;
-        if (linkedDeity != null && currentActivePlayerUnit.unitOpportunityPoints > 0)
+
+        if (linkedDeity != null && currentActivePlayerUnit.unitOpportunityPoints > 0 && deityLimiter > 0)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
             foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
@@ -47,6 +49,8 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             currentActivePlayerUnit.GetComponent<SummoningUIController>().SwitchButtonToPrayMode();
             //22022024 This switches the Summon Button to Pray Mode only for the Active Player. Consider also spawning a Pray Button on the other Player Units.
             currentActivePlayerUnit.unitOpportunityPoints--;
+            deityLimiter--;
+            Debug.Log("Summoning Deity");
         }
         else
         {
@@ -61,5 +65,6 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         }
         savedSelectedTile = null;
         selectionLimiter++;
+        deityLimiter++;
     }
 }

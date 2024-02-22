@@ -197,6 +197,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
         detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
         detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
+        detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
     }
 }
 /*

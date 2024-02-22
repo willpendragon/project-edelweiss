@@ -71,7 +71,6 @@ public class MeleePlayerAction : IPlayerAction
         {
             Debug.Log("Not enough Opportunity Points on Active Player Unit");
         }
-
     }
 
     public void ApplyKnockback(Unit attacker, Unit defender, int knockbackStrength)

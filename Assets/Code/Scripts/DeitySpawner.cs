@@ -23,9 +23,17 @@ public class DeitySpawner : MonoBehaviour
                 Debug.Log("Start of Summon Deity on Battlefield");
 
                 unboundDeity.GetComponent<Unit>().MoveUnit(3, 7);
+                //Beware, Magic Number
                 TileController deitySpawningTile = GridManager.Instance.GetTileControllerInstance(3, 7);
                 unboundDeity.GetComponent<Unit>().ownedTile = deitySpawningTile;
-                deitySpawningTile.detectedUnit = unboundDeity;
+
+                foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(deitySpawningTile))
+                {
+                    deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
+                    deitySpawningZoneTile.GetComponentInChildren<MeshRenderer>().material.color = Color.magenta;
+                    deitySpawningZoneTile.detectedUnit = unboundDeity;
+                    Debug.Log("Deity occupies Tile");
+                }
 
                 foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
                 {
