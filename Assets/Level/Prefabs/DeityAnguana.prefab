@@ -109,6 +109,7 @@ MonoBehaviour:
   deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
   enmityThreshold: 4
   deitySpecialAttackPower: 20
+  deityHealthBar: {fileID: 0}
   deityPrayerPower: 0
   deityBehavior: {fileID: 11400000, guid: 0372a198e5909a349b294db374d84b0e, type: 2}
 --- !u!114 &-5287236863881772563
@@ -143,7 +144,19 @@ MonoBehaviour:
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3348349630364506731}
+        m_TargetAssemblyTypeName: Deity, Assembly-CSharp
+        m_MethodName: UpdateDeityHealthBar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   unitProfilePanel: {fileID: 0}
   unitStatusController: {fileID: 0}
 --- !u!1001 &3348349631370794795

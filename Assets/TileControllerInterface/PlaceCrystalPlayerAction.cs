@@ -26,6 +26,16 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
         {
             GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, currentSavedTile.transform.position, Quaternion.identity);
             Debug.Log("Attempt to Capture the Deity");
+            if (DeityCaptureRoll() > 10)
+            //Beware, Magic Number
+            {
+                Debug.Log("Deity was captured");
+                //Initiate the Deity captured sequence
+            }
+            else
+            {
+                Debug.Log("Deity was not captured");
+            }
             //Insert the logic for Capturing the Deity here.
             //I'll probably need to create a class for handling the Crystal entirely and retrieve data from a Scriptable Object
         }
@@ -34,5 +44,14 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
     public void Deselect()
     {
 
+    }
+
+    public int DeityCaptureRoll()
+    {
+        int deityCaptureRoll = Random.Range(0, 10);
+        //Beware, Magic Number
+        GameObject[] captureCrystalsOnBattlefield = GameObject.FindGameObjectsWithTag("CaptureCrystal");
+        deityCaptureRoll = deityCaptureRoll * captureCrystalsOnBattlefield.Length;
+        return deityCaptureRoll;
     }
 }

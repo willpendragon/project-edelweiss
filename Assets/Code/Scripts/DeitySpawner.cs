@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class DeitySpawner : MonoBehaviour
 {
@@ -9,6 +11,7 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] DeityAchievementsController deityAchievementsController;
     [SerializeField] BattleManager battleManager;
     // Start is called before the first frame update
+    public GameObject deityHealthBar;
     void Start()
     {
         if (deityAchievementsController.CheckRequirements())
@@ -40,6 +43,8 @@ public class DeitySpawner : MonoBehaviour
                     Destroy(enemy);
                 }
                 unboundDeity.gameObject.tag = "Enemy";
+
+                CreateDeityHealthBar(unboundDeity);
             }
         }
         else
@@ -59,5 +64,26 @@ public class DeitySpawner : MonoBehaviour
         GameObject spawningDeity = spawnableDeities[deityIndex];
         Instantiate(spawningDeity, deitySpawnPosition);
         GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = spawningDeity.GetComponent<Deity>();
+    }
+    void CreateDeityHealthBar(GameObject spawnedUnboundDeity)
+    {
+        Deity currentSpawnedUnboundDeity = spawnedUnboundDeity.GetComponent<Deity>();
+
+        GameObject battleInterfaceCanvasGO = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
+        GameObject deityHealthBarInstance = Instantiate(deityHealthBar, battleInterfaceCanvasGO.transform);
+        Slider deityHPSlider = deityHealthBarInstance.GetComponentInChildren<Slider>();
+        currentSpawnedUnboundDeity.deityHealthBar = deityHealthBarInstance;
+
+        Unit currentSpawnedUnboundDeityUnit = currentSpawnedUnboundDeity.GetComponentInChildren<Unit>();
+
+        deityHPSlider.maxValue = currentSpawnedUnboundDeityUnit.unitMaxHealthPoints;
+        deityHPSlider.value = currentSpawnedUnboundDeityUnit.unitHealthPoints;
+        deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text = currentSpawnedUnboundDeityUnit.unitMaxHealthPoints.ToString();
+
+        Debug.Log("Spawning Deity Health Bar");
+    }
+    public void UpdateDeityHealthBar()
+    {
+
     }
 }

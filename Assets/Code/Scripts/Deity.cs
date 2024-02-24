@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 using Unity.VisualScripting;
 using static Deity;
 
@@ -32,6 +33,8 @@ public class Deity : MonoBehaviour
     public GameObject deityEnmityTracker;
     public float enmityThreshold;
     public float deitySpecialAttackPower;
+
+    public GameObject deityHealthBar;
 
     public float deityPrayerPower;
     public DeityBehavior deityBehavior;
@@ -86,6 +89,12 @@ public class Deity : MonoBehaviour
         StartCoroutine("EndDeityTurn");
         Debug.Log("Deity Behaviour");
         deityBehavior.ExecuteBehavior(this);
+    }
+
+    public void UpdateDeityHealthBar()
+    {
+        Unit deityUnitComponent = GetComponentInChildren<Unit>();
+        deityHealthBar.GetComponentInChildren<Slider>().value = deityUnitComponent.unitHealthPoints;
     }
 
     IEnumerator EndDeityTurn()
