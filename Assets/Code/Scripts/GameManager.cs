@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     public List<EnemyType> currentEnemySelectionIds;
     public List<Vector2> currentEnemySelectionCoords;
 
+    public List<Deity> capturedDeities;
+
+
     private void Awake()
     {
         if (_instance == null)

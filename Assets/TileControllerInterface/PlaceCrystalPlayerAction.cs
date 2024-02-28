@@ -29,6 +29,8 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
             if (DeityCaptureRoll() > 10)
             //Beware, Magic Number
             {
+                Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
+                GameManager._instance.capturedDeities.Add(capturedUnboundDeity);
                 Debug.Log("Deity was captured");
                 //Initiate the Deity captured sequence
             }
@@ -48,7 +50,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
     public int DeityCaptureRoll()
     {
-        int deityCaptureRoll = Random.Range(0, 10);
+        int deityCaptureRoll = Random.Range(0, 11);
         //Beware, Magic Number
         GameObject[] captureCrystalsOnBattlefield = GameObject.FindGameObjectsWithTag("CaptureCrystal");
         deityCaptureRoll = deityCaptureRoll * captureCrystalsOnBattlefield.Length;

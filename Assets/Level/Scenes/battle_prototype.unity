@@ -9521,7 +9521,7 @@ GameObject:
   - component: {fileID: 1790485009}
   m_Layer: 0
   m_Name: DeitySpawner
-  m_TagString: Untagged
+  m_TagString: DeitySpawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9544,6 +9544,7 @@ MonoBehaviour:
   deitySpawnPosition: {fileID: 1790485010}
   deityAchievementsController: {fileID: 6169969153480535271}
   battleManager: {fileID: 90211749}
+  currentUnboundDeity: {fileID: 0}
   deityHealthBar: {fileID: 7395316366926420676, guid: 2f84651896d321549ad1a81364cdcca6, type: 3}
 --- !u!4 &1790485010
 Transform:

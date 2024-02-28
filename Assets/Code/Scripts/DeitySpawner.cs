@@ -10,6 +10,8 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] Transform deitySpawnPosition;
     [SerializeField] DeityAchievementsController deityAchievementsController;
     [SerializeField] BattleManager battleManager;
+
+    public Deity currentUnboundDeity;
     // Start is called before the first frame update
     public GameObject deityHealthBar;
     void Start()
@@ -35,6 +37,7 @@ public class DeitySpawner : MonoBehaviour
                     deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
                     deitySpawningZoneTile.GetComponentInChildren<MeshRenderer>().material.color = Color.magenta;
                     deitySpawningZoneTile.detectedUnit = unboundDeity;
+                    currentUnboundDeity = unboundDeity.GetComponent<Deity>();
                     Debug.Log("Deity occupies Tile");
                 }
 
