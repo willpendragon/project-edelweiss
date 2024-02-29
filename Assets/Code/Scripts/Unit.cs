@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class HealthChangeEvent : UnityEvent<float> { }
 
 
+
 public class Unit : MonoBehaviour
 {
     public enum UnitLifeCondition
@@ -15,6 +16,9 @@ public class Unit : MonoBehaviour
         unitDead,
         unitAlive
     }
+
+    public string Id = System.Guid.NewGuid().ToString();
+    public string LinkedDeityId; // This will store the ID of the linked Deity
 
     public int unitMovementLimit;
     public int currentXCoordinate;

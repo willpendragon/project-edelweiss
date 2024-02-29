@@ -9,6 +9,7 @@ public class PlayerStatsSaver : MonoBehaviour
     public void Start()
     {
         LoadCharacterData();
+        //LoadDeityData();
     }
     public void SaveCharacterData()
     {
@@ -25,7 +26,6 @@ public class PlayerStatsSaver : MonoBehaviour
         PlayerPrefs.SetInt("killedEnemies", deityAchievementsController.killedEnemies);
         PlayerPrefs.Save();
     }
-
     public void LoadCharacterData()
     {
         Debug.Log("Loading Player Character's Data");
@@ -47,5 +47,24 @@ public class PlayerStatsSaver : MonoBehaviour
         var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
         int killedEnemies = PlayerPrefs.GetInt("killedEnemies", 0);
         deityAchievementsController.killedEnemies = killedEnemies;
+
+        LoadDeityData();
+    }
+
+    public void SaveDeityData()
+    {
+        string json = JsonUtility.ToJson(GameManager._instance.capturedDeities);
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void LoadDeityData()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if (System.IO.File.Exists(path))
+        {
+            string json = System.IO.File.ReadAllText(path);
+            GameManager._instance.capturedDeities = JsonUtility.FromJson<List<Deity>>(json);
+
+        }
     }
 }

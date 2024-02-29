@@ -31,7 +31,6 @@ public class SummoningUIController : MonoBehaviour
         GameObject summonButtonInstance = Instantiate(summonButtonPrefab, spellMenuContainer);
         currentButton = summonButtonInstance.GetComponent<Button>();
         currentButton.GetComponentInChildren<Text>().text = "Summon";
-        //currentSummonButton.onClick.AddListener(() => summoningCastingController.StartSummoningRitual());
         currentButton.onClick.AddListener(() => SwitchTilesToSummonMode());
     }
     public void SwitchTilesToSummonMode()

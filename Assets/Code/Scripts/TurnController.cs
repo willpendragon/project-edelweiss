@@ -11,7 +11,6 @@ public class TurnController : MonoBehaviour
         playerTurn,
         enemyTurn,
         deityTurn
-
     }
     public delegate void EnemyTurn(string enemyTurn);
     public static event EnemyTurn OnEnemyTurn;

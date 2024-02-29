@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3348349630364506733}
   - component: {fileID: 3348349630364506732}
   - component: {fileID: 3348349630364506731}
+  - component: {fileID: 1219321713655519419}
   m_Layer: 0
   m_Name: DeityKingLaurinus
   m_TagString: Deity
@@ -97,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4c4f2dc9b73bd40a1e798c274e6bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Id: 240bede4-13c3-4ae1-a9f2-3a0925297baf
   sinnersList: []
   deityAttackNotification: {fileID: 0}
   battleManager: {fileID: 0}
@@ -108,8 +110,47 @@ MonoBehaviour:
   deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
   enmityThreshold: 4
   deitySpecialAttackPower: 20
+  deityPortrait: {fileID: 21300000, guid: 6b30c28bc4dd2dc4e8e3f13a408aee6f, type: 3}
+  deityHealthBar: {fileID: 0}
   deityPrayerPower: 0
   deityBehavior: {fileID: 11400000, guid: 1a06f3618540056499d1e486d9c85b97, type: 2}
+--- !u!114 &1219321713655519419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3348349630364506734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9191c87aab5c6164087525c5b65d85f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Id: 8d4a606a-763f-4d62-8d05-dcaa32728101
+  LinkedDeityId: 
+  unitMovementLimit: 0
+  currentXCoordinate: 0
+  currentYCoordinate: 0
+  startingXCoordinate: 0
+  startingYCoordinate: 0
+  unitTemplate: {fileID: 0}
+  ownedTile: {fileID: 0}
+  unitHealthPoints: 0
+  unitMaxHealthPoints: 0
+  unitOpportunityPoints: 0
+  unitManaPoints: 0
+  unitShieldPoints: 0
+  unitCoins: 0
+  unitExperiencePoints: 0
+  coinsReward: 0
+  experiencePointsReward: 0
+  linkedDeity: {fileID: 0}
+  currentUnitLifeCondition: 0
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  unitProfilePanel: {fileID: 0}
+  unitStatusController: {fileID: 0}
 --- !u!1001 &3348349631370794795
 PrefabInstance:
   m_ObjectHideFlags: 0

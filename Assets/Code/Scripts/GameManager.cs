@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public EnemySelection currentEnemySelectionComponent;
     public List<EnemyType> currentEnemySelectionIds;
     public List<Vector2> currentEnemySelectionCoords;
+    public List<Unit> playerPartyMembers;
 
     public List<Deity> capturedDeities;
 

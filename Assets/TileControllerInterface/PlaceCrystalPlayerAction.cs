@@ -6,6 +6,9 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
     public int selectionLimiter = 1;
     public GameObject captureCrystal;
     public TileController currentSavedTile;
+
+    public delegate void BattleEndCapturedDeity(string battleEndMessage);
+    public static event BattleEndCapturedDeity OnBattleEndCapturedDeity;
     public void Select(TileController selectedTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -32,10 +35,13 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                 Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
                 GameManager._instance.capturedDeities.Add(capturedUnboundDeity);
                 Debug.Log("Deity was captured");
+                OnBattleEndCapturedDeity("Deity was Captured");
+
                 //Initiate the Deity captured sequence
             }
             else
             {
+                GameObject.FindGameObjectWithTag("PlayerStatsSaver").GetComponent<PlayerStatsSaver>().SaveDeityData();
                 Debug.Log("Deity was not captured");
             }
             //Insert the logic for Capturing the Deity here.

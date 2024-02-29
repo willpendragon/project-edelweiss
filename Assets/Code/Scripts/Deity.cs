@@ -16,23 +16,20 @@ public enum DeityState
 public class Deity : MonoBehaviour
 {
 
-    //public blackListedAlignment currentBlacklistedAlignment;
-    //public alignmentType deityAlignment;
+    public string Id = System.Guid.NewGuid().ToString();
+
     public List<GameObject> sinnersList;
-    //public Player player;
     public TextMeshProUGUI deityAttackNotification;
     public BattleManager battleManager;
     public BattleInterface battleInterface;
     public float enmity;
     public GameObject deityAttackVFX;
-    //[SerializeField] GameObject deityFieldEffectVFX;
-    //public int judgmentTurnLimit;
     public DeityState currentDeityState;
-    //public int judgmentAttackPower = 1000;
     public List<SpellAlignment> hatedSpellAlignments;
     public GameObject deityEnmityTracker;
     public float enmityThreshold;
     public float deitySpecialAttackPower;
+    public Sprite deityPortrait;
 
     public GameObject deityHealthBar;
 
