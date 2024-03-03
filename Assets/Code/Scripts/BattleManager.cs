@@ -73,12 +73,12 @@ public class BattleManager : MonoBehaviour
 
     void Awake()
     {
-        enemiesOnBattlefield = GameManager._instance.currentEnemySelection;
+        enemiesOnBattlefield = GameManager.Instance.currentEnemySelection;
     }
     void Start()
     {
         //Looks for the Game Manager at the start of the battle.
-        gameManager = GameManager._instance;
+        gameManager = GameManager.Instance;
         battleBeginsScreen.SetActive(true);
         StartCoroutine("DeactivateBattleBeginsScreen");
         enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");

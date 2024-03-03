@@ -258,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9191c87aab5c6164087525c5b65d85f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Id: 2
+  Id: 
   LinkedDeityId: 
   unitMovementLimit: 8
   currentXCoordinate: 0
@@ -276,7 +276,7 @@ MonoBehaviour:
   unitExperiencePoints: 0
   coinsReward: 0
   experiencePointsReward: 0
-  linkedDeity: {fileID: 3348349630364506731, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
+  linkedDeity: {fileID: 0}
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:

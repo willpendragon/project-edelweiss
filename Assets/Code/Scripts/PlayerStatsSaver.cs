@@ -53,7 +53,7 @@ public class PlayerStatsSaver : MonoBehaviour
 
     public void SaveDeityData()
     {
-        string json = JsonUtility.ToJson(GameManager._instance.capturedDeities);
+        string json = JsonUtility.ToJson(GameManager.Instance.capturedDeities);
         System.IO.File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
 
@@ -63,7 +63,7 @@ public class PlayerStatsSaver : MonoBehaviour
         if (System.IO.File.Exists(path))
         {
             string json = System.IO.File.ReadAllText(path);
-            GameManager._instance.capturedDeities = JsonUtility.FromJson<List<Deity>>(json);
+            GameManager.Instance.capturedDeities = JsonUtility.FromJson<List<Deity>>(json);
 
         }
     }

@@ -35,8 +35,8 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             enemySelection.SelectedMapNode();
             //checkRequirement.CheckPreviousNode();
             //checkRequirement.SetCurrentNode();*/
-            GameManager._instance.currentEnemySelectionComponent = GetComponentInParent<EnemySelection>();
-            GameManager._instance.GetComponentInChildren<SceneLoader>().ChangeScene();
+            GameManager.Instance.currentEnemySelectionComponent = GetComponentInParent<EnemySelection>();
+            GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
         }
     }
 }

@@ -27,6 +27,6 @@ public class EnemySelection : MonoBehaviour
     */
     public void SelectedMapNode()
     {
-        GameManager._instance.UpdateEnemyData(levelData);
+        GameManager.Instance.UpdateEnemyData(levelData);
     }
 }

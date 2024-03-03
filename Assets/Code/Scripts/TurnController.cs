@@ -97,7 +97,7 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Enemy Party was defeated");
-            UnlockNextLevel(GameManager._instance.currentEnemySelectionComponent.levelNumber);
+            UnlockNextLevel(GameManager.Instance.currentEnemySelectionComponent.levelNumber);
             foreach (var player in playerUnitsOnBattlefield)
             {
                 player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();

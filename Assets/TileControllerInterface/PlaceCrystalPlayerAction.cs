@@ -33,7 +33,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
             //Beware, Magic Number
             {
                 Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
-                GameManager._instance.capturedDeities.Add(capturedUnboundDeity);
+                GameManager.Instance.capturedDeities.Add(capturedUnboundDeity);
                 Debug.Log("Deity was captured");
                 OnBattleEndCapturedDeity("Deity was Captured");
 

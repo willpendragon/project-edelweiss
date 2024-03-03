@@ -11,7 +11,7 @@ public class CheckRequirement : MonoBehaviour
     public void Start()
     {
         sceneLoader = GameObject.FindGameObjectWithTag("SceneLoader").GetComponent<SceneLoader>();
-        gameManager = GameManager._instance;
+        gameManager = GameManager.Instance;
     }
     public void CheckPreviousNode()
     {

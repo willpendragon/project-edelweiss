@@ -13,25 +13,36 @@ public class DeityAltarController : MonoBehaviour
     public RectTransform capturedDeitiesContainer;
     public GameObject playerUnitImageGO;
     public GameObject deityImageGO;
+    public GameObject deityLinkButtonPrefab;
+    public RectTransform deityLinkMenuContainer;
+
+
     public void Start()
     {
-        foreach (var playerUnit in GameManager._instance.playerPartyMembers)
+        foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
         {
             Sprite playerUnitPortrait = playerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
             GameObject newPlayerUnitImage = Instantiate(playerUnitImageGO, playerPartyContainer);
             newPlayerUnitImage.GetComponent<Image>().sprite = playerUnitPortrait;
             newPlayerUnitImage.tag = "Player";
-            Instantiate(playerUnit, newPlayerUnitImage.gameObject.transform);
+            newPlayerUnitImage.GetComponent<UnitImageController>().unitReference = playerUnit;
         }
-        foreach (var capturedDeity in GameManager._instance.capturedDeities)
+        foreach (var capturedDeity in GameManager.Instance.capturedDeities)
         {
             Sprite deityPortrait = capturedDeity.deityPortrait;
             GameObject newDeityUnitImage = Instantiate(deityImageGO, capturedDeitiesContainer);
             newDeityUnitImage.tag = "Deity";
             newDeityUnitImage.GetComponent<Image>().sprite = deityPortrait;
-            Instantiate(capturedDeity, newDeityUnitImage.gameObject.transform);
-
+            newDeityUnitImage.GetComponent<UnitImageController>().deityReference = capturedDeity;
         }
+        CreateLinkButton();
+    }
+
+    public void CreateLinkButton()
+    {
+        GameObject deityLinkButtonInstance = Instantiate(deityLinkButtonPrefab, deityLinkMenuContainer);
+        Button currentdDeityLinkButton = deityLinkButtonInstance.GetComponent<Button>();
+        currentdDeityLinkButton.onClick.AddListener(() => GameManager.Instance.GetComponent<DeityLinkController>().SaveGame());
     }
 
     public void SetCurrentSelectedUnit(Unit unit)

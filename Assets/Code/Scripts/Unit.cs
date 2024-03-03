@@ -70,10 +70,22 @@ public class Unit : MonoBehaviour
     public void OnEnable()
     {
         GridManager.OnSetUnitInitialPositionOnGrid += SetUnitInitialPositionOnGrid;
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = System.Guid.NewGuid().ToString();
+        }
     }
     public void OnDisable()
     {
         GridManager.OnSetUnitInitialPositionOnGrid -= SetUnitInitialPositionOnGrid;
+    }
+
+    void Awake()
+    {
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = System.Guid.NewGuid().ToString();
+        }
     }
 
     public void Start()

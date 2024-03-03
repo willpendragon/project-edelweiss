@@ -8,7 +8,7 @@ public class UnitImageController : MonoBehaviour, IPointerClickHandler
 {
     public enum IconSelectionStatus
     {
-        basic,
+        playerSelectionMode,
         deitySelectionMode
     }
 
@@ -16,9 +16,20 @@ public class UnitImageController : MonoBehaviour, IPointerClickHandler
 
     public IconSelectionStatus currentIconSelectionStatus;
 
+    public Unit unitReference;
+    public Deity deityReference;
+
     public void Start()
     {
         deityAltarController = GameObject.FindGameObjectWithTag("DeityAltarController").GetComponent<DeityAltarController>();
+        if (deityReference != null)
+        {
+            currentIconSelectionStatus = IconSelectionStatus.deitySelectionMode;
+        }
+        else
+        {
+            currentIconSelectionStatus = IconSelectionStatus.playerSelectionMode;
+        }
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -35,14 +46,15 @@ public class UnitImageController : MonoBehaviour, IPointerClickHandler
     public void HandleSelection()
     {
         Debug.Log("Clicked with Left Button");
-        if (currentIconSelectionStatus == IconSelectionStatus.basic)
+
+        if (currentIconSelectionStatus == IconSelectionStatus.playerSelectionMode && this.gameObject.tag == "Player")
         {
-            deityAltarController.SetCurrentSelectedUnit(this.GetComponentInChildren<Unit>());
-            currentIconSelectionStatus = IconSelectionStatus.deitySelectionMode;
+            deityAltarController.SetCurrentSelectedUnit(unitReference);
+            Debug.Log("Selected Player Unit");
         }
-        else if (this.gameObject.tag == "Deity")
+        else if (this.gameObject.tag == "Deity" && currentIconSelectionStatus == IconSelectionStatus.deitySelectionMode)
         {
-            deityAltarController.AssignDeityToUnit(this.GetComponentInChildren<Deity>());
+            deityAltarController.AssignDeityToUnit(this.deityReference);
         }
     }
 
@@ -50,7 +62,6 @@ public class UnitImageController : MonoBehaviour, IPointerClickHandler
     {
         Debug.Log("Clicked with Right Button");
         deityAltarController.selectedPlayerUnit = null;
-        currentIconSelectionStatus = IconSelectionStatus.basic;
-
+        currentIconSelectionStatus = IconSelectionStatus.playerSelectionMode;
     }
 }

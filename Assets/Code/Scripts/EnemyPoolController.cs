@@ -18,10 +18,10 @@ public class EnemyPoolController : MonoBehaviour
 
     void SpawnEnemies()
     {
-        for (int i = 0; i < GameManager._instance.currentEnemySelectionIds.Count; i++)
+        for (int i = 0; i < GameManager.Instance.currentEnemySelectionIds.Count; i++)
         {
-            EnemyType type = GameManager._instance.currentEnemySelectionIds[i];
-            Vector2 coords = GameManager._instance.currentEnemySelectionCoords[i];
+            EnemyType type = GameManager.Instance.currentEnemySelectionIds[i];
+            Vector2 coords = GameManager.Instance.currentEnemySelectionCoords[i];
 
             GameObject spawnedEnemy = Instantiate(EnemyPoolGameObjects[(int)type]);
             Unit unitComponent = spawnedEnemy.GetComponent<Unit>();
