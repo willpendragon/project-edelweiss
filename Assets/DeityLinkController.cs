@@ -1,33 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
 public class SaveData
 {
-    public List<Deity> Deities;
-    public List<Unit> Units;
-    public List<Unit> UnitInstances;
+    public List<SerializableDeity> Deities;
+    public List<SerializableUnit> Units;
 }
 
 public class DeityLinkController : MonoBehaviour
 {
     public void Start()
     {
-        LoadGame();
     }
     public void SaveGame()
     {
-        // Assuming GameManager.Instance.Units contains all your game's units
         SaveData data = new SaveData
         {
-            Deities = GameManager.Instance.capturedDeities,
-            Units = GameManager.Instance.playerPartyMembersInstances
+            Deities = GameManager.Instance.capturedDeities.Select(deity => new SerializableDeity { Id = deity.Id }).ToList(),
+            Units = GameManager.Instance.playerPartyMembersInstances.Select(unit => new SerializableUnit { Id = unit.Id, LinkedDeityId = unit.LinkedDeityId }).ToList()
         };
 
-        string json = JsonUtility.ToJson(data, true); // 'true' for pretty print if desired
+        string json = JsonUtility.ToJson(data, true);
         System.IO.File.WriteAllText(Application.persistentDataPath + "/savegame.json", json);
-        Debug.Log("Saving Deity Link");
+        Debug.Log("Game saved");
     }
 
     public void LoadGame()
@@ -38,16 +36,17 @@ public class DeityLinkController : MonoBehaviour
             string json = System.IO.File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
-            GameManager.Instance.capturedDeities = data.Deities;
-            GameManager.Instance.playerPartyMembersInstances = data.Units;
-
-            // Re-link units to deities based on saved DeityId
-            foreach (var unit in GameManager.Instance.playerPartyMembersInstances)
+            // Assuming the lists are already populated with deity and unit instances
+            foreach (var serializableUnit in data.Units)
             {
-                GameObject unitInstance = Instantiate(unit.gameObject);
-                unitInstance.GetComponent<Unit>().linkedDeity = GameManager.Instance.capturedDeities.Find(deity => deity.Id == unit.LinkedDeityId);
+                Unit unit = GameManager.Instance.playerPartyMembersInstances.Find(u => u.Id == serializableUnit.Id);
+                if (unit != null)
+                {
+                    unit.linkedDeity = GameManager.Instance.capturedDeities.Find(deity => deity.Id == serializableUnit.LinkedDeityId);
+                }
             }
-            Debug.Log("Loading Deity Data");
+
+            Debug.Log("Game loaded");
         }
     }
 }

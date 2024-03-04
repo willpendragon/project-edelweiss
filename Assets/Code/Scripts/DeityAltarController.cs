@@ -54,6 +54,7 @@ public class DeityAltarController : MonoBehaviour
     {
         selectedPlayerUnit.LinkedDeityId = deity.Id; // Link the Deity ID to the Unit
         Debug.Log("Linked Player to Deity"); // Any additional logic for effects on the Unit's stats or state
+        GameManager.Instance.deityLinkController.SaveGame();
     }
 
 }

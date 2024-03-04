@@ -17,7 +17,7 @@ public class Unit : MonoBehaviour
         unitAlive
     }
 
-    public string Id = System.Guid.NewGuid().ToString();
+    public string Id; /*= System.Guid.NewGuid().ToString();*/
     public string LinkedDeityId; // This will store the ID of the linked Deity
 
     public int unitMovementLimit;
@@ -70,10 +70,6 @@ public class Unit : MonoBehaviour
     public void OnEnable()
     {
         GridManager.OnSetUnitInitialPositionOnGrid += SetUnitInitialPositionOnGrid;
-        if (string.IsNullOrEmpty(Id))
-        {
-            Id = System.Guid.NewGuid().ToString();
-        }
     }
     public void OnDisable()
     {
@@ -82,10 +78,7 @@ public class Unit : MonoBehaviour
 
     void Awake()
     {
-        if (string.IsNullOrEmpty(Id))
-        {
-            Id = System.Guid.NewGuid().ToString();
-        }
+
     }
 
     public void Start()

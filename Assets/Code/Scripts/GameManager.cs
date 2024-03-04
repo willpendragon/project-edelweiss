@@ -15,12 +15,15 @@ public class GameManager : MonoBehaviour
     public List<Unit> playerPartyMembersInstances;
     public List<Deity> capturedDeities;
 
+    public DeityLinkController deityLinkController;
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            InstantiateUnits();
             SceneManager.sceneLoaded += OnSceneLoaded; // Subscribe to the sceneLoaded event
         }
         else if (Instance != this)
@@ -39,7 +42,6 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // Attempt to access the DeityLinkController component safely
-        DeityLinkController deityLinkController = GetComponent<DeityLinkController>();
         if (deityLinkController != null)
         {
             deityLinkController.LoadGame(); // Call LoadGame only if the component is found
@@ -49,7 +51,6 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("DeityLinkController component not found on GameManager GameObject.");
         }
     }
-
     public void MarkCurrentNodeAsCompleted()
 
     {
@@ -79,9 +80,11 @@ public class GameManager : MonoBehaviour
         // Go through all the prefabs and instantiate them
         foreach (var unitPrefab in playerPartyMembers)
         {
-            Unit newUnitInstance = Instantiate(unitPrefab);
+            Unit newUnitInstance = Instantiate(unitPrefab, this.gameObject.transform);
             newUnitInstance.Id = System.Guid.NewGuid().ToString(); // Set a new ID or any other initialization
             playerPartyMembersInstances.Add(newUnitInstance); // Add the new instance to the list
         }
+        Debug.Log("Instantiated Player Units");
+        deityLinkController.SaveGame();
     }
 }
