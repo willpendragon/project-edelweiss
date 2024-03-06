@@ -84,6 +84,7 @@ public class TurnController : MonoBehaviour
             OnBattleEnd("Player Party was defeated");
             //Activate Game Over UI
             //Active Game Over Flow
+            ResetTags();
         }
         else
         {
@@ -97,6 +98,7 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Enemy Party was defeated");
+            ResetTags();
             UnlockNextLevel(GameManager.Instance.currentEnemySelectionComponent.levelNumber);
             foreach (var player in playerUnitsOnBattlefield)
             {
@@ -119,6 +121,7 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Player Party was defeated");
             OnBattleEnd("Player Party was defeated");
+            ResetTags();
             //Activate Game Over UI
             //Active Game Over Flow
         }
@@ -129,6 +132,15 @@ public class TurnController : MonoBehaviour
             //Active Game Over Flow
         }
     }
+
+    public void ResetTags()
+    {
+        foreach (var player in GameManager.Instance.playerPartyMembersInstances)
+        {
+            player.gameObject.tag = "Player";
+        }
+    }
+
     public void UnlockNextLevel(int currentLevelNumber)
     {
         int highestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel", 1);

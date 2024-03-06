@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Build.Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SummoningUIController : MonoBehaviour
@@ -12,6 +13,26 @@ public class SummoningUIController : MonoBehaviour
     public IPlayerAction currentPlayerAction;
     public Button currentButton;
 
+    void OnEnable()
+    {
+        Debug.Log("OnEnable called");
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    private void OnDestroy()
+    {
+        // It's good practice to unsubscribe from the event when the GameObject is destroyed.
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // called second
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("OnSceneLoaded: " + scene.name);
+        Debug.Log(mode);
+        summoningCastingController = GameObject.FindGameObjectWithTag("SummoningController").GetComponent<SummoningController>();
+        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+    }
+
     public enum SummonPhase
     {
         summoning,
@@ -19,11 +40,6 @@ public class SummoningUIController : MonoBehaviour
     }
 
     public SummonPhase currentSummonPhase;
-
-    public void Start()
-    {
-        summoningCastingController = GameObject.FindGameObjectWithTag("SummoningController").GetComponent<SummoningController>();
-    }
 
     public void AddSummonButton()
     //I will need to create a Pokémon-Style menu to summon the collected deities.

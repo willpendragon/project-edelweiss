@@ -2,14 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MeleeUIController : MonoBehaviour
-
 {
+    public void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    private void OnDestroy()
+    {
+        // It's good practice to unsubscribe from the event when the GameObject is destroyed.
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     //public MeleeController meleeController;
     public GameObject meleeButtonPrefab;
     public Transform spellMenuContainer;
     private string buttonName;
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("OnSceneLoaded: " + scene.name);
+        Debug.Log(mode);
+        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+    }
+
 
     public void AddMeleeButton()
     {

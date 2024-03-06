@@ -1,14 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MoveUIController : MonoBehaviour
 {
+    public void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     public GameObject moveButtonPrefab;
     public Transform spellMenuContainer;
     private string buttonName;
-    // Start is called before the first frame update
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("OnSceneLoaded: " + scene.name);
+        Debug.Log(mode);
+        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        Unit unitReference = this.GetComponent<Unit>();
+        unitReference.unitOpportunityPoints = unitReference.unitTemplate.unitOpportunityPoints;
+    }
+
     public void AddMoveButton()
     {
         //Instantiates the Move Button

@@ -2,12 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SpellUIController : MonoBehaviour
 {
+    public void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     public SpellcastingController spellCastingController;
     public GameObject spellButtonPrefab;
     public Transform spellMenuContainer;
+
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("OnSceneLoaded: " + scene.name);
+        Debug.Log(mode);
+        spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
+        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+    }
 
     public void PopulateCharacterSpellsMenu(GameObject detectedUnit)
     {
