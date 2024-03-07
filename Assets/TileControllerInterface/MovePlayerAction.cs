@@ -5,6 +5,7 @@ using static GridTargetingController;
 using static TileController;
 using UnityEngine.UI;
 using Unity.VisualScripting.ReorderableList;
+using System.Security.Cryptography;
 
 public class MovePlayerAction : IPlayerAction
 {
@@ -49,7 +50,8 @@ public class MovePlayerAction : IPlayerAction
 
         if (activePlayerUnit.unitOpportunityPoints > 0)
         {
-            //Use Grid Logic to Move the Player to Destination
+            //Use Grid Logic to Move the Player to Destination            
+            activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
             activePlayerUnit.ownedTile.detectedUnit = null;
             activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate);
             activePlayerUnit.SetPosition(destinationTileXCoordinate, destinationTileYCoordinate);
@@ -62,6 +64,20 @@ public class MovePlayerAction : IPlayerAction
         else
         {
             Debug.Log("Not enough Opportunity Points on Active Player Unit");
+        }
+    }
+
+    public string FindAnimationTrigger(Unit activePlayerUnit, TileController destinationTile)
+    {
+        if (activePlayerUnit.ownedTile.transform.localPosition.x > destinationTile.transform.localPosition.x)
+        {
+
+            Debug.Log("Changing Animation");
+            return "leftAnimationTrigger";
+        }
+        else
+        {
+            return null;
         }
     }
 }
