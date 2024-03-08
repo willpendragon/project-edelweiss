@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static PlayerProfileController;
 using UnityEngine.UI;
+using RPGCharacterAnims.Actions;
+using Newtonsoft.Json;
+using Unity.VisualScripting;
+using System.IO;
 
 public class DeityAltarController : MonoBehaviour
 {
@@ -15,6 +19,10 @@ public class DeityAltarController : MonoBehaviour
     public GameObject deityImageGO;
     public GameObject deityLinkButtonPrefab;
     public RectTransform deityLinkMenuContainer;
+
+    [Serialize]
+
+    Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
 
 
     public void Start()
@@ -42,7 +50,7 @@ public class DeityAltarController : MonoBehaviour
     {
         GameObject deityLinkButtonInstance = Instantiate(deityLinkButtonPrefab, deityLinkMenuContainer);
         Button currentdDeityLinkButton = deityLinkButtonInstance.GetComponent<Button>();
-        currentdDeityLinkButton.onClick.AddListener(() => GameManager.Instance.GetComponent<DeityLinkController>().SaveGame());
+        currentdDeityLinkButton.onClick.AddListener(() => GameManager.Instance.ApplyDeityLinks());
     }
 
     public void SetCurrentSelectedUnit(Unit unit)
@@ -54,7 +62,21 @@ public class DeityAltarController : MonoBehaviour
     {
         selectedPlayerUnit.LinkedDeityId = deity.Id; // Link the Deity ID to the Unit
         Debug.Log("Linked Player to Deity"); // Any additional logic for effects on the Unit's stats or state
-        GameManager.Instance.deityLinkController.SaveGame();
+        //GameManager.Instance.deityLinkController.SaveGame();
+        CreateDictionaryEntry(deity);
+    }
+    public void CreateDictionaryEntry(Deity deity)
+    {
+        string selectedPlayerUnitId = selectedPlayerUnit.Id;
+        unitsLinkedToDeities[selectedPlayerUnitId] = deity.Id;
+        SaveDictionaryToFile(unitsLinkedToDeities);
     }
 
+    public void SaveDictionaryToFile(Dictionary<string, string> unitsLinkedToDeities)
+    {
+        string saveState = JsonConvert.SerializeObject(unitsLinkedToDeities, Formatting.Indented);
+        File.WriteAllText(Application.persistentDataPath + "/savegame.json", saveState);
+
+        Debug.Log("Saving Dictionary");
+    }
 }

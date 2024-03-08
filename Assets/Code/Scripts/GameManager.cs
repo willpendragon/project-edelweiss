@@ -1,7 +1,11 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
+using System;
+using JetBrains.Annotations;
 
 public class GameManager : MonoBehaviour
 {
@@ -44,7 +48,7 @@ public class GameManager : MonoBehaviour
         // Attempt to access the DeityLinkController component safely
         if (deityLinkController != null)
         {
-            deityLinkController.LoadGame(); // Call LoadGame only if the component is found
+            //deityLinkController.LoadGame(); // Call LoadGame only if the component is found
         }
         else
         {
@@ -81,10 +85,29 @@ public class GameManager : MonoBehaviour
         foreach (var unitPrefab in playerPartyMembers)
         {
             Unit newUnitInstance = Instantiate(unitPrefab, this.gameObject.transform);
-            newUnitInstance.Id = System.Guid.NewGuid().ToString(); // Set a new ID or any other initialization
+            //newUnitInstance.Id = System.Guid.NewGuid().ToString(); // Set a new ID or any other initialization
             playerPartyMembersInstances.Add(newUnitInstance); // Add the new instance to the list
         }
         Debug.Log("Instantiated Player Units");
-        deityLinkController.SaveGame();
+        ApplyDeityLinks();
+
+    }
+    public void ApplyDeityLinks()
+    {
+        string saveState = File.ReadAllText(Application.persistentDataPath + "/savegame.json");
+        Dictionary<string, string> unitsLinkedToDeities = JsonConvert.DeserializeObject<Dictionary<string, string>>(saveState);
+        foreach (var entry in unitsLinkedToDeities)
+        {
+            string unitID = entry.Key;
+            string deityID = entry.Value;
+        }
+
+        foreach (var unitPrefab in playerPartyMembersInstances)
+        {
+            unitsLinkedToDeities.TryGetValue(unitPrefab.GetComponent<Unit>().Id, out string connectedDeity);
+            unitPrefab.GetComponent<Unit>().LinkedDeityId = connectedDeity;
+            unitPrefab.GetComponent<Unit>().linkedDeity = GameManager.Instance.capturedDeities.Find(deity => deity.Id == unitPrefab.LinkedDeityId);
+        }
     }
 }
+//deityLinkController.SaveGame();
