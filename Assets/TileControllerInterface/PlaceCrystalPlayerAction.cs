@@ -1,6 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
+using System.IO;
+using Unity.VisualScripting;
+
 public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 {
     public int selectionLimiter = 1;
@@ -9,6 +14,8 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
     public delegate void BattleEndCapturedDeity(string battleEndMessage);
     public static event BattleEndCapturedDeity OnBattleEndCapturedDeity;
+
+
     public void Select(TileController selectedTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -38,10 +45,10 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                 OnBattleEndCapturedDeity("Deity was Captured");
 
                 //Initiate the Deity captured sequence
+                GameObject.FindGameObjectWithTag("PlayerStatsSaver").GetComponent<PlayerStatsSaver>().SaveDeityData(GameManager.Instance.capturedDeities);
             }
             else
             {
-                GameObject.FindGameObjectWithTag("PlayerStatsSaver").GetComponent<PlayerStatsSaver>().SaveDeityData();
                 Debug.Log("Deity was not captured");
             }
             //Insert the logic for Capturing the Deity here.
@@ -56,7 +63,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
     public int DeityCaptureRoll()
     {
-        int deityCaptureRoll = Random.Range(0, 11);
+        int deityCaptureRoll = UnityEngine.Random.Range(0, 11);
         //Beware, Magic Number
         GameObject[] captureCrystalsOnBattlefield = GameObject.FindGameObjectsWithTag("CaptureCrystal");
         deityCaptureRoll = deityCaptureRoll * captureCrystalsOnBattlefield.Length;

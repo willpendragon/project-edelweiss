@@ -1,16 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CapsuleCrystalUIController : MonoBehaviour
 {
+    public void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("OnSceneLoaded: " + scene.name);
+        Debug.Log(mode);
+        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+    }
+
     public GameObject capsuleCrystalButtonPrefab;
     public Transform spellMenuContainer;
 
     public void AddPlaceCaptureCrystalButton()
     {
-        //Instantiate the Trap Button.
+        //Instantiates the Trap Button.
         GameObject captureCrystalButtonInstance = Instantiate(capsuleCrystalButtonPrefab, spellMenuContainer);
         Button currentCaptureCrystalButton = captureCrystalButtonInstance.GetComponent<Button>();
         currentCaptureCrystalButton.onClick.AddListener(() => SwitchTilesToPlaceCaptureCrystal());

@@ -13,6 +13,7 @@ public enum DeityState
     gridaltering
 }
 
+[System.Serializable]
 public class Deity : MonoBehaviour
 {
 

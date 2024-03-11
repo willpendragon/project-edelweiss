@@ -3,13 +3,23 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using Newtonsoft.Json;
+using System.IO;
+using static UnityEditor.Progress;
+using System.Linq;
+using JetBrains.Annotations;
 
 public class PlayerStatsSaver : MonoBehaviour
 {
+    public GameObject deityBasePrefab;
+
+    public List<DeityData> serializedCapturedDeitiesList = new List<DeityData>();
+
     public void Start()
     {
         LoadCharacterData();
-        //LoadDeityData();
+        ApplyDeityData();
+
     }
     public void SaveCharacterData()
     {
@@ -30,41 +40,86 @@ public class PlayerStatsSaver : MonoBehaviour
     {
         Debug.Log("Loading Player Character's Data");
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
-        foreach (var playerUnit in playerUnits)
+        if (playerUnits != null)
         {
-            Unit unit = playerUnit.GetComponent<Unit>();
-            string baseKey = unit.unitTemplate.unitName;
+            foreach (var playerUnit in playerUnits)
+            {
+                Unit unit = playerUnit.GetComponent<Unit>();
+                string baseKey = unit.unitTemplate.unitName;
 
-            // Assuming default values if keys don't exist. Adjust as necessary.
-            float xp = PlayerPrefs.GetFloat(baseKey + "_XP", 0); // Default to 0 if not found
-            float coins = PlayerPrefs.GetFloat(baseKey + "_Coins", 0); // Default to 0 if not found
-            float healthPoints = PlayerPrefs.GetFloat(baseKey + "_HealthPoints", unit.unitTemplate.unitMaxHealthPoints); // Default to max health points if not found
+                // Assuming default values if keys don't exist. Adjust as necessary.
+                float xp = PlayerPrefs.GetFloat(baseKey + "_XP", 0); // Default to 0 if not found
+                float coins = PlayerPrefs.GetFloat(baseKey + "_Coins", 0); // Default to 0 if not found
+                float healthPoints = PlayerPrefs.GetFloat(baseKey + "_HealthPoints", unit.unitTemplate.unitMaxHealthPoints); // Default to max health points if not found
 
-            unit.unitExperiencePoints = xp;
-            unit.unitCoins = coins; // Assuming unitCoins is the correct field for storing coins
-            unit.unitHealthPoints = healthPoints;
+                unit.unitExperiencePoints = xp;
+                unit.unitCoins = coins; // Assuming unitCoins is the correct field for storing coins
+                unit.unitHealthPoints = healthPoints;
+            }
         }
         var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
         int killedEnemies = PlayerPrefs.GetInt("killedEnemies", 0);
         deityAchievementsController.killedEnemies = killedEnemies;
 
-        LoadDeityData();
+        //LoadDeityData();
     }
 
-    public void SaveDeityData()
+    public void SaveDeityData(List<Deity> capturedDeities)
     {
-        string json = JsonUtility.ToJson(GameManager.Instance.capturedDeities);
-        System.IO.File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
-    }
+        // Convert your Deity MonoBehaviour instances to DeityData instances for serialization
+        List<DeityData> deityDataList = capturedDeities.Select(deity => new DeityData { Id = deity.Id, specialAttackPower = deity.deitySpecialAttackPower }).ToList();
 
-    public void LoadDeityData()
+        // Wrap the list in the wrapper object
+        DeityListWrapper wrapper = new DeityListWrapper { serializedCapturedDeitiesList = deityDataList };
+
+        // Serialize the wrapper object to JSON
+        string json = JsonUtility.ToJson(wrapper);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+
+    }
+    public void ApplyDeityData()
     {
-        string path = Application.persistentDataPath + "/savefile.json";
-        if (System.IO.File.Exists(path))
+        GameManager.Instance.capturedDeities = LoadDeityData();
+    }
+    public List<Deity> LoadDeityData()
+    {
+        string filePath = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(filePath))
         {
-            string json = System.IO.File.ReadAllText(path);
-            GameManager.Instance.capturedDeities = JsonUtility.FromJson<List<Deity>>(json);
+            string json = File.ReadAllText(filePath);
+            DeityListWrapper wrapper = JsonUtility.FromJson<DeityListWrapper>(json);
 
+            // Convert the DeityData instances back to Deity MonoBehaviour instances
+            List<Deity> deities = new List<Deity>();
+            foreach (DeityData data in wrapper.serializedCapturedDeitiesList)
+            {
+                //This line calls a method to create a new Empty Deity and populated with data from the saved file.
+                Deity deity = CreateDeity(data.Id, data.specialAttackPower);
+                // Set any other data you have saved
+                deities.Add(deity);
+            }
+
+            return deities;
+        }
+        else
+        {
+            Debug.LogError("Save file not found in " + filePath);
+            return null;
+        }
+    }
+
+    public Deity CreateDeity(string newId, float newAttackPower)
+    {
+        if (deityBasePrefab != null)
+        {
+            Deity capturedDeity = Instantiate(deityBasePrefab.GetComponent<Deity>());
+            capturedDeity.Id = newId;
+            capturedDeity.deitySpecialAttackPower = newAttackPower;
+            return capturedDeity;
+        }
+        else
+        {
+            return null;
         }
     }
 }

@@ -23,8 +23,6 @@ public class DeityAltarController : MonoBehaviour
     [Serialize]
 
     Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
-
-
     public void Start()
     {
         foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)

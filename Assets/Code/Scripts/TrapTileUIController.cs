@@ -12,7 +12,7 @@ public class TrapTileUIController : MonoBehaviour
     }
     private void OnDestroy()
     {
-        // It's good practice to unsubscribe from the event when the GameObject is destroyed.
+        // Unsubscribe from the event when the GameObject is destroyed.
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
