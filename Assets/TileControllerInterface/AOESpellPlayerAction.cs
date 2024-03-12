@@ -69,6 +69,7 @@ public class AOESpellPlayerAction : IPlayerAction
                         activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
                         activePlayerUnit.unitOpportunityPoints--;
                         Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
+                        DeityEnmityCheck();
                     }
                 }
             }
@@ -79,6 +80,7 @@ public class AOESpellPlayerAction : IPlayerAction
                 savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
                 activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
                 activePlayerUnit.unitOpportunityPoints--;
+                DeityEnmityCheck();
             }
         }
         else
@@ -99,5 +101,30 @@ public class AOESpellPlayerAction : IPlayerAction
         }
         savedSelectedTile = null;
         Debug.Log("Selecting AOE Range");
+    }
+
+    public void DeityEnmityCheck()
+    {
+        Deity unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<EnemyTurnManager>().deity.GetComponent<Deity>();
+
+        if (unboundDeity != null)
+        {
+            //Looks for the Unbound Deity on the Battlefield
+            SpellAlignment spellAlignment = spellCastingController.currentSelectedSpell.alignment;
+            //Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments
+            if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
+            {
+                float enmityIncrease = 2.5f;
+                //Beware: Magic Numbers
+                unboundDeity.enmity += enmityIncrease;
+                unboundDeity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
+                //Updates the current level of Enmity between the Deity and the Player Unit.
+                Debug.Log("Hated Alignment. Deity becomes angrier");
+            }
+            else
+            {
+                Debug.Log("Not Hated Alignment. Nothing happens to Deity");
+            }
+        }
     }
 }
