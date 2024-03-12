@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 {
     public GameObject newCurrentlySelectedUnitPanel;
     public GameObject selectedUnit;
+    private GameObject playerSelectorIconInstance;
     public void Select(TileController selectedTile)
     {
         if (selectedTile != null && selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting
@@ -14,6 +16,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         {
             selectedUnit = selectedTile.detectedUnit;
             CreateActivePlayerUnitProfile(selectedUnit);
+            GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon").GetComponent<SpriteRenderer>().material.color = Color.cyan;
             //selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
             //selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
         }
@@ -32,6 +35,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             tile.currentSingleTileStatus = SingleTileStatus.basic;
             Debug.Log("Switching Tiles to Character Selection Mode");
         }
+        Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
     }
 
     public void Execute()
@@ -76,4 +80,5 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             Destroy(playerUISpellButton);
         }
     }
+
 }

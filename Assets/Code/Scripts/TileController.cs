@@ -161,6 +161,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler
                 Debug.Log("Switching Tiles to Character Selection Mode");
             }
             detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected;
+            GameObject playerSelectorIconIstance = Instantiate(Resources.Load("PlayerCharacterSelectorIcon") as GameObject, detectedUnit.transform);
+            //Beware: Magic Number
+            playerSelectorIconIstance.transform.localPosition += new Vector3(0, 2.5f, 0);
         }
         //else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
         //{
