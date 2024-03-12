@@ -157,15 +157,16 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             foreach (var tile in GridManager.Instance.gridTileControllers)
             {
                 tile.currentPlayerAction = selectUnitPlayerActionInstance;
-                tile.currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
                 Debug.Log("Switching Tiles to Character Selection Mode");
             }
+            detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected;
         }
-        else if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
-        {
-            currentPlayerAction.Select(this);
-            Debug.Log("Selecting Characters on Tiles");
-        }
+        //else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
+        //{
+        //    currentPlayerAction.Select(this);
+        //    Debug.Log("Selecting Characters on Tiles");
+        //}
         else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
         {
             Debug.Log("Selecting Tiles");

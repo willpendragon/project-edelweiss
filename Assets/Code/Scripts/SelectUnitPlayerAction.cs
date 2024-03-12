@@ -6,16 +6,22 @@ using UnityEngine.UI;
 public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 {
     public GameObject newCurrentlySelectedUnitPanel;
+    public GameObject selectedUnit;
     public void Select(TileController selectedTile)
     {
-        if (selectedTile != null && selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
+        if (selectedTile != null && selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting
+            && selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected)
         {
-            CreateActivePlayerUnitProfile(selectedTile.detectedUnit);
+            selectedUnit = selectedTile.detectedUnit;
+            CreateActivePlayerUnitProfile(selectedUnit);
+            //selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
+            //selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
         }
     }
 
     public void Deselect()
     {
+        selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
         GridManager.Instance.currentPlayerUnit.tag = "Player";
         GridManager.Instance.currentPlayerUnit = null;
         Destroy(newCurrentlySelectedUnitPanel);
@@ -30,23 +36,23 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
     public void Execute()
     {
-
+        //Debug.Log("Create Player Unit Profile");
+        //CreateActivePlayerUnitProfile(selectedUnit);
     }
 
     public void CreateActivePlayerUnitProfile(GameObject detectedUnit)
     {
         //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
-        if (detectedUnit.GetComponent<Unit>().unitProfilePanel == null)
-        {
-            newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
-            newCurrentlySelectedUnitPanel.tag = "ActiveCharacterUnitProfile";
-            newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
-            detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
-            //The newly spawned Unit Profile Panel becomes the Detected Unit Profile Panel
-            //OnClickedTileWithUnit(detectedUnit);
-            //The UI Panel shows the detected Unit details
-            Debug.Log("Clicked on a Tile with Player Unit on it");
-        }
+
+        newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+        newCurrentlySelectedUnitPanel.tag = "ActiveCharacterUnitProfile";
+        newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
+        detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
+        //The newly spawned Unit Profile Panel becomes the Detected Unit Profile Panel
+        //OnClickedTileWithUnit(detectedUnit);
+        //The UI Panel shows the detected Unit details
+        Debug.Log("Clicked on a Tile with Player Unit on it");
+
         //Unit becomes the Active Player Unit in the GridManager
         GridManager.Instance.currentPlayerUnit = detectedUnit;
         //The Unit tag becomes ActivePlayerUnit

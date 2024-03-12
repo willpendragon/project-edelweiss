@@ -10,6 +10,7 @@ public class UnitSelectionController : MonoBehaviour
     {
         unitSelected,
         unitDeselected,
+        unitTemporarilySelected,
         unitAttacking,
         unitWaiting
     }
