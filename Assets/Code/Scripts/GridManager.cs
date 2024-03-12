@@ -47,17 +47,17 @@ public class GridManager : MonoBehaviour
     {
         OnSetUnitInitialPositionOnGrid();
         gridTileControllers = GameObject.FindObjectsOfType<TileController>();
-        SwitchToCharacterSelectionMove();
+        //SwitchToCharacterSelectionMove();
     }
 
-    public void SwitchToCharacterSelectionMove()
-    {
-        foreach (var tileController in gridTileControllers)
-        {
-            //tileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.yellow;
-            tileController.currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
-        }
-    }
+    //public void SwitchToCharacterSelectionMove()
+    //{
+    //    foreach (var tileController in gridTileControllers)
+    //    {
+    //        //tileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.yellow;
+    //        tileController.currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+    //    }
+    //}
     private void OnEnable()
     {
         TileController.OnTileClicked += MoveCurrentPlayerUnit;

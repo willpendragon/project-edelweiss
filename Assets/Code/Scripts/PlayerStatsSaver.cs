@@ -66,7 +66,7 @@ public class PlayerStatsSaver : MonoBehaviour
 
     public void SaveDeityData(List<Deity> capturedDeities)
     {
-        // Convert your Deity MonoBehaviour instances to DeityData instances for serialization
+        // Converts Deity MonoBehaviour instances to DeityData instances for serialization
         List<DeityData> deityDataList = capturedDeities.Select(deity => new DeityData { Id = deity.Id, specialAttackPower = deity.deitySpecialAttackPower }).ToList();
 
         // Wrap the list in the wrapper object

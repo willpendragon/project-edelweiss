@@ -17,6 +17,7 @@ using Unity.PlasticSCM.Editor.WebApi;
 
 public enum SingleTileStatus
 {
+    basic,
     selectionMode,
     waitingForConfirmationMode,
     characterSelectionModeActive,
@@ -65,7 +66,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public SingleTileStatus currentSingleTileStatus;
     public SingleTileCondition currentSingleTileCondition;
     public GameObject targetIcon;
-    public GameObject currentlySelectedUnitPanel;
+    //public GameObject currentlySelectedUnitPanel;
     public TileCurseStatus currentTileCurseStatus;
 
     public IPlayerAction currentPlayerAction;
@@ -149,9 +150,21 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public void HandleTileSelection()
     {
-        if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
+        if (currentSingleTileStatus == SingleTileStatus.basic && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
         {
-            CreateActivePlayerUnitProfile();
+            SelectUnitPlayerAction selectUnitPlayerActionInstance = new SelectUnitPlayerAction();
+
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentPlayerAction = selectUnitPlayerActionInstance;
+                tile.currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+                Debug.Log("Switching Tiles to Character Selection Mode");
+            }
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.characterSelectionModeActive)
+        {
+            currentPlayerAction.Select(this);
+            Debug.Log("Selecting Characters on Tiles");
         }
         else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
         {
@@ -170,7 +183,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         currentPlayerAction.Deselect();
     }
 
-    public void CreateActivePlayerUnitProfile()
+    /*public void CreateActivePlayerUnitProfile()
     {
         //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
         if (detectedUnit.GetComponent<Unit>().unitProfilePanel == null)
@@ -326,3 +339,4 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             }
 
                 */
+}

@@ -67,5 +67,9 @@ public class UnitSelectionController : MonoBehaviour
         currentUnitSelectionStatus = UnitSelectionStatus.unitWaiting;
         Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
         OnUnitWaiting();
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            tile.currentSingleTileStatus = SingleTileStatus.basic;
+        }
     }
 }
