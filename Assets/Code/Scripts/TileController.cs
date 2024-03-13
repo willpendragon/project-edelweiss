@@ -150,7 +150,17 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public void HandleTileSelection()
     {
-        if (currentSingleTileStatus == SingleTileStatus.basic && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
+        if (detectedUnit.tag == "Enemy")
+        {
+            //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
+
+            GameObject newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+            newCurrentlySelectedUnitPanel.tag = "ActiveCharacterUnitProfile";
+            newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.UpperLeft;
+            detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
+            Debug.Log("Clicked on Enemy Unit");
+        }
+        else if (currentSingleTileStatus == SingleTileStatus.basic && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
         {
             SelectUnitPlayerAction selectUnitPlayerActionInstance = new SelectUnitPlayerAction();
 
@@ -170,6 +180,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         //    currentPlayerAction.Select(this);
         //    Debug.Log("Selecting Characters on Tiles");
         //}
+
         else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
         {
             Debug.Log("Selecting Tiles");
@@ -184,7 +195,20 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public void HandleTileDeselection()
     {
-        currentPlayerAction.Deselect();
+        if (detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected)
+        {
+            detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentSingleTileStatus = SingleTileStatus.basic;
+            }
+            Debug.Log("Deselecting Unit");
+        }
+        else
+        {
+            currentPlayerAction.Deselect();
+        }
     }
 
     /*public void CreateActivePlayerUnitProfile()
