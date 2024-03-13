@@ -54,6 +54,7 @@ public class PlayerProfileController : MonoBehaviour
     {
         if (detectedUnit.tag == "Enemy" && currentProfileOwner != ProfileOwner.playerUnit && currentProfileOwner != ProfileOwner.activePlayerUnit)
         {
+            Debug.Log("Updating Unit Profile with Enemy Info");
             activeCharacterPortrait.GetComponent<Image>().overrideSprite = detectedUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
             activeCharacterName.text = detectedUnit.GetComponent<Unit>().unitTemplate.unitName;
             activeCharacterHealthPoints.text = detectedUnit.GetComponent<Unit>().unitHealthPoints.ToString();

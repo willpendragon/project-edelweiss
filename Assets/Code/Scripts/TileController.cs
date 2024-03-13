@@ -155,7 +155,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
 
             GameObject newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
-            newCurrentlySelectedUnitPanel.tag = "ActiveCharacterUnitProfile";
+            newCurrentlySelectedUnitPanel.tag = "EnemyUnitProfile";
+            newCurrentlySelectedUnitPanel.GetComponent<PlayerProfileController>().currentProfileOwner = PlayerProfileController.ProfileOwner.enemyUnit;
             newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.UpperLeft;
             detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
             Debug.Log("Clicked on Enemy Unit");
@@ -195,6 +196,10 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public void HandleTileDeselection()
     {
+        if (detectedUnit.tag == "Enemy")
+        {
+            Destroy(GameObject.FindGameObjectWithTag("EnemyUnitProfile"));
+        }
         if (detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected)
         {
             detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
