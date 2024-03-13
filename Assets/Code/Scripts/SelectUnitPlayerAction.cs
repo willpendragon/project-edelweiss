@@ -28,19 +28,39 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
     public void Deselect()
     {
-        Debug.Log("Deselecting Unit");
-        selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-        GridManager.Instance.currentPlayerUnit.tag = "Player";
-        GridManager.Instance.currentPlayerUnit = null;
-        Destroy(newCurrentlySelectedUnitPanel);
-        Debug.Log("Deselected Unit");
-        ResetCharacterSpellsMenu();
-        foreach (var tile in GridManager.Instance.gridTileControllers)
+        if (selectedUnit.gameObject.tag != "Enemy")
         {
-            tile.currentSingleTileStatus = SingleTileStatus.basic;
-            Debug.Log("Switching Tiles to Character Selection Mode");
+            Debug.Log("Deselecting Unit");
+            selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+            GridManager.Instance.currentPlayerUnit.tag = "Player";
+            GridManager.Instance.currentPlayerUnit = null;
+            Destroy(newCurrentlySelectedUnitPanel);
+            Debug.Log("Deselected Unit");
+            ResetCharacterSpellsMenu();
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentSingleTileStatus = SingleTileStatus.basic;
+                Debug.Log("Switching Tiles to Character Selection Mode");
+            }
+            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
         }
-        Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+        else if (selectedUnit.gameObject.tag == "Enemy")
+        {
+            Debug.Log("Deselecting Unit");
+            selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+            GridManager.Instance.currentPlayerUnit.tag = "Player";
+            GridManager.Instance.currentPlayerUnit = null;
+            Destroy(newCurrentlySelectedUnitPanel);
+            Debug.Log("Deselected Unit");
+            ResetCharacterSpellsMenu();
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentSingleTileStatus = SingleTileStatus.basic;
+                Debug.Log("Switching Tiles to Character Selection Mode");
+            }
+            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+        }
+
     }
 
     public void Execute()
@@ -63,19 +83,23 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         Debug.Log("Clicked on a Tile with Player Unit on it");
 
         //Unit becomes the Active Player Unit in the GridManager
-        GridManager.Instance.currentPlayerUnit = detectedUnit;
-        //The Unit tag becomes ActivePlayerUnit
-        detectedUnit.tag = "ActivePlayerUnit";
-        detectedUnit.GetComponent<Unit>().ownedTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
-        //Gameplay and Spells Buttons are generated
-        detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
-        detectedUnit.GetComponent<UnitSelectionController>().GenerateGameplayButtons();
-        detectedUnit.GetComponent<MoveUIController>().AddMoveButton();
-        detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
-        detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
-        detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
-        detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
-        detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
+        if (detectedUnit.tag == "Player")
+        {
+            GridManager.Instance.currentPlayerUnit = detectedUnit;
+            //The Unit tag becomes ActivePlayerUnit
+            detectedUnit.tag = "ActivePlayerUnit";
+            detectedUnit.GetComponent<Unit>().ownedTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
+            //Gameplay and Spells Buttons are generated
+            detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
+            detectedUnit.GetComponent<UnitSelectionController>().GenerateGameplayButtons();
+            detectedUnit.GetComponent<MoveUIController>().AddMoveButton();
+            detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
+            detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
+            detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
+            detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
+            detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
+        }
+
     }
     public void ResetCharacterSpellsMenu()
     {

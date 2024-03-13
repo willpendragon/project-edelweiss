@@ -150,18 +150,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public void HandleTileSelection()
     {
-        if (detectedUnit.tag == "Enemy")
-        {
-            //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
-
-            GameObject newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
-            newCurrentlySelectedUnitPanel.tag = "EnemyUnitProfile";
-            newCurrentlySelectedUnitPanel.GetComponent<PlayerProfileController>().currentProfileOwner = PlayerProfileController.ProfileOwner.enemyUnit;
-            newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.UpperLeft;
-            detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
-            Debug.Log("Clicked on Enemy Unit");
-        }
-        else if (currentSingleTileStatus == SingleTileStatus.basic && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
+        if (currentSingleTileStatus == SingleTileStatus.basic && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
         {
             SelectUnitPlayerAction selectUnitPlayerActionInstance = new SelectUnitPlayerAction();
 
@@ -176,11 +165,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             //Beware: Magic Number
             playerSelectorIconIstance.transform.localPosition += new Vector3(0, 2.5f, 0);
         }
-        //else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
-        //{
-        //    currentPlayerAction.Select(this);
-        //    Debug.Log("Selecting Characters on Tiles");
-        //}
 
         else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
         {
@@ -192,14 +176,24 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             //If Waiting for Confirmation is True
             currentPlayerAction.Execute();
         }
+        //else if (detectedUnit.tag == "Enemy")
+        //{
+        //    //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
+        //    GameObject newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+        //    newCurrentlySelectedUnitPanel.tag = "EnemyUnitProfile";
+        //    newCurrentlySelectedUnitPanel.GetComponent<PlayerProfileController>().currentProfileOwner = PlayerProfileController.ProfileOwner.enemyUnit;
+        //    newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.UpperLeft;
+        //    detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
+        //    Debug.Log("Clicked on Enemy Unit");
+        //}
     }
 
     public void HandleTileDeselection()
     {
-        if (detectedUnit.tag == "Enemy")
-        {
-            Destroy(GameObject.FindGameObjectWithTag("EnemyUnitProfile"));
-        }
+        //if (detectedUnit.tag == "Enemy")
+        //{
+        //    Destroy(GameObject.FindGameObjectWithTag("EnemyUnitProfile"));
+        //}
         if (detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected)
         {
             detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
@@ -208,11 +202,13 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             {
                 tile.currentSingleTileStatus = SingleTileStatus.basic;
             }
-            Debug.Log("Deselecting Unit");
+            Destroy(detectedUnit.GetComponent<Unit>().unitProfilePanel);
+            Debug.Log("Deselecting Temporarily Selected Unit");
         }
         else
         {
             currentPlayerAction.Deselect();
+            Debug.Log("Deselecting Unit");
         }
     }
 

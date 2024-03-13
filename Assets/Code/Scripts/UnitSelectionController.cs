@@ -55,17 +55,20 @@ public class UnitSelectionController : MonoBehaviour
     //}
     public void GenerateWaitButton()
     {
-        GameObject newWaitButton = Instantiate(waitButton, unitSpellUIController.spellMenuContainer);
+        if (unitSpellUIController != null)
+        {
+            GameObject newWaitButton = Instantiate(waitButton, unitSpellUIController.spellMenuContainer);
+        }
     }
     public void StopUnitAction()
     {
-        GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints = 0;
+       /* GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints = 0*/;
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
         unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = "Player";
         unitSprite.material.color = Color.grey;
         GridManager.Instance.currentPlayerUnit = null;
-        currentUnitSelectionStatus = UnitSelectionStatus.unitWaiting;
+        //currentUnitSelectionStatus = UnitSelectionStatus.unitWaiting;
         Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
         OnUnitWaiting();
         foreach (var tile in GridManager.Instance.gridTileControllers)

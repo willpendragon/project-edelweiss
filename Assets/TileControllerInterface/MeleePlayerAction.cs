@@ -40,9 +40,10 @@ public class MeleePlayerAction : IPlayerAction
     public void Deselect()
     {
         selectionLimiter++;
-        savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-        savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-        savedSelectedTile = null;
+        //savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+        //savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+        GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
+        //savedSelectedTile = null;
     }
     public void Execute()
     {

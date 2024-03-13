@@ -204,6 +204,7 @@ GameObject:
   - component: {fileID: 7714452247050051452}
   - component: {fileID: 3031252642805861247}
   - component: {fileID: 361118017173477511}
+  - component: {fileID: 2788514426886983777}
   m_Layer: 0
   m_Name: Dummy1
   m_TagString: Enemy
@@ -322,8 +323,6 @@ MonoBehaviour:
   unitMovementLimit: 0
   currentXCoordinate: 0
   currentYCoordinate: 0
-  enemyCoinsReward: 10
-  enemyExperienceReward: 10
   EnemyMeleeAttack:
     m_PersistentCalls:
       m_Calls:
@@ -381,6 +380,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9191c87aab5c6164087525c5b65d85f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Id: 
+  LinkedDeityId: 
   unitMovementLimit: 20
   currentXCoordinate: 0
   currentYCoordinate: 0
@@ -389,9 +390,15 @@ MonoBehaviour:
   unitTemplate: {fileID: 11400000, guid: d58a773ea7748e54ba1b4b49570112e2, type: 2}
   ownedTile: {fileID: 0}
   unitHealthPoints: 0
+  unitMaxHealthPoints: 0
   unitOpportunityPoints: 0
   unitManaPoints: 0
   unitShieldPoints: 0
+  unitCoins: 0
+  unitExperiencePoints: 0
+  coinsReward: 0
+  experiencePointsReward: 0
+  linkedDeity: {fileID: 0}
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
@@ -414,6 +421,24 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   unitCurrentStatus: 1
+--- !u!114 &2788514426886983777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009294011632168286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ea15ee3f60ec9a46b47097f03cb5504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeCharacterSelectorIcon: {fileID: 0}
+  moveButton: {fileID: 0}
+  waitButton: {fileID: 0}
+  currentUnitSelectionStatus: 1
+  unitSpellUIController: {fileID: 0}
+  unitSprite: {fileID: 0}
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

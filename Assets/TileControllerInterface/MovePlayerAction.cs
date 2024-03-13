@@ -17,6 +17,7 @@ public class MovePlayerAction : IPlayerAction
     public void Select(TileController selectedTile)
     {
         if (selectedTile != null && selectionLimiter == 1)
+        //Beware: Magic Number
         {
             var destinationTile = selectedTile;
             //Check if the distance is available
@@ -38,10 +39,12 @@ public class MovePlayerAction : IPlayerAction
 
     public void Deselect()
     {
+        Debug.Log("Stopping Moving Action");
         selectionLimiter++;
-        savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-        savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-        savedSelectedTile = null;
+        //savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+        //savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+        GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
+
     }
     public void Execute()
     {

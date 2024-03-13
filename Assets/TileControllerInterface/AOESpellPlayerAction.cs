@@ -103,15 +103,22 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public void Deselect()
     {
         selectionLimiter++;
-
-        foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+        if (savedSelectedTile == null)
         {
-            tile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-            savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-
+            GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
         }
-        savedSelectedTile = null;
-        Debug.Log("Selecting AOE Range");
+        else
+        {
+            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+            {
+                tile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+                savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+
+            }
+
+            savedSelectedTile = null;
+            Debug.Log("Selecting AOE Range");
+        }
     }
 
     public void DeityEnmityCheck()
