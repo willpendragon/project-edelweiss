@@ -7,7 +7,8 @@ public enum SpellAlignment
     fire,
     water,
     darkness,
-    electricity
+    electricity,
+    light
 }
 public enum SpellType
 {
@@ -23,5 +24,7 @@ public class Spell : ScriptableObject
     public int opportunityPointsCost;
     public SpellAlignment alignment;
     public SpellType spellType;
+    public GameObject spellVFX;
+    public Vector3 spellVFXOffset;
     // Add more spell properties as needed
 }

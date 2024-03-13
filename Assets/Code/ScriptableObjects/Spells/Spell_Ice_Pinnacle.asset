@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afbece5401784534d8edde489d315add, type: 3}
-  m_Name: Spell 1
+  m_Name: Spell_Ice_Pinnacle
   m_EditorClassIdentifier: 
-  spellName: Single Target Spell
+  spellName: Ice Pinnacle
   damage: 5
   manaPointsCost: 10
   opportunityPointsCost: 2
   alignment: 2
   spellType: 0
+  spellVFX: {fileID: 1129558473562584622, guid: 3259b665445eb3746bfddac9c6202f56, type: 3}
+  spellVFXOffset: {x: 0, y: 2.4, z: 0}

@@ -6,13 +6,16 @@ using static TileController;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 
-public class AOESpellPlayerAction : IPlayerAction
+public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 {
     public Unit currentTarget;
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
     SpellcastingController spellCastingController;
     public Deity unboundDeity;
+
+    public delegate void UsedSpell(string spellName, string casterName);
+    public static event UsedSpell OnUsedSpell;
 
     public void Select(TileController selectedTile)
     {
@@ -59,8 +62,6 @@ public class AOESpellPlayerAction : IPlayerAction
                 {
                     Debug.Log("Using AOE Spell on Multiple Targets");
                     tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
-                    activePlayerUnit.unitOpportunityPoints--;
-                    UpdateActivePlayerUnitMana(activePlayerUnit);
                     if (tile.detectedUnit == null)
                     {
                         Debug.Log("No Unit found. Can't apply damage");
@@ -73,6 +74,9 @@ public class AOESpellPlayerAction : IPlayerAction
                         UpdateActivePlayerUnitMana(activePlayerUnit);
                         Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
                         DeityEnmityCheck();
+                        PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, tile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                        OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+
                     }
                 }
             }
@@ -85,6 +89,9 @@ public class AOESpellPlayerAction : IPlayerAction
                 activePlayerUnit.unitOpportunityPoints--;
                 UpdateActivePlayerUnitMana(activePlayerUnit);
                 DeityEnmityCheck();
+                PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, savedSelectedTile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+
             }
         }
         else
@@ -139,5 +146,14 @@ public class AOESpellPlayerAction : IPlayerAction
     public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
     {
         activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+    }
+
+    public void PlayVFX(GameObject spellVFX, TileController enemyOccupiedTile, Vector3 spellVFXOffset)
+    {
+        GameObject spellVFXInstance = Instantiate(spellVFX, enemyOccupiedTile.detectedUnit.transform.position, Quaternion.identity);
+        spellVFXInstance.transform.localPosition += spellVFXOffset;
+        //Beware: Magic numbers
+        Debug.Log("Instantiating VFX");
+        Destroy(spellVFXInstance, 0.5f);
     }
 }

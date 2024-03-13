@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afbece5401784534d8edde489d315add, type: 3}
-  m_Name: Spell 2
+  m_Name: Spell_Light_Ordeal
   m_EditorClassIdentifier: 
-  spellName: AOE Spell
-  damage: 20
+  spellName: Light Ordeal
+  damage: 2
   manaPointsCost: 1
   opportunityPointsCost: 1
-  alignment: 0
+  alignment: 4
   spellType: 1
+  spellVFX: {fileID: 6649555857121154940, guid: 4ab3af5f464f1bc428922789c2cb081f, type: 3}
+  spellVFXOffset: {x: 0, y: 5, z: 0}
