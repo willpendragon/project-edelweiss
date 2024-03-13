@@ -1,14 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.UI;
+using static PlayerProfileController;
+using TMPro;
 
 public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 {
     public GameObject newCurrentlySelectedUnitPanel;
     public GameObject selectedUnit;
     private GameObject playerSelectorIconInstance;
+
+    public delegate void ClickedTileWithUnit(GameObject detectedUnit);
+    public static event ClickedTileWithUnit OnClickedTileWithUnit;
     public void Select(TileController selectedTile)
     {
         if (selectedTile != null && selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting
@@ -17,8 +23,6 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             selectedUnit = selectedTile.detectedUnit;
             CreateActivePlayerUnitProfile(selectedUnit);
             GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon").GetComponent<SpriteRenderer>().material.color = Color.cyan;
-            //selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
-            //selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
         }
     }
 
@@ -40,8 +44,6 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
     public void Execute()
     {
-        //Debug.Log("Create Player Unit Profile");
-        //CreateActivePlayerUnitProfile(selectedUnit);
     }
 
     public void CreateActivePlayerUnitProfile(GameObject detectedUnit)
@@ -53,8 +55,10 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
         detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
         //The newly spawned Unit Profile Panel becomes the Detected Unit Profile Panel
-        //OnClickedTileWithUnit(detectedUnit);
-        //The UI Panel shows the detected Unit details
+        OnClickedTileWithUnit(detectedUnit);
+
+
+        //Call a method that popoulates the Active Player Unit Profile (detected Unit) details
         Debug.Log("Clicked on a Tile with Player Unit on it");
 
         //Unit becomes the Active Player Unit in the GridManager
@@ -80,5 +84,4 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             Destroy(playerUISpellButton);
         }
     }
-
 }

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GridTargetingController;
+//using static GridTargetingController;
 using static TileController;
 using UnityEngine.UI;
 
@@ -64,6 +64,7 @@ public class MeleePlayerAction : IPlayerAction
             ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
             currentTarget.TakeDamage(attackPower);
             activePlayerUnit.unitOpportunityPoints--;
+            UpdateActivePlayerUnitProfile(activePlayerUnit);
             savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
             Debug.Log("Melee Execution Logic");
         }
@@ -118,5 +119,10 @@ public class MeleePlayerAction : IPlayerAction
         defender.ownedTile.detectedUnit = null;
         defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y);
         defender.GetComponent<Unit>().SetPosition(newGridPos.x, newGridPos.y);
+    }
+
+    public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
+    {
+        activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
 }

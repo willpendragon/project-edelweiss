@@ -11,13 +11,13 @@ public class TrapTileController : MonoBehaviour
 
     public void OnEnable()
     {
-        GridTargetingController.OnTileSetAsTrap += SetTargetedTrapTile;
+        //GridTargetingController.OnTileSetAsTrap += SetTargetedTrapTile;
         TileController.OnTileConfirmedTrapTileMode += ExecuteTrapTileAction;
     }
 
     public void OnDisable()
     {
-        GridTargetingController.OnTileSetAsTrap -= SetTargetedTrapTile;
+        //GridTargetingController.OnTileSetAsTrap -= SetTargetedTrapTile;
         TileController.OnTileConfirmedTrapTileMode -= ExecuteTrapTileAction;
     }
 

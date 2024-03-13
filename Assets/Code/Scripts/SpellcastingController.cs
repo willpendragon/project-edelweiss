@@ -23,14 +23,14 @@ public class SpellcastingController : MonoBehaviour
     public DistanceController distanceController;
     public void OnEnable()
     {
-        GridTargetingController.OnTargetedUnit += SetTargetedUnit;
+        //GridTargetingController.OnTargetedUnit += SetTargetedUnit;
         TileController.OnTileConfirmedAttackMode += UseCurrentSpellOnCurrentTarget;
         TileController.OnTileWaitingForConfirmationAOESpellMode += SetAOESpellEpicenter;
         TileController.OnTileConfirmedAOESpellMode += UseCurrentSpellOnCurrentTargets;
     }
     public void OnDisable()
     {
-        GridTargetingController.OnTargetedUnit -= SetTargetedUnit;
+        //GridTargetingController.OnTargetedUnit -= SetTargetedUnit;
         TileController.OnTileConfirmedAttackMode -= UseCurrentSpellOnCurrentTarget;
         TileController.OnTileWaitingForConfirmationAOESpellMode -= SetAOESpellEpicenter;
         TileController.OnTileConfirmedAOESpellMode -= UseCurrentSpellOnCurrentTargets;

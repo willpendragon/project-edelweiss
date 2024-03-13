@@ -12,7 +12,7 @@ using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using static TileController;
-using static GridTargetingController;
+//using static GridTargetingController;
 using Unity.PlasticSCM.Editor.WebApi;
 
 public enum SingleTileStatus
@@ -23,27 +23,27 @@ public enum SingleTileStatus
     characterSelectionModeActive,
     selectedPlayerUnitOccupiedTile,
 
-    selectionModeActive,
+    //selectionModeActive,
 
-    meleeSelectionModeActive,
-    meleeSelectionModeWaitingForConfirmation,
-    meleeSelectionModeConfirmedTarget,
+    //meleeSelectionModeActive,
+    //meleeSelectionModeWaitingForConfirmation,
+    //meleeSelectionModeConfirmedTarget,
 
-    attackSelectionModeActive,
-    attackSelectionModeWaitingForConfirmation,
-    attackSelectionModeConfirmedTarget,
+    //attackSelectionModeActive,
+    //attackSelectionModeWaitingForConfirmation,
+    //attackSelectionModeConfirmedTarget,
 
-    aoeAttackSelectionModeActive,
-    aoeAttackSelectionModeWaitingForConfirmation,
-    aoeAttackSelectionModeConfirmedTarget,
+    //aoeAttackSelectionModeActive,
+    //aoeAttackSelectionModeWaitingForConfirmation,
+    //aoeAttackSelectionModeConfirmedTarget,
 
-    trapTileSelectionModeActive,
-    trapTileSelectionModeWaitingForConfirmation,
-    trapTileSelectionModeConfirmedTarget,
+    //trapTileSelectionModeActive,
+    //trapTileSelectionModeWaitingForConfirmation,
+    //trapTileSelectionModeConfirmedTarget,
 
-    summonAreaSelectionModeActive,
-    summonAreaSelectionModeWaitingForConfirmation,
-    summonAreaSelectionModeConfirmedTarget
+    //summonAreaSelectionModeActive,
+    //summonAreaSelectionModeWaitingForConfirmation,
+    //summonAreaSelectionModeConfirmedTarget
 }
 
 public enum SingleTileCondition
@@ -114,8 +114,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public delegate void TileConfirmedSummonMode();
     public static event TileConfirmedSummonMode OnTileConfirmedSummonMode;
 
-    public delegate void ClickedTileWithUnit(GameObject detectedUnit);
-    public static event ClickedTileWithUnit OnClickedTileWithUnit;
+    //public delegate void ClickedTileWithUnit(GameObject detectedUnit);
+    //public static event ClickedTileWithUnit OnClickedTileWithUnit;
 
     public delegate void DeselectedTileWithUnit();
     public static event DeselectedTileWithUnit OnDeselectedTileWithUnit;

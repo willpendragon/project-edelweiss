@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GridTargetingController;
+//using static GridTargetingController;
 using static TileController;
 using UnityEngine.UI;
-
+using Unity.VisualScripting;
 
 public class AOESpellPlayerAction : IPlayerAction
 {
@@ -12,6 +12,7 @@ public class AOESpellPlayerAction : IPlayerAction
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
     SpellcastingController spellCastingController;
+    public Deity unboundDeity;
 
     public void Select(TileController selectedTile)
     {
@@ -59,6 +60,7 @@ public class AOESpellPlayerAction : IPlayerAction
                     Debug.Log("Using AOE Spell on Multiple Targets");
                     tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
                     activePlayerUnit.unitOpportunityPoints--;
+                    UpdateActivePlayerUnitMana(activePlayerUnit);
                     if (tile.detectedUnit == null)
                     {
                         Debug.Log("No Unit found. Can't apply damage");
@@ -68,6 +70,7 @@ public class AOESpellPlayerAction : IPlayerAction
                         tile.detectedUnit.GetComponent<Unit>().TakeDamage(GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage);
                         activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
                         activePlayerUnit.unitOpportunityPoints--;
+                        UpdateActivePlayerUnitMana(activePlayerUnit);
                         Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
                         DeityEnmityCheck();
                     }
@@ -80,6 +83,7 @@ public class AOESpellPlayerAction : IPlayerAction
                 savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
                 activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
                 activePlayerUnit.unitOpportunityPoints--;
+                UpdateActivePlayerUnitMana(activePlayerUnit);
                 DeityEnmityCheck();
             }
         }
@@ -105,10 +109,14 @@ public class AOESpellPlayerAction : IPlayerAction
 
     public void DeityEnmityCheck()
     {
-        Deity unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<EnemyTurnManager>().deity.GetComponent<Deity>();
-
-        if (unboundDeity != null)
+        if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<EnemyTurnManager>().deity == null)
         {
+            Debug.Log("No Deity Found");
+        }
+        else
+        {
+            unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<EnemyTurnManager>().deity.GetComponent<Deity>();
+
             //Looks for the Unbound Deity on the Battlefield
             SpellAlignment spellAlignment = spellCastingController.currentSelectedSpell.alignment;
             //Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments
@@ -126,5 +134,10 @@ public class AOESpellPlayerAction : IPlayerAction
                 Debug.Log("Not Hated Alignment. Nothing happens to Deity");
             }
         }
+    }
+
+    public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
+    {
+        activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
 }

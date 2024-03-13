@@ -28,15 +28,23 @@ public class PlayerProfileController : MonoBehaviour
 
     public ProfileOwner currentProfileOwner;
 
+    public delegate void ClickedTileWithUnit(GameObject detectedUnit);
+    public static event ClickedTileWithUnit OnClickedTileWithUnit;
+
     public void OnEnable()
     {
-        TileController.OnClickedTileWithUnit += UpdateUnitProfile;
-        TileController.OnUpdateEnemyTargetUnitProfile += UpdateUnitProfile;
+        //TileController.OnClickedTileWithUnit += UpdateUnitProfile;
+        //TileController.OnUpdateEnemyTargetUnitProfile += UpdateUnitProfile;
+        SelectUnitPlayerAction.OnClickedTileWithUnit += UpdateUnitProfile;
+
+
     }
     public void OnDisable()
     {
-        TileController.OnClickedTileWithUnit -= UpdateUnitProfile;
-        TileController.OnUpdateEnemyTargetUnitProfile -= UpdateUnitProfile;
+        SelectUnitPlayerAction.OnClickedTileWithUnit -= UpdateUnitProfile;
+
+        //TileController.OnClickedTileWithUnit -= UpdateUnitProfile;
+        //TileController.OnUpdateEnemyTargetUnitProfile -= UpdateUnitProfile;
     }
 
     private void Start()
@@ -79,10 +87,10 @@ public class PlayerProfileController : MonoBehaviour
             activeCharacterShieldPointsSlider.value = detectedUnit.GetComponent<Unit>().unitShieldPoints;
             activeCharacterOpportunityPointsSlider.value = detectedUnit.GetComponent<Unit>().unitOpportunityPoints;
             currentProfileOwner = ProfileOwner.playerUnit;
-
         }
         else if (detectedUnit.tag == "ActivePlayerUnit" && currentProfileOwner != ProfileOwner.enemyUnit)
         {
+            Debug.Log("Updating Player Profile");
             activeCharacterHealthPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitHealthPoints;
             activeCharacterManaPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitManaPoints;
             activeCharacterShieldPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitShieldPoints;
@@ -98,7 +106,6 @@ public class PlayerProfileController : MonoBehaviour
             activeCharacterShieldPoints.text = detectedUnit.GetComponent<Unit>().unitShieldPoints.ToString();
             activeCharacterOpportunityPoints.text = detectedUnit.GetComponent<Unit>().unitOpportunityPoints.ToString();
             currentProfileOwner = ProfileOwner.activePlayerUnit;
-
         }
 
         else if (detectedUnit.tag == "TargetedEnemyUnitProfile" && currentProfileOwner != ProfileOwner.enemyUnit)
