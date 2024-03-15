@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1034818201358106030}
   - component: {fileID: 8374982091355949035}
   - component: {fileID: 467171502271026413}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: edelweiss_test_idle_front-Sheet 1_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -596,6 +596,10 @@ PrefabInstance:
       value: edelweiss_test-Sheet_0
       objectReference: {fileID: 0}
     - target: {fileID: 2498647033511138605, guid: 3a856d83b02034747b50e9a1834df7ae, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498647033511138605, guid: 3a856d83b02034747b50e9a1834df7ae, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -614,11 +618,31 @@ PrefabInstance:
     m_TransformParent: {fileID: 8642592451490499264}
     m_Modifications:
     - target: {fileID: 2012499425331976951, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499425331976951, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499425627166134, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499426294546465, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499426357449524, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2012499426357449524, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499426769939021, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2012499426769939021, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
@@ -682,12 +706,24 @@ PrefabInstance:
       value: MainCharacter
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_TagString
       value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 3049811748764850042, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4216950556146405265, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4216950556146405265, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_IsActive

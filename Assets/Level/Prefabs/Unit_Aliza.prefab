@@ -457,7 +457,7 @@ GameObject:
   - component: {fileID: 2169883032781565775}
   - component: {fileID: 2803219925591249153}
   - component: {fileID: 6180686884810482089}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: alisa_idle_spritesheet_deformed_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -559,11 +559,31 @@ PrefabInstance:
     m_TransformParent: {fileID: 452031790448863200}
     m_Modifications:
     - target: {fileID: 2012499425331976951, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499425331976951, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499425627166134, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499426294546465, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499426357449524, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2012499426357449524, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499426769939021, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2012499426769939021, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
@@ -627,12 +647,24 @@ PrefabInstance:
       value: MainCharacter
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_TagString
       value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 3049811748764850042, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4216950556146405265, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4216950556146405265, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_IsActive
