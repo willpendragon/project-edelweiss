@@ -25,6 +25,7 @@ public class DeityAltarController : MonoBehaviour
     Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
     public void Start()
     {
+        CreateLinkButton();
         foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
         {
             Sprite playerUnitPortrait = playerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
@@ -41,7 +42,7 @@ public class DeityAltarController : MonoBehaviour
             newDeityUnitImage.GetComponent<Image>().sprite = deityPortrait;
             newDeityUnitImage.GetComponent<UnitImageController>().deityReference = capturedDeity;
         }
-        CreateLinkButton();
+
     }
 
     public void CreateLinkButton()

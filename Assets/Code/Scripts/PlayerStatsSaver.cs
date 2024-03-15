@@ -18,7 +18,7 @@ public class PlayerStatsSaver : MonoBehaviour
     public void Start()
     {
         LoadCharacterData();
-        ApplyDeityData();
+        //ApplyDeityData();
 
     }
     public void SaveCharacterData()
