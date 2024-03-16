@@ -51,7 +51,8 @@ public class MovePlayerAction : IPlayerAction
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         //Retrieve Active Current Player
 
-        if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
+        if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun
+            && savedSelectedTile.currentSingleTileCondition == SingleTileCondition.free)
         {
 
             //Use Grid Logic to Move the Player to Destination            

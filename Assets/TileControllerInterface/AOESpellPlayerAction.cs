@@ -40,7 +40,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 savedSelectedTile = selectedTile;
 
                 savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.cyan;
-                if (selectedTile.detectedUnit != null)
+                if (selectedTile.detectedUnit != null && selectedTile.detectedUnit.tag != "Player" && selectedTile.detectedUnit.tag != "ActivePlayerUnit")
                 {
                     currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
                     selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
@@ -58,7 +58,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (activePlayerUnit.unitManaPoints > 0)
+        if (activePlayerUnit.unitManaPoints > 0 && activePlayerUnit.unitOpportunityPoints > 0)
         {
             if (spellCastingController.currentSelectedSpell.spellType == SpellType.aoe)
             {
@@ -66,9 +66,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 {
                     Debug.Log("Using AOE Spell on Multiple Targets");
                     tile.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
-                    if (tile.detectedUnit == null)
+                    if (tile.detectedUnit == null || tile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
                     {
-                        Debug.Log("No Unit found. Can't apply damage");
+                        Debug.Log("No Unit found or found Unit has died. Can't apply damage");
                     }
                     else if (tile.detectedUnit.tag == "Enemy")
                     {
@@ -86,20 +86,22 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
             else if (spellCastingController.currentSelectedSpell.spellType == SpellType.singleTarget)
             {
-                savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(spellCastingController.currentSelectedSpell.damage);
-                savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-                activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
-                activePlayerUnit.unitOpportunityPoints--;
-                UpdateActivePlayerUnitMana(activePlayerUnit);
-                DeityEnmityCheck();
-                PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, savedSelectedTile, spellCastingController.currentSelectedSpell.spellVFXOffset);
-                OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
-
+                if (savedSelectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+                {
+                    savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(spellCastingController.currentSelectedSpell.damage);
+                    savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+                    activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
+                    activePlayerUnit.unitOpportunityPoints--;
+                    UpdateActivePlayerUnitMana(activePlayerUnit);
+                    DeityEnmityCheck();
+                    PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, savedSelectedTile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                    OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+                }
             }
         }
         else
         {
-            Debug.Log("Active Player Unit has not enough Mana Points.");
+            Debug.Log("Active Player Unit has not enough Mana Points or enough Opportunity Points.");
         }
 
     }

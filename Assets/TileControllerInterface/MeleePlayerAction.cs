@@ -49,7 +49,7 @@ public class MeleePlayerAction : IPlayerAction
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (activePlayerUnit.unitOpportunityPoints > 0)
+        if (activePlayerUnit.unitOpportunityPoints > 0 && currentTarget.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
             int attackPower = 2;
@@ -71,7 +71,7 @@ public class MeleePlayerAction : IPlayerAction
         }
         else
         {
-            Debug.Log("Not enough Opportunity Points on Active Player Unit");
+            Debug.Log("Not enough Opportunity Points on Active Player Unit or Unit has already died");
         }
     }
 

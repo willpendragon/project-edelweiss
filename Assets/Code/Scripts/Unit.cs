@@ -100,6 +100,7 @@ public class Unit : MonoBehaviour
     public void SetUnitInitialPositionOnGrid()
     {
         MoveUnit(startingXCoordinate, startingYCoordinate);
+        SetPosition(startingXCoordinate, startingYCoordinate);
         Debug.Log("Moving at Start Position");
     }
 
@@ -136,6 +137,7 @@ public class Unit : MonoBehaviour
                 // Update current grid coordinates
                 currentXCoordinate = tile.tileXCoordinate;
                 currentYCoordinate = tile.tileYCoordinate;
+
                 //tile.GetComponent<TileController>().detectedUnit = this.gameObject;
                 //030120240216 Removed because otherwise every tile of the movement path gets its DetectedUnit set as the moving Unit. 
                 Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
@@ -174,7 +176,6 @@ public class Unit : MonoBehaviour
             }
             OnCheckGameOver();
         }
-
 
     }
     public Vector2Int GetGridPosition()
