@@ -39,11 +39,9 @@ public class MeleeUIController : MonoBehaviour
 
     public void SwitchTilesToMeleeMode()
     {
-        MeleePlayerAction meleePlayerActionInstance = new MeleePlayerAction();
-        //Creates a new instance of the Melee Player Action
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
-            tile.currentPlayerAction = meleePlayerActionInstance;
+            tile.currentPlayerAction = new MeleePlayerAction();
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             Debug.Log("Switching tiles to Melee Mode");
         }
