@@ -40,10 +40,14 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 savedSelectedTile = selectedTile;
 
                 savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.cyan;
-                currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
-                selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-                Debug.Log("Selected Single Target Spell Range");
-                selectionLimiter--;
+                if (selectedTile.detectedUnit != null)
+                {
+                    currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
+                    selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+                    Debug.Log("Selected Single Target Spell Range");
+                    selectionLimiter--;
+                }
+
             }
 
         }
@@ -76,7 +80,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                         DeityEnmityCheck();
                         PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, tile, spellCastingController.currentSelectedSpell.spellVFXOffset);
                         OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
-
                     }
                 }
             }
@@ -152,6 +155,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
     public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
     {
+        //Misleading method name, as this updates all of the Active Player Profile Unit parameters, not just the manas
         activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
 

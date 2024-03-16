@@ -162,9 +162,13 @@ public class Unit : MonoBehaviour
             if (this.gameObject.tag == "Enemy")
             {
                 var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-                activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(coinsReward);
-                activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
-                Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
+                if (activePlayerUnit != null)
+                {
+                    activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(coinsReward);
+                    activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
+                    Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
+
+                }
                 var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
                 deityAchievementsController.killedEnemies++;
             }

@@ -51,8 +51,9 @@ public class MovePlayerAction : IPlayerAction
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         //Retrieve Active Current Player
 
-        if (activePlayerUnit.unitOpportunityPoints > 0)
+        if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
         {
+
             //Use Grid Logic to Move the Player to Destination            
             activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
             activePlayerUnit.ownedTile.detectedUnit = null;
@@ -63,6 +64,8 @@ public class MovePlayerAction : IPlayerAction
             activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
 
             activePlayerUnit.unitOpportunityPoints--;
+            UpdateActivePlayerUnitProfile(activePlayerUnit);
+
             Debug.Log("Moving Character Execution Logic");
         }
         else
@@ -83,5 +86,9 @@ public class MovePlayerAction : IPlayerAction
         {
             return null;
         }
+    }
+    public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
+    {
+        activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
 }

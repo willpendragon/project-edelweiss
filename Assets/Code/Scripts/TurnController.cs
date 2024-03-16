@@ -57,9 +57,9 @@ public class TurnController : MonoBehaviour
         if (playerUnitsOnBattlefield.All(player => player.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting))
         {
             //Disable Player UI
+            ApplyTrapEffects();
             OnEnemyTurn("Enemy Turn");
             OnEnemyTurnSwap();
-            ApplyTrapEffects();
             Debug.Log("Player Turn is over. Hand over turn to the Enemy Party");
         }
     }
