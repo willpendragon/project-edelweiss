@@ -44,14 +44,62 @@ public class TurnController : MonoBehaviour
         EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Unit.OnCheckGameOver -= GameOverCheck;
-
     }
     void Start()
     {
         currentTurn = Turn.playerTurn;
         playerUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Player");
         enemyUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
+        SetUnitsInitialPositionOnGrid();
     }
+
+    public void SetUnitsInitialPositionOnGrid()
+    {
+        Debug.Log("Moving Player Units at Initial Position");
+
+        foreach (var playerUnitGO in playerUnitsOnBattlefield)
+        {
+            Unit playerUnit = playerUnitGO.GetComponent<Unit>();
+            playerUnit.GetComponent<Unit>().MoveUnit(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate);
+            playerUnit.GetComponent<Unit>().SetPosition(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate);
+            Debug.Log("Moving Player Units at Initial Position");
+        }
+        foreach (var enemyUnitGO in enemyUnitsOnBattlefield)
+        {
+            Unit enemyUnit = enemyUnitGO.GetComponent<Unit>();
+            enemyUnit.GetComponent<Unit>().MoveUnit(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate);
+            enemyUnit.GetComponent<Unit>().SetPosition(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate);
+            Debug.Log("Moving Player Units at Initial Position");
+        }
+
+        RestorePlayerUnitsStatus();
+    }
+
+    public void RestorePlayerUnitsStatus()
+    {
+        foreach (var playerUnitGO in playerUnitsOnBattlefield)
+        {
+            Unit playerUnit = playerUnitGO.GetComponent<Unit>();
+            playerUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive;
+            playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+            playerUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
+            playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.basic;
+        }
+    }
+
+    public void RestorePlayerUnitsOpportunityPoints()
+    {
+        Debug.Log("Restoring Player Opportunity");
+        foreach (var playerUnit in playerUnitsOnBattlefield)
+        {
+            turnCounter++;
+            Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
+            playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
+            playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+            playerUnit.GetComponent<UnitSelectionController>().unitSprite.material.color = Color.white;
+        }
+    }
+
     public void CheckPlayerUnitsStatus()
     {
         if (playerUnitsOnBattlefield.All(player => player.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting))
@@ -66,6 +114,8 @@ public class TurnController : MonoBehaviour
 
     public void ApplyTrapEffects()
     {
+        //Need to move this in another class or move in a class of its own, following the single responsibility principle
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             TrapController trapTile = tile.GetComponent<TrapController>();
@@ -91,7 +141,6 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party is still active");
         }
     }
-
     public void GameOverCheck()
     {
         if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
@@ -148,18 +197,6 @@ public class TurnController : MonoBehaviour
         {
             PlayerPrefs.SetInt("HighestUnlockedLevel", currentLevelNumber + 1);
             PlayerPrefs.Save(); // Ensure changes are saved immediately
-        }
-    }
-    public void RestorePlayerUnitsOpportunityPoints()
-    {
-        Debug.Log("Restoring Player Opportunity");
-        foreach (var playerUnit in playerUnitsOnBattlefield)
-        {
-            turnCounter++;
-            Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
-            playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
-            playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-            playerUnit.GetComponent<UnitSelectionController>().unitSprite.material.color = Color.white;
         }
     }
 }

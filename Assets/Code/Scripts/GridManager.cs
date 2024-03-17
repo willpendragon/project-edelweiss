@@ -45,7 +45,7 @@ public class GridManager : MonoBehaviour
     }
     private void Start()
     {
-        OnSetUnitInitialPositionOnGrid();
+        //OnSetUnitInitialPositionOnGrid();
         gridTileControllers = GameObject.FindObjectsOfType<TileController>();
         //SwitchToCharacterSelectionMove();
     }

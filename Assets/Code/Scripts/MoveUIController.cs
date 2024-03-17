@@ -22,9 +22,12 @@ public class MoveUIController : MonoBehaviour
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
         Debug.Log(mode);
-        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
-        Unit unitReference = this.GetComponent<Unit>();
-        unitReference.unitOpportunityPoints = unitReference.unitTemplate.unitOpportunityPoints;
+        if (scene.name == "battle_prototype")
+        {
+            spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+            //Unit unitReference = this.GetComponent<Unit>();
+            //unitReference.unitOpportunityPoints = unitReference.unitTemplate.unitOpportunityPoints;
+        }
     }
 
     public void AddMoveButton()

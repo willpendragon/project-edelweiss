@@ -150,7 +150,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public void HandleTileSelection()
     {
-        if (currentSingleTileStatus == SingleTileStatus.basic && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting)
+        if (currentSingleTileStatus == SingleTileStatus.basic && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting
+            && detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             SelectUnitPlayerAction selectUnitPlayerActionInstance = new SelectUnitPlayerAction();
 

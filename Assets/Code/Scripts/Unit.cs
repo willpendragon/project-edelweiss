@@ -69,11 +69,11 @@ public class Unit : MonoBehaviour
 
     public void OnEnable()
     {
-        GridManager.OnSetUnitInitialPositionOnGrid += SetUnitInitialPositionOnGrid;
+        //GridManager.OnSetUnitInitialPositionOnGrid += SetUnitInitialPositionOnGrid;
     }
     public void OnDisable()
     {
-        GridManager.OnSetUnitInitialPositionOnGrid -= SetUnitInitialPositionOnGrid;
+        //GridManager.OnSetUnitInitialPositionOnGrid -= SetUnitInitialPositionOnGrid;
     }
 
     void Awake()
@@ -97,12 +97,12 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void SetUnitInitialPositionOnGrid()
-    {
-        MoveUnit(startingXCoordinate, startingYCoordinate);
-        SetPosition(startingXCoordinate, startingYCoordinate);
-        Debug.Log("Moving at Start Position");
-    }
+    //public void SetUnitInitialPositionOnGrid()
+    //{
+    //    MoveUnit(startingXCoordinate, startingYCoordinate);
+    //    SetPosition(startingXCoordinate, startingYCoordinate);
+    //    Debug.Log("Moving at Start Position");
+    //}
 
     public void TakeDamage(int receivedDamage)
     {

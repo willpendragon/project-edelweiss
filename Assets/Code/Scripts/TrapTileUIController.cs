@@ -24,8 +24,11 @@ public class TrapTileUIController : MonoBehaviour
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
         Debug.Log(mode);
-        trapTileController = GameObject.FindGameObjectWithTag("TrapTileController").GetComponent<TrapTileController>();
-        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        if (scene.name == "battle_prototype")
+        {
+            trapTileController = GameObject.FindGameObjectWithTag("TrapTileController").GetComponent<TrapTileController>();
+            spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        }
     }
 
     public void AddTrapButton()

@@ -1854,6 +1854,10 @@ PrefabInstance:
       value: PlayerParty
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012499427021812980, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_TagString
       value: BattleManager
       objectReference: {fileID: 0}

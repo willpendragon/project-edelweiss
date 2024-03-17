@@ -20,7 +20,10 @@ public class CapsuleCrystalUIController : MonoBehaviour
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
         Debug.Log(mode);
-        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        if (scene.name == "battle_prototype")
+        {
+            spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        }
     }
 
     public GameObject capsuleCrystalButtonPrefab;

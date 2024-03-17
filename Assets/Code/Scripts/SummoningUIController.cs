@@ -29,8 +29,11 @@ public class SummoningUIController : MonoBehaviour
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
         Debug.Log(mode);
-        summoningCastingController = GameObject.FindGameObjectWithTag("SummoningController").GetComponent<SummoningController>();
-        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        //summoningCastingController = GameObject.FindGameObjectWithTag("SummoningController").GetComponent<SummoningController>();
+        if (scene.name == "battle_prototype")
+        {
+            spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        }
     }
 
     public enum SummonPhase

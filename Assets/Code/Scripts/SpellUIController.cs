@@ -23,8 +23,11 @@ public class SpellUIController : MonoBehaviour
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
         Debug.Log(mode);
-        spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
-        spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        if (scene.name == "battle_prototype")
+        {
+            spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
+            spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+        }
     }
 
     public void PopulateCharacterSpellsMenu(GameObject detectedUnit)
