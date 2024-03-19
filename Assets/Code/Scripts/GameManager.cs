@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 public class GameManager : MonoBehaviour
 {
     public NodeController currentNode;
-    public static GameManager Instance; // Changed from _instance to follow the common Singleton naming convention
+    public static GameManager Instance;
     public GameObject[] currentEnemySelection;
     public EnemySelection currentEnemySelectionComponent;
     public List<EnemyType> currentEnemySelectionIds;

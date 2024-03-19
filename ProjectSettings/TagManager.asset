@@ -25,7 +25,6 @@ TagManager:
   - TargetedEnemyUnitProfile
   - TurnTrackerDetailsContainer
   - GridMovementController
-  - PlayerStatsSaver
   - DeityAchievementsController
   - SummoningController
   - SpellcastingController
@@ -36,6 +35,7 @@ TagManager:
   - MovesPanel
   - TrapTileController
   - CameraDistanceController
+  - GameStatsManager
   layers:
   - Default
   - TransparentFX

@@ -171,8 +171,13 @@ public class Unit : MonoBehaviour
                     Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
 
                 }
-                var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
-                deityAchievementsController.killedEnemies++;
+                //var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
+                //deityAchievementsController.killedEnemies++;
+                Debug.Log("Adding Enemies killed in battle to Stats counter");
+
+                var gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+                gameStatsManager.enemiesKilled++;
+                gameStatsManager.IncrementEnemiesKilled();
             }
             OnCheckGameOver();
         }

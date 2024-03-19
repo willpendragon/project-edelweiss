@@ -9,9 +9,10 @@ using static UnityEditor.Progress;
 using System.Linq;
 using JetBrains.Annotations;
 
-public class PlayerStatsSaver : MonoBehaviour
+public class GameStatsManager : MonoBehaviour
+// Rename to Stats Manager
 {
-    public GameObject deityBasePrefab;
+    public int enemiesKilled;
 
     public List<DeityData> serializedCapturedDeitiesList = new List<DeityData>();
 
@@ -33,7 +34,7 @@ public class PlayerStatsSaver : MonoBehaviour
             PlayerPrefs.SetFloat(baseKey + "_HealthPoints", unit.unitHealthPoints);
         }
         var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
-        PlayerPrefs.SetInt("killedEnemies", deityAchievementsController.killedEnemies);
+        //PlayerPrefs.SetInt("killedEnemies", deityAchievementsController.killedEnemies);
         PlayerPrefs.Save();
     }
     public void LoadCharacterData()
@@ -59,7 +60,7 @@ public class PlayerStatsSaver : MonoBehaviour
         }
         var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
         int killedEnemies = PlayerPrefs.GetInt("killedEnemies", 0);
-        deityAchievementsController.killedEnemies = killedEnemies;
+        //deityAchievementsController.killedEnemies = killedEnemies;
 
         //LoadDeityData();
     }
@@ -94,9 +95,9 @@ public class PlayerStatsSaver : MonoBehaviour
             foreach (DeityData data in wrapper.serializedCapturedDeitiesList)
             {
                 //This line calls a method to create a new Empty Deity and populated with data from the saved file.
-                Deity deity = CreateDeity(data.Id, data.specialAttackPower);
+                //Deity deity = CreateDeity(data.Id, data.specialAttackPower);
                 // Set any other data you have saved
-                deities.Add(deity);
+                //deities.Add(deity);
             }
 
             return deities;
@@ -108,18 +109,15 @@ public class PlayerStatsSaver : MonoBehaviour
         }
     }
 
-    public Deity CreateDeity(string newId, float newAttackPower)
+    public void IncrementEnemiesKilled()
     {
-        if (deityBasePrefab != null)
-        {
-            Deity capturedDeity = Instantiate(deityBasePrefab.GetComponent<Deity>());
-            capturedDeity.Id = newId;
-            capturedDeity.deitySpecialAttackPower = newAttackPower;
-            return capturedDeity;
-        }
-        else
-        {
-            return null;
-        }
+        enemiesKilled++;
+        Debug.Log("Increasing Enemies Killed");
+        AchievementsManager.Instance.CheckForAchievements(enemiesKilled);
+        // Prepare the save data
+        GameSaveData saveData = new GameSaveData { enemiesKilled = this.enemiesKilled };
+        // Add other data to saveData as needed
+
+        SaveStateManager.Instance.SaveGame(saveData);
     }
 }

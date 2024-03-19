@@ -154,7 +154,7 @@ public class TurnController : MonoBehaviour
                 player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
             }
             //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
-            GameObject.FindGameObjectWithTag("PlayerStatsSaver").GetComponent<PlayerStatsSaver>().SaveCharacterData();
+            GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>().SaveCharacterData();
             //Saving each Player's Health Points, Coins and Experience Rewards
 
             //Activate Game Over UI

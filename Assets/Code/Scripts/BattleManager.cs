@@ -73,7 +73,13 @@ public class BattleManager : MonoBehaviour
 
     void Awake()
     {
+        SetBattleType(currentBattleType);
         enemiesOnBattlefield = GameManager.Instance.currentEnemySelection;
+    }
+
+    public void SetBattleType(BattleType battleType)
+    {
+        currentBattleType = battleType;
     }
     void Start()
     {

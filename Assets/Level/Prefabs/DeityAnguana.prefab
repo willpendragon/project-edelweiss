@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3348349630364506734}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3, y: -3.87, z: 7.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6.6678615, y: 6.6678615, z: 6.6678615}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -146,7 +146,7 @@ MonoBehaviour:
   coinsReward: 0
   experiencePointsReward: 0
   linkedDeity: {fileID: 0}
-  currentUnitLifeCondition: 0
+  currentUnitLifeCondition: 1
   onHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -189,15 +189,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5693058009958798207, guid: f8550245053610d41b7b5556ba4dea6f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5693058009958798207, guid: f8550245053610d41b7b5556ba4dea6f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5693058009958798207, guid: f8550245053610d41b7b5556ba4dea6f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.69
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5693058009958798207, guid: f8550245053610d41b7b5556ba4dea6f, type: 3}
       propertyPath: m_LocalRotation.w
