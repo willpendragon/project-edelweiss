@@ -34,7 +34,7 @@ public class DeityAltarController : MonoBehaviour
             newPlayerUnitImage.tag = "Player";
             newPlayerUnitImage.GetComponent<UnitImageController>().unitReference = playerUnit;
         }
-        foreach (var capturedDeity in GameManager.Instance.capturedDeities)
+        foreach (var capturedDeity in GameManager.Instance.collectibleDeities)
         {
             Sprite deityPortrait = capturedDeity.deityPortrait;
             GameObject newDeityUnitImage = Instantiate(deityImageGO, capturedDeitiesContainer);

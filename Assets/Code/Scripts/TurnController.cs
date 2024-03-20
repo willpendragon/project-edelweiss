@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Linq;
+using static Unit;
 
 public class TurnController : MonoBehaviour
 {
@@ -152,6 +153,16 @@ public class TurnController : MonoBehaviour
             foreach (var player in playerUnitsOnBattlefield)
             {
                 player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
+            }
+            GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+            foreach (var enemy in GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().enemiesOnBattlefield)
+            {
+                if (enemy.tag == "Enemy" && enemy.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead)
+                {
+                    gameStatsManager.enemiesKilled++;
+                    gameStatsManager.SaveEnemiesKilled();
+                    Debug.Log("Adding enemies to kill count");
+                }
             }
             //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
             GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>().SaveCharacterData();

@@ -14,11 +14,14 @@ public class GameStatsManager : MonoBehaviour
 {
     public int enemiesKilled;
 
-    public List<DeityData> serializedCapturedDeitiesList = new List<DeityData>();
+    //public List<DeityData> serializedCapturedDeitiesList = new List<DeityData>();
 
     public void Start()
     {
         LoadCharacterData();
+        GameSaveData gameSaveData = SaveStateManager.Instance.LoadGame();
+        enemiesKilled = gameSaveData.enemiesKilled;
+        Debug.Log("Loading the number of killed Enemies");
         //ApplyDeityData();
 
     }
@@ -80,7 +83,7 @@ public class GameStatsManager : MonoBehaviour
     }
     public void ApplyDeityData()
     {
-        GameManager.Instance.capturedDeities = LoadDeityData();
+        GameManager.Instance.collectibleDeities = LoadDeityData();
     }
     public List<Deity> LoadDeityData()
     {
@@ -109,10 +112,10 @@ public class GameStatsManager : MonoBehaviour
         }
     }
 
-    public void IncrementEnemiesKilled()
+    public void SaveEnemiesKilled()
     {
-        enemiesKilled++;
         Debug.Log("Increasing Enemies Killed");
+        //Check if Achievement threshold has been met
         AchievementsManager.Instance.CheckForAchievements(enemiesKilled);
         // Prepare the save data
         GameSaveData saveData = new GameSaveData { enemiesKilled = this.enemiesKilled };

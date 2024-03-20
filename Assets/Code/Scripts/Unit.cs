@@ -175,14 +175,14 @@ public class Unit : MonoBehaviour
                 //deityAchievementsController.killedEnemies++;
                 Debug.Log("Adding Enemies killed in battle to Stats counter");
 
-                var gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-                gameStatsManager.enemiesKilled++;
-                gameStatsManager.IncrementEnemiesKilled();
+                //var gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+
+                //gameStatsManager.IncrementEnemiesKilled(enemiesKilled);
             }
             OnCheckGameOver();
         }
-
     }
+
     public Vector2Int GetGridPosition()
     {
         return new Vector2Int(currentXCoordinate, currentYCoordinate);

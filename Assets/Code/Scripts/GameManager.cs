@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public List<Vector2> currentEnemySelectionCoords;
     public List<Unit> playerPartyMembers;
     public List<Unit> playerPartyMembersInstances;
-    public List<Deity> capturedDeities;
+    public List<Deity> collectibleDeities;
 
     public DeityLinkController deityLinkController;
 
@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
         {
             unitsLinkedToDeities.TryGetValue(unitPrefab.GetComponent<Unit>().Id, out string connectedDeity);
             unitPrefab.GetComponent<Unit>().LinkedDeityId = connectedDeity;
-            unitPrefab.GetComponent<Unit>().linkedDeity = GameManager.Instance.capturedDeities.Find(deity => deity.Id == unitPrefab.LinkedDeityId);
+            unitPrefab.GetComponent<Unit>().linkedDeity = GameManager.Instance.collectibleDeities.Find(deity => deity.Id == unitPrefab.LinkedDeityId);
         }
     }
 }

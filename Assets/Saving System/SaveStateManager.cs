@@ -34,6 +34,24 @@ public class SaveStateManager : MonoBehaviour
         Debug.Log("Saving Game Data");
     }
 
+    public GameSaveData LoadGame()
+    {
+        // Check if the file exists
+        if (File.Exists(saveFilePathTest))
+        {
+            // File exists, proceed to read it
+            string json = File.ReadAllText(saveFilePathTest);
+            GameSaveData loadedData = JsonConvert.DeserializeObject<GameSaveData>(json);
+            return loadedData;
+        }
+        else
+        {
+            // File doesn't exist, return null or handle accordingly
+            Debug.Log("Save file not found.");
+            return null;
+        }
+    }
+
     public void SaveAchievements(Dictionary<string, bool> achievements)
     {
         string json = JsonConvert.SerializeObject(achievements, Formatting.Indented);
