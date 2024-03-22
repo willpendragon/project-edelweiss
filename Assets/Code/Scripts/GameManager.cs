@@ -94,20 +94,24 @@ public class GameManager : MonoBehaviour
     }
     public void ApplyDeityLinks()
     {
-        string saveState = File.ReadAllText(Application.persistentDataPath + "/savegame.json");
-        Dictionary<string, string> unitsLinkedToDeities = JsonConvert.DeserializeObject<Dictionary<string, string>>(saveState);
-        foreach (var entry in unitsLinkedToDeities)
-        {
-            string unitID = entry.Key;
-            string deityID = entry.Value;
-        }
+        string filePath = Application.persistentDataPath + "/savegame.json";
 
-        foreach (var unitPrefab in playerPartyMembersInstances)
+        if (File.Exists(filePath))
         {
-            unitsLinkedToDeities.TryGetValue(unitPrefab.GetComponent<Unit>().Id, out string connectedDeity);
-            unitPrefab.GetComponent<Unit>().LinkedDeityId = connectedDeity;
-            unitPrefab.GetComponent<Unit>().linkedDeity = GameManager.Instance.collectibleDeities.Find(deity => deity.Id == unitPrefab.LinkedDeityId);
+            string saveState = File.ReadAllText(Application.persistentDataPath + "/savegame.json");
+            Dictionary<string, string> unitsLinkedToDeities = JsonConvert.DeserializeObject<Dictionary<string, string>>(saveState);
+            foreach (var entry in unitsLinkedToDeities)
+            {
+                string unitID = entry.Key;
+                string deityID = entry.Value;
+            }
+
+            foreach (var unitPrefab in playerPartyMembersInstances)
+            {
+                unitsLinkedToDeities.TryGetValue(unitPrefab.GetComponent<Unit>().Id, out string connectedDeity);
+                unitPrefab.GetComponent<Unit>().LinkedDeityId = connectedDeity;
+                unitPrefab.GetComponent<Unit>().linkedDeity = GameManager.Instance.collectibleDeities.Find(deity => deity.Id == unitPrefab.LinkedDeityId);
+            }
         }
     }
 }
-//deityLinkController.SaveGame();

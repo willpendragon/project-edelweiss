@@ -20,8 +20,11 @@ public class GameStatsManager : MonoBehaviour
     {
         LoadCharacterData();
         GameSaveData gameSaveData = SaveStateManager.Instance.LoadGame();
-        enemiesKilled = gameSaveData.enemiesKilled;
-        Debug.Log("Loading the number of killed Enemies");
+        if (gameSaveData != null)
+        {
+            enemiesKilled = gameSaveData.enemiesKilled;
+            Debug.Log("Loading the number of killed Enemies");
+        }
         //ApplyDeityData();
 
     }
@@ -68,49 +71,49 @@ public class GameStatsManager : MonoBehaviour
         //LoadDeityData();
     }
 
-    public void SaveDeityData(List<Deity> capturedDeities)
-    {
-        // Converts Deity MonoBehaviour instances to DeityData instances for serialization
-        List<DeityData> deityDataList = capturedDeities.Select(deity => new DeityData { Id = deity.Id, specialAttackPower = deity.deitySpecialAttackPower }).ToList();
+    //public void SaveDeityData(List<Deity> capturedDeities)
+    //{
+    //    // Converts Deity MonoBehaviour instances to DeityData instances for serialization
+    //    List<DeityData> deityDataList = capturedDeities.Select(deity => new DeityData { Id = deity.Id, specialAttackPower = deity.deitySpecialAttackPower }).ToList();
 
-        // Wrap the list in the wrapper object
-        DeityListWrapper wrapper = new DeityListWrapper { serializedCapturedDeitiesList = deityDataList };
+    //    // Wrap the list in the wrapper object
+    //    DeityListWrapper wrapper = new DeityListWrapper { serializedCapturedDeitiesList = deityDataList };
 
-        // Serialize the wrapper object to JSON
-        string json = JsonUtility.ToJson(wrapper);
-        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    //    // Serialize the wrapper object to JSON
+    //    string json = JsonUtility.ToJson(wrapper);
+    //    File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
 
-    }
-    public void ApplyDeityData()
-    {
-        GameManager.Instance.collectibleDeities = LoadDeityData();
-    }
-    public List<Deity> LoadDeityData()
-    {
-        string filePath = Application.persistentDataPath + "/savefile.json";
-        if (File.Exists(filePath))
-        {
-            string json = File.ReadAllText(filePath);
-            DeityListWrapper wrapper = JsonUtility.FromJson<DeityListWrapper>(json);
+    //}
+    //public void ApplyDeityData()
+    //{
+    //    GameManager.Instance.collectibleDeities = LoadDeityData();
+    //}
+    //public List<Deity> LoadDeityData()
+    //{
+    //    string filePath = Application.persistentDataPath + "/savefile.json";
+    //    if (File.Exists(filePath))
+    //    {
+    //        string json = File.ReadAllText(filePath);
+    //        DeityListWrapper wrapper = JsonUtility.FromJson<DeityListWrapper>(json);
 
-            // Convert the DeityData instances back to Deity MonoBehaviour instances
-            List<Deity> deities = new List<Deity>();
-            foreach (DeityData data in wrapper.serializedCapturedDeitiesList)
-            {
-                //This line calls a method to create a new Empty Deity and populated with data from the saved file.
-                //Deity deity = CreateDeity(data.Id, data.specialAttackPower);
-                // Set any other data you have saved
-                //deities.Add(deity);
-            }
+    //        // Convert the DeityData instances back to Deity MonoBehaviour instances
+    //        List<Deity> deities = new List<Deity>();
+    //        foreach (DeityData data in wrapper.serializedCapturedDeitiesList)
+    //        {
+    //            //This line calls a method to create a new Empty Deity and populated with data from the saved file.
+    //            //Deity deity = CreateDeity(data.Id, data.specialAttackPower);
+    //            // Set any other data you have saved
+    //            //deities.Add(deity);
+    //        }
 
-            return deities;
-        }
-        else
-        {
-            Debug.LogError("Save file not found in " + filePath);
-            return null;
-        }
-    }
+    //        return deities;
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("Save file not found in " + filePath);
+    //        return null;
+    //    }
+    //}
 
     public void SaveEnemiesKilled()
     {

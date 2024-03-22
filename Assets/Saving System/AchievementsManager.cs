@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AchievementsManager : MonoBehaviour
 
@@ -14,6 +15,7 @@ public class AchievementsManager : MonoBehaviour
 
     private void Awake()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
@@ -25,12 +27,25 @@ public class AchievementsManager : MonoBehaviour
         }
         LoadAchievements();
     }
-
-
-    private void Start()
+    private void OnDestroy()
     {
-        CheckAndTriggerAchievements();
+        // Always unsubscribe from events when the object is destroyed
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Scene Loaded: " + scene.name);
+        if (scene.name == "battle_prototype")
+        {
+            CheckAndTriggerAchievements();
+        }
+    }
+
+
+    ////private void Start()
+    ////    {
+    ////    }
 
     // This method marks the achievement as completed at the end of the battle.
     public void CompleteAchievement(string achievementName)
