@@ -19,6 +19,7 @@ public class DeityAltarController : MonoBehaviour
     public GameObject deityImageGO;
     public GameObject deityLinkButtonPrefab;
     public RectTransform deityLinkMenuContainer;
+    public RectTransform saveDeityLinkButtonContainer;
 
     [Serialize]
 
@@ -47,7 +48,7 @@ public class DeityAltarController : MonoBehaviour
 
     public void CreateLinkButton()
     {
-        GameObject deityLinkButtonInstance = Instantiate(deityLinkButtonPrefab, deityLinkMenuContainer);
+        GameObject deityLinkButtonInstance = Instantiate(deityLinkButtonPrefab, saveDeityLinkButtonContainer);
         Button currentdDeityLinkButton = deityLinkButtonInstance.GetComponent<Button>();
         currentdDeityLinkButton.onClick.AddListener(() => GameManager.Instance.ApplyDeityLinks());
     }
