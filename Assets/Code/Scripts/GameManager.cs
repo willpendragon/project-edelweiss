@@ -94,24 +94,18 @@ public class GameManager : MonoBehaviour
     }
     public void ApplyDeityLinks()
     {
-        string filePath = Application.persistentDataPath + "/savegame.json";
-
-        if (File.Exists(filePath))
+        Dictionary<string, string> unitsLinkedToDeities = SaveStateManager.saveData.unitsLinkedToDeities;
+        foreach (var entry in unitsLinkedToDeities)
         {
-            string saveState = File.ReadAllText(Application.persistentDataPath + "/savegame.json");
-            Dictionary<string, string> unitsLinkedToDeities = JsonConvert.DeserializeObject<Dictionary<string, string>>(saveState);
-            foreach (var entry in unitsLinkedToDeities)
-            {
-                string unitID = entry.Key;
-                string deityID = entry.Value;
-            }
+            string unitID = entry.Key;
+            string deityID = entry.Value;
+        }
 
-            foreach (var unitPrefab in playerPartyMembersInstances)
-            {
-                unitsLinkedToDeities.TryGetValue(unitPrefab.GetComponent<Unit>().Id, out string connectedDeity);
-                unitPrefab.GetComponent<Unit>().LinkedDeityId = connectedDeity;
-                unitPrefab.GetComponent<Unit>().linkedDeity = GameManager.Instance.collectibleDeities.Find(deity => deity.Id == unitPrefab.LinkedDeityId);
-            }
+        foreach (var unitPrefab in playerPartyMembersInstances)
+        {
+            unitsLinkedToDeities.TryGetValue(unitPrefab.GetComponent<Unit>().Id, out string connectedDeity);
+            unitPrefab.GetComponent<Unit>().LinkedDeityId = connectedDeity;
+            unitPrefab.GetComponent<Unit>().linkedDeity = GameManager.Instance.collectibleDeities.Find(deity => deity.Id == unitPrefab.LinkedDeityId);
         }
     }
 }

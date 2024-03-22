@@ -15,10 +15,6 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
     public delegate void BattleEndCapturedDeity(string battleEndMessage);
     public static event BattleEndCapturedDeity OnBattleEndCapturedDeity;
 
-    [Serialize]
-
-    Dictionary<string, string> capturedDeities = new Dictionary<string, string>();
-
     public void Select(TileController selectedTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -81,36 +77,8 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
         string activePlayerUnitId = GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().Id;
 
         // Map this player unit ID to the captured deity's ID
-        capturedDeities[activePlayerUnitId] = capturedDeity.Id;
-
-        // Now save this updated dictionary to your file
-        SaveDictionaryToFile(capturedDeities);
-    }
-
-    public void SaveDictionaryToFile(Dictionary<string, string> newCapturedDeities)
-    {
-        string filePath = Application.persistentDataPath + "/savegame.json";
-        Dictionary<string, string> existingDeities = new Dictionary<string, string>();
-
-        // Check if the file exists
-        if (File.Exists(filePath))
-        {
-            // Read the existing content of the file
-            string jsonContent = File.ReadAllText(filePath);
-            existingDeities = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent) ?? new Dictionary<string, string>();
-        }
-
-        // Update the dictionary with new entries
-        foreach (var entry in newCapturedDeities)
-        {
-            // If the key already exists, it updates; otherwise, it adds a new entry
-            existingDeities[entry.Key] = entry.Value;
-        }
-
-        // Serialize and save back to the file
-        string listOfCapturedDeities = JsonConvert.SerializeObject(existingDeities, Formatting.Indented);
-        File.WriteAllText(filePath, listOfCapturedDeities);
-
-        Debug.Log("Updated Dictionary with Captured Deity");
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.unitsLinkedToDeities.Add(activePlayerUnitId, capturedDeity.Id);
+        SaveStateManager.SaveGame(saveData);
     }
 }

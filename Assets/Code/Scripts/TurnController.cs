@@ -160,10 +160,11 @@ public class TurnController : MonoBehaviour
                 if (enemy.tag == "Enemy" && enemy.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead)
                 {
                     gameStatsManager.enemiesKilled++;
-                    gameStatsManager.SaveEnemiesKilled();
                     Debug.Log("Adding enemies to kill count");
                 }
             }
+            
+            gameStatsManager.SaveEnemiesKilled();
             //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
             GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>().SaveCharacterData();
             //Saving each Player's Health Points, Coins and Experience Rewards

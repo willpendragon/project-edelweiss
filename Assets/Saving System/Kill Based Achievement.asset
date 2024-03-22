@@ -9,12 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e3351adc1258ba40b249f33c62ca907, type: 3}
-  m_Name: DeityAnguana_UnlockAchievement
+  m_Script: {fileID: 11500000, guid: 5000baba027836f4fb08a0c8254fcd43, type: 3}
+  m_Name: Kill Based Achievement
   m_EditorClassIdentifier: 
   achievementName: deity_anguana_unlock_threshold
-  description: Reaching this achievement unlocks the chance to fight Deity Anguana.
-  requirement: 3
-  achievementType: 0
-  achievementStatus: 2
+  description: 
   spawnableDeity: {fileID: 3348349630364506734, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
+  requiredKills: 6

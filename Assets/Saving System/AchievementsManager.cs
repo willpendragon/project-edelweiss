@@ -1,31 +1,15 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class AchievementsManager : MonoBehaviour
-
-{
-    public static AchievementsManager Instance;
+{ 
     public List<Achievement> allAchievements; // Assign in editor or load at runtime
-    private Dictionary<string, bool> achievementStatus = new Dictionary<string, bool>();
-    //public Achievement currentAchievement;
 
     private void Awake()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
-        LoadAchievements();
     }
     private void OnDestroy()
     {
@@ -38,62 +22,13 @@ public class AchievementsManager : MonoBehaviour
         Debug.Log("Scene Loaded: " + scene.name);
         if (scene.name == "battle_prototype")
         {
-            CheckAndTriggerAchievements();
-        }
-    }
+            var completedAchievements = allAchievements.Where(a => a.AchievementIsUnlocked()).ToList();
 
-
-    ////private void Start()
-    ////    {
-    ////    }
-
-    // This method marks the achievement as completed at the end of the battle.
-    public void CompleteAchievement(string achievementName)
-    {
-        if (!achievementStatus.ContainsKey(achievementName))
-        {
-            achievementStatus[achievementName] = true;
-        }
-        SaveStateManager.Instance.SaveAchievements(achievementStatus);
-    }
-
-    public bool IsAchievementCompleted(string achievementName)
-    {
-        return achievementStatus.TryGetValue(achievementName, out bool completed) && completed;
-    }
-
-    private void LoadAchievements()
-    {
-        // Load achievements from SaveGameStateManager
-        achievementStatus = SaveStateManager.Instance.LoadAchievements();
-    }
-
-    // This method looKs up the achievements list and executes a Deity-triggering logic based on the completed Achievement.
-
-
-    private void CheckAndTriggerAchievements()
-    {
-        List<Achievement> completedAchievements = allAchievements.Where(a => IsAchievementCompleted(a.achievementName) && a.spawnableDeity != null).ToList();
-
-        if (completedAchievements.Count > 0)
-        {
-            // Tie-breaker: Random selection
-            Achievement achievementToTrigger = completedAchievements[UnityEngine.Random.Range(0, completedAchievements.Count)];
-            TriggerAchievementLogic(achievementToTrigger);
-        }
-    }
-
-    public void CheckForAchievements(int value)
-    {
-        foreach (var achievement in allAchievements)
-        //Looks up in the Saved List of Achievements 
-        {
-            //Validates only if the Achievement was not completed and the requirement is met 
-            if (!IsAchievementCompleted(achievement.achievementName) && value >= achievement.requirement)
+            if (completedAchievements.Count > 0)
             {
-                //Calls the method to mark the achievement as completed
-                CompleteAchievement(achievement.achievementName);
-                // Optionally trigger an event or notification about the achievement completion
+                // Tie-breaker: Random selection
+                Achievement achievementToTrigger = completedAchievements[UnityEngine.Random.Range(0, completedAchievements.Count)];
+                TriggerAchievementLogic(achievementToTrigger);
             }
         }
     }
@@ -109,8 +44,5 @@ public class AchievementsManager : MonoBehaviour
             //Instantiate(achievement.spawnableDeity, Vector3.zero, Quaternion.identity); // Example spawn position and rotation
         }
     }
-
-    //If Deity was Captured, mark currentAchievement as OBSOLETE;
-
 }
 

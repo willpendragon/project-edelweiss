@@ -4,37 +4,47 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class SaveStateManager : MonoBehaviour
+public static class SaveStateManager
 {
-    public static SaveStateManager Instance;
-
-    private string saveFilePath;
-    private string saveFilePathTest;
-
-
-    private void Awake()
+    private static string saveFilePath
     {
-        if (Instance != null && Instance != this)
+        get
         {
-            Destroy(this.gameObject);
+            return Path.Combine(Application.persistentDataPath, "achievements.json");
         }
-        else
+    }
+
+    private static string saveFilePathTest
+    {
+
+        get
         {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            return Path.Combine(Application.persistentDataPath, "gameSaveData.json");
         }
 
-        saveFilePath = Path.Combine(Application.persistentDataPath, "achievements.json");
-        saveFilePathTest = Path.Combine(Application.persistentDataPath, "gameSaveData.json");
     }
-    public void SaveGame(GameSaveData saveData)
+
+    private static GameSaveData gameSaveData = null;
+    public static GameSaveData saveData
+
+    {
+        get
+        {
+            if (gameSaveData == null)
+            {
+                gameSaveData = LoadGame();
+            }
+            return gameSaveData;
+        }
+    }
+    public static void SaveGame(GameSaveData saveData)
     {
         string json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
         File.WriteAllText(saveFilePathTest, json);
         Debug.Log("Saving Game Data");
     }
 
-    public GameSaveData LoadGame()
+    private static GameSaveData LoadGame()
     {
         // Check if the file exists
         if (File.Exists(saveFilePathTest))
@@ -48,23 +58,7 @@ public class SaveStateManager : MonoBehaviour
         {
             // File doesn't exist, return null or handle accordingly
             Debug.Log("Save file not found.");
-            return null;
+            return new GameSaveData();
         }
-    }
-
-    public void SaveAchievements(Dictionary<string, bool> achievements)
-    {
-        string json = JsonConvert.SerializeObject(achievements, Formatting.Indented);
-        File.WriteAllText(saveFilePath, json);
-    }
-
-    public Dictionary<string, bool> LoadAchievements()
-    {
-        if (File.Exists(saveFilePath))
-        {
-            string json = File.ReadAllText(saveFilePath);
-            return JsonConvert.DeserializeObject<Dictionary<string, bool>>(json);
-        }
-        return new Dictionary<string, bool>();
     }
 }

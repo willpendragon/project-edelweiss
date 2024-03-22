@@ -14,12 +14,14 @@ public class GameStatsManager : MonoBehaviour
 {
     public int enemiesKilled;
 
+    private CharacterData characterData;
+
     //public List<DeityData> serializedCapturedDeitiesList = new List<DeityData>();
 
     public void Start()
     {
         LoadCharacterData();
-        GameSaveData gameSaveData = SaveStateManager.Instance.LoadGame();
+        GameSaveData gameSaveData = SaveStateManager.saveData;
         if (gameSaveData != null)
         {
             enemiesKilled = gameSaveData.enemiesKilled;
@@ -28,6 +30,8 @@ public class GameStatsManager : MonoBehaviour
         //ApplyDeityData();
 
     }
+
+    // 22032024 To be changed to JSON-based system and moved to Save State Manager class
     public void SaveCharacterData()
     {
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
@@ -43,6 +47,8 @@ public class GameStatsManager : MonoBehaviour
         //PlayerPrefs.SetInt("killedEnemies", deityAchievementsController.killedEnemies);
         PlayerPrefs.Save();
     }
+
+    // 22032024 To be changed to JSON-based system and moved to Save State Manager class
     public void LoadCharacterData()
     {
         Debug.Log("Loading Player Character's Data");
@@ -118,12 +124,12 @@ public class GameStatsManager : MonoBehaviour
     public void SaveEnemiesKilled()
     {
         Debug.Log("Increasing Enemies Killed");
-        //Check if Achievement threshold has been met
-        AchievementsManager.Instance.CheckForAchievements(enemiesKilled);
-        // Prepare the save data
-        GameSaveData saveData = new GameSaveData { enemiesKilled = this.enemiesKilled };
-        // Add other data to saveData as needed
 
-        SaveStateManager.Instance.SaveGame(saveData);
+        // Prepare the save data
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.enemiesKilled = enemiesKilled;
+
+
+        SaveStateManager.SaveGame(saveData);
     }
 }
