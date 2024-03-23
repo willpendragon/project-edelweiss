@@ -129,7 +129,6 @@ public class GameStatsManager : MonoBehaviour
         GameSaveData saveData = SaveStateManager.saveData;
         saveData.enemiesKilled = enemiesKilled;
 
-
         SaveStateManager.SaveGame(saveData);
     }
 }

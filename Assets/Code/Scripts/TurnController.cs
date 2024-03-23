@@ -149,7 +149,7 @@ public class TurnController : MonoBehaviour
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Enemy Party was defeated");
             ResetTags();
-            UnlockNextLevel(GameManager.Instance.currentEnemySelectionComponent.levelNumber);
+            UnlockNextLevel();
             foreach (var player in playerUnitsOnBattlefield)
             {
                 player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
@@ -163,7 +163,7 @@ public class TurnController : MonoBehaviour
                     Debug.Log("Adding enemies to kill count");
                 }
             }
-            
+
             gameStatsManager.SaveEnemiesKilled();
             //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
             GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>().SaveCharacterData();
@@ -202,13 +202,11 @@ public class TurnController : MonoBehaviour
         }
     }
 
-    public void UnlockNextLevel(int currentLevelNumber)
+    public void UnlockNextLevel()
     {
-        int highestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel", 1);
-        if (currentLevelNumber >= highestUnlockedLevel)
-        {
-            PlayerPrefs.SetInt("HighestUnlockedLevel", currentLevelNumber + 1);
-            PlayerPrefs.Save(); // Ensure changes are saved immediately
-        }
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.highestUnlockedLevel++;
+        SaveStateManager.SaveGame(saveData);
+        Debug.Log("Unlocking Next Level");
     }
 }

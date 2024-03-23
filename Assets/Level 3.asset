@@ -9,10 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5000baba027836f4fb08a0c8254fcd43, type: 3}
-  m_Name: Kill Based Achievement
+  m_Script: {fileID: 11500000, guid: 3fefbf6998d53fe45ba97e63239c2b6a, type: 3}
+  m_Name: Level 3
   m_EditorClassIdentifier: 
-  achievementName: deity_anguana_unlock_threshold
-  description: 
-  spawnableDeity: {fileID: 3348349630364506734, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
-  requiredKills: 5
+  EnemyTypeIds: 00000000000000000100000000000000
+  UnitCoordinates:
+  - {x: 1, y: 1}
+  - {x: 2, y: 2}
+  - {x: 3, y: 3}
+  - {x: 4, y: 4}
+  levelNumber: 3

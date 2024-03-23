@@ -8,6 +8,8 @@ public class GameSaveData
     public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
 
     public List<CharacterData> characterData = new List<CharacterData>();
+    public int highestUnlockedLevel;
+
 }
 
 [System.Serializable]

@@ -11,14 +11,13 @@ public class KillBasedAchievement : Achievement
         Debug.Assert(spawnableDeity != null);
 
         bool unlocked = SaveStateManager.saveData.enemiesKilled >= requiredKills;
-        if(spawnableDeity.TryGetComponent<Deity>(out Deity deity))
+        if (spawnableDeity.TryGetComponent<Deity>(out Deity deity))
         {
             if (SaveStateManager.saveData.unitsLinkedToDeities.ContainsValue(deity.Id))
             {
                 return false;
             }
         }
-        
         return unlocked;
     }
 }

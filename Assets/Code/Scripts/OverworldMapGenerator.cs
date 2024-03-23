@@ -13,51 +13,51 @@ public class OverworldMapGenerator : MonoBehaviour
     {
         Vector3 initialPosition = mapNodeTransform.position;
         Vector3 offset = new Vector3(5, 0, 0);
-        int highestUnlockedLevel = PlayerPrefs.GetInt("HighestUnlockedLevel", 1); // Default to 1 if not set
+        GameSaveData gameSaveData = SaveStateManager.LoadGame();
+        int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
+
+        //PlayerPrefs.GetInt("HighestUnlockedLevel", 1); // Default to 1 if not set
 
         for (int i = 0; i < levelList.Length; i++)
         {
             var level = levelList[i];
-
-            // Setup node with level data
             GameObject newNode = Instantiate(mapNode, initialPosition + offset * i, Quaternion.identity);
             newNode.GetComponent<EnemySelection>().EnemyTypeIds = level.EnemyTypeIds;
             newNode.GetComponent<EnemySelection>().EnemyCoordinates = level.UnitCoordinates;
             newNode.GetComponent<EnemySelection>().levelData = level;
-            newNode.GetComponent<EnemySelection>().levelNumber = i + 1; // Assign level number, assuming your levels start at 1
+            // Assign level number, assuming your levels start at 0. If they start at 1, adjust by using `i + 1`.
+            newNode.GetComponent<EnemySelection>().levelNumber = i;
 
-            // Disable or visually indicate the node is locked if it's beyond the highest unlocked level
-            if (i + 1 > highestUnlockedLevel)
+            if (i == highestUnlockedLevel)
             {
-                newNode.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
-                newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelLocked;
-                // Example: newNode.GetComponent<Button>().interactable = false;
-                // Or, set a locked visual state here
-            }
-            else if (i + 1 <= highestUnlockedLevel)
-            {
+                // This is the next level to attempt (immediately following the last completed level), so it should be unlocked.
                 newNode.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
                 newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
-
+            }
+            else
+            {
+                // Every other node is locked, including completed ones and those not yet reached.
+                newNode.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
+                newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelLocked;
             }
         }
     }
-    /*
-    Vector3 initialPosition = mapNodeTransform.position; // Initial position
-    Vector3 offset = new Vector3(5, 0, 0); // Example offset: adjust as needed
-    int index = 0; // Keep track of the index to multiply the offset
-
-    foreach (var level in levelList)
-    {
-        mapNode.GetComponent<EnemySelection>().EnemyTypeIds = level.EnemyTypeIds;
-        mapNode.GetComponent<EnemySelection>().EnemyCoordinates = level.UnitCoordinates;
-        mapNode.GetComponent<EnemySelection>().levelData = level;
-
-
-        // Calculate new position with offset
-        Vector3 mapNodePosition = initialPosition + offset * index;
-        Instantiate(mapNode, mapNodePosition, Quaternion.identity);
-
-        index++; // Increment index to increase the offset for the next node
-    */
 }
+/*
+Vector3 initialPosition = mapNodeTransform.position; // Initial position
+Vector3 offset = new Vector3(5, 0, 0); // Example offset: adjust as needed
+int index = 0; // Keep track of the index to multiply the offset
+
+foreach (var level in levelList)
+{
+    mapNode.GetComponent<EnemySelection>().EnemyTypeIds = level.EnemyTypeIds;
+    mapNode.GetComponent<EnemySelection>().EnemyCoordinates = level.UnitCoordinates;
+    mapNode.GetComponent<EnemySelection>().levelData = level;
+
+
+    // Calculate new position with offset
+    Vector3 mapNodePosition = initialPosition + offset * index;
+    Instantiate(mapNode, mapNodePosition, Quaternion.identity);
+
+    index++; // Increment index to increase the offset for the next node
+*/

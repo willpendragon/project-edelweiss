@@ -44,7 +44,7 @@ public static class SaveStateManager
         Debug.Log("Saving Game Data");
     }
 
-    private static GameSaveData LoadGame()
+    public  static GameSaveData LoadGame()
     {
         // Check if the file exists
         if (File.Exists(saveFilePathTest))
