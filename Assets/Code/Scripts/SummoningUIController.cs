@@ -42,15 +42,25 @@ public class SummoningUIController : MonoBehaviour
         praying
     }
 
-    public SummonPhase currentSummonPhase;
+    public SummonPhase currentSummonPhase = SummonPhase.summoning;
 
     public void AddSummonButton()
     //I will need to create a Pokémon-Style menu to summon the collected deities.
     {
-        GameObject summonButtonInstance = Instantiate(summonButtonPrefab, spellMenuContainer);
-        currentButton = summonButtonInstance.GetComponent<Button>();
-        currentButton.GetComponentInChildren<Text>().text = "Summon";
-        currentButton.onClick.AddListener(() => SwitchTilesToSummonMode());
+        if (currentSummonPhase == SummonPhase.summoning)
+        {
+            GameObject summonButtonInstance = Instantiate(summonButtonPrefab, spellMenuContainer);
+            currentButton = summonButtonInstance.GetComponent<Button>();
+            currentButton.GetComponentInChildren<Text>().text = "Summon";
+            currentButton.onClick.AddListener(() => SwitchTilesToSummonMode());
+        }
+        else if (currentSummonPhase == SummonPhase.praying)
+        {
+            GameObject summonButtonInstance = Instantiate(summonButtonPrefab, spellMenuContainer);
+            currentButton = summonButtonInstance.GetComponent<Button>();
+            currentButton.GetComponentInChildren<Text>().text = "Pray";
+            currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
+        }
     }
     public void SwitchTilesToSummonMode()
     {
@@ -67,6 +77,7 @@ public class SummoningUIController : MonoBehaviour
 
     public void SwitchButtonToPrayMode()
     {
+        currentSummonPhase = SummonPhase.praying;
         currentButton.GetComponentInChildren<Text>().text = "Pray";
         currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
         Debug.Log("Switching Summon Button to Pray Mode");
