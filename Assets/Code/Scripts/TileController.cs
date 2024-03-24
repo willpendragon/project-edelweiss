@@ -127,14 +127,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     {
         currentTileCurseStatus = TileCurseStatus.notCursed;
     }
-    private void OnEnable()
-    {
-        //SwitchGridToMoveSelectionMode.OnMoveButtonPressed += SwitchTilesToMoveSelectionMode;
-    }
-    private void OnDisable()
-    {
-        //SwitchGridToMoveSelectionMode.OnMoveButtonPressed -= SwitchTilesToMoveSelectionMode;
-    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
