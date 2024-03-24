@@ -14,11 +14,6 @@ public class UnitSelectionController : MonoBehaviour
         unitAttacking,
         unitWaiting
     }
-    //public delegate void ActiveCharacterSelected();
-    //public static event ActiveCharacterSelected OnActiveCharacterSelected;
-
-    //public delegate void ActiveCharacterDeselected();
-    //public static event ActiveCharacterDeselected OnActiveCharacterDeselected;
 
     public delegate void UnitWaiting();
     public static event UnitWaiting OnUnitWaiting;
@@ -46,13 +41,9 @@ public class UnitSelectionController : MonoBehaviour
 
     public void GenerateGameplayButtons()
     {
-        //GenerateMoveButton();
         GenerateWaitButton();
     }
-    //public void GenerateMoveButton()
-    //{
-    //    GameObject newMoveButton = Instantiate(moveButton, unitSpellUIController.spellMenuContainer);
-    //}
+
     public void GenerateWaitButton()
     {
         if (unitSpellUIController != null)
@@ -62,18 +53,16 @@ public class UnitSelectionController : MonoBehaviour
     }
     public void StopUnitAction()
     {
-       /* GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints = 0*/;
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
         unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = "Player";
         unitSprite.material.color = Color.grey;
         GridManager.Instance.currentPlayerUnit = null;
-        //currentUnitSelectionStatus = UnitSelectionStatus.unitWaiting;
         Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
         OnUnitWaiting();
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
-            tile.currentSingleTileStatus = SingleTileStatus.basic;
+            tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
         }
     }
 }

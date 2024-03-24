@@ -8,9 +8,12 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
     {
         GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
         GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
-        //GridManager.Instance.SwitchToCharacterSelectionMove();
         Destroy(GameObject.FindGameObjectWithTag("TargetedEnemyUnitProfile"));
         Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            tile.currentPlayerAction = new SelectUnitPlayerAction();
+        }
 
     }
 }

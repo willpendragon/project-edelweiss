@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using static GridTargetingController;
 using static TileController;
 using UnityEngine.UI;
 
@@ -40,10 +39,12 @@ public class MeleePlayerAction : IPlayerAction
     public void Deselect()
     {
         selectionLimiter++;
-        //savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-        //savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-        GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
-        //savedSelectedTile = null;
+        if (savedSelectedTile != null)
+        {
+            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+            savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            Debug.Log("Deselecting Currently Selected Tile");
+        }
     }
     public void Execute()
     {

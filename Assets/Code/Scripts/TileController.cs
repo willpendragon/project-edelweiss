@@ -66,10 +66,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public SingleTileStatus currentSingleTileStatus;
     public SingleTileCondition currentSingleTileCondition;
     public GameObject targetIcon;
-    //public GameObject currentlySelectedUnitPanel;
     public TileCurseStatus currentTileCurseStatus;
 
-    public IPlayerAction currentPlayerAction;
+    public IPlayerAction currentPlayerAction = new SelectUnitPlayerAction();
     public MeleePlayerAction meleeAction;
 
     // A* Pathfinding properties
@@ -142,24 +141,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public void HandleTileSelection()
     {
-        if (currentSingleTileStatus == SingleTileStatus.basic && detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting
-            && detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-        {
-            SelectUnitPlayerAction selectUnitPlayerActionInstance = new SelectUnitPlayerAction();
-
-            foreach (var tile in GridManager.Instance.gridTileControllers)
-            {
-                tile.currentPlayerAction = selectUnitPlayerActionInstance;
-                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-                Debug.Log("Switching Tiles to Character Selection Mode");
-            }
-            detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected;
-            GameObject playerSelectorIconIstance = Instantiate(Resources.Load("PlayerCharacterSelectorIcon") as GameObject, detectedUnit.transform);
-            //Beware: Magic Number
-            playerSelectorIconIstance.transform.localPosition += new Vector3(0, 2.5f, 0);
-        }
-
-        else if (currentSingleTileStatus == SingleTileStatus.selectionMode)
+        if (currentSingleTileStatus == SingleTileStatus.selectionMode)
         {
             Debug.Log("Selecting Tiles");
             currentPlayerAction.Select(this);
@@ -170,24 +152,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler
             currentPlayerAction.Execute();
         }
     }
-
     public void HandleTileDeselection()
     {
-        if (detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected)
-        {
-            detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
-            foreach (var tile in GridManager.Instance.gridTileControllers)
-            {
-                tile.currentSingleTileStatus = SingleTileStatus.basic;
-            }
-            Destroy(detectedUnit.GetComponent<Unit>().unitProfilePanel);
-            Debug.Log("Deselecting Temporarily Selected Unit");
-        }
-        else
-        {
-            currentPlayerAction.Deselect();
-            Debug.Log("Deselecting Unit");
-        }
+        currentPlayerAction.Deselect();
     }
 }

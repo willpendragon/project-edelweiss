@@ -39,12 +39,14 @@ public class MovePlayerAction : IPlayerAction
 
     public void Deselect()
     {
-        Debug.Log("Stopping Moving Action");
-        selectionLimiter++;
-        //savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-        //savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-        GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
 
+        selectionLimiter++;
+        if (savedSelectedTile != null)
+        {
+            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+            savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            Debug.Log("Deselecting Currently Selected Tile");
+        }
     }
     public void Execute()
     {

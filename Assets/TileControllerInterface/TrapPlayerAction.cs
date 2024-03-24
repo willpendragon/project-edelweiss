@@ -29,9 +29,13 @@ public class TrapPlayerAction : IPlayerAction
 
     public void Deselect()
     {
-        savedSelectedTile.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-        savedSelectedTile = null;
         selectionLimiter++;
+        if (savedSelectedTile != null)
+        {
+            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+            savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            Debug.Log("Deselecting Currently Selected Tile");
+        }
     }
 
     public void Execute()

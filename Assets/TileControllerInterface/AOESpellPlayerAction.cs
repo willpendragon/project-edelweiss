@@ -21,20 +21,20 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     {
         spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
 
-        if (selectedTile != null && selectionLimiter == 1)
+        if (selectedTile != null && selectionLimiter > 0)
         {
-            savedSelectedTile = selectedTile;
-
             if (spellCastingController.currentSelectedSpell.spellType == SpellType.aoe)
             {
-                foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+                foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile))
                 {
                     tile.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
                     selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-                    selectionLimiter--;
                 }
+                savedSelectedTile = selectedTile;
+                selectionLimiter--;
                 Debug.Log("Selected AOE Spell Range");
             }
+
             else if (spellCastingController.currentSelectedSpell.spellType == SpellType.singleTarget)
             {
                 savedSelectedTile = selectedTile;
@@ -108,21 +108,14 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public void Deselect()
     {
         selectionLimiter++;
-        if (savedSelectedTile == null)
-        {
-            GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
-        }
-        else
+        if (savedSelectedTile != null)
         {
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
             {
                 tile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-                savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-
+                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             }
-
-            savedSelectedTile = null;
-            Debug.Log("Selecting AOE Range");
+            Debug.Log("Deselecting AOE Range");
         }
     }
 

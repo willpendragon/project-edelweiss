@@ -59,12 +59,16 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
     }
     public void Deselect()
     {
-        foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
-        {
-            tile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-        }
-        savedSelectedTile = null;
         selectionLimiter++;
-        deityLimiter++;
+        if (savedSelectedTile != null)
+        {
+            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+            {
+                tile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            }
+            Debug.Log("Deselecting Summon Spawn Area");
+            deityLimiter++;
+        }
     }
 }
