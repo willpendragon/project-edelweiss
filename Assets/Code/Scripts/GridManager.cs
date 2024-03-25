@@ -163,6 +163,7 @@ public class GridManager : MonoBehaviour
                         tile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
                     }
                     currentPlayerUnit.GetComponent<Unit>().ownedTile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
+                    currentPlayerUnit.GetComponent<Unit>().ownedTile.GetComponent<TileController>().detectedUnit = currentPlayerUnit;
                 }
             }
             Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");

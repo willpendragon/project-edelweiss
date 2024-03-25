@@ -61,7 +61,7 @@ public class MovePlayerAction : IPlayerAction
             activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
             activePlayerUnit.ownedTile.detectedUnit = null;
             activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate);
-            activePlayerUnit.SetPosition(destinationTileXCoordinate, destinationTileYCoordinate);
+            //activePlayerUnit.SetPosition(destinationTileXCoordinate, destinationTileYCoordinate);
             GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
             activePlayerUnit.ownedTile = savedSelectedTile;
             activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
