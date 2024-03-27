@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using RPGCharacterAnims.Actions;
 using Unity.VisualScripting;
 using JetBrains.Annotations;
 using UnityEditor.Experimental.GraphView;
@@ -23,27 +22,6 @@ public enum SingleTileStatus
     characterSelectionModeActive,
     selectedPlayerUnitOccupiedTile,
 
-    //selectionModeActive,
-
-    //meleeSelectionModeActive,
-    //meleeSelectionModeWaitingForConfirmation,
-    //meleeSelectionModeConfirmedTarget,
-
-    //attackSelectionModeActive,
-    //attackSelectionModeWaitingForConfirmation,
-    //attackSelectionModeConfirmedTarget,
-
-    //aoeAttackSelectionModeActive,
-    //aoeAttackSelectionModeWaitingForConfirmation,
-    //aoeAttackSelectionModeConfirmedTarget,
-
-    //trapTileSelectionModeActive,
-    //trapTileSelectionModeWaitingForConfirmation,
-    //trapTileSelectionModeConfirmedTarget,
-
-    //summonAreaSelectionModeActive,
-    //summonAreaSelectionModeWaitingForConfirmation,
-    //summonAreaSelectionModeConfirmedTarget
 }
 
 public enum SingleTileCondition
@@ -112,9 +90,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public delegate void TileConfirmedSummonMode();
     public static event TileConfirmedSummonMode OnTileConfirmedSummonMode;
-
-    //public delegate void ClickedTileWithUnit(GameObject detectedUnit);
-    //public static event ClickedTileWithUnit OnClickedTileWithUnit;
 
     public delegate void DeselectedTileWithUnit();
     public static event DeselectedTileWithUnit OnDeselectedTileWithUnit;
