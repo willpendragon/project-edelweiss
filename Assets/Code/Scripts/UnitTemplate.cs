@@ -15,5 +15,6 @@ public class UnitTemplate : ScriptableObject
     public int unitShieldPoints;
     public float unitCoinsReward;
     public float unitExperiencePointsReward;
+    public float meleeAttackPower;
 
 }

@@ -33,7 +33,7 @@ public class TurnController : MonoBehaviour
     public void OnEnable()
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatus;
-        EnemyAgent.OnCheckPlayer += PlayerGameOverCheck;
+        StunnerEnemyBehavior.OnCheckPlayer += PlayerGameOverCheck;
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
         Unit.OnCheckGameOver += GameOverCheck;
@@ -41,7 +41,7 @@ public class TurnController : MonoBehaviour
     public void OnDisable()
     {
         UnitSelectionController.OnUnitWaiting -= CheckPlayerUnitsStatus;
-        EnemyAgent.OnCheckPlayer -= PlayerGameOverCheck;
+        StunnerEnemyBehavior.OnCheckPlayer -= PlayerGameOverCheck;
         EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Unit.OnCheckGameOver -= GameOverCheck;
