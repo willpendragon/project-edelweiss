@@ -3,9 +3,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AnguanaBehavior", menuName = "DeityBehavior/Anguana")]
 public class DeityAnguanaBehavior : DeityBehavior
 {
+    public int deityPrayerPowerMinimumRequirement;
     public override void ExecuteBehavior(Deity deity)
     {
-        if (deity.deityPrayerPower > 5)
+        if (deity.deityPrayerPower > deityPrayerPowerMinimumRequirement)
         {
             Debug.Log("Attacking Enemies");
         }
