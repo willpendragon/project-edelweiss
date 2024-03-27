@@ -12,13 +12,11 @@ public class BattleRewardsController : MonoBehaviour
     {
         EnemyAgent.OnCoinsReward += AddCoinsRewardToCoinsRewardPool;
         EnemyAgent.OnExperienceReward += AddExperienceRewardToExperienceRewardPool;
-        //BattleManager.OnBattleEnd += ApplyRewardsToPlayer;
     }
     public void OnDisable()
     {
         EnemyAgent.OnCoinsReward -= AddCoinsRewardToCoinsRewardPool;
         EnemyAgent.OnExperienceReward -= AddExperienceRewardToExperienceRewardPool;
-        //BattleManager.OnBattleEnd -= ApplyRewardsToPlayer;
     }
     public void AddCoinsRewardToCoinsRewardPool(float coinsRewardToAdd)
     {
@@ -32,8 +30,6 @@ public class BattleRewardsController : MonoBehaviour
     }
     public void ApplyRewardsToThisUnit()
     {
-        //battleManager.player.playerExperiencePoints += experienceRewardPool;
-        //battleManager.player.coins += coinsRewardPool;
         GetComponent<Unit>().unitExperiencePoints += experienceRewardPool;
         GetComponent<Unit>().unitCoins += coinsRewardPool;
     }

@@ -67,15 +67,6 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void OnEnable()
-    {
-        //GridManager.OnSetUnitInitialPositionOnGrid += SetUnitInitialPositionOnGrid;
-    }
-    public void OnDisable()
-    {
-        //GridManager.OnSetUnitInitialPositionOnGrid -= SetUnitInitialPositionOnGrid;
-    }
-
     void Awake()
     {
 
@@ -96,13 +87,6 @@ public class Unit : MonoBehaviour
             experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
         }
     }
-
-    //public void SetUnitInitialPositionOnGrid()
-    //{
-    //    MoveUnit(startingXCoordinate, startingYCoordinate);
-    //    SetPosition(startingXCoordinate, startingYCoordinate);
-    //    Debug.Log("Moving at Start Position");
-    //}
 
     public void TakeDamage(int receivedDamage)
     {
@@ -138,8 +122,6 @@ public class Unit : MonoBehaviour
                 currentXCoordinate = tile.tileXCoordinate;
                 currentYCoordinate = tile.tileYCoordinate;
 
-                //tile.GetComponent<TileController>().detectedUnit = this.gameObject;
-                //030120240216 Removed because otherwise every tile of the movement path gets its DetectedUnit set as the moving Unit. 
                 Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
             }
         }
@@ -171,13 +153,6 @@ public class Unit : MonoBehaviour
                     Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
 
                 }
-                //var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
-                //deityAchievementsController.killedEnemies++;
-                Debug.Log("Adding Enemies killed in battle to Stats counter");
-
-                //var gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-
-                //gameStatsManager.IncrementEnemiesKilled(enemiesKilled);
             }
             OnCheckGameOver();
         }
@@ -212,8 +187,5 @@ public class Unit : MonoBehaviour
             newTile.detectedUnit = this.gameObject;
             newTile.currentSingleTileCondition = SingleTileCondition.occupied;
         }
-
-        // If there's additional logic needed to handle changes in the unit's tile, add it here
-        // For example, if there are any events that need to be fired off when the unit moves, do that here
     }
 }

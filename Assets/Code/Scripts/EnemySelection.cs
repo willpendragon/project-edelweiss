@@ -12,19 +12,6 @@ public class EnemySelection : MonoBehaviour
     public Level levelData;
     public int levelNumber;
 
-    //public delegate void SelectedMapNodeWithEnemies(GameObject[] mapNodeEnemySelection);
-    //public static event SelectedMapNodeWithEnemies OnSelectedMapNodeWithEnemies;
-
-    /*
-    public void CreatePreliminaryEnemySelection()
-    {
-        enemyOne = preliminaryEnemySelection.enemyOne;
-        enemyTwo = preliminaryEnemySelection.enemyTwo;
-        enemyThree = preliminaryEnemySelection.enemyThree;
-        enemyFour = preliminaryEnemySelection.enemyFour;
-        enemyFive = preliminaryEnemySelection.enemyFive;
-    }
-    */
     public void SelectedMapNode()
     {
         GameManager.Instance.UpdateEnemyData(levelData);

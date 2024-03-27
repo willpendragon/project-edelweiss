@@ -8,12 +8,10 @@ public class DeityEnmityTrackerController : MonoBehaviour
 {
     public void OnEnable()
     {
-        //Deity.OnDeitySpawn += SetDeity;
         SpellcastingController.OnCastedSpellTypeHatedbyDeity += UpdateDeityEnmityTracker;
     }
     public void OnDisable()
     {
-        //Deity.OnDeitySpawn -= SetDeity;
         SpellcastingController.OnCastedSpellTypeHatedbyDeity -= UpdateDeityEnmityTracker;
     }
     public TextMeshProUGUI deityEnmityPointsCounter;

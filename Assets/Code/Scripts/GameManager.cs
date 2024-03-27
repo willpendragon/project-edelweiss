@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        // It's good practice to unsubscribe from the event when the GameObject is destroyed.
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
@@ -85,7 +84,6 @@ public class GameManager : MonoBehaviour
         foreach (var unitPrefab in playerPartyMembers)
         {
             Unit newUnitInstance = Instantiate(unitPrefab, this.gameObject.transform);
-            //newUnitInstance.Id = System.Guid.NewGuid().ToString(); // Set a new ID or any other initialization
             playerPartyMembersInstances.Add(newUnitInstance); // Add the new instance to the list
         }
         Debug.Log("Instantiated Player Units");

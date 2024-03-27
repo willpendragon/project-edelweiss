@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
-//using static UnityEditor.PlayerSettings;
 
 public enum TurnOrder
 {
@@ -27,13 +26,11 @@ public enum BattleType
 
 public class BattleManager : MonoBehaviour
 {
-    //public Player player;
     public GameObject battleBeginsScreen;
     [SerializeField] float enemyTurnDuration;
     [SerializeField] BattleInterface battleInterface;
 
     [SerializeField] DeityAchievementsController deityAchievementsController;
-
 
     public TextMeshProUGUI turnDisplay;
     public TextMeshProUGUI turnTracker;
@@ -137,7 +134,6 @@ public class BattleManager : MonoBehaviour
             enemyScript.opportunity = 1;
         }
     }
-
     IEnumerator DeactivateBattleBeginsScreen()
     {
         yield return new WaitForSeconds(0.5f);

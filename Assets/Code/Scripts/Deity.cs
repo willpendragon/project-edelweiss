@@ -69,10 +69,8 @@ public class Deity : MonoBehaviour
 
     public void Start()
     {
-        //OnDeitySpawn(this.gameObject);
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
         OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
-        //OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
         GameObject newDeityEnmityTracker = GameObject.FindGameObjectWithTag("TurnTrackerDetailsContainer");
         //Finds the Turn Tracker Details Panel where to instance the Deity Enmity Tracker
         newDeityEnmityTracker = Instantiate(deityEnmityTracker, newDeityEnmityTracker.transform);
@@ -81,8 +79,7 @@ public class Deity : MonoBehaviour
         deityEnmityTracker = newDeityEnmityTracker;
     }
     public void DeityBehaviour()
-    //A simple method that informs the Deity logic. Needs refactoring after prototyping.
-    //Consider changing the current implementation with a system based on Switch/Case.
+    //Retrieves the Deity Behavior from a compatible Scriptable Object add in the Inspector.
     {
         StartCoroutine("EndDeityTurn");
         Debug.Log("Deity Behaviour");
@@ -97,7 +94,6 @@ public class Deity : MonoBehaviour
 
     IEnumerator EndDeityTurn()
     {
-        //OnDeityJudgmentCounterUpdate(judgmentTurnLimit);
         yield return new WaitForSeconds(1f);
         Debug.Log("Ending Deity Turn");
         OnPlayerTurnSwap();

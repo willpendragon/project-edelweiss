@@ -35,7 +35,6 @@ public class GridManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -45,19 +44,9 @@ public class GridManager : MonoBehaviour
     }
     private void Start()
     {
-        //OnSetUnitInitialPositionOnGrid();
         gridTileControllers = GameObject.FindObjectsOfType<TileController>();
-        //SwitchToCharacterSelectionMove();
     }
 
-    //public void SwitchToCharacterSelectionMove()
-    //{
-    //    foreach (var tileController in gridTileControllers)
-    //    {
-    //        //tileController.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.yellow;
-    //        tileController.currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
-    //    }
-    //}
     private void OnEnable()
     {
         TileController.OnTileClicked += MoveCurrentPlayerUnit;

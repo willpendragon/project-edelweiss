@@ -18,17 +18,11 @@ public class EnemySelector : MonoBehaviour
         moveset = GameObject.FindGameObjectWithTag("Player").GetComponent<Moveset>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
     void OnMouseOver()
     {
         if (currentCursorStatus == CursorStatus.deselected)
         {
-            cursor.color = new Color (0,0,0,1);
+            cursor.color = new Color(0, 0, 0, 1);
         }
     }
     void OnMouseDown()
@@ -48,7 +42,6 @@ public class EnemySelector : MonoBehaviour
             Debug.Log("Deselected target");
         }
     }
-
     void OnMouseExit()
     {
         if (currentCursorStatus == CursorStatus.deselected)

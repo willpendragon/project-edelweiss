@@ -73,16 +73,9 @@ public class StunnerEnemyBehavior : EnemyBehavior
         //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
         float reducedDamage = enemyAttacker.GetComponentInParent<Unit>().unitTemplate.meleeAttackPower; //* damageReductionFactor//
         targetUnit.HealthPoints -= (reducedDamage);
-        //targetUnit.UpdatePlayerHealthDisplay();
-        //targetUnit.PlayHurtAnimation();
-        //GameObject localAttackVFXAnimator = Instantiate(attackVFXAnimator, targetUnit.transform);
-        //Rework for VFX to spawn directly on the Player's tile position
-
-        //localAttackVFXAnimator.GetComponent<Animator>().SetTrigger("BaseAnimation");
-        //Destroy(localAttackVFXAnimator, 1);
-
-        //EnemyMeleeAttack.Invoke(player.GetComponent<Player>().transform);
+        //27032024 Note: Reintroduce attack feedback here.
         OnCheckPlayer();
+
         Debug.Log("Enemy Attacking");
     }
 

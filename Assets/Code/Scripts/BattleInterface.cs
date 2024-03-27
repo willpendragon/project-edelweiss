@@ -74,12 +74,4 @@ public class BattleInterface : MonoBehaviour
         battlefieldTextNotifications.text = "Player Is Unable to Move";
         playerActionPanel.SetActive(false);
     }
-    /*
-    public void JudgmentAttackFailed()
-    {
-        battleEndResult.text = "The Player escaped";
-        GameManager gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-        gameManager.MarkCurrentNodeAsCompleted();
-    }
-    */
 }

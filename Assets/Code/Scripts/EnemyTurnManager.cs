@@ -78,7 +78,6 @@ public class EnemyTurnManager : MonoBehaviour
         if (deity != null)
         {
             OnDeityTurn();
-            //battleManager.StartCoroutine("PassTurnToDeity");
             Debug.Log("Enemy turns are over. Passing turn to Deity");
         }
         else if (deity == null)

@@ -25,7 +25,6 @@ public class CheckRequirement : MonoBehaviour
             Debug.Log("You can't enter this level");
         }
     }
-
     public void SetCurrentNode()
     {
         gameManager.currentNode = this.gameObject.GetComponent<NodeController>();
