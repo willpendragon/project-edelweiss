@@ -1,10 +1,11 @@
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "StunnerEnemyBehavior", menuName = "EnemyBehavior/StunnerEnemy")]
-public class StunnerEnemyBehavior : EnemyBehavior
+[CreateAssetMenu(fileName = "BumperEnemyBehavior", menuName = "EnemyBehavior/BumperEnemy")]
+public class BumperEnemyBehavior : EnemyBehavior
 {
     [SerializeField] int minEnemyMoveRollRange;
     [SerializeField] int maxEnemyMoveRollRange;
@@ -14,6 +15,9 @@ public class StunnerEnemyBehavior : EnemyBehavior
     public static event CheckPlayer OnCheckPlayer;
 
     [SerializeField] GameObject attackVFXAnimator;
+    public float attackPower;
+    //Beware, magic number
+
 
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
@@ -24,8 +28,8 @@ public class StunnerEnemyBehavior : EnemyBehavior
             //Decide the next move based on the battlefield situation and character attitude
             if (EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
             {
-                StunAbility(targetUnit);
-                Debug.Log("Stun Ability Chance Roll Successful");
+                Attack(targetUnit, enemyAgent);
+                Debug.Log("Attack Ability Chance Roll Successful");
             }
             opportunity -= 1;
         }
@@ -35,11 +39,12 @@ public class StunnerEnemyBehavior : EnemyBehavior
         }
     }
 
+
     //Rolls the Move the Enemy is going to use
     public int EnemyMoveRoll()
     {
         Debug.Log("Rolling Enemy move");
-        int enemyMoveRoll = Random.Range(minEnemyMoveRollRange, maxEnemyMoveRollRange);
+        int enemyMoveRoll = UnityEngine.Random.Range(minEnemyMoveRollRange, maxEnemyMoveRollRange);
         return enemyMoveRoll;
     }
 
@@ -57,15 +62,17 @@ public class StunnerEnemyBehavior : EnemyBehavior
         return unitWithHighestHP;
     }
 
-
-    public void StunAbility(Unit targetUnit)
+    //Enemy Attack Behavior
+    public void Attack(Unit targetUnit, EnemyAgent enemyAttacker)
     {
-        targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
-        targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
-        Instantiate(Resources.Load("StunIcon"), targetUnit.transform);
-        Debug.Log("Testing Stunner Enemy Behaviour");
-        //targetUnit.PlayHurtAnimation();
-        //attackVFX.Play();
+        //const float targetUnitReductionFactor = 0.05f;
+        //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
+        float reducedDamage = enemyAttacker.GetComponentInParent<Unit>().unitTemplate.meleeAttackPower; //* damageReductionFactor//
+        targetUnit.HealthPoints -= (reducedDamage);
+        //27032024 Note: Reintroduce attack feedback here.
+        OnCheckPlayer();
+
+        Debug.Log("Enemy Attacking");
     }
 }
 
