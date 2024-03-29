@@ -320,7 +320,7 @@ MonoBehaviour:
   healthPointsCounter: {fileID: 4714583909786951188}
   opportunityCounter: {fileID: 7140207064783089265}
   receivedDamageCounter: {fileID: 2064509822520070637}
-  unitMovementLimit: 0
+  unitMovementLimit: 10
   currentXCoordinate: 0
   currentYCoordinate: 0
   EnemyMeleeAttack:
@@ -354,7 +354,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   unitStunStatusIcon: {fileID: 3406946445924013396, guid: e9adfb87616477e4784c4a1060a542fd, type: 3}
-  enemyBehavior: {fileID: 11400000, guid: 328d4ca4497a01243bd13bf20985f739, type: 2}
+  enemyBehavior: {fileID: 11400000, guid: 942df072a2e990a4799e28f0faee4951, type: 2}
 --- !u!114 &7714452247050051452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,8 +367,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36537da3c27d54e4889f7162982ddbba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyUnit: {fileID: 5009294011632168286}
-  restoreEnemyUnitPositionCooldown: 1
 --- !u!114 &3031252642805861247
 MonoBehaviour:
   m_ObjectHideFlags: 0

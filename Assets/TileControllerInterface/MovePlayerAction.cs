@@ -60,6 +60,7 @@ public class MovePlayerAction : IPlayerAction
             //Use Grid Logic to Move the Player to Destination            
             activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
             activePlayerUnit.ownedTile.detectedUnit = null;
+            activePlayerUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
             activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate);
             //activePlayerUnit.SetPosition(destinationTileXCoordinate, destinationTileYCoordinate);
             GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
