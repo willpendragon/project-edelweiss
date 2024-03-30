@@ -35,52 +35,68 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
     public void Deselect()
     {
-        Debug.Log("Deselecting Unit");
-        if (selectedUnit.tag != "Enemy")
+        if (this.selectedUnit != null)
         {
-            selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-            if (GridManager.Instance.currentPlayerUnit != null)
-            {
-                GridManager.Instance.currentPlayerUnit.tag = "Player";
-                GridManager.Instance.currentPlayerUnit = null;
-                Destroy(newCurrentlySelectedUnitPanel);
-                ResetCharacterSpellsMenu();
 
-                Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
-            }
-            else
-            {
-                Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
-                selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
 
-            }
-            foreach (var tile in GridManager.Instance.gridTileControllers)
-            {
-                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-                Debug.Log("Switching Tiles back to Selection Mode");
-            }
-        }
-        else if (selectedUnit.tag == "Enemy")
-        {
             Debug.Log("Deselecting Unit");
-            selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-            Destroy(newCurrentlySelectedUnitPanel);
-            Debug.Log("Deselected Unit");
-            ResetCharacterSpellsMenu();
-            foreach (var tile in GridManager.Instance.gridTileControllers)
+            if (selectedUnit.tag != "Enemy")
             {
-                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-                Debug.Log("Switching Tiles to Character Selection Mode");
+                selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+                if (GridManager.Instance.currentPlayerUnit != null)
+                {
+                    GridManager.Instance.currentPlayerUnit.tag = "Player";
+                    GridManager.Instance.currentPlayerUnit = null;
+                    Destroy(newCurrentlySelectedUnitPanel);
+                    ResetCharacterSpellsMenu();
+
+                    Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+                }
+                else
+                {
+                    Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+                    selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+
+                }
+                foreach (var tile in GridManager.Instance.gridTileControllers)
+                {
+                    tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+                    Debug.Log("Switching Tiles back to Selection Mode");
+                }
             }
-            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+            else if (selectedUnit.tag == "Enemy")
+            {
+                Debug.Log("Deselecting Unit");
+                selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+                Destroy(newCurrentlySelectedUnitPanel);
+                Debug.Log("Deselected Unit");
+                ResetCharacterSpellsMenu();
+                foreach (var tile in GridManager.Instance.gridTileControllers)
+                {
+                    tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+                    Debug.Log("Switching Tiles to Character Selection Mode");
+                }
+                Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+            }
+
         }
 
     }
     public void Execute()
     {
-        CreateActivePlayerUnitProfile(selectedUnit);
-        GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon").GetComponent<SpriteRenderer>().material.color = Color.cyan;
-        Debug.Log("Executing Test");
+        if (this.selectedUnit != null)
+        {
+            if (selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected)
+            {
+                CreateActivePlayerUnitProfile(selectedUnit);
+                GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon").GetComponent<SpriteRenderer>().material.color = Color.cyan;
+                Debug.Log("Executing Test");
+            }
+        }
+        else
+        {
+            Debug.Log("No selectable Unit found");
+        }
     }
 
     public void CreateActivePlayerUnitProfile(GameObject detectedUnit)
