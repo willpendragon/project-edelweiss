@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using Unity.VisualScripting.ReorderableList;
 using System.Security.Cryptography;
 
-public class MovePlayerAction : IPlayerAction
+public class MovePlayerAction : MonoBehaviour, IPlayerAction
 {
     public Unit currentTarget;
     public TileController savedSelectedTile;
@@ -45,7 +45,11 @@ public class MovePlayerAction : IPlayerAction
         {
             savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            Debug.Log("Deselecting Currently Selected Tile");
+            RevertToSelectionUnitPlayerAction();
+        }
+        else if (savedSelectedTile == null)
+        {
+            RevertToSelectionUnitPlayerAction();
         }
     }
     public void Execute()
@@ -76,6 +80,22 @@ public class MovePlayerAction : IPlayerAction
         {
             Debug.Log("Not enough Opportunity Points on Active Player Unit");
         }
+    }
+
+    public void RevertToSelectionUnitPlayerAction()
+    {
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            tile.currentPlayerAction = new SelectUnitPlayerAction();
+        }
+        GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
+        foreach (var playerUISpellButton in playerUISpellButtons)
+        {
+            Destroy(playerUISpellButton);
+        }
+        Destroy(GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitProfilePanel);
+        GridManager.Instance.currentPlayerUnit.tag = "Player";
+        GridManager.Instance.currentPlayerUnit = null;
     }
 
     public string FindAnimationTrigger(Unit activePlayerUnit, TileController destinationTile)

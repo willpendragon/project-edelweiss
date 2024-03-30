@@ -64,8 +64,6 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         {
             Debug.Log("Deselecting Unit");
             selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-            GridManager.Instance.currentPlayerUnit.tag = "Player";
-            GridManager.Instance.currentPlayerUnit = null;
             Destroy(newCurrentlySelectedUnitPanel);
             Debug.Log("Deselected Unit");
             ResetCharacterSpellsMenu();
