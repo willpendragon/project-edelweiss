@@ -138,6 +138,7 @@ public class TurnController : MonoBehaviour
             //Activate Game Over UI
             //Active Game Over Flow
             ResetTags();
+            DeactivateActivePlayerUnitPanel();
         }
         else
         {
@@ -151,6 +152,7 @@ public class TurnController : MonoBehaviour
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Enemy Party was defeated");
             ResetTags();
+            DeactivateActivePlayerUnitPanel();
             UnlockNextLevel();
             foreach (var player in playerUnitsOnBattlefield)
             {
@@ -185,6 +187,7 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party was defeated");
             OnBattleEnd("Player Party was defeated");
             ResetTags();
+            DeactivateActivePlayerUnitPanel();
             //Activate Game Over UI
             //Active Game Over Flow
         }
@@ -210,5 +213,10 @@ public class TurnController : MonoBehaviour
         saveData.highestUnlockedLevel++;
         SaveStateManager.SaveGame(saveData);
         Debug.Log("Unlocking Next Level");
+    }
+
+    public void DeactivateActivePlayerUnitPanel()
+    {
+        Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
     }
 }

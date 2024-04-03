@@ -16,7 +16,8 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     private int destinationTileYCoordinate;
     public void Select(TileController selectedTile)
     {
-        if (selectedTile != null && selectionLimiter == 1)
+        if (selectedTile != null && selectionLimiter == 1 && selectedTile != GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile
+            && selectedTile.detectedUnit == null)
         //Beware: Magic Number
         {
             var destinationTile = selectedTile;
@@ -41,12 +42,20 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     {
 
         selectionLimiter++;
+        //If a saved destination doesn't esist, by clicking on THAT tile, this will get back to selection mode
         if (savedSelectedTile != null)
         {
             savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            savedSelectedTile = null;
+            //RevertToSelectionUnitPlayerAction();
+        }
+        else if (GridManager.Instance.currentPlayerUnit != null & savedSelectedTile == null)
+        {
+            Debug.Log("Resetting Current Active Player Selection");
             RevertToSelectionUnitPlayerAction();
         }
+        //If a saved destination exist, by clicking on any tile, it will call the RevertToSelectionUnitPlayerAction method
         else if (savedSelectedTile == null)
         {
             RevertToSelectionUnitPlayerAction();
@@ -56,6 +65,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     {
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         //Retrieve Active Current Player
+        activePlayerUnit.unitOpportunityPoints--;
 
         if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun
             && savedSelectedTile.currentSingleTileCondition == SingleTileCondition.free)
@@ -71,7 +81,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             activePlayerUnit.ownedTile = savedSelectedTile;
             activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
 
-            activePlayerUnit.unitOpportunityPoints--;
             UpdateActivePlayerUnitProfile(activePlayerUnit);
 
             Debug.Log("Moving Character Execution Logic");
@@ -84,6 +93,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
     public void RevertToSelectionUnitPlayerAction()
     {
+        //Loops through all the grids on the Grid Map, reactivates the select Player Unit Action Mode, deactivates the spell menu, resetc the current Active Player Unit
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new SelectUnitPlayerAction();
