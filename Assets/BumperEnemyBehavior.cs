@@ -29,6 +29,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             MoveToPlayerTarget(targetPlayerUnit, enemyAgent);
             float reducedDamage = enemyAgent.GetComponentInParent<Unit>().unitTemplate.meleeAttackPower; //* damageReductionFactor//
             targetPlayerUnit.HealthPoints -= (reducedDamage);
+            targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
 
             //const float targetUnitReductionFactor = 0.05f;
             //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));

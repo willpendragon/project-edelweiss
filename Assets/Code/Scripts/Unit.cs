@@ -53,6 +53,8 @@ public class Unit : MonoBehaviour
 
     public UnitStatusController unitStatusController;
 
+    public UnityEvent<float> OnTakenDamage;
+
     public float HealthPoints
     {
         get { return unitHealthPoints; }
@@ -91,6 +93,7 @@ public class Unit : MonoBehaviour
     public void TakeDamage(int receivedDamage)
     {
         HealthPoints -= receivedDamage;
+        OnTakenDamage.Invoke(receivedDamage);
         Debug.Log("Unit receives Damage");
     }
 
