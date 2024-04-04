@@ -21,3 +21,12 @@ public class CharacterData
     public string description;
 
 }
+
+[System.Serializable]
+
+public class ResourceData
+
+{
+    public float coins;
+}
+
