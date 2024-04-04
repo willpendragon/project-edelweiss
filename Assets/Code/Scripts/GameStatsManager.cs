@@ -8,6 +8,7 @@ using System.IO;
 using static UnityEditor.Progress;
 using System.Linq;
 using JetBrains.Annotations;
+using UnityEditor.U2D.Animation;
 
 public class GameStatsManager : MonoBehaviour
 
@@ -32,42 +33,53 @@ public class GameStatsManager : MonoBehaviour
     public void SaveCharacterData()
     {
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
+        GameSaveData characterSaveData = SaveStateManager.saveData;
+
         foreach (var playerUnit in playerUnits)
         {
-            Unit unit = playerUnit.GetComponent<Unit>();
-            string baseKey = unit.unitTemplate.unitName;
-            PlayerPrefs.SetFloat(baseKey + "_XP", unit.unitExperiencePoints);
-            PlayerPrefs.SetFloat(baseKey + "_Coins", unit.unitCoins);
-            PlayerPrefs.SetFloat(baseKey + "_HealthPoints", unit.unitHealthPoints);
-        }
-        var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
-        PlayerPrefs.Save();
-    }
+            Unit unitComponent = playerUnit.GetComponent<Unit>();
+            CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == unitComponent.Id);
 
-    // 22032024 To be changed to JSON-based system and moved to Save State Manager class
+            if (existingCharacterData != null)
+            {
+                // Update existing character data
+                existingCharacterData.unitHealthPoints = unitComponent.unitHealthPoints;
+                // Update other stats as necessary
+            }
+            else
+            {
+                // Add new character data
+                CharacterData newCharacterData = new CharacterData()
+                {
+                    unitId = unitComponent.Id,
+                    unitHealthPoints = unitComponent.unitHealthPoints,
+                    // Set other properties as necessary
+                };
+                characterSaveData.characterData.Add(newCharacterData);
+            }
+        }
+
+        SaveStateManager.SaveGame(characterSaveData);
+    }
     public void LoadCharacterData()
     {
         Debug.Log("Loading Player Character's Data");
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
         if (playerUnits != null)
         {
+            GameSaveData characterSaveData = SaveStateManager.saveData;
             foreach (var playerUnit in playerUnits)
             {
-                Unit unit = playerUnit.GetComponent<Unit>();
-                string baseKey = unit.unitTemplate.unitName;
-
-                // Assuming default values if keys don't exist. Adjust as necessary.
-                float xp = PlayerPrefs.GetFloat(baseKey + "_XP", 0); // Default to 0 if not found
-                float coins = PlayerPrefs.GetFloat(baseKey + "_Coins", 0); // Default to 0 if not found
-                float healthPoints = PlayerPrefs.GetFloat(baseKey + "_HealthPoints", unit.unitTemplate.unitMaxHealthPoints); // Default to max health points if not found
-
-                unit.unitExperiencePoints = xp;
-                unit.unitCoins = coins; // Assuming unitCoins is the correct field for storing coins
-                unit.unitHealthPoints = healthPoints;
+                Unit unitComponent = playerUnit.GetComponent<Unit>();
+                CharacterData loadedCharacterData = characterSaveData.characterData.Find(character => character.unitId == unitComponent.Id);
+                if (loadedCharacterData != null)
+                {
+                    unitComponent.unitHealthPoints = loadedCharacterData.unitHealthPoints;
+                    // Set other stats as necessary
+                    Debug.Log("Restoring Player Units HP and Mana");
+                }
             }
         }
-        var deityAchievementsController = GameObject.FindGameObjectWithTag("DeityAchievementsController").GetComponent<DeityAchievementsController>();
-        int killedEnemies = PlayerPrefs.GetInt("killedEnemies", 0);
     }
 
     public void SaveEnemiesKilled()

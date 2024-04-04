@@ -169,8 +169,10 @@ public class TurnController : MonoBehaviour
             }
 
             gameStatsManager.SaveEnemiesKilled();
+            gameStatsManager.SaveCharacterData();
+            Debug.Log("Saving Character Stats Data");
             //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
-            GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>().SaveCharacterData();
+            //GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>().SaveCharacterData();
             //Saving each Player's Health Points, Coins and Experience Rewards
 
             //Activate Game Over UI

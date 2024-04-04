@@ -15,11 +15,12 @@ public class GameSaveData
 [System.Serializable]
 public class CharacterData
 {
-    public int unitId;
-    public int hp;
+    public string unitId;
+    public float unitHealthPoints;
+    public float unitManaPoints;
+    public float unitShieldPoints;
     public string name;
     public string description;
-
 }
 
 [System.Serializable]
@@ -27,6 +28,7 @@ public class CharacterData
 public class ResourceData
 
 {
-    public float coins;
+    public float coinsReward;
+    public float experiencePointsReward;
 }
 
