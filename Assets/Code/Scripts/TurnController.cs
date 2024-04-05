@@ -28,6 +28,8 @@ public class TurnController : MonoBehaviour
     public delegate void BattleEnd(string battleEndMessage);
     public static event BattleEnd OnBattleEnd;
 
+    public float warFunds;
+
     // Start is called before the first frame update
 
     public void OnEnable()
@@ -157,6 +159,7 @@ public class TurnController : MonoBehaviour
             foreach (var player in playerUnitsOnBattlefield)
             {
                 player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
+                warFunds += player.GetComponent<Unit>().unitCoins;
             }
             GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
             foreach (var enemy in GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().enemiesOnBattlefield)
@@ -170,6 +173,7 @@ public class TurnController : MonoBehaviour
 
             gameStatsManager.SaveEnemiesKilled();
             gameStatsManager.SaveCharacterData();
+            gameStatsManager.SaveWarFunds(warFunds);
             Debug.Log("Saving Character Stats Data");
             //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
             //GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>().SaveCharacterData();

@@ -5,11 +5,12 @@ using System.Collections.Generic;
 public class GameSaveData
 {
     public int enemiesKilled;
-    public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
-
-    public List<CharacterData> characterData = new List<CharacterData>();
     public int highestUnlockedLevel;
 
+    public List<CharacterData> characterData = new List<CharacterData>();
+    public ResourceData resourceData = new ResourceData();
+
+    public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
 }
 
 [System.Serializable]
@@ -28,7 +29,7 @@ public class CharacterData
 public class ResourceData
 
 {
-    public float coinsReward;
+    public float warFunds;
     public float experiencePointsReward;
 }
 

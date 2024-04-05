@@ -14,19 +14,15 @@ public class GameStatsManager : MonoBehaviour
 
 {
     public int enemiesKilled;
+    public float warFunds;
 
     private CharacterData characterData;
 
-    public void Start()
+    public void Awake()
     {
+        LoadWarFunds();
+        LoadEnemiesKilled();
         LoadCharacterData();
-        GameSaveData gameSaveData = SaveStateManager.saveData;
-        if (gameSaveData != null)
-        {
-            enemiesKilled = gameSaveData.enemiesKilled;
-            Debug.Log("Loading the number of killed Enemies");
-        }
-
     }
 
     // 22032024 To be changed to JSON-based system and moved to Save State Manager class
@@ -82,6 +78,36 @@ public class GameStatsManager : MonoBehaviour
         }
     }
 
+    public void LoadWarFunds()
+    {
+        GameSaveData resourceSaveData = SaveStateManager.saveData;
+        if (resourceSaveData != null && resourceSaveData.resourceData != null)
+        {
+            warFunds = resourceSaveData.resourceData.warFunds;
+            Debug.Log($"Loaded War Funds: {warFunds}");
+        }
+    }
+
+    public void SaveWarFunds(float newWarFunds)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.warFunds += newWarFunds;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved War Funds: {newWarFunds}");
+        }
+    }
+
+    public void LoadEnemiesKilled()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            enemiesKilled = gameSaveData.enemiesKilled;
+            Debug.Log("Loading the number of killed Enemies");
+        }
+    }
     public void SaveEnemiesKilled()
     {
         Debug.Log("Increasing Enemies Killed");
