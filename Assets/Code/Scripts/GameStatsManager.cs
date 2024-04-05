@@ -60,7 +60,7 @@ public class GameStatsManager : MonoBehaviour
     public void LoadCharacterData()
     {
         Debug.Log("Loading Player Character's Data");
-        GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
+        GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager")?.GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
         if (playerUnits != null)
         {
             GameSaveData characterSaveData = SaveStateManager.saveData;
