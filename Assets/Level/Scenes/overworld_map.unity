@@ -1267,6 +1267,8 @@ MonoBehaviour:
   playerUnitsOnBattlefield: []
   enemyUnitsOnBattlefield: []
   warFunds: 0
+  enemiesKilledInCurrentBattle: 0
+  battleEndUIHandler: {fileID: 0}
 --- !u!1 &676789505
 GameObject:
   m_ObjectHideFlags: 0

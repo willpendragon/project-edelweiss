@@ -7,50 +7,77 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using Unity.VisualScripting;
 using System.IO;
+using TMPro;
 
 public class DeityAltarController : MonoBehaviour
 {
     //public GameObject playerPartyMemberProfileGO;
-    public RectTransform playerPartyContainer;
-    public Unit selectedPlayerUnit;
+    public RectTransform playerPartyMembembersContainer;
     public RectTransform capturedDeitiesContainer;
+
+    public Unit selectedPlayerUnit;
     public GameObject playerUnitImageGO;
     public GameObject deityImageGO;
     public GameObject deityLinkButtonPrefab;
     public RectTransform deityLinkMenuContainer;
     public RectTransform saveDeityLinkButtonContainer;
+    public TextMeshProUGUI nameLabelPrefab;
 
     [Serialize]
 
     Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
     public void Start()
     {
-        CreateLinkButton();
+        GameManager.Instance.ApplyDeityLinks();
+        //CreateLinkButton();
         foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
         {
             Sprite playerUnitPortrait = playerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
-            GameObject newPlayerUnitImage = Instantiate(playerUnitImageGO, playerPartyContainer);
+            GameObject newPlayerUnitImage = Instantiate(playerUnitImageGO, playerPartyMembembersContainer);
             newPlayerUnitImage.GetComponent<Image>().sprite = playerUnitPortrait;
             newPlayerUnitImage.tag = "Player";
             newPlayerUnitImage.GetComponent<UnitImageController>().unitReference = playerUnit;
+            TextMeshProUGUI playerName = Instantiate(nameLabelPrefab, playerPartyMembembersContainer).GetComponent<TextMeshProUGUI>();
+            playerName.text = playerUnit.name;
         }
-        foreach (var capturedDeity in GameManager.Instance.collectibleDeities)
+
+
+        Dictionary<string, string> unitsLinkedToDeities = SaveStateManager.saveData.unitsLinkedToDeities;
+        foreach (var entry in unitsLinkedToDeities)
         {
-            Sprite deityPortrait = capturedDeity.deityPortrait;
+            string unitID = entry.Key;
+            string deityID = entry.Value;
+        }
+
+        foreach (var unitPrefab in GameManager.Instance.playerPartyMembersInstances)
+        {
+            Unit unit = unitPrefab.GetComponent<Unit>();
+            if (unit == null) continue; // Safety check
+
+            unitsLinkedToDeities.TryGetValue(unit.Id, out string connectedDeityId);
+            unit.LinkedDeityId = connectedDeityId;
+
+            // Safely find the linked deity
+            var deity = GameManager.Instance.collectibleDeities.Find(d => d.Id == unit.LinkedDeityId);
+            if (deity == null) continue; // Skip if no deity found
+
+            Sprite deityPortrait = deity.deityPortrait;
             GameObject newDeityUnitImage = Instantiate(deityImageGO, capturedDeitiesContainer);
             newDeityUnitImage.tag = "Deity";
             newDeityUnitImage.GetComponent<Image>().sprite = deityPortrait;
-            newDeityUnitImage.GetComponent<UnitImageController>().deityReference = capturedDeity;
+            newDeityUnitImage.GetComponent<UnitImageController>().deityReference = deity; // Assuming you meant to assign the deity here
+
+            TextMeshProUGUI deityName = Instantiate(nameLabelPrefab, capturedDeitiesContainer).GetComponent<TextMeshProUGUI>();
+            deityName.text = deity.name;
         }
-
     }
 
-    public void CreateLinkButton()
-    {
-        GameObject deityLinkButtonInstance = Instantiate(deityLinkButtonPrefab, saveDeityLinkButtonContainer);
-        Button currentdDeityLinkButton = deityLinkButtonInstance.GetComponent<Button>();
-        currentdDeityLinkButton.onClick.AddListener(() => GameManager.Instance.ApplyDeityLinks());
-    }
+    //public void CreateLinkButton()
+    //{
+    //    GameObject deityLinkButtonInstance = Instantiate(deityLinkButtonPrefab, saveDeityLinkButtonContainer);
+    //    Button currentdDeityLinkButton = deityLinkButtonInstance.GetComponent<Button>();
+    //    currentdDeityLinkButton.onClick.AddListener(() => GameManager.Instance.ApplyDeityLinks());
+    //}
 
     public void SetCurrentSelectedUnit(Unit unit)
     {
@@ -59,22 +86,23 @@ public class DeityAltarController : MonoBehaviour
 
     public void AssignDeityToUnit(Deity deity)
     {
-        selectedPlayerUnit.LinkedDeityId = deity.Id; // Link the Deity ID to the Unit
-        Debug.Log("Linked Player to Deity"); // Any additional logic for effects on the Unit's stats or state
-        CreateDictionaryEntry(deity);
-    }
-    public void CreateDictionaryEntry(Deity deity)
-    {
         string selectedPlayerUnitId = selectedPlayerUnit.Id;
-        unitsLinkedToDeities[selectedPlayerUnitId] = deity.Id;
-        SaveDictionaryToFile(unitsLinkedToDeities);
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deity.Id);
+        SaveStateManager.SaveGame(saveData);
+        GameManager.Instance.ApplyDeityLinks();
     }
+    //public void CreateDictionaryEntry(Deity deity)
+    //{
+    //    string selectedPlayerUnitId = selectedPlayerUnit.Id;
+    //    unitsLinkedToDeities[selectedPlayerUnitId] = deity.Id;
+    //    SaveDictionaryToFile(unitsLinkedToDeities);
+    //}
+    //public void SaveDictionaryToFile(Dictionary<string, string> unitsLinkedToDeities)
+    //{
+    //    string saveState = JsonConvert.SerializeObject(unitsLinkedToDeities, Formatting.Indented);
+    //    File.WriteAllText(Application.persistentDataPath + "/savegame.json", saveState);
 
-    public void SaveDictionaryToFile(Dictionary<string, string> unitsLinkedToDeities)
-    {
-        string saveState = JsonConvert.SerializeObject(unitsLinkedToDeities, Formatting.Indented);
-        File.WriteAllText(Application.persistentDataPath + "/savegame.json", saveState);
-
-        Debug.Log("Saving Dictionary");
-    }
+    //    Debug.Log("Saving Dictionary");
+    //}
 }
