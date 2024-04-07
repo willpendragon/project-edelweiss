@@ -17,30 +17,28 @@ public class BattleInterface : MonoBehaviour
     [SerializeField] TextMeshProUGUI deityJudgmentLimitText;
     [SerializeField] Player player;
 
+    [SerializeField] RectTransform battlefieldNotificationsPanel;
+    [SerializeField] float battlefieldNotificationsPanelDurationTime;
+
     private void OnEnable()
     {
-        Moveset.OnPlayerChangesPosition += ChangePlayerActionModeText;
-        Moveset.OnPlayerMovementModeEnd += DeactivatePlayerActionModePanel;
         Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
-        Deity.OnDeityFieldEffectActivation += ShowFieldEffectIcon;
         AOESpellPlayerAction.OnUsedSpell += SetSpellNameOnNotificationPanel;
     }
     private void OnDisable()
     {
-        Moveset.OnPlayerChangesPosition -= ChangePlayerActionModeText;
-        Moveset.OnPlayerMovementModeEnd -= DeactivatePlayerActionModePanel;
         Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
-        Deity.OnDeityFieldEffectActivation -= ShowFieldEffectIcon;
         AOESpellPlayerAction.OnUsedSpell -= SetSpellNameOnNotificationPanel;
     }
 
     public void SetSpellNameOnNotificationPanel(string spellName, string casterName)
     {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
         battlefieldTextNotifications.text = casterName + " used " + spellName;
+        StartCoroutine("ResetBattleFieldTextNotification");
     }
-
     public void SetDeityJudgmentCounter(int judgmentTurnLimitNumber)
     {
         deityJudgmentLimitText.text = judgmentTurnLimitNumber.ToString();
@@ -48,30 +46,14 @@ public class BattleInterface : MonoBehaviour
     }
     public void SetDeityNotification(string deityNotification)
     {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
         battlefieldTextNotifications.text = deityNotification;
+        StartCoroutine("ResetBattleFieldTextNotification");
+    }
+    IEnumerator ResetBattleFieldTextNotification()
+    {
+        yield return new WaitForSeconds(battlefieldNotificationsPanelDurationTime);
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(0, 0, 0);
     }
 
-    IEnumerator ResetMovePanel()
-    {
-        yield return new WaitForSeconds(2);
-        moveName.text = "";
-        moveNamePanel.color = new Color(1, 1, 1, 0);
-    }
-
-    public void ShowFieldEffectIcon()
-    {
-        fieldEffectIcon.color = new Color(255, 255, 255, 255);
-    }
-
-    public void ChangePlayerActionModeText()
-    {
-        playerActionPanel.SetActive(true);
-        playerActionText.text = "Movement Mode";
-    }
-
-    public void DeactivatePlayerActionModePanel()
-    {
-        battlefieldTextNotifications.text = "Player Is Unable to Move";
-        playerActionPanel.SetActive(false);
-    }
 }
