@@ -39,6 +39,8 @@ public class TurnController : MonoBehaviour
     public static event BattleEnd OnBattleEnd;
 
     public float warFunds;
+    public int enemiesKilledInCurrentBattle;
+    public BattleEndUIHandler battleEndUIHandler;
 
     // Start is called before the first frame update
 
@@ -162,7 +164,7 @@ public class TurnController : MonoBehaviour
         if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Enemy Party was defeated");
-            OnBattleEnd("Enemy Party was defeated");
+            OnBattleEnd("Victory");
             ResetTags();
             DeactivateActivePlayerUnitPanel();
             UnlockNextLevel();
@@ -176,6 +178,7 @@ public class TurnController : MonoBehaviour
             {
                 if (enemy.tag == "Enemy" && enemy.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead)
                 {
+                    enemiesKilledInCurrentBattle++;
                     gameStatsManager.enemiesKilled++;
                     Debug.Log("Adding enemies to kill count");
                 }
@@ -185,8 +188,10 @@ public class TurnController : MonoBehaviour
             gameStatsManager.SaveCharacterData();
             gameStatsManager.SaveWarFunds(warFunds);
             Debug.Log("Saving Character Stats Data");
+
+            UpdateBattleEndUIPanel();
+
             //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
-            //GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>().SaveCharacterData();
             //Saving each Player's Health Points, Coins and Experience Rewards
 
             //Activate Game Over UI
@@ -201,7 +206,7 @@ public class TurnController : MonoBehaviour
         else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Player Party was defeated");
-            OnBattleEnd("Player Party was defeated");
+            OnBattleEnd("Defeat");
             ResetTags();
             DeactivateActivePlayerUnitPanel();
             //Activate Game Over UI
@@ -235,4 +240,12 @@ public class TurnController : MonoBehaviour
     {
         Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
     }
+
+    public void UpdateBattleEndUIPanel()
+
+    {
+        battleEndUIHandler.battleEndEnemiesKilledText.text = enemiesKilledInCurrentBattle.ToString();
+        battleEndUIHandler.battleEndWarFundsGainedText.text = warFunds.ToString();
+    }
+
 }
