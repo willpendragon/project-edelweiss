@@ -40,6 +40,7 @@ public class GameStatsManager : MonoBehaviour
             {
                 // Update existing character data
                 existingCharacterData.unitHealthPoints = unitComponent.unitHealthPoints;
+                existingCharacterData.unitManaPoints = unitComponent.unitManaPoints;
                 // Update other stats as necessary
             }
             else
@@ -60,7 +61,11 @@ public class GameStatsManager : MonoBehaviour
     public void LoadCharacterData()
     {
         Debug.Log("Loading Player Character's Data");
-        GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager")?.GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
+        GameObject[] playerUnits = null;
+        if (TurnController.Instance != null)
+        {
+            playerUnits = TurnController.Instance.playerUnitsOnBattlefield;
+        }
         if (playerUnits != null)
         {
             GameSaveData characterSaveData = SaveStateManager.saveData;

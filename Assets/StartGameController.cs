@@ -22,8 +22,6 @@ public class StartGameController : MonoBehaviour
     public void ResetGame()
     {
         GameSaveData gameSaveData = new GameSaveData();
-        // Set default values. Example:
-        gameSaveData.highestUnlockedLevel = 0;
         SaveStateManager.SaveGame(gameSaveData);
     }
 }
