@@ -13,6 +13,7 @@ public class ItemFood : ScriptableObject
 
 {
     public string itemFoodName;
+    public float itemFoodPrice;
     public float recoveryAmount;
     public ItemFoodType itemFoodType;
     public Sprite foodIcon;

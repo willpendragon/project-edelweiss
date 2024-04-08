@@ -25,7 +25,6 @@ public class GameStatsManager : MonoBehaviour
         LoadCharacterData();
     }
 
-    // 22032024 To be changed to JSON-based system and moved to Save State Manager class
     public void SaveCharacterData()
     {
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
@@ -101,6 +100,17 @@ public class GameStatsManager : MonoBehaviour
             gameSaveData.resourceData.warFunds += newWarFunds;
             SaveStateManager.SaveGame(gameSaveData);
             Debug.Log($"Saved War Funds: {newWarFunds}");
+        }
+    }
+
+    public void SaveSpentWarFunds(float spentWarFunds)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.warFunds -= spentWarFunds;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Spent War Funds: {spentWarFunds}");
         }
     }
 
