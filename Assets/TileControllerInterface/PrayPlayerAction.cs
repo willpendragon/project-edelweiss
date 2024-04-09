@@ -22,7 +22,7 @@ public class PrayPlayerAction : IPlayerAction
     public void Deselect()
     {
         savedSelectedTile = null;
-        savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+        savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
         selectionLimiter++;
     }
 

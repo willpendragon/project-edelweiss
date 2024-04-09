@@ -78,7 +78,7 @@ public class DeitySpawner : MonoBehaviour
             foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(deitySpawningTile))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-                deitySpawningZoneTile.GetComponentInChildren<MeshRenderer>().material.color = Color.magenta;
+                deitySpawningZoneTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
                 deitySpawningZoneTile.detectedUnit = unboundDeity;
                 currentUnboundDeity = unboundDeity.GetComponent<Deity>();
                 Debug.Log("Deity occupies Tile");

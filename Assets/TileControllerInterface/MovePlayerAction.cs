@@ -23,7 +23,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             var destinationTile = selectedTile;
             //Check if the distance is available
             //If yes, check distance and create the path over the grid
-            destinationTile.GetComponentInChildren<MeshRenderer>().material.color = Color.blue;
+            destinationTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
             destinationTileXCoordinate = destinationTile.tileXCoordinate;
             destinationTileYCoordinate = destinationTile.tileYCoordinate;
             savedSelectedTile = selectedTile;
@@ -45,7 +45,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         //If a saved destination doesn't esist, by clicking on THAT tile, this will get back to selection mode
         if (savedSelectedTile != null)
         {
-            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile = null;
             //RevertToSelectionUnitPlayerAction();

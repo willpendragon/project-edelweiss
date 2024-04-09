@@ -16,7 +16,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         {
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile))
             {
-                tile.GetComponentInChildren<MeshRenderer>().material.color = Color.magenta;
+                tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
             }
             savedSelectedTile = selectedTile;
@@ -64,7 +64,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         {
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
             {
-                tile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+                tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
                 tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             }
             Debug.Log("Deselecting Summon Spawn Area");

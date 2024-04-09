@@ -20,7 +20,7 @@ public class MeleePlayerAction : IPlayerAction
 
             if (currentTarget.gameObject.tag == "Enemy")
             {
-                selectedTile.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+                selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 savedSelectedTile = selectedTile;
                 //Switch Selected tile to WaitingForConfirmationStatus
@@ -41,7 +41,7 @@ public class MeleePlayerAction : IPlayerAction
         selectionLimiter++;
         if (savedSelectedTile != null)
         {
-            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             Debug.Log("Deselecting Currently Selected Tile");
         }
@@ -67,7 +67,7 @@ public class MeleePlayerAction : IPlayerAction
             currentTarget.TakeDamage(attackPower);
             activePlayerUnit.unitOpportunityPoints--;
             UpdateActivePlayerUnitProfile(activePlayerUnit);
-            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
             Debug.Log("Melee Execution Logic");
         }
         else

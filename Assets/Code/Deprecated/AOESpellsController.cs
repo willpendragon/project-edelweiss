@@ -11,7 +11,7 @@ public class AOESpellsController : MonoBehaviour
     {
         foreach (var tile in gridMovementController.GetMultipleTiles(tile))
         {
-            tile.GetComponentInChildren<MeshRenderer>().material.color = Color.blue;
+            tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
             Destroy(tile.detectedUnit);
         }
     }

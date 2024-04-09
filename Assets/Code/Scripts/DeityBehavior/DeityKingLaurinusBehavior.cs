@@ -10,7 +10,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         TileController[] gridTiles = ExtractRandomTiles();
         foreach (var tile in gridTiles)
         {
-            tile.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
+            tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.gray;
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
         }
         if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>().turnCounter >= 2)

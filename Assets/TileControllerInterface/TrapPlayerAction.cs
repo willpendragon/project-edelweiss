@@ -15,7 +15,7 @@ public class TrapPlayerAction : IPlayerAction
         {
             if (selectedTile.currentSingleTileCondition == SingleTileCondition.free)
             {
-                selectedTile.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.clear;
+                selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.clear;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 savedSelectedTile = selectedTile;
                 selectionLimiter--;
@@ -32,7 +32,7 @@ public class TrapPlayerAction : IPlayerAction
         selectionLimiter++;
         if (savedSelectedTile != null)
         {
-            savedSelectedTile.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             Debug.Log("Deselecting Currently Selected Tile");
         }
@@ -42,7 +42,7 @@ public class TrapPlayerAction : IPlayerAction
     {
         TrapController trapController = savedSelectedTile.GetComponentInChildren<TrapController>();
         trapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
-        savedSelectedTile.gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+        savedSelectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
         Debug.Log("This Tile is now a Trap");
     }
 

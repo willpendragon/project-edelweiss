@@ -1470,6 +1470,7 @@ MonoBehaviour:
   characterProfilesPrefab: {fileID: 1968320970506569678, guid: c7d9cc8a22433b6458748860f66657ef, type: 3}
   warFundsCounter: {fileID: 1093975910}
   gameStatsManager: {fileID: 0}
+  currentPurchasedFood: {fileID: 0}
 --- !u!4 &962010255
 Transform:
   m_ObjectHideFlags: 0
@@ -2717,7 +2718,7 @@ MonoBehaviour:
     m_Top: 35
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 21.61
+  m_Spacing: 50
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
