@@ -56,8 +56,6 @@ public class StunnerEnemyBehavior : EnemyBehavior
         .FirstOrDefault();
         return unitWithHighestHP;
     }
-
-
     public void StunAbility(Unit targetUnit)
     {
         targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;

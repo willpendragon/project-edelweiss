@@ -9,13 +9,12 @@ public class BumperEnemyBehavior : EnemyBehavior
 {
     [SerializeField] int minEnemyMoveRollRange;
     [SerializeField] int maxEnemyMoveRollRange;
-    public int opportunity;
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
 
     [SerializeField] GameObject attackVFXAnimator;
-    public float attackPower;
+    public float attackPower = 1;
     //Beware, magic number
 
 
@@ -27,7 +26,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             //Enemy Unit selects the Target
             Unit targetPlayerUnit = SelectTargetPlayerUnit();
             MoveToPlayerTarget(targetPlayerUnit, enemyAgent);
-            float reducedDamage = enemyAgent.GetComponentInParent<Unit>().unitTemplate.meleeAttackPower; //* damageReductionFactor//
+            float reducedDamage = attackPower; //* damageReductionFactor//
             targetPlayerUnit.HealthPoints -= (reducedDamage);
             targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
 
@@ -39,7 +38,7 @@ public class BumperEnemyBehavior : EnemyBehavior
 
             Debug.Log("Enemy Attacking");
 
-            opportunity -= 1;
+            //opportunity -= 1;
         }
         else
         {
@@ -48,15 +47,17 @@ public class BumperEnemyBehavior : EnemyBehavior
     }
     public Unit SelectTargetPlayerUnit()
     {
-        //This method selects the Target Unit choosing from the Player Unit with the Highest HP
+        // This method selects the Target Unit choosing from the Player Unit with the Lowest HP among those that are not dead
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
 
-        Unit unitWithHighestHP = playerUnitsOnBattlefield
-        .Select(go => go.GetComponent<Unit>())
-        .Where(unit => unit != null)
-        .OrderByDescending(unit => unit.unitHealthPoints)
-        .FirstOrDefault();
-        return unitWithHighestHP;
+        Unit targetUnit = playerUnitsOnBattlefield
+            .Select(go => go.GetComponent<Unit>())
+            .Where(unit => unit != null && unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead) // Filter out null and dead units
+            .OrderBy(unit => unit.unitHealthPoints) // Order by HP ascending to find the lowest
+            .FirstOrDefault(); // Take the first, which is the one with the lowest HP among alive units
+
+        // If an alive unit is found, return it, otherwise null (indicating no valid target)
+        return targetUnit; // No need to check for dead here, as we've already filtered them out
     }
     public void MoveToPlayerTarget(Unit defenderPlayerUnit, EnemyAgent enemyAttacker)
     {

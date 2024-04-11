@@ -53,6 +53,8 @@ public class Unit : MonoBehaviour
 
     public UnitStatusController unitStatusController;
 
+    public UnitSelectionController unitSelectionController;
+
     public UnityEvent<float> OnTakenDamage;
 
     public float HealthPoints
@@ -68,12 +70,6 @@ public class Unit : MonoBehaviour
             }
         }
     }
-
-    void Awake()
-    {
-
-    }
-
     public void Start()
     {
         if (unitTemplate != null)
@@ -143,6 +139,7 @@ public class Unit : MonoBehaviour
         {
             GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
+            unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             Debug.Log("This Unit has died");
             Destroy(unitProfilePanel);
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));

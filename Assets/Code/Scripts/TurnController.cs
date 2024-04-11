@@ -119,13 +119,28 @@ public class TurnController : MonoBehaviour
 
     public void CheckPlayerUnitsStatus()
     {
-        if (playerUnitsOnBattlefield.All(player => player.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting))
+        // Get all player units
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+
+        // Check if all units are either dead or waiting (which means no unit is in a state that can take action)
+        bool allUnitsDeadOrWaiting = playerUnitsOnBattlefield.All(unitObject =>
         {
-            //Disable Player UI
+            Unit unit = unitObject.GetComponent<Unit>();
+            return unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead || unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting;
+        });
+
+        // If all units are dead or waiting, we proceed to swap turns
+        if (allUnitsDeadOrWaiting)
+        {
+            Debug.Log("All units are either dead or waiting. Swapping to enemy turn.");
+            // Disable Player UI
             ApplyTrapEffects();
             OnEnemyTurn("Enemy Turn");
             OnEnemyTurnSwap();
-            Debug.Log("Player Turn is over. Hand over turn to the Enemy Party");
+        }
+        else
+        {
+            Debug.Log("At least one player unit can still take actions.");
         }
     }
 
@@ -145,12 +160,15 @@ public class TurnController : MonoBehaviour
 
     public void PlayerGameOverCheck()
     {
-        if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        // Check if there are any units that are NOT dead, indicating the player party is still active.
+        bool isAnyPlayerUnitAlive = playerUnitsOnBattlefield.Any(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead);
+
+        if (!isAnyPlayerUnitAlive) // If no units are alive, then the player party has been defeated.
         {
             Debug.Log("Player Party was defeated");
             OnBattleEnd("Player Party was defeated");
-            //Activate Game Over UI
-            //Active Game Over Flow
+            // Activate Game Over UI
+            // Active Game Over Flow
             ResetTags();
             DeactivateActivePlayerUnitPanel();
         }
@@ -200,8 +218,6 @@ public class TurnController : MonoBehaviour
         else if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Enemy Party is still in game");
-            //Activate Game Over UI
-            //Active Game Over Flow
         }
         else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {

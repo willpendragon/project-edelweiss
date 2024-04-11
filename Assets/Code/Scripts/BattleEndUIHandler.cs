@@ -43,9 +43,24 @@ public class BattleEndUIHandler : MonoBehaviour
 
     public void DeactivateBattleUI()
     {
-        battlefieldNotificationsContainer.transform.localScale = new Vector3(0, 0, 0);
-        GameObject.FindGameObjectWithTag("MovesPanel").gameObject.SetActive(false);
-        GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform.GetChild(1).gameObject.SetActive(false);
+        GameObject battleInterfaceCanvas = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
+        if (battleInterfaceCanvas != null) // Check if the GameObject was found
+        {
+            Transform childTransform;
+            // Check if the child index exists
+            if (battleInterfaceCanvas.transform.childCount > 1 && (childTransform = battleInterfaceCanvas.transform.GetChild(1)) != null)
+            {
+                childTransform.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogWarning("The specified child of BattleInterfaceCanvas does not exist!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("BattleInterfaceCanvas not found!");
+        }
 
     }
 }

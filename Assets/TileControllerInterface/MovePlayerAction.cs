@@ -65,7 +65,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     {
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         //Retrieve Active Current Player
-        activePlayerUnit.unitOpportunityPoints--;
+
 
         if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun
             && savedSelectedTile.currentSingleTileCondition == SingleTileCondition.free)
@@ -81,12 +81,13 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             activePlayerUnit.ownedTile = savedSelectedTile;
             activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
 
+            activePlayerUnit.unitOpportunityPoints--;
             UpdateActivePlayerUnitProfile(activePlayerUnit);
-
             Debug.Log("Moving Character Execution Logic");
         }
         else
         {
+            UpdateActivePlayerUnitProfile(activePlayerUnit);
             Debug.Log("Not enough Opportunity Points on Active Player Unit");
         }
     }

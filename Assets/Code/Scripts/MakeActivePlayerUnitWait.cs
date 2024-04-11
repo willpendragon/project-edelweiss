@@ -14,6 +14,6 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
         {
             tile.currentPlayerAction = new SelectUnitPlayerAction();
         }
-
+        GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>().GameOverCheck();
     }
 }

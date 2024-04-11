@@ -30,6 +30,7 @@ public class DeitySpawner : MonoBehaviour
     {
         Debug.Log("Rolling which Deity will appear");
         int deityIndex = Random.Range(0, spawnableDeities.Length);
+        //I've used a sub-par workaround to make all the Deities appear correctly. 235710042024LU
         GameObject spawningDeity = spawnableDeities[deityIndex];
         Instantiate(spawningDeity, deitySpawnPosition);
         GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = spawningDeity.GetComponent<Deity>();
