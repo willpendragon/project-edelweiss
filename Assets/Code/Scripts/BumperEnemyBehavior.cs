@@ -61,67 +61,70 @@ public class BumperEnemyBehavior : EnemyBehavior
     }
     public void MoveToPlayerTarget(Unit defenderPlayerUnit, EnemyAgent enemyAttacker)
     {
-        if (CheckDistanceBetweenUnits(defenderPlayerUnit.ownedTile, enemyAttacker.gameObject.GetComponent<Unit>().ownedTile) == true)
+        if (CheckDistanceBetweenUnits(defenderPlayerUnit.ownedTile, enemyAttacker.gameObject.GetComponent<Unit>().ownedTile))
         {
             Debug.Log("Enemy Unit is near Player Target. Enemy Unit stays still");
         }
         else
         {
-            // Get all neighboring tiles
             List<TileController> destinationNeighborTilesList = GridManager.Instance.GetComponentInChildren<GridMovementController>().GetNeighbours(defenderPlayerUnit.ownedTile);
 
-            // Filter out the tiles that are free
+            // Filter for free tiles only
             List<TileController> freeTiles = destinationNeighborTilesList.Where(tile => tile.currentSingleTileCondition == SingleTileCondition.free).ToList();
 
-            // Check if there are any free tiles available
-            if (freeTiles.Count > 0)
+            // Strategy change: Choose the tile that minimizes the distance to the target
+            TileController closestTile = null;
+            float closestDistance = float.MaxValue;
+            foreach (var tile in freeTiles)
             {
-                // Select a random free tile
-                int randomIndex = UnityEngine.Random.Range(0, freeTiles.Count);
-                TileController destinationTile = freeTiles[randomIndex];
+                float distance = GridManager.Instance.gridMovementController.GetDistance(tile, defenderPlayerUnit.ownedTile);
+                if (distance < closestDistance)
+                {
+                    closestTile = tile;
+                    closestDistance = distance;
+                }
+            }
 
-                // Move the unit to the selected tile
-                enemyAttacker.GetComponent<Unit>().ownedTile.detectedUnit = null;
-                enemyAttacker.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-                enemyAttacker.GetComponent<Unit>().MoveUnit(destinationTile.tileXCoordinate, destinationTile.tileYCoordinate);
-                destinationTile.detectedUnit = enemyAttacker.gameObject;
-                enemyAttacker.gameObject.GetComponent<Unit>().ownedTile = destinationTile;
-                destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
-                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+            if (closestTile != null)
+            {
+                // Move the unit to the closest tile
+                MoveUnitToTile(enemyAttacker.GetComponent<Unit>(), closestTile);
+                Debug.Log("Enemy Unit moves closer to Player Unit.");
             }
             else
             {
-                Debug.Log("No free tiles available");
+                Debug.Log("No free tiles available to move closer.");
             }
         }
     }
-    //GetTileControllerInstance(defenderPlayerUnit.currentXCoordinate - 1, defenderPlayerUnit.currentYCoordinate - 1);
+    private void MoveUnitToTile(Unit unit, TileController destinationTile)
+    {
+        // Clear the current tile
+        unit.ownedTile.detectedUnit = null;
+        unit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
 
-    //if (destinationTile.currentSingleTileCondition == SingleTileCondition.occupied)
-    //{
-    //    Debug.Log(Enemy Unit is near Player Target, but Enemy Unit stays still because the tile has already been occupied");
-    //}
-    //else
-    //{
-    //    enemyAttacker.gameObject.GetComponent<Unit>().MoveUnit(defenderPlayerUnit.currentXCoordinate - 1, defenderPlayerUnit.currentYCoordinate - 1);
-    //    destinationTile.detectedUnit = enemyAttacker.gameObject;
-    //    enemyAttacker.gameObject.GetComponent<Unit>().ownedTile = destinationTile;
-    //        //    destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
-    //        //    Debug.Log("Enemy Unit is distant from Player Target. Moving Enemy Unit closer to Player Unit");
-    //        }
-    //    }
-    //
+        // Move and update the unit's tile
+        unit.MoveUnit(destinationTile.tileXCoordinate, destinationTile.tileYCoordinate);
+        destinationTile.detectedUnit = unit.gameObject;
+        unit.ownedTile = destinationTile;
+        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+
+        // Potentially update visuals or other game elements here as needed
+        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+    }
+
 
     public bool CheckDistanceBetweenUnits(TileController attackerTile, TileController defenderTile)
     {
-        //Change magic number later
         GridMovementController gridMovementController = GridManager.Instance.gridMovementController;
-        if (gridMovementController.GetDistance(attackerTile, defenderTile) <= 2)
+        int distance = gridMovementController.GetDistance(attackerTile, defenderTile);
+
+        if (distance < 2) // If the distance is less than 2, they are close.
         {
             Debug.Log("Distance Check: Enemy Attacker is close to Defender. Enemy will stay in place.");
             return true;
         }
-        else
+        else // If the distance is 2 or more, they are not close.
         {
             Debug.Log("Distance Check: Enemy Attacker is distant from Defender. Enemy Attack will move towards Defender");
             return false;
