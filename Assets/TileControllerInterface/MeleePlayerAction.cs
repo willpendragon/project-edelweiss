@@ -68,6 +68,9 @@ public class MeleePlayerAction : IPlayerAction
             activePlayerUnit.unitOpportunityPoints--;
             UpdateActivePlayerUnitProfile(activePlayerUnit);
             savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
+            savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            savedSelectedTile.currentSingleTileCondition = SingleTileCondition.free;
+
             Debug.Log("Melee Execution Logic");
         }
         else
@@ -121,6 +124,8 @@ public class MeleePlayerAction : IPlayerAction
         defender.ownedTile.detectedUnit = null;
         defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y);
         defender.GetComponent<Unit>().SetPosition(newGridPos.x, newGridPos.y);
+        TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
+        defender.ownedTile = destinationTile;
     }
 
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
