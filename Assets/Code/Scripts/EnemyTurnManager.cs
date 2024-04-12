@@ -80,7 +80,7 @@ public class EnemyTurnManager : MonoBehaviour
             OnDeityTurn();
             Debug.Log("Enemy turns are over. Passing turn to Deity");
         }
-        else if (deity == null)
+        else
         {
             OnPlayerTurn("Player Turn");
             OnPlayerTurnSwap();
