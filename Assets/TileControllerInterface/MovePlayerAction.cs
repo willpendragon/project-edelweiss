@@ -61,34 +61,55 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             RevertToSelectionUnitPlayerAction();
         }
     }
+
+    public bool IsSurrounded(Unit unit)
+    {
+        List<TileController> neighbours = GridManager.Instance.gridMovementController.GetNeighbours(unit.ownedTile);
+        foreach (TileController neighbour in neighbours)
+        {
+            if (neighbour.currentSingleTileCondition == SingleTileCondition.free)
+            {
+                return false; // There's at least one free tile, so the unit is not surrounded
+            }
+        }
+        return true; // All neighbouring tiles are occupied, unit is surrounded
+    }
     public void Execute()
     {
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         //Retrieve Active Current Player
 
-
-        if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun
-            && savedSelectedTile.currentSingleTileCondition == SingleTileCondition.free)
+        if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
         {
+            if (IsSurrounded(activePlayerUnit))
+            {
+                Debug.Log("Unit is surrounded and cannot move.");
+                // Here you can add any additional logic for when the unit is surrounded
+            }
+            else if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.free)
+            {
+                //Use Grid Logic to Move the Player to Destination
+                activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
+                activePlayerUnit.ownedTile.detectedUnit = null;
+                activePlayerUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate);
+                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+                activePlayerUnit.ownedTile = savedSelectedTile;
+                activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
 
-            //Use Grid Logic to Move the Player to Destination            
-            activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
-            activePlayerUnit.ownedTile.detectedUnit = null;
-            activePlayerUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-            activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate);
-            //activePlayerUnit.SetPosition(destinationTileXCoordinate, destinationTileYCoordinate);
-            GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
-            activePlayerUnit.ownedTile = savedSelectedTile;
-            activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
-
-            activePlayerUnit.unitOpportunityPoints--;
-            UpdateActivePlayerUnitProfile(activePlayerUnit);
-            Debug.Log("Moving Character Execution Logic");
+                activePlayerUnit.unitOpportunityPoints--;
+                UpdateActivePlayerUnitProfile(activePlayerUnit);
+                Debug.Log("Moving Character Execution Logic");
+            }
+            else
+            {
+                Debug.Log("Destination tile is not free.");
+            }
         }
         else
         {
             UpdateActivePlayerUnitProfile(activePlayerUnit);
-            Debug.Log("Not enough Opportunity Points on Active Player Unit");
+            Debug.Log("Not enough Opportunity Points or Unit is stunned.");
         }
     }
 
