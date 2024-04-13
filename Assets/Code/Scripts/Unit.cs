@@ -98,7 +98,7 @@ public class Unit : MonoBehaviour
         unitManaPoints -= spentManaAmount;
     }
 
-    public void MoveUnit(int targetX, int targetY)
+    public bool MoveUnit(int targetX, int targetY)
     {
         // Convert current world position to grid coordinates
         Vector2Int startGridPos = GridManager.Instance.GetGridCoordinatesFromWorldPosition(transform.position);
@@ -123,10 +123,12 @@ public class Unit : MonoBehaviour
 
                 Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
             }
+            return true;
         }
         else
         {
             Debug.Log("No valid path found or path exceeds movement limit.");
+            return false;
         }
     }
     public void CheckUnitHealthStatus()

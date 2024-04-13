@@ -81,18 +81,17 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
         if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
         {
-            if (IsSurrounded(activePlayerUnit))
-            {
-                Debug.Log("Unit is surrounded and cannot move.");
-                // Here you can add any additional logic for when the unit is surrounded
-            }
-            else if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.free)
+            //if (IsSurrounded(activePlayerUnit))
+            //{
+            //    Debug.Log("Unit is surrounded and cannot move.");
+            //    // Here you can add any additional logic for when the unit is surrounded
+            //}
+            if (activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate))
             {
                 //Use Grid Logic to Move the Player to Destination
                 activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
                 activePlayerUnit.ownedTile.detectedUnit = null;
                 activePlayerUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-                activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate);
                 GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
                 activePlayerUnit.ownedTile = savedSelectedTile;
                 activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
@@ -103,7 +102,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             }
             else
             {
-                Debug.Log("Destination tile is not free.");
+                Debug.Log("Destination tile is not valid.");
             }
         }
         else
