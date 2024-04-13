@@ -72,14 +72,15 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     }
                     else if (tile.detectedUnit.tag == "Enemy")
                     {
+                        PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, tile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                        OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
                         tile.detectedUnit.GetComponent<Unit>().TakeDamage(GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage);
                         activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
                         activePlayerUnit.unitOpportunityPoints--;
                         UpdateActivePlayerUnitMana(activePlayerUnit);
                         Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
                         DeityEnmityCheck();
-                        PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, tile, spellCastingController.currentSelectedSpell.spellVFXOffset);
-                        OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+
                     }
                 }
             }
@@ -88,14 +89,15 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             {
                 if (savedSelectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
                 {
+                    PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, savedSelectedTile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                    OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
                     savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(spellCastingController.currentSelectedSpell.damage);
                     savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
                     activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
                     activePlayerUnit.unitOpportunityPoints--;
                     UpdateActivePlayerUnitMana(activePlayerUnit);
                     DeityEnmityCheck();
-                    PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, savedSelectedTile, spellCastingController.currentSelectedSpell.spellVFXOffset);
-                    OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+
                 }
             }
         }

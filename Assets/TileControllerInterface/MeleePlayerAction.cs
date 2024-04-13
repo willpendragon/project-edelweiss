@@ -63,13 +63,13 @@ public class MeleePlayerAction : IPlayerAction
                 knockbackStrength = knockbackStrength * 2;
                 Debug.Log("Applying distance and knockback multiplier");
             }
-            ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
             currentTarget.TakeDamage(attackPower);
             activePlayerUnit.unitOpportunityPoints--;
             UpdateActivePlayerUnitProfile(activePlayerUnit);
             savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile.currentSingleTileCondition = SingleTileCondition.free;
+            ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
 
             Debug.Log("Melee Execution Logic");
         }
@@ -121,11 +121,22 @@ public class MeleePlayerAction : IPlayerAction
         newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
         // Move the defender to the new grid position
-        defender.ownedTile.detectedUnit = null;
-        defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y);
-        defender.GetComponent<Unit>().SetPosition(newGridPos.x, newGridPos.y);
-        TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
-        defender.ownedTile = destinationTile;
+        if (defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+        {
+            defender.ownedTile.detectedUnit = null;
+            defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y);
+            //defender.GetComponent<Unit>().SetPosition(newGridPos.x, newGridPos.y);
+            TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
+            defender.ownedTile = destinationTile;
+            destinationTile.detectedUnit = defender.gameObject;
+            Debug.Log("Enemy knocked back");
+            //Stopped here 130420241348
+
+        }
+        else
+        {
+            Debug.Log("Can't knockback Enemy Unit");
+        }
     }
 
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)

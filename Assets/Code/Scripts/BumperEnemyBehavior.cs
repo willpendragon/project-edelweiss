@@ -99,18 +99,29 @@ public class BumperEnemyBehavior : EnemyBehavior
     }
     private void MoveUnitToTile(Unit unit, TileController destinationTile)
     {
-        // Clear the current tile
-        unit.ownedTile.detectedUnit = null;
-        unit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+        //// Clear the current tile
+        //unit.ownedTile.detectedUnit = null;
+        //unit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
 
         // Move and update the unit's tile
-        unit.MoveUnit(destinationTile.tileXCoordinate, destinationTile.tileYCoordinate);
-        destinationTile.detectedUnit = unit.gameObject;
-        unit.ownedTile = destinationTile;
-        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+        if (unit.MoveUnit(destinationTile.tileXCoordinate, destinationTile.tileYCoordinate))
 
-        // Potentially update visuals or other game elements here as needed
-        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+        {
+            if (destinationTile.currentSingleTileCondition == SingleTileCondition.free)
+            {
+                unit.ownedTile.detectedUnit = null;
+                unit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+                unit.ownedTile = destinationTile;
+                destinationTile.detectedUnit = unit.gameObject;
+                destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                Debug.Log("Bumper Enemy Moved");
+                // Potentially update visuals or other game elements here as needed
+
+            }
+        }
+        else
+            Debug.Log("This Bumper Enemy Unit can't move");
     }
 
 
