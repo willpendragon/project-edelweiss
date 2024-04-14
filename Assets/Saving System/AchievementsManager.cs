@@ -1,16 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class AchievementsManager : MonoBehaviour
-{ 
+{
     public List<Achievement> allAchievements; // Assign in editor or load at runtime
+
+    private System.Random localRandom = new System.Random(); // Local random number generator
 
     private void Awake()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
+
     private void OnDestroy()
     {
         // Always unsubscribe from events when the object is destroyed
@@ -26,8 +30,8 @@ public class AchievementsManager : MonoBehaviour
 
             if (completedAchievements.Count > 0)
             {
-                // Tie-breaker: Random selection
-                Achievement achievementToTrigger = completedAchievements[UnityEngine.Random.Range(0, completedAchievements.Count)];
+                // Tie-breaker: Random selection using System.Random
+                Achievement achievementToTrigger = completedAchievements[localRandom.Next(completedAchievements.Count)];
                 TriggerAchievementLogic(achievementToTrigger);
             }
         }
