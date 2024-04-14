@@ -11,6 +11,9 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] DeityAchievementsController deityAchievementsController;
     [SerializeField] BattleManager battleManager;
 
+    private System.Random localRandom = new System.Random(); // Local random number generator
+
+
     public Deity currentUnboundDeity;
     // Start is called before the first frame update
     public GameObject deityHealthBar;
@@ -18,8 +21,8 @@ public class DeitySpawner : MonoBehaviour
     {
         if (battleManager.currentBattleType == BattleType.regularBattle)
         {
-            var deityRoll = Random.Range(0, 7);
-            if (deityRoll <= 6 && deityRoll >= 3)
+            var deityRoll = localRandom.Next(0, 7); // Use System.Random for roll
+            if (deityRoll >= 3 && deityRoll <= 6)
             {
                 DeitySelector();
                 Debug.Log("Rolled Deity arrival on battlefield");
@@ -29,10 +32,11 @@ public class DeitySpawner : MonoBehaviour
     public void DeitySelector()
     {
         Debug.Log("Rolling which Deity will appear");
-        int deityIndex = Random.Range(0, spawnableDeities.Length);
-        //I've used a sub-par workaround to make all the Deities appear correctly. 235710042024LU
+        int deityIndex = localRandom.Next(0, spawnableDeities.Length); // Use System.Random for deity selection
+        Debug.Log($"Deity Index: {deityIndex} - {spawnableDeities[deityIndex].name}");
+
         GameObject spawningDeity = spawnableDeities[deityIndex];
-        Instantiate(spawningDeity, deitySpawnPosition);
+        Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
         GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = spawningDeity.GetComponent<Deity>();
     }
     void CreateDeityHealthBar(GameObject spawnedUnboundDeity)
