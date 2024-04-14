@@ -942,7 +942,9 @@ MonoBehaviour:
   enemyUnitsOnBattlefield: []
   warFunds: 0
   enemiesKilledInCurrentBattle: 0
+  battleManager: {fileID: 90211749}
   battleEndUIHandler: {fileID: 767884336}
+  timesSingleTargetSpellWasUsed: 0
 --- !u!1 &99782221
 GameObject:
   m_ObjectHideFlags: 0
@@ -2325,6 +2327,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 459323976506094027, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
+      propertyPath: allAchievements.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 459323976506094027, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
+      propertyPath: allAchievements.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: dbb23f5c7d1706845a636d973a9c3513, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
 --- !u!1 &511038725
@@ -5289,6 +5299,50 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &814362703
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 814362705}
+  - component: {fileID: 814362704}
+  m_Layer: 0
+  m_Name: MoveTracker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &814362704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814362703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f33eeb5e4248ef9409c52c05a007f1ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &814362705
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814362703}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.4683595, y: 2.0044456, z: 2.3455086}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 37
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &837603759
 GameObject:
   m_ObjectHideFlags: 0
@@ -7301,6 +7355,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemiesKilled: 0
   warFunds: 0
+  timesSingleTargetSpellWasUsed: 0
 --- !u!4 &1195676640
 Transform:
   m_ObjectHideFlags: 0
@@ -9087,7 +9142,6 @@ MonoBehaviour:
   deitySpawnPosition: {fileID: 1790485010}
   deityAchievementsController: {fileID: 6169969153480535271}
   battleManager: {fileID: 90211749}
-  weights: 0100000002000000
   currentUnboundDeity: {fileID: 0}
   deityHealthBar: {fileID: 7395316366926420676, guid: 2f84651896d321549ad1a81364cdcca6, type: 3}
 --- !u!4 &1790485010

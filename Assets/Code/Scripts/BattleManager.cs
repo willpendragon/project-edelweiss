@@ -21,7 +21,6 @@ public enum BattleType
 {
     regularBattle,
     battleWithDeity
-
 }
 
 public class BattleManager : MonoBehaviour
@@ -105,7 +104,6 @@ public class BattleManager : MonoBehaviour
         PlayerTurnStarts.Invoke();
         OnChargeDeityPowerLoadingBar();
     }
-
     public bool AllEnemiesOpportunityZero()
     {
         foreach (GameObject enemy in enemiesOnBattlefield)

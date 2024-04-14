@@ -17,6 +17,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public delegate void UsedSpell(string spellName, string casterName);
     public static event UsedSpell OnUsedSpell;
 
+    public delegate void UsedSingleTargetSpell();
+    public static event UsedSingleTargetSpell OnUsedSingleTargetSpell;
+
     public void Select(TileController selectedTile)
     {
         spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
@@ -96,6 +99,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
                     activePlayerUnit.unitOpportunityPoints--;
                     UpdateActivePlayerUnitMana(activePlayerUnit);
+                    OnUsedSingleTargetSpell();
                     DeityEnmityCheck();
 
                 }

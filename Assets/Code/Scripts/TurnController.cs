@@ -40,7 +40,10 @@ public class TurnController : MonoBehaviour
 
     public float warFunds;
     public int enemiesKilledInCurrentBattle;
+    public BattleManager battleManager;
     public BattleEndUIHandler battleEndUIHandler;
+    public int timesSingleTargetSpellWasUsed;
+
 
     // Start is called before the first frame update
 
@@ -179,61 +182,70 @@ public class TurnController : MonoBehaviour
     }
     public void GameOverCheck()
     {
-        if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        if (battleManager.currentBattleType == BattleType.regularBattle)
         {
-            Debug.Log("Enemy Party was defeated");
-            OnBattleEnd("Victory");
-            ResetTags();
-            DeactivateActivePlayerUnitPanel();
-            UnlockNextLevel();
-            foreach (var player in playerUnitsOnBattlefield)
+            if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
             {
-                player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
-                warFunds += player.GetComponent<Unit>().unitCoins;
-            }
-            GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-            foreach (var enemy in GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().enemiesOnBattlefield)
-            {
-                if (enemy.tag == "Enemy" && enemy.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead)
+                Debug.Log("Enemy Party was defeated");
+                OnBattleEnd("Victory");
+                ResetTags();
+                DeactivateActivePlayerUnitPanel();
+                UnlockNextLevel();
+                foreach (var player in playerUnitsOnBattlefield)
                 {
-                    enemiesKilledInCurrentBattle++;
-                    gameStatsManager.enemiesKilled++;
-                    Debug.Log("Adding enemies to kill count");
+                    player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
+                    warFunds += player.GetComponent<Unit>().unitCoins;
                 }
+                GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+                foreach (var enemy in GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().enemiesOnBattlefield)
+                {
+                    if (enemy.tag == "Enemy" && enemy.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead)
+                    {
+                        enemiesKilledInCurrentBattle++;
+                        gameStatsManager.enemiesKilled++;
+                        Debug.Log("Adding enemies to kill count");
+                    }
+                }
+
+                gameStatsManager.SaveEnemiesKilled();
+                gameStatsManager.SaveCharacterData();
+                gameStatsManager.SaveWarFunds(warFunds);
+                gameStatsManager.SaveUsedSingleTargetSpells(timesSingleTargetSpellWasUsed);
+                Debug.Log("Saving Character Stats Data");
+
+                UpdateBattleEndUIPanel();
+
+                //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
+                //Saving each Player's Health Points, Coins and Experience Rewards
+
+                //Activate Game Over UI
+                //Active Game Over Flow
             }
-
-            gameStatsManager.SaveEnemiesKilled();
-            gameStatsManager.SaveCharacterData();
-            gameStatsManager.SaveWarFunds(warFunds);
-            Debug.Log("Saving Character Stats Data");
-
-            UpdateBattleEndUIPanel();
-
-            //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
-            //Saving each Player's Health Points, Coins and Experience Rewards
-
-            //Activate Game Over UI
-            //Active Game Over Flow
+            else if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+            {
+                Debug.Log("Enemy Party is still in game");
+            }
+            else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+            {
+                Debug.Log("Player Party was defeated");
+                OnBattleEnd("Defeat");
+                ResetTags();
+                DeactivateActivePlayerUnitPanel();
+                //Activate Game Over UI
+                //Active Game Over Flow
+            }
+            else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+            {
+                Debug.Log("Player Party is still in game");
+                //Activate Game Over UI
+                //Active Game Over Flow
+            }
         }
-        else if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+        else
         {
-            Debug.Log("Enemy Party is still in game");
+            Debug.Log("Battle with Deity");
         }
-        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
-        {
-            Debug.Log("Player Party was defeated");
-            OnBattleEnd("Defeat");
-            ResetTags();
-            DeactivateActivePlayerUnitPanel();
-            //Activate Game Over UI
-            //Active Game Over Flow
-        }
-        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
-        {
-            Debug.Log("Player Party is still in game");
-            //Activate Game Over UI
-            //Active Game Over Flow
-        }
+
     }
 
     public void ResetTags()

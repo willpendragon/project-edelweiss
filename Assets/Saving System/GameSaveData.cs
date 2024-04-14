@@ -6,6 +6,7 @@ public class GameSaveData
 {
     public int enemiesKilled;
     public int highestUnlockedLevel;
+    public int timesSingleTargetSpellWasUsed;
 
     public List<CharacterData> characterData = new List<CharacterData>();
     public ResourceData resourceData = new ResourceData();

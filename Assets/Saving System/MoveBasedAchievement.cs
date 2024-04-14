@@ -1,18 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
-public class MoveBasedAchievement : MonoBehaviour
+[CreateAssetMenu(fileName = "New Achievement", menuName = "Achievement System/Move Based Achievement")]
+public class MoveBasedAchievement : Achievement
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int requiredUsedMoves;
 
-    // Update is called once per frame
-    void Update()
+    public override bool AchievementIsUnlocked()
     {
-        
+        Debug.Assert(spawnableDeity != null);
+
+        bool unlocked = SaveStateManager.saveData.timesSingleTargetSpellWasUsed >= requiredUsedMoves;
+        if (spawnableDeity.TryGetComponent<Deity>(out Deity deity))
+        {
+            if (SaveStateManager.saveData.unitsLinkedToDeities.ContainsValue(deity.Id))
+            {
+                return false;
+            }
+        }
+        return unlocked;
     }
 }

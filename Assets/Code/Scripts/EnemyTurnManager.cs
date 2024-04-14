@@ -66,26 +66,34 @@ public class EnemyTurnManager : MonoBehaviour
     }
     private IEnumerator ExecuteTurns()
     {
-        while (currentEnemyTurnIndex < enemiesInQueue.Count)
+        if (battleManager.currentBattleType == BattleType.regularBattle)
         {
-            EnemyAgent currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
-            Debug.Log("Current Turn: " + currentEnemy.name);
-            currentEnemy.EnemyTurnEvents();
-            //Add the logic for the Enemy's turn here
-            yield return new WaitForSeconds(singleEnemyturnDuration);
-            currentEnemyTurnIndex++;
+            while (currentEnemyTurnIndex < enemiesInQueue.Count)
+            {
+                EnemyAgent currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
+                Debug.Log("Current Turn: " + currentEnemy.name);
+                currentEnemy.EnemyTurnEvents();
+                //Add the logic for the Enemy's turn here
+                yield return new WaitForSeconds(singleEnemyturnDuration);
+                currentEnemyTurnIndex++;
+            }
+            if (deity != null)
+            {
+                OnDeityTurn();
+                Debug.Log("Enemy turns are over. Passing turn to Deity");
+            }
+            else
+            {
+                OnPlayerTurn("Player Turn");
+                OnPlayerTurnSwap();
+                Debug.Log("No Deity on the battlefield. Passing turn to the Player");
+                //Reenable Player UI. Replenish Player Opportunity Points.
+            }
         }
-        if (deity != null)
+        else if (battleManager.currentBattleType == BattleType.battleWithDeity)
         {
-            OnDeityTurn();
-            Debug.Log("Enemy turns are over. Passing turn to Deity");
+            Debug.Log("This is a battle with a Deity");
         }
-        else
-        {
-            OnPlayerTurn("Player Turn");
-            OnPlayerTurnSwap();
-            Debug.Log("No Deity on the battlefield. Passing turn to the Player");
-            //Reenable Player UI. Replenish Player Opportunity Points.
-        }
+
     }
 }

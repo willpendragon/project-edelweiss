@@ -15,6 +15,7 @@ public class GameStatsManager : MonoBehaviour
 {
     public int enemiesKilled;
     public float warFunds;
+    public int timesSingleTargetSpellWasUsed;
 
     private CharacterData characterData;
 
@@ -23,6 +24,7 @@ public class GameStatsManager : MonoBehaviour
         LoadWarFunds();
         LoadEnemiesKilled();
         LoadCharacterData();
+        LoadUsedSingleTargetSpells();
     }
 
     public void SaveCharacterData()
@@ -130,6 +132,27 @@ public class GameStatsManager : MonoBehaviour
         // Prepare the save data
         GameSaveData saveData = SaveStateManager.saveData;
         saveData.enemiesKilled = enemiesKilled;
+
+        SaveStateManager.SaveGame(saveData);
+    }
+
+    public void LoadUsedSingleTargetSpells()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            timesSingleTargetSpellWasUsed = gameSaveData.timesSingleTargetSpellWasUsed;
+            Debug.Log("Loading the number of killed Enemies");
+        }
+    }
+
+    public void SaveUsedSingleTargetSpells(int newTimesSingleTargetSpellWasUsed)
+    {
+        Debug.Log("Increasing Used Single Target Spells statistics");
+
+        // Prepare the save data
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.timesSingleTargetSpellWasUsed = newTimesSingleTargetSpellWasUsed;
 
         SaveStateManager.SaveGame(saveData);
     }
