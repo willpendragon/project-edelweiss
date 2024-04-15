@@ -33,7 +33,7 @@ public class AchievementsManager : MonoBehaviour
 
             if (completedAchievements.Count > 0)
             {
-                // Tie-breaker: Random selection using System.Random
+                // Tie-breaker: Random selection using localRandom
                 Achievement achievementToTrigger = completedAchievements[localRandom.Next(completedAchievements.Count)];
                 TriggerAchievementLogic(achievementToTrigger);
             }
@@ -42,7 +42,12 @@ public class AchievementsManager : MonoBehaviour
 
     private void TriggerAchievementLogic(Achievement achievement)
     {
-        if (achievement.spawnableDeity != null) //To add: && achievement is not obsolete
+        // Define the chance of spawning the deity (e.g., 10% chance)
+        // Beware, Magic Number
+        double spawnChance = 1.0;
+       
+        // Check if there is a deity to spawn and make a probability roll
+        if (achievement.spawnableDeity != null && localRandom.NextDouble() <= spawnChance)
         {
             Debug.Log("Spawning corresponding Deity");
             //Trigger the actual Deity Encounter logic here
@@ -51,6 +56,10 @@ public class AchievementsManager : MonoBehaviour
 
             Debug.Log("Setting battle with Deity");
             //Instantiate(achievement.spawnableDeity, Vector3.zero, Quaternion.identity); // Example spawn position and rotation
+        }
+        else
+        {
+            Debug.Log("Deity spawn chance not met or achievement already met.");
         }
     }
 }
