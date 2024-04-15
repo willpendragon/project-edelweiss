@@ -43,6 +43,7 @@ public class TurnController : MonoBehaviour
     public BattleManager battleManager;
     public BattleEndUIHandler battleEndUIHandler;
     public int timesSingleTargetSpellWasUsed;
+    public AchievementsManager achievementsManager;
 
 
     // Start is called before the first frame update
@@ -243,9 +244,23 @@ public class TurnController : MonoBehaviour
         }
         else if (battleManager.currentBattleType == BattleType.battleWithDeity)
         {
-            if (GameObject.FindGameObjectWithTag("Deity").GetComponent<Unit>().unitHealthPoints <= 0)
+            if (GameObject.FindGameObjectWithTag("Enemy").GetComponent<Unit>().unitHealthPoints <= 0)
             {
-                Debug.Log("Deity's HP is over and Player won the battle. The Deityf fled");
+                GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+
+                Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
+                OnBattleEnd("Victory");
+                ResetTags();
+                DeactivateActivePlayerUnitPanel();
+                UnlockNextLevel();
+                foreach (var player in playerUnitsOnBattlefield)
+                {
+                    player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
+                    warFunds += player.GetComponent<Unit>().unitCoins;
+                }
+                gameStatsManager.SaveCharacterData();
+                gameStatsManager.SaveWarFunds(warFunds);
+                UpdateBattleEndUIPanel();
             }
             else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
             {

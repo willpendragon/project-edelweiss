@@ -143,7 +143,7 @@ MonoBehaviour:
   unitShieldPoints: 0
   unitCoins: 0
   unitExperiencePoints: 0
-  coinsReward: 0
+  coinsReward: 500000
   experiencePointsReward: 0
   linkedDeity: {fileID: 0}
   currentUnitLifeCondition: 1
@@ -164,6 +164,7 @@ MonoBehaviour:
         m_CallState: 2
   unitProfilePanel: {fileID: 0}
   unitStatusController: {fileID: 0}
+  unitSelectionController: {fileID: 0}
   OnTakenDamage:
     m_PersistentCalls:
       m_Calls: []

@@ -708,7 +708,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 23
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &73197619
 GameObject:
@@ -945,6 +945,7 @@ MonoBehaviour:
   battleManager: {fileID: 90211749}
   battleEndUIHandler: {fileID: 767884336}
   timesSingleTargetSpellWasUsed: 0
+  achievementsManager: {fileID: 499339821}
 --- !u!1 &99782221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1143,7 +1144,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 24
+  m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &106297770
 PrefabInstance:
@@ -1357,7 +1358,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7099101679889038644, guid: e55fb1242dc1f3842aebd139911c6330, type: 3}
       propertyPath: m_RootOrder
-      value: 27
+      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: 7099101679889038644, guid: e55fb1242dc1f3842aebd139911c6330, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2337,6 +2338,17 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: dbb23f5c7d1706845a636d973a9c3513, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
+--- !u!114 &499339821 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 459323976506094027, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
+  m_PrefabInstance: {fileID: 499339820}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ccaed5fe82a6344880aca8d5fefb078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &511038725
 GameObject:
   m_ObjectHideFlags: 0
@@ -3873,7 +3885,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 21
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &635511268
 MonoBehaviour:
@@ -6375,7 +6387,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 26
+  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &959631477
 MonoBehaviour:
@@ -7400,7 +7412,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 22
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1248081780
 GameObject:
@@ -9157,7 +9169,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 20
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: -12, y: -25, z: 0}
 --- !u!1 &1824631127
 GameObject:
@@ -9265,7 +9277,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 28
+  m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1878946398
 GameObject:
@@ -10007,7 +10019,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8846347044957032884, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
       propertyPath: m_RootOrder
-      value: 25
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 8846347044957032884, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10714,9 +10726,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeityAchievementController
       objectReference: {fileID: 0}
+    - target: {fileID: 6169969152517360730, guid: 4dac4500f12f0274da6c67ad84d4e22a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6169969152517360731, guid: 4dac4500f12f0274da6c67ad84d4e22a, type: 3}
       propertyPath: m_RootOrder
-      value: 19
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 6169969152517360731, guid: 4dac4500f12f0274da6c67ad84d4e22a, type: 3}
       propertyPath: m_LocalPosition.x

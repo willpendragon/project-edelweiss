@@ -139,7 +139,17 @@ public class Unit : MonoBehaviour
         }
         else if (unitHealthPoints <= 0)
         {
-            GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
+            var spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            var meshRenderer = GetComponentInChildren<MeshRenderer>();
+
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.material.color = Color.black;
+            }
+            else if (meshRenderer != null)
+            {
+                meshRenderer.material.color = Color.black;
+            }
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
             unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             Debug.Log("This Unit has died");

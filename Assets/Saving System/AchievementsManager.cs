@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class AchievementsManager : MonoBehaviour
 {
     public List<Achievement> allAchievements; // Assign in editor or load at runtime
-
     private System.Random localRandom = new System.Random(); // Local random number generator
+
+    public Achievement currentAchievement;
 
     private void Awake()
     {
@@ -45,6 +48,7 @@ public class AchievementsManager : MonoBehaviour
             //Trigger the actual Deity Encounter logic here
             GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().SetBattleType(BattleType.battleWithDeity);
             GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().InitiateBattleWithDeity(achievement.spawnableDeity);
+
             Debug.Log("Setting battle with Deity");
             //Instantiate(achievement.spawnableDeity, Vector3.zero, Quaternion.identity); // Example spawn position and rotation
         }
