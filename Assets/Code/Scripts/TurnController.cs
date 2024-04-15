@@ -241,13 +241,21 @@ public class TurnController : MonoBehaviour
                 //Active Game Over Flow
             }
         }
-        else
+        else if (battleManager.currentBattleType == BattleType.battleWithDeity)
         {
-            Debug.Log("Battle with Deity");
+            if (GameObject.FindGameObjectWithTag("Deity").GetComponent<Unit>().unitHealthPoints <= 0)
+            {
+                Debug.Log("Deity's HP is over and Player won the battle. The Deityf fled");
+            }
+            else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+            {
+                Debug.Log("Player Party was defeated by the Deity");
+                OnBattleEnd("Defeat");
+                ResetTags();
+                DeactivateActivePlayerUnitPanel();
+            }
         }
-
     }
-
     public void ResetTags()
     {
         foreach (var player in GameManager.Instance.playerPartyMembersInstances)

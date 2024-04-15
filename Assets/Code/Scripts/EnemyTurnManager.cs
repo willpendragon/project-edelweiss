@@ -93,6 +93,7 @@ public class EnemyTurnManager : MonoBehaviour
         else if (battleManager.currentBattleType == BattleType.battleWithDeity)
         {
             Debug.Log("This is a battle with a Deity");
+            OnDeityTurn();
         }
 
     }

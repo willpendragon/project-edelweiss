@@ -45,6 +45,7 @@ public class AchievementsManager : MonoBehaviour
             //Trigger the actual Deity Encounter logic here
             GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().SetBattleType(BattleType.battleWithDeity);
             GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().InitiateBattleWithDeity(achievement.spawnableDeity);
+            Debug.Log("Setting battle with Deity");
             //Instantiate(achievement.spawnableDeity, Vector3.zero, Quaternion.identity); // Example spawn position and rotation
         }
     }
