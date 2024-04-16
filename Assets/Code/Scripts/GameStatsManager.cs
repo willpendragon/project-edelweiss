@@ -5,10 +5,8 @@ using UnityEngine;
 using UnityEngine.TextCore.Text;
 using Newtonsoft.Json;
 using System.IO;
-using static UnityEditor.Progress;
 using System.Linq;
 using JetBrains.Annotations;
-using UnityEditor.U2D.Animation;
 
 public class GameStatsManager : MonoBehaviour
 
