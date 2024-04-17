@@ -33,8 +33,6 @@ public class PlayerProfileController : MonoBehaviour
 
     public void OnEnable()
     {
-        //TileController.OnClickedTileWithUnit += UpdateUnitProfile;
-        //TileController.OnUpdateEnemyTargetUnitProfile += UpdateUnitProfile;
         SelectUnitPlayerAction.OnClickedTileWithUnit += UpdateUnitProfile;
 
 
@@ -42,9 +40,6 @@ public class PlayerProfileController : MonoBehaviour
     public void OnDisable()
     {
         SelectUnitPlayerAction.OnClickedTileWithUnit -= UpdateUnitProfile;
-
-        //TileController.OnClickedTileWithUnit -= UpdateUnitProfile;
-        //TileController.OnUpdateEnemyTargetUnitProfile -= UpdateUnitProfile;
     }
 
     private void Start()
