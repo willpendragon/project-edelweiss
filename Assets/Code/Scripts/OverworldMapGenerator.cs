@@ -15,6 +15,10 @@ public class OverworldMapGenerator : MonoBehaviour
     private LineRenderer lineRenderer;
     private List<Vector3> nodePositions = new List<Vector3>();
 
+    public GameObject[] partyMemberIcons;
+
+    public float iconZOffset = 1f;
+
     // Awake is called before the first frame update
     void Awake()
     {
@@ -81,6 +85,18 @@ public class OverworldMapGenerator : MonoBehaviour
                 {
                     newNode.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
                     newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
+                    Vector3 partyMemberIconPosition = newNode.transform.position + new Vector3(0, 0, iconZOffset);
+                    float horizontalOffset = 1.0f; // The horizontal offset distance between icons
+                    float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f; // Center the icons
+
+                    for (int j = 0; j < partyMemberIcons.Length; j++)
+                    {
+                        // Calculate the offset for this particular icon
+                        Vector3 offsetPosition = new Vector3(startOffset + horizontalOffset * j, 0, 0);
+
+                        // Instantiate the icon with the offset position
+                        Instantiate(partyMemberIcons[j], partyMemberIconPosition + offsetPosition, Quaternion.identity);
+                    }
                 }
                 else
                 {

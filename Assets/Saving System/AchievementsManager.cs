@@ -44,7 +44,7 @@ public class AchievementsManager : MonoBehaviour
     {
         // Define the chance of spawning the deity (e.g., 10% chance)
         // Beware, Magic Number
-        double spawnChance = 1.0;
+        double spawnChance = 0.5;
        
         // Check if there is a deity to spawn and make a probability roll
         if (achievement.spawnableDeity != null && localRandom.NextDouble() <= spawnChance)

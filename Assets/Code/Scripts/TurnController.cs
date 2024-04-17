@@ -209,7 +209,7 @@ public class TurnController : MonoBehaviour
                 gameStatsManager.SaveEnemiesKilled();
                 gameStatsManager.SaveCharacterData();
                 gameStatsManager.SaveWarFunds(warFunds);
-                gameStatsManager.SaveUsedSingleTargetSpells(timesSingleTargetSpellWasUsed);
+                gameStatsManager.SaveUsedSingleTargetSpells();
                 Debug.Log("Saving Character Stats Data");
 
                 UpdateBattleEndUIPanel();

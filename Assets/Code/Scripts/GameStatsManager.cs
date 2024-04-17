@@ -144,13 +144,13 @@ public class GameStatsManager : MonoBehaviour
         }
     }
 
-    public void SaveUsedSingleTargetSpells(int newTimesSingleTargetSpellWasUsed)
+    public void SaveUsedSingleTargetSpells()
     {
         Debug.Log("Increasing Used Single Target Spells statistics");
 
         // Prepare the save data
         GameSaveData saveData = SaveStateManager.saveData;
-        saveData.timesSingleTargetSpellWasUsed = newTimesSingleTargetSpellWasUsed;
+        saveData.timesSingleTargetSpellWasUsed = timesSingleTargetSpellWasUsed;
 
         SaveStateManager.SaveGame(saveData);
     }

@@ -424,12 +424,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f08b54d7a4e8d444ba27422ce3c13539, type: 2}
   - {fileID: 11400000, guid: f08b54d7a4e8d444ba27422ce3c13539, type: 2}
   - {fileID: 11400000, guid: f08b54d7a4e8d444ba27422ce3c13539, type: 2}
-  - {fileID: 11400000, guid: f08b54d7a4e8d444ba27422ce3c13539, type: 2}
   mapNode: {fileID: 7530335955166926438, guid: 3cbe7607717d6e145bab6c0affb91a81, type: 3}
   mapNodeTransform: {fileID: 1490335694}
   maxPositionVariation: 2
   minDistanceApart: 3
   randomSeed: 12345
+  partyMemberIcons:
+  - {fileID: 5079095157101055813, guid: 32c0f31dfd635bd4bb3a14154ef9bc5a, type: 3}
+  - {fileID: 5757136211554381409, guid: 70461140050eb20429879a0bf8686320, type: 3}
+  iconZOffset: -2
 --- !u!1001 &172969898
 PrefabInstance:
   m_ObjectHideFlags: 0

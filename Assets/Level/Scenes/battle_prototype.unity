@@ -2329,6 +2329,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 459323976506094027, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
+      propertyPath: deitySpawnChance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 459323976506094027, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
       propertyPath: allAchievements.Array.size
       value: 2
       objectReference: {fileID: 0}

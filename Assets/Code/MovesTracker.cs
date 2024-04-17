@@ -16,7 +16,8 @@ public class MovesTracker : MonoBehaviour
 
     public void TrackUsedSingleTargetSpell()
     {
-        TurnController.Instance.timesSingleTargetSpellWasUsed++;
+        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+        gameStatsManager.timesSingleTargetSpellWasUsed++;
         Debug.Log("Adding times Single Target Spell was Used");
     }
 }
