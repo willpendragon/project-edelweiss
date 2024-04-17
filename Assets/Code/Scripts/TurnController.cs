@@ -45,9 +45,6 @@ public class TurnController : MonoBehaviour
     public int timesSingleTargetSpellWasUsed;
     public AchievementsManager achievementsManager;
 
-
-    // Start is called before the first frame update
-
     public void OnEnable()
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatus;
@@ -72,6 +69,7 @@ public class TurnController : MonoBehaviour
         playerUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Player");
         enemyUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
         SetUnitsInitialPositionOnGrid();
+        RestorePlayerUnitsOpportunityPoints();
     }
 
     public void SetUnitsInitialPositionOnGrid()
