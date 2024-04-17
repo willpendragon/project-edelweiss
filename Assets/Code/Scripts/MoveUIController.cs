@@ -25,8 +25,6 @@ public class MoveUIController : MonoBehaviour
         if (scene.name == "battle_prototype")
         {
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
-            //Unit unitReference = this.GetComponent<Unit>();
-            //unitReference.unitOpportunityPoints = unitReference.unitTemplate.unitOpportunityPoints;
         }
     }
 
