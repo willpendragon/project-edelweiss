@@ -3,7 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AnguanaBehavior", menuName = "DeityBehavior/Anguana")]
 public class DeityAnguanaBehavior : DeityBehavior
 {
-    public int deityPrayerPowerMinimumRequirement;
+    public int deityPrayerPowerMinimumRequirement = 3;
+    public int vfxDurationDelay = 3;
     public override void ExecuteBehavior(Deity deity)
     {
         BattleManager battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
@@ -16,19 +17,7 @@ public class DeityAnguanaBehavior : DeityBehavior
             }
             else if (deity.PerformDeityEnmityCheck())
             {
-                GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX, deity.transform);
-                Destroy(newDeityAttackVFX, 3);
-                GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
-                foreach (var playerUnit in playerUnitsOnBattlefield)
-                {
-                    playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
-                }
-                deity.enmity = 0;
-                deity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
-                Debug.Log("Anguana Executes Spiteful Wave attack");
-                //07022024 Will need to add the damage taking logic for the Player Units
-                // Anguana's specific behavior implementation goes here.
-                // For example, checking the enmity meter and unleashing an attack.
+                Attack(deity);
             }
             else
             {
@@ -37,19 +26,21 @@ public class DeityAnguanaBehavior : DeityBehavior
         }
         else if (battleManager.currentBattleType == BattleType.battleWithDeity)
         {
-            GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX, deity.transform);
-            Destroy(newDeityAttackVFX, 3);
-            GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
-            foreach (var playerUnit in playerUnitsOnBattlefield)
-            {
-                playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
-            }
-            deity.enmity = 0;
-            deity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
-            Debug.Log("Anguana Executes Spiteful Wave attack");
+            Attack(deity);
         }
+    }
 
-
-
+    public void Attack(Deity deity)
+    {
+        GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX, deity.transform);
+        Destroy(newDeityAttackVFX, vfxDurationDelay);
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+        foreach (var playerUnit in playerUnitsOnBattlefield)
+        {
+            playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
+        }
+        deity.enmity = 0;
+        deity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
+        Debug.Log("Anguana Executes Spiteful Wave attack");
     }
 }
