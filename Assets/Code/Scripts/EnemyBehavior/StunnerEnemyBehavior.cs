@@ -6,22 +6,22 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "StunnerEnemyBehavior", menuName = "EnemyBehavior/StunnerEnemy")]
 public class StunnerEnemyBehavior : EnemyBehavior
 {
-    [SerializeField] int minEnemyMoveRollRange;
-    [SerializeField] int maxEnemyMoveRollRange;
+    [SerializeField] private int minEnemyMoveRollRange;
+    [SerializeField] private int maxEnemyMoveRollRange;
     public int opportunity;
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
 
-    [SerializeField] GameObject attackVFXAnimator;
+    [SerializeField] private GameObject attackVFXAnimator;
+
+    private System.Random localRandom = new System.Random(); // Local random number generator
 
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
         if (enemyAgent.gameObject.tag != "DeadEnemy" && enemyAgent.gameObject.GetComponentInParent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-        //The Enemy Unit doesn't evaluate the next move if it's dead.
         {
             Unit targetUnit = SelectTargetUnit();
-            //Decide the next move based on the battlefield situation and character attitude
             if (EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
             {
                 StunAbility(targetUnit);
@@ -35,35 +35,34 @@ public class StunnerEnemyBehavior : EnemyBehavior
         }
     }
 
-    //Rolls the Move the Enemy is going to use
+    // Rolls the Move the Enemy is going to use using the local random instance
     public int EnemyMoveRoll()
     {
         Debug.Log("Rolling Enemy move");
-        int enemyMoveRoll = Random.Range(minEnemyMoveRollRange, maxEnemyMoveRollRange);
+        int enemyMoveRoll = localRandom.Next(minEnemyMoveRollRange, maxEnemyMoveRollRange);
         return enemyMoveRoll;
     }
 
-    //Selects the Target the Enemy is going to use
+    // Selects the Target the Enemy is going to use
     public Unit SelectTargetUnit()
     {
-        //This method selects the Target Unit choosing from the Player Unit with the Highest HP
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
 
         Unit unitWithHighestHP = playerUnitsOnBattlefield
-        .Select(go => go.GetComponent<Unit>())
-        .Where(unit => unit != null)
-        .OrderByDescending(unit => unit.unitHealthPoints)
-        .FirstOrDefault();
+            .Select(go => go.GetComponent<Unit>())
+            .Where(unit => unit != null)
+            .OrderByDescending(unit => unit.unitHealthPoints)
+            .FirstOrDefault();
         return unitWithHighestHP;
     }
+
     public void StunAbility(Unit targetUnit)
     {
         targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
         targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
         Instantiate(Resources.Load("StunIcon"), targetUnit.transform);
         Debug.Log("Testing Stunner Enemy Behaviour");
-        //targetUnit.PlayHurtAnimation();
-        //attackVFX.Play();
+        // targetUnit.PlayHurtAnimation();
+        // attackVFX.Play();
     }
 }
-

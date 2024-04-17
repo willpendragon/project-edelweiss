@@ -12,6 +12,12 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
     public GameObject captureCrystal;
     public TileController currentSavedTile;
 
+    private System.Random localRandom = new System.Random(); // Local random number generator
+
+    private const int ManaCost = 20;
+    private const int CaptureDifficulty = 20; // Adjusted for a low to medium capture probability
+    private const int MaxCaptureRoll = 11; // Max roll value to determine capture outcome
+
     public delegate void BattleEndCapturedDeity(string battleEndMessage);
     public static event BattleEndCapturedDeity OnBattleEndCapturedDeity;
 
@@ -23,49 +29,51 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
         {
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
             currentSavedTile = selectedTile;
-            activePlayerUnit.SpendManaPoints(20);
-            //Warning: Magic Numbers
+            activePlayerUnit.SpendManaPoints(ManaCost);
             activePlayerUnit.unitOpportunityPoints--;
             selectionLimiter--;
         }
     }
+
     public void Execute()
     {
         if (currentSavedTile.currentSingleTileStatus == SingleTileStatus.waitingForConfirmationMode)
         {
-            GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, currentSavedTile.transform.position, Quaternion.identity);
-            Debug.Log("Attempt to Capture the Deity");
-            if (DeityCaptureRoll() > 10)
-            //Beware, Magic Number
-            {
-                Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
-                Debug.Log("Deity was captured");
-                OnBattleEndCapturedDeity("Deity was Captured");
+            Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-                TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
-                turnController.ResetTags();
-                turnController.UnlockNextLevel();
-
-                CreateDictionaryEntry(capturedUnboundDeity);
-            }
-            else
+            if (activePlayerUnit.unitManaPoints > 0)
             {
-                Debug.Log("Deity was not captured");
+                GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, currentSavedTile.transform.position, Quaternion.identity);
+                Debug.Log("Attempt to Capture the Deity");
+                activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+                if (DeityCaptureRoll() > CaptureDifficulty)
+                {
+                    Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
+                    Debug.Log("Deity was captured");
+                    OnBattleEndCapturedDeity("Deity was Captured");
+
+                    TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
+                    turnController.ResetTags();
+                    turnController.UnlockNextLevel();
+
+                    CreateDictionaryEntry(capturedUnboundDeity);
+                }
+                else
+                {
+                    Debug.Log("Deity was not captured");
+                }
             }
-            //Insert the logic for Capturing the Deity here.
-            //I'll probably need to create a class for handling the Crystal entirely and retrieve data from a Scriptable Object
         }
     }
 
     public void Deselect()
     {
-
+        // Logic to handle deselection if needed
     }
 
     public int DeityCaptureRoll()
     {
-        int deityCaptureRoll = UnityEngine.Random.Range(0, 11);
-        //Beware, Magic Number
+        int deityCaptureRoll = localRandom.Next(0, MaxCaptureRoll);
         GameObject[] captureCrystalsOnBattlefield = GameObject.FindGameObjectsWithTag("CaptureCrystal");
         deityCaptureRoll = deityCaptureRoll * captureCrystalsOnBattlefield.Length;
         return deityCaptureRoll;
@@ -73,11 +81,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
     public void CreateDictionaryEntry(Deity capturedDeity)
     {
-        // Creates an association suitable for the Dictionary between the Active Player Unit (who's capturing the Deity) and the Captured Deity.
-        // Assume GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().Id uniquely identifies your player unit
         string activePlayerUnitId = GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().Id;
-
-        // Map this player unit ID to the captured deity's ID
         GameSaveData saveData = SaveStateManager.saveData;
         saveData.unitsLinkedToDeities.Add(activePlayerUnitId, capturedDeity.Id);
         SaveStateManager.SaveGame(saveData);
