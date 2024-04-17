@@ -86,7 +86,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int receivedDamage)
+    public void TakeDamage(float receivedDamage)
     {
         HealthPoints -= receivedDamage;
         OnTakenDamage.Invoke(receivedDamage);
