@@ -328,6 +328,7 @@ GameObject:
   - component: {fileID: 5305908522002828429}
   - component: {fileID: 5305908522002828428}
   - component: {fileID: 8281543060498671791}
+  - component: {fileID: -8000937635857103290}
   m_Layer: 0
   m_Name: Unit_Edel
   m_TagString: Player
@@ -572,6 +573,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitDamageCounter: {fileID: 5065764558204364138}
   unitDamageCounterAnimator: {fileID: 779112738918748926}
+--- !u!114 &-8000937635857103290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8642592451490499134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 132e6435001ef844988a4af33b482c63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runButtonPrefab: {fileID: 9137205279756630114, guid: 03315caf41aff3b4c9ea9f91d2a2183d, type: 3}
+  spellMenuContainer: {fileID: 0}
 --- !u!1001 &1558716032256963557
 PrefabInstance:
   m_ObjectHideFlags: 0

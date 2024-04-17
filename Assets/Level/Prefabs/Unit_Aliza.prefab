@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 140287813762198917}
   - component: {fileID: 140287813762198918}
   - component: {fileID: 7889034144590482301}
+  - component: {fileID: -769267829670441750}
   m_Layer: 0
   m_Name: Unit_Aliza
   m_TagString: Player
@@ -381,6 +382,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitDamageCounter: {fileID: 4079695513254623383}
   unitDamageCounterAnimator: {fileID: 7812928054276131834}
+--- !u!114 &-769267829670441750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 452031790448863006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 132e6435001ef844988a4af33b482c63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runButtonPrefab: {fileID: 9137205279756630114, guid: 03315caf41aff3b4c9ea9f91d2a2183d, type: 3}
+  spellMenuContainer: {fileID: 0}
 --- !u!1 &4441777849958791838
 GameObject:
   m_ObjectHideFlags: 0

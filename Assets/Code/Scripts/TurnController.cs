@@ -297,4 +297,14 @@ public class TurnController : MonoBehaviour
         battleEndUIHandler.battleEndWarFundsGainedText.text = warFunds.ToString();
     }
 
+    public void RunFromBattle()
+    {
+        Debug.Log("Player Party was defeated");
+        OnBattleEnd("Fleed");
+        ResetTags();
+        DeactivateActivePlayerUnitPanel();
+        //Activate Game Over UI
+        //Active Game Over Flow
+    }
+
 }

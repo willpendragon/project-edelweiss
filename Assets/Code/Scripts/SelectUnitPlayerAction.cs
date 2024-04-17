@@ -129,6 +129,8 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
             detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
             detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
+            detectedUnit.GetComponent<FlightUIController>().AddRunButton();
+
         }
 
     }
