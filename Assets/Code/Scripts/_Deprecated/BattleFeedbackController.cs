@@ -24,4 +24,11 @@ public class BattleFeedbackController : MonoBehaviour
         yield return new WaitForSeconds(timeBeforeRestoringPlayerUnitPosition);
         activePlayerUnit.transform.position = originalPosition;
     }
+
+    public void PlayHurtAnimation()
+    {
+        Debug.Log("Playing Hurt Animation");
+        Animator activePlayerUnitAnimator = GetComponentInChildren<Animator>();
+        activePlayerUnitAnimator.SetTrigger("Hurt");
+    }
 }

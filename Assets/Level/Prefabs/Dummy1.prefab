@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7245119660369947535}
   - component: {fileID: 5090446047043621278}
+  - component: {fileID: 369530382422409763}
   m_Layer: 8
-  m_Name: GodlingSprite
+  m_Name: sprite_godling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,6 +85,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &369530382422409763
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4166987097090433852}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1591224fd9625d24f9595c5f3031aedf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4468090928172088411
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,6 +227,7 @@ GameObject:
   - component: {fileID: 361118017173477511}
   - component: {fileID: 2788514426886983777}
   - component: {fileID: 5410876119120275068}
+  - component: {fileID: 7127888063209652432}
   m_Layer: 0
   m_Name: Dummy1
   m_TagString: Enemy
@@ -382,6 +404,7 @@ MonoBehaviour:
   unitMaxHealthPoints: 0
   unitOpportunityPoints: 0
   unitManaPoints: 0
+  unitMaxManaPoints: 0
   unitShieldPoints: 0
   unitCoins: 0
   unitExperiencePoints: 0
@@ -402,6 +425,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnitUIController, Assembly-CSharp
         m_MethodName: SetDamageCounter
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7127888063209652432}
+        m_TargetAssemblyTypeName: BattleFeedbackController, Assembly-CSharp
+        m_MethodName: PlayHurtAnimation
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -458,6 +493,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitDamageCounter: {fileID: 9201451992477535649}
   unitDamageCounterAnimator: {fileID: 3688693539880581685}
+--- !u!114 &7127888063209652432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009294011632168286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49061b32be4ab2c4e801392d4fbd3849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

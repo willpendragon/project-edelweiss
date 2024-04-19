@@ -24,9 +24,11 @@ public class BumperEnemyBehavior : EnemyBehavior
         //The Enemy Unit doesn't evaluate the next move if it's dead.
         {
             //Enemy Unit selects the Target
+            Unit enemyUnit = enemyAgent.gameObject.GetComponent<Unit>();
             Unit targetPlayerUnit = SelectTargetPlayerUnit();
             MoveToPlayerTarget(targetPlayerUnit, enemyAgent);
             float reducedDamage = attackPower; //* damageReductionFactor//
+            enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>().PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
             targetPlayerUnit.HealthPoints -= (reducedDamage);
             targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
 
