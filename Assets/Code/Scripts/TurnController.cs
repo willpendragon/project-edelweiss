@@ -115,7 +115,7 @@ public class TurnController : MonoBehaviour
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
             playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-            playerUnit.GetComponent<UnitSelectionController>().unitSprite.material.color = Color.white;
+            //playerUnit.GetComponent<UnitSelectionController>().unitSprite.material.color = Color.white;
         }
     }
 

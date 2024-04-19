@@ -5,7 +5,7 @@ using static TileController;
 using UnityEngine.UI;
 
 
-public class MeleePlayerAction : IPlayerAction
+public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 {
     public Unit currentTarget;
     public TileController savedSelectedTile;
@@ -70,6 +70,7 @@ public class MeleePlayerAction : IPlayerAction
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile.currentSingleTileCondition = SingleTileCondition.free;
             ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
+            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
 
             Debug.Log("Melee Execution Logic");
         }
