@@ -5,11 +5,15 @@ using static TileController;
 using UnityEngine.UI;
 
 
-public class MeleePlayerAction : MonoBehaviour, IPlayerAction
+public class MeleePlayerAction : IPlayerAction
 {
     public Unit currentTarget;
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
+
+    public delegate void UsedMeleeAction(string moveName, string attackerName);
+    public static event UsedMeleeAction OnUsedMeleeAction;
+
     public void Select(TileController selectedTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -64,14 +68,18 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                 Debug.Log("Applying distance and knockback multiplier");
             }
             currentTarget.TakeDamage(attackPower);
+
             activePlayerUnit.unitOpportunityPoints--;
+
             UpdateActivePlayerUnitProfile(activePlayerUnit);
+
             savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile.currentSingleTileCondition = SingleTileCondition.free;
             ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
-            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
 
+            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
+            OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
             Debug.Log("Melee Execution Logic");
         }
         else

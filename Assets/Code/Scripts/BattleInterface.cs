@@ -25,12 +25,15 @@ public class BattleInterface : MonoBehaviour
         Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell += SetSpellNameOnNotificationPanel;
+        MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;
     }
     private void OnDisable()
     {
         Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell -= SetSpellNameOnNotificationPanel;
+        MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
+
     }
 
     public void SetSpellNameOnNotificationPanel(string spellName, string casterName)
@@ -39,6 +42,13 @@ public class BattleInterface : MonoBehaviour
         battlefieldTextNotifications.text = casterName + " used " + spellName;
         StartCoroutine("ResetBattleFieldTextNotification");
     }
+    public void SetMeleeAttackOnNotificationPanel(string meleeAttack, string attackerName)
+    {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
+        battlefieldTextNotifications.text = attackerName + " used " + meleeAttack;
+        StartCoroutine("ResetBattleFieldTextNotification");
+    }
+
     public void SetDeityJudgmentCounter(int judgmentTurnLimitNumber)
     {
         deityJudgmentLimitText.text = judgmentTurnLimitNumber.ToString();
