@@ -5,24 +5,27 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "KingLaurinusBehavior", menuName = "DeityBehavior/KingLaurinus")]
 public class DeityKingLaurinusBehavior : DeityBehavior
 {
+    private float deityAttackPower = 100;
+    private int attackExecutionThreshold = 2;
     public override void ExecuteBehavior(Deity deity)
     {
         TileController[] gridTiles = ExtractRandomTiles();
         foreach (var tile in gridTiles)
         {
-            tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.gray;
+            //tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.gray;
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
+            Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
+
         }
-        if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>().turnCounter >= 2)
+        if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>().turnCounter >= attackExecutionThreshold)
         {
             Debug.Log("Reached Turn 3. King Laurinus attacks the Player Units on the cursed tiles");
             foreach (var playerUnit in GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield)
             {
                 if (playerUnit.GetComponent<Unit>().ownedTile.currentTileCurseStatus == TileCurseStatus.cursed)
                 {
-                    playerUnit.GetComponent<Unit>().HealthPoints -= 100;
+                    playerUnit.GetComponent<Unit>().HealthPoints -= deityAttackPower;
                     //Hard coded damage. Remember to create it as a variable that I can change on the King Laurinus Behaviour Scriptable Object.
-                    //Remember to perform usual damage taking logic on the target Player Unit and consequent game over check.
                     Debug.Log("King Laurinus provokes massive Damage on the Unit");
                 }
             }

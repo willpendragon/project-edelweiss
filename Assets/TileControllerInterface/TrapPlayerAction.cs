@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TrapPlayerAction : IPlayerAction
+public class TrapPlayerAction : MonoBehaviour, IPlayerAction
 {
 
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
+    public float trapCreationCost = 5;
 
     public void Select(TileController selectedTile)
     {
-        if (selectedTile != null)
+        TrapController selectedTiletrapController = selectedTile.GetComponentInChildren<TrapController>();
+        if (selectedTile != null && selectedTile.currentSingleTileCondition == SingleTileCondition.free)
         {
-            if (selectedTile.currentSingleTileCondition == SingleTileCondition.free)
+            if (selectedTiletrapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active)
             {
-                selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.clear;
+                selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 savedSelectedTile = selectedTile;
                 selectionLimiter--;
@@ -40,10 +42,21 @@ public class TrapPlayerAction : IPlayerAction
 
     public void Execute()
     {
-        TrapController trapController = savedSelectedTile.GetComponentInChildren<TrapController>();
-        trapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
-        savedSelectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
-        Debug.Log("This Tile is now a Trap");
-    }
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
+        TrapController trapController = savedSelectedTile.GetComponentInChildren<TrapController>();
+
+        if (trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active)
+        {
+            trapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
+            //savedSelectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
+            Instantiate(Resources.Load("TrapTileVFX"), savedSelectedTile.transform);
+
+            activePlayerUnit.unitOpportunityPoints--;
+            activePlayerUnit.unitManaPoints -= trapCreationCost;
+
+            activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+            Debug.Log("This Tile is now a Trap");
+        }
+    }
 }
