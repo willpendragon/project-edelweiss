@@ -57,7 +57,9 @@ public class CafeMenuUIController : MonoBehaviour
         foreach (var partyMember in GameManager.Instance.playerPartyMembersInstances)
         {
             GameObject characterProfile = Instantiate(characterProfilesPrefab, characterProfilesContainer.transform);
-            characterProfile.GetComponent<CharacterProfileSmallController>().referenceUnit = partyMember;
+            CharacterProfileSmallController profileController = characterProfile.GetComponent<CharacterProfileSmallController>();
+            profileController.referenceUnit = partyMember;
+
             characterProfile.GetComponentInChildren<Image>().sprite = partyMember.GetComponent<Unit>().unitTemplate.unitPortrait;
             characterProfile.GetComponentInChildren<TextMeshProUGUI>().text = partyMember.GetComponent<Unit>().unitTemplate.unitName;
             // Create the button GameObject
@@ -100,28 +102,48 @@ public class CafeMenuUIController : MonoBehaviour
             feedCharacterButton.colors = colors;
 
             // Add an onClick listener
-            feedCharacterButton.onClick.AddListener(() => FeedCharacter(currentPurchasedFood));
+            feedCharacterButton.onClick.AddListener(() => FeedCharacter(ref currentPurchasedFood, profileController.referenceUnit));
+
         }
     }
 
-    public void FeedCharacter(ItemFood currentPurchasedFood)
+    public void FeedCharacter(ref ItemFood currentPurchasedFood, Unit fedUnit)
     {
         if (currentPurchasedFood != null && currentPurchasedFood.itemFoodType == ItemFoodType.HPRecovery)
         {
-            Unit fedUnit = characterProfilesContainer.GetComponentInChildren<CharacterProfileSmallController>().referenceUnit;
-            if (fedUnit.unitHealthPoints <= fedUnit.unitMaxHealthPoints)
+            //Unit fedUnit = characterProfilesContainer.GetComponentInChildren<CharacterProfileSmallController>().referenceUnit;
+            if (fedUnit.unitHealthPoints < fedUnit.unitMaxHealthPoints)
             {
                 fedUnit.HealthPoints += currentPurchasedFood.recoveryAmount;
+                if (fedUnit.unitHealthPoints > fedUnit.unitMaxHealthPoints)
+                {
+                    fedUnit.unitHealthPoints = fedUnit.unitMaxHealthPoints;
+                }
+            }
+            else if (fedUnit.unitHealthPoints == fedUnit.unitMaxHealthPoints)
+            {
+                //Display on UI that the character is already at full HP
+                Debug.Log("Character is already at full HP");
             }
         }
         else if (currentPurchasedFood != null && currentPurchasedFood.itemFoodType == ItemFoodType.manaRecovery)
         {
-            Unit fedUnit = characterProfilesContainer.GetComponentInChildren<Unit>();
-            if (fedUnit.unitManaPoints <= fedUnit.GetComponent<UnitTemplate>().unitManaPoints)
+            //Unit fedUnit = characterProfilesContainer.GetComponentInChildren<CharacterProfileSmallController>().referenceUnit;
+            if (fedUnit.unitManaPoints < fedUnit.unitMaxManaPoints)
             {
                 fedUnit.unitManaPoints += currentPurchasedFood.recoveryAmount;
+                if (fedUnit.unitManaPoints > fedUnit.unitMaxManaPoints)
+                {
+                    fedUnit.unitManaPoints = fedUnit.unitMaxManaPoints;
+                }
+            }
+            else if (fedUnit.unitManaPoints == fedUnit.unitMaxManaPoints)
+            {
+                //Display on UI that the character is already at full MP
+                Debug.Log("Character is already at full MP");
             }
         }
+        currentPurchasedFood = null;
         Debug.Log("Feeding Character");
     }
 }

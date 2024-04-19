@@ -35,6 +35,7 @@ public class Unit : MonoBehaviour
     public float unitMaxHealthPoints;
     public int unitOpportunityPoints;
     public float unitManaPoints;
+    public float unitMaxManaPoints;
     public float unitShieldPoints;
     public float unitCoins;
     public float unitExperiencePoints;
@@ -77,6 +78,7 @@ public class Unit : MonoBehaviour
             unitHealthPoints = unitTemplate.unitHealthPoints;
             unitMaxHealthPoints = unitTemplate.unitMaxHealthPoints;
             unitManaPoints = unitTemplate.unitManaPoints;
+            unitMaxManaPoints = unitTemplate.unitManaPoints;
             unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
             unitShieldPoints = unitTemplate.unitShieldPoints;
             currentUnitLifeCondition = UnitLifeCondition.unitAlive;

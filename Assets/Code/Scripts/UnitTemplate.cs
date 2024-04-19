@@ -11,6 +11,7 @@ public class UnitTemplate : ScriptableObject
     public int unitHealthPoints;
     public int unitMaxHealthPoints;
     public int unitManaPoints;
+    public int unitMaxManaPoints;
     public int unitOpportunityPoints;
     public int unitShieldPoints;
     public float unitCoinsReward;
