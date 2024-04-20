@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fog_Ortographic
-  m_Shader: {fileID: -6465566751694194690, guid: 7c096722d4077694882b4bae06e4e084, type: 3}
+  m_Name: Fog_Perspective
+  m_Shader: {fileID: -6465566751694194690, guid: 533e6b0d0656d48439c9cfabbe8a0ae2, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -109,10 +109,10 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FogColor: {r: 0.22075468, g: 0.6006367, b: 1, a: 0.39215687}
+    - _FogColor: {r: 0.9475792, g: 0.9710248, b: 0.99056596, a: 0.38431373}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &8998146016021175276
+--- !u!114 &72491530469415578
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

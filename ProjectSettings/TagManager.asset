@@ -37,6 +37,7 @@ TagManager:
   - CameraDistanceController
   - GameStatsManager
   - MovesTracker
+  - PlayerStatsSaver
   layers:
   - Default
   - TransparentFX
@@ -44,7 +45,7 @@ TagManager:
   - Epicenter Target Layer
   - Water
   - UI
-  - 
+  - Environment
   - 
   - Unit
   - 
