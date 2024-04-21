@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraPan : MonoBehaviour
 {
+    [SerializeField] GameObject dialoguePanel;
     public float panSpeed = 20f;
     public Vector2 panLimitX; // Set the X-axis boundaries
     public Vector2 panLimitY; // Set the Y-axis boundaries
@@ -13,31 +14,35 @@ public class CameraPan : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 pos = transform.position;
+        if (dialoguePanel.activeInHierarchy == false)
+        {
+            Vector3 pos = transform.position;
 
-        if (Input.mousePosition.x >= Screen.width - margin)
-        {
-            pos.x += panSpeed * Time.deltaTime;
-        }
-        if (Input.mousePosition.x <= margin)
-        {
-            pos.x -= panSpeed * Time.deltaTime;
-        }
-        if (Input.mousePosition.y >= Screen.height - margin)
-        {
-            pos.z += panSpeed * Time.deltaTime;
-        }
-        if (Input.mousePosition.y <= margin)
-        {
-            pos.z -= panSpeed * Time.deltaTime;
-        }
+            if (Input.mousePosition.x >= Screen.width - margin)
+            {
+                pos.x += panSpeed * Time.deltaTime;
+            }
+            if (Input.mousePosition.x <= margin)
+            {
+                pos.x -= panSpeed * Time.deltaTime;
+            }
+            if (Input.mousePosition.y >= Screen.height - margin)
+            {
+                pos.z += panSpeed * Time.deltaTime;
+            }
+            if (Input.mousePosition.y <= margin)
+            {
+                pos.z -= panSpeed * Time.deltaTime;
+            }
 
-        // Clamp the camera position to the boundaries
-        pos.x = Mathf.Clamp(pos.x, panLimitX.x, panLimitX.y);
-        pos.z = Mathf.Clamp(pos.z, panLimitZ.x, panLimitZ.y);
-        // Adjust for your camera's orientation if it's not aligned with the XZ plane
-        pos.y = Mathf.Clamp(pos.y, panLimitY.x, panLimitY.y);
+            // Clamp the camera position to the boundaries
+            pos.x = Mathf.Clamp(pos.x, panLimitX.x, panLimitX.y);
+            pos.z = Mathf.Clamp(pos.z, panLimitZ.x, panLimitZ.y);
+            // Adjust for your camera's orientation if it's not aligned with the XZ plane
+            pos.y = Mathf.Clamp(pos.y, panLimitY.x, panLimitY.y);
 
-        transform.position = pos;
+            transform.position = pos;
+
+        }
     }
 }
