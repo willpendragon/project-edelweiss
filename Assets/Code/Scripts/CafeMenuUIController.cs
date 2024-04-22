@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,13 @@ public class CafeMenuUIController : MonoBehaviour
     public GameStatsManager gameStatsManager;
 
     public ItemFood currentPurchasedFood;
+
+    public List<GameObject> characterProfileSmallControllers = new List<GameObject>();
+    public List<Button> feedPlayerCharactersButtons = new List<Button>();
+
+    private TextMeshProUGUI[] characterTexts;
+
+    [SerializeField] TextMeshProUGUI notificationTexts;
 
     void Start()
     {
@@ -67,11 +75,18 @@ public class CafeMenuUIController : MonoBehaviour
 
     public void PurchaseFood(ItemFood purchasedFood, float foodPrice)
     {
-        gameStatsManager.warFunds -= foodPrice;
-        gameStatsManager.SaveSpentWarFunds(foodPrice);
-        UpdateWarFundsCounter();
-        currentPurchasedFood = purchasedFood;
-        //Update Counter;
+        if (foodPrice <= gameStatsManager.warFunds)
+        {
+            gameStatsManager.warFunds -= foodPrice;
+            gameStatsManager.SaveSpentWarFunds(foodPrice);
+            UpdateWarFundsCounter();
+            currentPurchasedFood = purchasedFood;
+            EnableFeedingCharactersButtons();
+        }
+        else
+        {
+            notificationTexts.text = "There are not enough War Funds to purchase this Food Item";
+        }
     }
 
     public void UpdateWarFundsCounter()
@@ -89,31 +104,28 @@ public class CafeMenuUIController : MonoBehaviour
 
             characterProfile.GetComponentInChildren<Image>().sprite = partyMember.GetComponent<Unit>().unitTemplate.unitPortrait;
 
-            TextMeshProUGUI[] characterTexts = characterProfile.GetComponentsInChildren<TextMeshProUGUI>();
+            characterTexts = characterProfile.GetComponentsInChildren<TextMeshProUGUI>();
 
             if (characterTexts.Length >= 5)
             {
                 characterTexts[0].text = partyMember.name;
                 characterTexts[1].text = "HP";
-                characterTexts[2].text = partyMember.HealthPoints.ToString();
+                characterTexts[2].text = partyMember.unitHealthPoints.ToString();
                 characterTexts[3].text = "MP";
                 characterTexts[4].text = partyMember.unitManaPoints.ToString();
             }
 
             characterProfile.GetComponentInChildren<TextMeshProUGUI>().text = partyMember.GetComponent<Unit>().unitTemplate.unitName;
+            characterProfileSmallControllers.Add(characterProfile);
+
 
             // Create the button GameObject
             GameObject feedCharacterButtonGO = new GameObject("CharacterFeedButton");
 
-            // Add RectTransform and set it up
             RectTransform rectTransform = feedCharacterButtonGO.AddComponent<RectTransform>();
             rectTransform.SetParent(characterProfile.transform, false); // Set parent with worldPositionStays = false to maintain proper UI scaling and positioning
 
-            // Add an Image component to make the button visible
             Image buttonImage = feedCharacterButtonGO.AddComponent<Image>();
-            // Set the button image sprite here if you have one, e.g.,
-            // buttonImage.sprite = someSprite;
-            // buttonImage.type = Image.Type.Sliced; // If you want to use a sliced image
 
             // Add the button component
             Button feedCharacterButton = feedCharacterButtonGO.AddComponent<Button>();
@@ -122,19 +134,17 @@ public class CafeMenuUIController : MonoBehaviour
             RectTransform textRectTransform = textGO.AddComponent<RectTransform>();
             textRectTransform.SetParent(feedCharacterButtonGO.transform, false);
 
-            // Set the TextMeshProUGUI component's RectTransform to fill the parent (the button in this case)
             textRectTransform.anchorMin = Vector2.zero;
             textRectTransform.anchorMax = Vector2.one;
-            textRectTransform.sizeDelta = Vector2.zero; // Reset size delta to zero for proper filling
+            textRectTransform.sizeDelta = Vector2.zero;
 
             TextMeshProUGUI textMeshPro = textGO.AddComponent<TextMeshProUGUI>();
-            // Configure your text properties here
-            textMeshPro.text = "Feed Character"; // Example text
-            textMeshPro.fontSize = 24; // Example font size
-            textMeshPro.alignment = TextAlignmentOptions.Center;
-            textMeshPro.color = Color.black; // Example text color
 
-            // Set up button colors if needed
+            textMeshPro.text = "Feed";
+            textMeshPro.fontSize = 24;
+            textMeshPro.alignment = TextAlignmentOptions.Center;
+            textMeshPro.color = Color.black;
+
             ColorBlock colors = feedCharacterButton.colors;
             colors.normalColor = Color.white;
             colors.highlightedColor = new Color(0.8f, 0.8f, 0.8f, 1);
@@ -143,7 +153,8 @@ public class CafeMenuUIController : MonoBehaviour
 
             // Add an onClick listener
             feedCharacterButton.onClick.AddListener(() => FeedCharacter(ref currentPurchasedFood, profileController.referenceUnit));
-
+            feedCharacterButton.enabled = false;
+            feedPlayerCharactersButtons.Add(feedCharacterButton);
         }
     }
 
@@ -151,24 +162,26 @@ public class CafeMenuUIController : MonoBehaviour
     {
         if (currentPurchasedFood != null && currentPurchasedFood.itemFoodType == ItemFoodType.HPRecovery)
         {
-            //Unit fedUnit = characterProfilesContainer.GetComponentInChildren<CharacterProfileSmallController>().referenceUnit;
             if (fedUnit.unitHealthPoints < fedUnit.unitMaxHealthPoints)
             {
-                fedUnit.HealthPoints += currentPurchasedFood.recoveryAmount;
+                fedUnit.unitHealthPoints += currentPurchasedFood.recoveryAmount;
                 if (fedUnit.unitHealthPoints > fedUnit.unitMaxHealthPoints)
                 {
                     fedUnit.unitHealthPoints = fedUnit.unitMaxHealthPoints;
                 }
+                UpdateCharacterStatsCounter(fedUnit);
+                notificationTexts.text = fedUnit.unitTemplate.unitName + " recovered " + currentPurchasedFood.recoveryAmount.ToString() + " HP!";
+                StartCoroutine("ClearNotificationText");
+
             }
             else if (fedUnit.unitHealthPoints == fedUnit.unitMaxHealthPoints)
             {
-                //Display on UI that the character is already at full HP
-                Debug.Log("Character is already at full HP");
+                notificationTexts.text = fedUnit.unitTemplate.unitName + " is already at full HP!";
+                StartCoroutine("ClearNotificationText");
             }
         }
         else if (currentPurchasedFood != null && currentPurchasedFood.itemFoodType == ItemFoodType.manaRecovery)
         {
-            //Unit fedUnit = characterProfilesContainer.GetComponentInChildren<CharacterProfileSmallController>().referenceUnit;
             if (fedUnit.unitManaPoints < fedUnit.unitMaxManaPoints)
             {
                 fedUnit.unitManaPoints += currentPurchasedFood.recoveryAmount;
@@ -176,14 +189,60 @@ public class CafeMenuUIController : MonoBehaviour
                 {
                     fedUnit.unitManaPoints = fedUnit.unitMaxManaPoints;
                 }
+                UpdateCharacterStatsCounter(fedUnit);
+                notificationTexts.text = fedUnit.unitTemplate.unitName + " recovered " + currentPurchasedFood.recoveryAmount.ToString() + " MP!";
+                StartCoroutine("ClearNotificationText");
+
             }
             else if (fedUnit.unitManaPoints == fedUnit.unitMaxManaPoints)
             {
-                //Display on UI that the character is already at full MP
-                Debug.Log("Character is already at full MP");
+                notificationTexts.text = fedUnit.unitTemplate.unitName + " is already at full MP!";
+                StartCoroutine("ClearNotificationText");
             }
         }
         currentPurchasedFood = null;
-        Debug.Log("Feeding Character");
+        DisableFeedingCharactersButtons();
+    }
+
+    void EnableFeedingCharactersButtons()
+    {
+        foreach (var button in feedPlayerCharactersButtons)
+        {
+            button.enabled = true;
+            button.GetComponent<Image>().color = Color.yellow;
+        }
+    }
+
+    void DisableFeedingCharactersButtons()
+    {
+        foreach (var button in feedPlayerCharactersButtons)
+        {
+            button.enabled = false;
+        }
+    }
+
+    void UpdateCharacterStatsCounter(Unit fedUnit)
+    {
+        foreach (var smallProfileController in characterProfileSmallControllers)
+        {
+            if (fedUnit == smallProfileController.GetComponent<CharacterProfileSmallController>().referenceUnit)
+            {
+                characterTexts = smallProfileController.GetComponentsInChildren<TextMeshProUGUI>();
+
+                if (characterTexts.Length >= 5)
+                {
+                    characterTexts[2].text = fedUnit.unitHealthPoints.ToString();
+                    characterTexts[4].text = fedUnit.unitManaPoints.ToString();
+                }
+            }
+
+        }
+    }
+
+    IEnumerator ClearNotificationText()
+    {
+        float clearNotificationWaitingTime = 1.5f;
+        yield return new WaitForSeconds(clearNotificationWaitingTime);
+        notificationTexts.text = "";
     }
 }
