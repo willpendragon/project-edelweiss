@@ -34,7 +34,34 @@ public class CafeMenuUIController : MonoBehaviour
             foodItem.GetComponent<Image>().sprite = food.foodIcon;
             Button itemFoodButton = foodItem.GetComponentInChildren<Button>();
             itemFoodButton.onClick.AddListener(() => PurchaseFood(food, food.itemFoodPrice));
-            itemFoodButton.GetComponentInChildren<TextMeshProUGUI>().text = food.itemFoodPrice.ToString();
+
+            // Get all TextMeshPro components in children
+            TextMeshProUGUI[] texts = itemFoodButton.GetComponentsInChildren<TextMeshProUGUI>();
+
+            if (texts.Length >= 6)
+            {
+                texts[1].text = food.itemFoodPrice.ToString();
+                texts[2].text = food.itemFoodName;
+                texts[3].text = FoodTypeLabel(food);
+                texts[4].text = food.recoveryAmount.ToString();
+                texts[5].text = food.itemFoodDescription;
+
+            }
+        }
+    }
+
+    public string FoodTypeLabel(ItemFood food)
+    {
+        string foodTypeLabel;
+        if (food.itemFoodType == ItemFoodType.HPRecovery)
+        {
+            foodTypeLabel = "HP Recovery";
+            return foodTypeLabel;
+        }
+        else
+        {
+            foodTypeLabel = "Mana Recovery";
+            return foodTypeLabel;
         }
     }
 
@@ -61,7 +88,20 @@ public class CafeMenuUIController : MonoBehaviour
             profileController.referenceUnit = partyMember;
 
             characterProfile.GetComponentInChildren<Image>().sprite = partyMember.GetComponent<Unit>().unitTemplate.unitPortrait;
+
+            TextMeshProUGUI[] characterTexts = characterProfile.GetComponentsInChildren<TextMeshProUGUI>();
+
+            if (characterTexts.Length >= 5)
+            {
+                characterTexts[0].text = partyMember.name;
+                characterTexts[1].text = "HP";
+                characterTexts[2].text = partyMember.HealthPoints.ToString();
+                characterTexts[3].text = "MP";
+                characterTexts[4].text = partyMember.unitManaPoints.ToString();
+            }
+
             characterProfile.GetComponentInChildren<TextMeshProUGUI>().text = partyMember.GetComponent<Unit>().unitTemplate.unitName;
+
             // Create the button GameObject
             GameObject feedCharacterButtonGO = new GameObject("CharacterFeedButton");
 

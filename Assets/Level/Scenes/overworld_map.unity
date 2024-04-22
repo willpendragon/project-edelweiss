@@ -24025,7 +24025,7 @@ GameObject:
   - component: {fileID: 964724480}
   m_Layer: 5
   m_Name: Dialogue Panel
-  m_TagString: Untagged
+  m_TagString: DialoguePanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26322,7 +26322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d2e14c67e03a8b448dfe39bdc40cb98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialoguePanel: {fileID: 964724477}
+  dialoguePanel: {fileID: 0}
   panSpeed: 40
   panLimitX: {x: -28, y: 46}
   panLimitY: {x: 12.69, y: 12.69}

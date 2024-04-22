@@ -12,6 +12,11 @@ public class CameraPan : MonoBehaviour
     public float margin = 10f; // Margin in pixels from the edge of the screen
 
     // Update is called once per frame
+
+    private void Awake()
+    {
+        dialoguePanel = GameObject.FindGameObjectWithTag("DialoguePanel");
+    }
     void Update()
     {
         if (dialoguePanel.activeInHierarchy == false)
