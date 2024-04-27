@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] BattleManager battleManager;
+    [SerializeField] Animator cameraAnimator;
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (battleManager.currentBattleType == BattleType.battleWithDeity)
+        {
+            cameraAnimator.SetTrigger("DeityEntryCamera");
+        }
     }
 }
