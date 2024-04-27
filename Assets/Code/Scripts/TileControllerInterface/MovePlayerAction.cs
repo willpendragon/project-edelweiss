@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using static GridTargetingController;
 using static TileController;
 using UnityEngine.UI;
-using System.Security.Cryptography;
 
 public class MovePlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -15,20 +13,27 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     private int destinationTileYCoordinate;
     public void Select(TileController selectedTile)
     {
-        if (selectedTile != null && selectionLimiter == 1 && selectedTile != GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile
+        int currentSelectionLimiter = 1;
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
+        if (selectedTile != null && currentSelectionLimiter == 1 && selectedTile != GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile
             && selectedTile.detectedUnit == null)
         //Beware: Magic Number
         {
             var destinationTile = selectedTile;
             //Check if the distance is available
             //If yes, check distance and create the path over the grid
+            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementSelectedSFX.Invoke();
             destinationTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
+
             destinationTileXCoordinate = destinationTile.tileXCoordinate;
             destinationTileYCoordinate = destinationTile.tileYCoordinate;
             savedSelectedTile = selectedTile;
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
 
             selectionLimiter--;
+
+
             Debug.Log("Move Destination Selection Logic");
         }
         else
@@ -83,11 +88,13 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             //if (IsSurrounded(activePlayerUnit))
             //{
             //    Debug.Log("Unit is surrounded and cannot move.");
-            //    // Here you can add any additional logic for when the unit is surrounded
+            //    // Here to add any additional logic for when the unit is surrounded
             //}
             if (activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate))
             {
                 //Use Grid Logic to Move the Player to Destination
+                activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementConfirmedSFX.Invoke();
+
                 activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
                 activePlayerUnit.ownedTile.detectedUnit = null;
                 activePlayerUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
@@ -97,6 +104,8 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
                 activePlayerUnit.unitOpportunityPoints--;
                 UpdateActivePlayerUnitProfile(activePlayerUnit);
+
+
                 Debug.Log("Moving Character Execution Logic");
             }
             else

@@ -76,6 +76,7 @@ public class BattleManager : MonoBehaviour
     public void SetBattleType(BattleType battleType)
     {
         currentBattleType = battleType;
+        //DeityCameraMovement();
     }
     void Start()
     {

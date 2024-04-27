@@ -1,18 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Playables;
+using UnityEngine.Events;
 
 public class BattleFeedbackController : MonoBehaviour
 {
+    public UnityEvent PlayMeleeAttackSFX;
+    public UnityEvent PlaySpellSFX;
+    public UnityEvent PlayMovementSelectedSFX;
+    public UnityEvent PlayMovementConfirmedSFX;
+
+
     public void PlayMeleeAttackAnimation(Unit activePlayerUnit, Unit currentTarget)
     {
         Debug.Log("Playing Attack Animation");
         Animator activePlayerUnitAnimator = activePlayerUnit.gameObject.GetComponentInChildren<Animator>();
         activePlayerUnitAnimator.SetTrigger("Attack");
+        if (PlayMeleeAttackSFX != null)
+        {
+            PlayMeleeAttackSFX.Invoke();
+        }
 
         Vector3 originalPosition = activePlayerUnit.transform.position;
-
 
         activePlayerUnit.transform.position = currentTarget.transform.position;
         StartCoroutine(RestorePlayerUnitPosition(activePlayerUnit, originalPosition));

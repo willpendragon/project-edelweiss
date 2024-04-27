@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using static GridTargetingController;
 using static TileController;
 using UnityEngine.UI;
-using Unity.VisualScripting;
+using UnityEngine.Events;
 
 public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -20,6 +19,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public delegate void UsedSingleTargetSpell();
     public static event UsedSingleTargetSpell OnUsedSingleTargetSpell;
 
+    public UnityEvent playSpellVFX;
     public void Select(TileController selectedTile)
     {
         spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
@@ -76,6 +76,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     else if (tile.detectedUnit.tag == "Enemy")
                     {
                         PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, tile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                        activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
+
                         OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
                         tile.detectedUnit.GetComponent<Unit>().TakeDamage(GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage);
                         activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
@@ -93,6 +95,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 if (savedSelectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
                 {
                     PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, savedSelectedTile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                    activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
+
+
                     OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
                     savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(spellCastingController.currentSelectedSpell.damage);
                     savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
