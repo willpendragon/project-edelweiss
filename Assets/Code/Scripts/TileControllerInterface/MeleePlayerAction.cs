@@ -57,13 +57,14 @@ public class MeleePlayerAction : IPlayerAction
         if (activePlayerUnit.unitOpportunityPoints > 0 && currentTarget.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
-            int attackPower = 2;
+            float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
             int knockbackStrength = 2;
             //Warning: remove magic number later
 
             if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
             {
                 attackPower = attackPower * 2;
+                //Warning: remove magic number later
                 knockbackStrength = knockbackStrength * 2;
                 Debug.Log("Applying distance and knockback multiplier");
             }
