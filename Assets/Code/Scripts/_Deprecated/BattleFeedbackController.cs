@@ -9,6 +9,10 @@ public class BattleFeedbackController : MonoBehaviour
     public UnityEvent PlaySpellSFX;
     public UnityEvent PlayMovementSelectedSFX;
     public UnityEvent PlayMovementConfirmedSFX;
+    public UnityEvent PlayDeathVFX;
+
+    public GameObject deathDisappearAnimationVFX;
+    public Animator unitAnimator;
 
 
     public void PlayMeleeAttackAnimation(Unit activePlayerUnit, Unit currentTarget)
@@ -39,5 +43,19 @@ public class BattleFeedbackController : MonoBehaviour
         Debug.Log("Playing Hurt Animation");
         Animator activePlayerUnitAnimator = GetComponentInChildren<Animator>();
         activePlayerUnitAnimator.SetTrigger("Hurt");
+    }
+
+    public void PlayUnitDeathAnimationVFX()
+    {
+        if (unitAnimator != null)
+        {
+            unitAnimator.SetTrigger("Die");
+        }
+
+        if (PlayDeathVFX != null)
+        {
+            deathDisappearAnimationVFX = Instantiate(deathDisappearAnimationVFX, gameObject.transform);
+            deathDisappearAnimationVFX.GetComponent<Animator>().SetTrigger("TriggerDeathVFX");
+        }
     }
 }

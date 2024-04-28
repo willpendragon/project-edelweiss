@@ -411,6 +411,7 @@ MonoBehaviour:
   coinsReward: 0
   experiencePointsReward: 0
   linkedDeity: {fileID: 0}
+  battleFeedbackController: {fileID: 7127888063209652432}
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
@@ -505,6 +506,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49061b32be4ab2c4e801392d4fbd3849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayMeleeAttackSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlaySpellSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayMovementSelectedSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayMovementConfirmedSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayDeathVFX:
+    m_PersistentCalls:
+      m_Calls: []
+  deathDisappearAnimationVFX: {fileID: 1874694411823686601, guid: 455892cabea2a6c4e9135d46170a809f, type: 3}
+  unitAnimator: {fileID: 369530382422409763}
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

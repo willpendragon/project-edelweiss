@@ -7,8 +7,6 @@ using UnityEngine.Events;
 [System.Serializable]
 public class HealthChangeEvent : UnityEvent<float> { }
 
-
-
 public class Unit : MonoBehaviour
 {
     public enum UnitLifeCondition
@@ -42,6 +40,8 @@ public class Unit : MonoBehaviour
     public float coinsReward;
     public float experiencePointsReward;
     public Deity linkedDeity;
+
+    public BattleFeedbackController battleFeedbackController;
 
     public delegate void CheckGameOver();
     public static event CheckGameOver OnCheckGameOver;
@@ -146,7 +146,12 @@ public class Unit : MonoBehaviour
 
             if (spriteRenderer != null)
             {
+                //Play Fade Animation on Sprite
                 spriteRenderer.material.color = Color.black;
+                if (battleFeedbackController != null)
+                {
+                    battleFeedbackController.PlayUnitDeathAnimationVFX();
+                }
             }
             else if (meshRenderer != null)
             {
