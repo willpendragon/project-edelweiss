@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static BumperEnemyBehavior;
 
 [CreateAssetMenu(fileName = "BumperEnemyBehavior", menuName = "EnemyBehavior/BumperEnemy")]
 public class BumperEnemyBehavior : EnemyBehavior
@@ -12,6 +13,9 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
+
+    public delegate void BumperEnemyAttack(string attackName, string attackerName);
+    public static event BumperEnemyAttack OnBumperEnemyAttack;
 
     [SerializeField] GameObject attackVFXAnimator;
     public float attackPower = 1;
@@ -29,6 +33,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             MoveToPlayerTarget(targetPlayerUnit, enemyAgent);
             float reducedDamage = attackPower; //* damageReductionFactor//
             enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>().PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
+            OnBumperEnemyAttack("Bump", "Godling");
             targetPlayerUnit.HealthPoints -= (reducedDamage);
             targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
 

@@ -13,6 +13,11 @@ public class StunnerEnemyBehavior : EnemyBehavior
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
 
+
+    public delegate void StunnerEnemyAttack(string attackName, string attackerName);
+    public static event StunnerEnemyAttack OnStunnerEnemyAttack;
+
+
     [SerializeField] private GameObject attackVFXAnimator;
 
     private System.Random localRandom = new System.Random(); // Local random number generator
@@ -26,6 +31,10 @@ public class StunnerEnemyBehavior : EnemyBehavior
             {
                 StunAbility(targetUnit);
                 Debug.Log("Stun Ability Chance Roll Successful");
+            }
+            else
+            {
+                OnStunnerEnemyAttack("Failed Stun", "Godling");
             }
             opportunity -= 1;
         }
@@ -58,6 +67,8 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
     public void StunAbility(Unit targetUnit)
     {
+        OnStunnerEnemyAttack("Stun", "Godling");
+
         targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
         targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
         Instantiate(Resources.Load("StunIcon"), targetUnit.transform);

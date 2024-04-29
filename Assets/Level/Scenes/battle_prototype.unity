@@ -820,9 +820,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333121726ca123e4fa72503fa1ad78c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleBeginsScreen: {fileID: 463913747}
+  battleMomentsScreen: {fileID: 463913747}
   enemyTurnDuration: 4.5
   battleInterface: {fileID: 767884334}
+  battleMomentsScreenDeactivationTime: 1
   deityAchievementsController: {fileID: 6169969153480535271}
   turnDisplay: {fileID: 782934662}
   turnTracker: {fileID: 873232010}
@@ -1952,7 +1953,7 @@ GameObject:
   - component: {fileID: 463913750}
   - component: {fileID: 463913749}
   m_Layer: 5
-  m_Name: BattleBeginsScreen
+  m_Name: BattleMomentsScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2990,7 +2991,7 @@ GameObject:
   - component: {fileID: 563278384}
   - component: {fileID: 563278383}
   m_Layer: 5
-  m_Name: BattleBeginsText
+  m_Name: BattleMomentsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3036,7 +3037,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Battle Begins
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3063,15 +3064,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 2
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -4913,7 +4914,7 @@ MonoBehaviour:
   deityJudgmentLimitText: {fileID: 496356837}
   player: {fileID: 0}
   battlefieldNotificationsPanel: {fileID: 2109305883}
-  battlefieldNotificationsPanelDurationTime: 1.8
+  battlefieldNotificationsPanelDurationTime: 2.5
 --- !u!114 &767884335
 MonoBehaviour:
   m_ObjectHideFlags: 0

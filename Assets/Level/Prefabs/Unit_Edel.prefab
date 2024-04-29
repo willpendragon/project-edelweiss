@@ -170,7 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: edel_1
   LinkedDeityId: 
-  unitMovementLimit: 4
+  unitMovementLimit: 5
   currentXCoordinate: 0
   currentYCoordinate: 0
   startingXCoordinate: 6
@@ -188,6 +188,7 @@ MonoBehaviour:
   coinsReward: 0
   experiencePointsReward: 0
   linkedDeity: {fileID: 0}
+  battleFeedbackController: {fileID: 0}
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
@@ -472,6 +473,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  PlayDeathVFX:
+    m_PersistentCalls:
+      m_Calls: []
+  deathDisappearAnimationVFX: {fileID: 0}
+  unitAnimator: {fileID: 0}
 --- !u!1001 &1558716032256963557
 PrefabInstance:
   m_ObjectHideFlags: 0

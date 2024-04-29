@@ -25,9 +25,10 @@ public enum BattleType
 
 public class BattleManager : MonoBehaviour
 {
-    public GameObject battleBeginsScreen;
+    [SerializeField] GameObject battleMomentsScreen;
     [SerializeField] float enemyTurnDuration;
     [SerializeField] BattleInterface battleInterface;
+    [SerializeField] float battleMomentsScreenDeactivationTime;
 
     [SerializeField] DeityAchievementsController deityAchievementsController;
 
@@ -39,7 +40,9 @@ public class BattleManager : MonoBehaviour
     public TurnOrder currentTurnOrder;
     public EnemySelection enemySelection;
     public FieldEffectStatus fieldEffectStatus;
+
     private GameManager gameManager;
+
     public EnemyTurnManager enemyTurnManager;
 
     public BattleType currentBattleType;
@@ -73,6 +76,21 @@ public class BattleManager : MonoBehaviour
         enemiesOnBattlefield = GameManager.Instance.currentEnemySelection;
     }
 
+    private void OnEnable()
+    {
+        EnemyTurnManager.OnPlayerTurn += ActivateBattleMomentsScreen;
+        EnemyTurnManager.OnDeityTurn += ActivateBattleMomentsScreen;
+        TurnController.OnEnemyTurn += ActivateBattleMomentsScreen;
+    }
+
+    private void OnDisable()
+    {
+        EnemyTurnManager.OnPlayerTurn -= ActivateBattleMomentsScreen;
+        EnemyTurnManager.OnDeityTurn -= ActivateBattleMomentsScreen;
+        TurnController.OnEnemyTurn -= ActivateBattleMomentsScreen;
+
+    }
+
     public void SetBattleType(BattleType battleType)
     {
         currentBattleType = battleType;
@@ -82,8 +100,7 @@ public class BattleManager : MonoBehaviour
     {
         //Looks for the Game Manager at the start of the battle.
         gameManager = GameManager.Instance;
-        battleBeginsScreen.SetActive(true);
-        StartCoroutine("DeactivateBattleBeginsScreen");
+        ActivateBattleMomentsScreen("Battle Begins!");
         enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
 
         SetTurnOrder();
@@ -133,9 +150,17 @@ public class BattleManager : MonoBehaviour
             enemyScript.opportunity = 1;
         }
     }
-    IEnumerator DeactivateBattleBeginsScreen()
+
+    public void ActivateBattleMomentsScreen(string battleMomentText)
     {
-        yield return new WaitForSeconds(0.5f);
-        battleBeginsScreen.SetActive(false);
+        battleMomentsScreen.SetActive(true);
+        battleMomentsScreen.GetComponentInChildren<TextMeshProUGUI>().text = battleMomentText;
+        StartCoroutine("DeactivateBattleMomentsScreen");
+
+    }
+    IEnumerator DeactivateBattleMomentsScreen()
+    {
+        yield return new WaitForSeconds(battleMomentsScreenDeactivationTime);
+        battleMomentsScreen.SetActive(false);
     }
 }

@@ -10,7 +10,7 @@ public class EnemyTurnManager : MonoBehaviour
     public BattleManager battleManager;
     [SerializeField] float singleEnemyturnDuration;
 
-    public delegate void DeityTurn();
+    public delegate void DeityTurn(string deityTurn);
     public static event DeityTurn OnDeityTurn;
 
     public delegate void PlayerTurn(string playerTurn);
@@ -79,7 +79,7 @@ public class EnemyTurnManager : MonoBehaviour
             }
             if (deity != null)
             {
-                OnDeityTurn();
+                OnDeityTurn("Deity Turn");
                 Debug.Log("Enemy turns are over. Passing turn to Deity");
             }
             else
@@ -93,8 +93,7 @@ public class EnemyTurnManager : MonoBehaviour
         else if (battleManager.currentBattleType == BattleType.battleWithDeity)
         {
             Debug.Log("This is a battle with a Deity");
-            OnDeityTurn();
+            OnDeityTurn("Deity Turn");
         }
-
     }
 }

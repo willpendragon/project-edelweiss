@@ -78,7 +78,7 @@ public class Deity : MonoBehaviour
         newDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
         deityEnmityTracker = newDeityEnmityTracker;
     }
-    public void DeityBehaviour()
+    public void DeityBehaviour(string deityText)
     //Retrieves the Deity Behavior from a compatible Scriptable Object add in the Inspector.
     {
         StartCoroutine("EndDeityTurn");

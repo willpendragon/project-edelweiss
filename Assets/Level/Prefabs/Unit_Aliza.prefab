@@ -82,6 +82,7 @@ MonoBehaviour:
   coinsReward: 0
   experiencePointsReward: 0
   linkedDeity: {fileID: 0}
+  battleFeedbackController: {fileID: 0}
   currentUnitLifeCondition: 0
   onHealthChanged:
     m_PersistentCalls:
@@ -354,6 +355,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  PlayDeathVFX:
+    m_PersistentCalls:
+      m_Calls: []
+  deathDisappearAnimationVFX: {fileID: 0}
+  unitAnimator: {fileID: 0}
 --- !u!1 &4441777849958791838
 GameObject:
   m_ObjectHideFlags: 0

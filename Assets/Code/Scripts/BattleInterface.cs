@@ -26,6 +26,8 @@ public class BattleInterface : MonoBehaviour
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell += SetSpellNameOnNotificationPanel;
         MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;
+        BumperEnemyBehavior.OnBumperEnemyAttack += SetMeleeAttackOnNotificationPanel;
+        StunnerEnemyBehavior.OnStunnerEnemyAttack += SetMeleeAttackOnNotificationPanel;
     }
     private void OnDisable()
     {
@@ -33,7 +35,8 @@ public class BattleInterface : MonoBehaviour
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell -= SetSpellNameOnNotificationPanel;
         MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
-
+        BumperEnemyBehavior.OnBumperEnemyAttack -= SetMeleeAttackOnNotificationPanel;
+        StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetMeleeAttackOnNotificationPanel;
     }
 
     public void SetSpellNameOnNotificationPanel(string spellName, string casterName)
