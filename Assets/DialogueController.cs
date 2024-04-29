@@ -10,9 +10,14 @@ public class DialogueController : MonoBehaviour
     {
         GameSaveData gameSaveData = SaveStateManager.LoadGame();
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
-        if (highestUnlockedLevel > 1)
+        if (highestUnlockedLevel == 2)
         {
             dialogueSystemTrigger.enabled = true;
         }
+        else if (highestUnlockedLevel == 4)
+        {
+            dialogueSystemTrigger.enabled = true;
+        }
+
     }
 }
