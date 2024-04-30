@@ -25,9 +25,9 @@ public class CafeMenuUIController : MonoBehaviour
     private TextMeshProUGUI[] characterTexts;
 
     [SerializeField] TextMeshProUGUI notificationTexts;
+    [SerializeField] GameObject loveIconPrefab;
+    [SerializeField] Transform loveIconPrefabTransform;
 
-    [SerializeField] GameObject playerUnitIcon;
-    [SerializeField] GameObject playerUnitIcon2;
 
 
     void Start()
@@ -175,7 +175,10 @@ public class CafeMenuUIController : MonoBehaviour
                 }
                 UpdateCharacterStatsCounter(fedUnit);
                 notificationTexts.text = fedUnit.unitTemplate.unitName + " recovered " + currentPurchasedFood.recoveryAmount.ToString() + " HP!";
-                StartCoroutine("ClearNotificationText");
+
+                GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
+
+                StartCoroutine(ClearNotificationText(loveIconPrefabInstance));
 
             }
             else if (fedUnit.unitHealthPoints == fedUnit.unitMaxHealthPoints)
@@ -195,7 +198,10 @@ public class CafeMenuUIController : MonoBehaviour
                 }
                 UpdateCharacterStatsCounter(fedUnit);
                 notificationTexts.text = fedUnit.unitTemplate.unitName + " recovered " + currentPurchasedFood.recoveryAmount.ToString() + " MP!";
-                StartCoroutine("ClearNotificationText");
+
+                GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
+
+                StartCoroutine(ClearNotificationText(loveIconPrefabInstance));
 
             }
             else if (fedUnit.unitManaPoints == fedUnit.unitMaxManaPoints)
@@ -243,7 +249,7 @@ public class CafeMenuUIController : MonoBehaviour
         }
     }
 
-    IEnumerator ClearNotificationText()
+    IEnumerator ClearNotificationText(GameObject currentEmoticon)
     {
         float clearNotificationWaitingTime = 1.5f;
         yield return new WaitForSeconds(clearNotificationWaitingTime);

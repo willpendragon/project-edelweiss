@@ -1165,6 +1165,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 655295424}
   m_CullTransparentMesh: 1
+--- !u!1 &664844953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 664844954}
+  m_Layer: 0
+  m_Name: LoveIconSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &664844954
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664844953}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.65, y: -1.02, z: -1.1916602}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &726538792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1693,8 +1724,8 @@ MonoBehaviour:
   characterProfileSmallControllers: []
   feedPlayerCharactersButtons: []
   notificationTexts: {fileID: 1703020733}
-  playerUnitIcon: {fileID: 0}
-  playerUnitIcon2: {fileID: 0}
+  loveIconPrefab: {fileID: 5120850841120903217, guid: 10258258988811949999ec1b858880a4, type: 3}
+  loveIconPrefabTransform: {fileID: 664844954}
 --- !u!4 &962010255
 Transform:
   m_ObjectHideFlags: 0

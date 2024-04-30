@@ -10,6 +10,7 @@ public class BattleFeedbackController : MonoBehaviour
     public UnityEvent PlayMovementSelectedSFX;
     public UnityEvent PlayMovementConfirmedSFX;
     public UnityEvent PlayDeathVFX;
+    public UnityEvent PlayDamageSFX;
 
     public GameObject deathDisappearAnimationVFX;
     public Animator unitAnimator;
@@ -43,6 +44,10 @@ public class BattleFeedbackController : MonoBehaviour
         Debug.Log("Playing Hurt Animation");
         Animator activePlayerUnitAnimator = GetComponentInChildren<Animator>();
         activePlayerUnitAnimator.SetTrigger("Hurt");
+        if (PlayDamageSFX != null)
+        {
+            PlayDamageSFX.Invoke();
+        }
     }
 
     public void PlayUnitDeathAnimationVFX()
