@@ -23,6 +23,8 @@ public class DeityAltarController : MonoBehaviour
     public RectTransform saveDeityLinkButtonContainer;
     public TextMeshProUGUI nameLabelPrefab;
 
+    [SerializeField] Transform deitySpot;
+
     [Serialize]
 
     Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
@@ -38,7 +40,7 @@ public class DeityAltarController : MonoBehaviour
             newPlayerUnitImage.tag = "Player";
             newPlayerUnitImage.GetComponent<UnitImageController>().unitReference = playerUnit;
             TextMeshProUGUI playerName = Instantiate(nameLabelPrefab, playerPartyMembembersContainer).GetComponent<TextMeshProUGUI>();
-            playerName.text = playerUnit.name;
+            playerName.text = playerUnit.unitTemplate.unitName;
         }
 
 
@@ -61,11 +63,14 @@ public class DeityAltarController : MonoBehaviour
             var deity = GameManager.Instance.collectibleDeities.Find(d => d.Id == unit.LinkedDeityId);
             if (deity == null) continue; // Skip if no deity found
 
+            GameObject deityModel = Instantiate(deity.gameObject, deitySpot.transform.position, Quaternion.identity);
+
             Sprite deityPortrait = deity.deityPortrait;
+
             GameObject newDeityUnitImage = Instantiate(deityImageGO, capturedDeitiesContainer);
             newDeityUnitImage.tag = "Deity";
             newDeityUnitImage.GetComponent<Image>().sprite = deityPortrait;
-            newDeityUnitImage.GetComponent<UnitImageController>().deityReference = deity; // Assuming you meant to assign the deity here
+            newDeityUnitImage.GetComponent<UnitImageController>().deityReference = deity;
 
             TextMeshProUGUI deityName = Instantiate(nameLabelPrefab, capturedDeitiesContainer).GetComponent<TextMeshProUGUI>();
             deityName.text = deity.name;

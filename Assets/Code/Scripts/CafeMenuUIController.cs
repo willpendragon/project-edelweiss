@@ -26,6 +26,10 @@ public class CafeMenuUIController : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI notificationTexts;
 
+    [SerializeField] GameObject playerUnitIcon;
+    [SerializeField] GameObject playerUnitIcon2;
+
+
     void Start()
     {
         gameStatsManager = GameObject.FindWithTag("GameStatsManager").GetComponent<GameStatsManager>();

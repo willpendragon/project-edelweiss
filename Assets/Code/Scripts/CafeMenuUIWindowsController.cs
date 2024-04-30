@@ -19,7 +19,7 @@ public class CafeMenuUIWindowsController : MonoBehaviour
 
         // Set initial button texts
         buttonText1.text = "Open Café Menu";
-        buttonText2.text = "Open Conversations Menu";
+        buttonText2.text = "Open Conversations";
 
         // Add click listeners to buttons
         button1.onClick.AddListener(() => ToggleMenu(menu1, buttonText1, "Café Menu"));
@@ -36,7 +36,7 @@ public class CafeMenuUIWindowsController : MonoBehaviour
             if (menu == menu1)
             {
                 menu2.SetActive(false);
-                buttonText2.text = "Open Conversations Menu";
+                buttonText2.text = "Open Conversations";
             }
             else if (menu == menu2)
             {

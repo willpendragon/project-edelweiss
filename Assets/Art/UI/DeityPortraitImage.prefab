@@ -68,9 +68,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -1742078660, guid: c24b78db1b4153d45b2bbf24431592fb, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -116,3 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 349ff2f6a5659da4caf88408b3f0a2ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deityAltarController: {fileID: 0}
+  currentIconSelectionStatus: 0
+  unitReference: {fileID: 0}
+  deityReference: {fileID: 0}

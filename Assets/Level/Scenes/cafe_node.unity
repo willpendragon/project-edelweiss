@@ -352,8 +352,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: War Funds
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -416,7 +416,7 @@ MonoBehaviour:
   m_margin: {x: 35.269287, y: 4.1224365, z: 30.950806, w: 20.611938}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &208014711
@@ -487,8 +487,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Discussions
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -512,10 +512,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 41.55
+  m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -548,7 +548,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 26.028122, y: 16.774414, z: 18.723206, w: 19.543335}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -690,8 +690,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Return to Battlefield
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1573,7 +1573,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: War Funds
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1637,7 +1637,7 @@ MonoBehaviour:
   m_margin: {x: 35.269287, y: 4.1224365, z: 30.950806, w: 20.611938}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &894969388
@@ -1693,6 +1693,8 @@ MonoBehaviour:
   characterProfileSmallControllers: []
   feedPlayerCharactersButtons: []
   notificationTexts: {fileID: 1703020733}
+  playerUnitIcon: {fileID: 0}
+  playerUnitIcon2: {fileID: 0}
 --- !u!4 &962010255
 Transform:
   m_ObjectHideFlags: 0
@@ -2124,8 +2126,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2188,7 +2190,7 @@ MonoBehaviour:
   m_margin: {x: 35.269287, y: 4.1224365, z: 91.870605, w: 20.611938}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1093975911
@@ -3045,8 +3047,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Caf\xE9 Menu"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3070,10 +3072,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 46.8
+  m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -3106,7 +3108,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 19.758156, y: 23.800049, z: 20.321564, w: 27.033508}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3180,8 +3182,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
