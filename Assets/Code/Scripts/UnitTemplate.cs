@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [CreateAssetMenu(fileName = "New Unit Template", menuName = "UnitTemplate")]
 public class UnitTemplate : ScriptableObject
@@ -17,5 +18,9 @@ public class UnitTemplate : ScriptableObject
     public float unitCoinsReward;
     public float unitExperiencePointsReward;
     public float meleeAttackPower;
+
+    public GameObject unitCalloutPortrait;
+
+    public float unitMagicPower;
 
 }

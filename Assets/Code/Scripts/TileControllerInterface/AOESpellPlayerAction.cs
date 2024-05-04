@@ -19,8 +19,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public delegate void UsedSingleTargetSpell();
     public static event UsedSingleTargetSpell OnUsedSingleTargetSpell;
 
-    public delegate void SpellTriggeredCallout(Image calloutImage);
-    public static event SpellTriggeredCallout OnSpellTriggeredCallout;
+    public delegate void SpellCriticalHit();
+    public static event SpellCriticalHit OnSpellCriticalHit;
 
     public UnityEvent playSpellVFX;
     public void Select(TileController selectedTile)
@@ -66,7 +66,15 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
         if (activePlayerUnit.unitManaPoints > 0 && activePlayerUnit.unitOpportunityPoints > 0)
         {
-            if (spellCastingController.currentSelectedSpell.spellType == SpellType.aoe)
+            Spell currentSpell = spellCastingController.currentSelectedSpell;
+            // Determine if this is a critical hit
+            bool isCritical = Random.value < currentSpell.criticalHitChance;
+            // Base damage calculation now includes attacker's attack power
+            int baseDamage = currentSpell.damage + (int)(activePlayerUnit.unitMagicPower * 0.5);
+            // Critical hit damage calculation
+            int damageToApply = baseDamage * (isCritical ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100) : 1);
+
+            if (currentSpell.spellType == SpellType.aoe)
             {
                 foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
                 {
@@ -78,38 +86,51 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     }
                     else if (tile.detectedUnit.tag == "Enemy")
                     {
-                        PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, tile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                        PlayVFX(currentSpell.spellVFX, tile, currentSpell.spellVFXOffset);
                         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
 
-                        OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
-                        tile.detectedUnit.GetComponent<Unit>().TakeDamage(GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>().currentSelectedSpell.damage);
-                        activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
+                        // Used Spell notification appears on the Battle Interface
+                        OnUsedSpell(currentSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+
+                        // If the Spell is a Critical Hit, sends an event to display the Battle Callout
+                        if (isCritical)
+                        {
+                            OnSpellCriticalHit();
+                        }
+
+                        tile.detectedUnit.GetComponent<Unit>().TakeDamage(damageToApply);
+                        activePlayerUnit.SpendManaPoints(currentSpell.manaPointsCost);
                         activePlayerUnit.unitOpportunityPoints--;
                         UpdateActivePlayerUnitMana(activePlayerUnit);
-                        Debug.Log("Applied damage on Enemy Units affected by the AOE Spell");
-                        DeityEnmityCheck();
 
+                        Debug.Log("Applied " + (isCritical ? "critical " : "") + "damage on Enemy Units affected by the AOE Spell");
+
+                        DeityEnmityCheck();
                     }
                 }
             }
-
-            else if (spellCastingController.currentSelectedSpell.spellType == SpellType.singleTarget)
+            else if (currentSpell.spellType == SpellType.singleTarget)
             {
                 if (savedSelectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
                 {
-                    PlayVFX(spellCastingController.currentSelectedSpell.spellVFX, savedSelectedTile, spellCastingController.currentSelectedSpell.spellVFXOffset);
+                    PlayVFX(currentSpell.spellVFX, savedSelectedTile, currentSpell.spellVFXOffset);
                     activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
 
+                    // Used Spell notification appears on the Battle Interface
+                    OnUsedSpell(currentSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+                    if (isCritical)
+                    {
+                        OnSpellCriticalHit();
+                    }
 
-                    OnUsedSpell(spellCastingController.currentSelectedSpell.spellName, activePlayerUnit.unitTemplate.unitName);
-                    savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(spellCastingController.currentSelectedSpell.damage);
+                    savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(damageToApply);
                     savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
-                    activePlayerUnit.SpendManaPoints(spellCastingController.currentSelectedSpell.manaPointsCost);
+                    activePlayerUnit.SpendManaPoints(currentSpell.manaPointsCost);
                     activePlayerUnit.unitOpportunityPoints--;
                     UpdateActivePlayerUnitMana(activePlayerUnit);
                     OnUsedSingleTargetSpell();
                     DeityEnmityCheck();
-
+                    Debug.Log("Applied " + (isCritical ? "critical " : "") + "damage to the target unit.");
                 }
             }
         }

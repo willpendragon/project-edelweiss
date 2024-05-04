@@ -39,6 +39,9 @@ public class Unit : MonoBehaviour
     public float unitExperiencePoints;
     public float coinsReward;
     public float experiencePointsReward;
+
+    public float unitMagicPower;
+
     public Deity linkedDeity;
 
     public BattleFeedbackController battleFeedbackController;
@@ -81,6 +84,8 @@ public class Unit : MonoBehaviour
             unitMaxManaPoints = unitTemplate.unitManaPoints;
             unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
             unitShieldPoints = unitTemplate.unitShieldPoints;
+            unitMagicPower = unitTemplate.unitMagicPower;
+
             currentUnitLifeCondition = UnitLifeCondition.unitAlive;
 
             coinsReward = GetComponent<Unit>().unitTemplate.unitCoinsReward;

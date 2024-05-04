@@ -26,5 +26,7 @@ public class Spell : ScriptableObject
     public SpellType spellType;
     public GameObject spellVFX;
     public Vector3 spellVFXOffset;
+
+    public float criticalHitChance;
     // Add more spell properties as needed
 }
