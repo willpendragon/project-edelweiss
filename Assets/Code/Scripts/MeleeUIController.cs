@@ -12,7 +12,6 @@ public class MeleeUIController : MonoBehaviour
     }
     private void OnDestroy()
     {
-        // It's good practice to unsubscribe from the event when the GameObject is destroyed.
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
@@ -37,10 +36,10 @@ public class MeleeUIController : MonoBehaviour
         //Instantiates the Melee Button.
         GameObject meleeButtonInstance = Instantiate(meleeButtonPrefab, spellMenuContainer);
         Button currentMeleeButton = meleeButtonInstance.GetComponent<Button>();
-        currentMeleeButton.onClick.AddListener(() => SwitchTilesToMeleeMode());
+        currentMeleeButton.onClick.AddListener(() => SwitchTilesToSelectionMode());
     }
 
-    public void SwitchTilesToMeleeMode()
+    public void SwitchTilesToSelectionMode()
     {
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {

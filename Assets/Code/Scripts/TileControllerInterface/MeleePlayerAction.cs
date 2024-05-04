@@ -56,30 +56,32 @@ public class MeleePlayerAction : IPlayerAction
 
         if (activePlayerUnit.unitOpportunityPoints > 0 && currentTarget.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
-            DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
             float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
             int knockbackStrength = 2;
+
+            DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
             //Warning: remove magic number later
 
             if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
             {
                 attackPower = attackPower * 2;
-                //Warning: remove magic number later
                 knockbackStrength = knockbackStrength * 2;
-                Debug.Log("Applying distance and knockback multiplier");
+                //Warning: remove magic numbers later
+                ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
             }
-            currentTarget.TakeDamage(attackPower);
-
+            else
+            {
+                currentTarget.TakeDamage(attackPower);
+            }
             activePlayerUnit.unitOpportunityPoints--;
 
             UpdateActivePlayerUnitProfile(activePlayerUnit);
 
-            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
-            savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            savedSelectedTile.currentSingleTileCondition = SingleTileCondition.free;
-            ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
+            //savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
+            //savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            //savedSelectedTile.currentSingleTileCondition = SingleTileCondition.free;
 
-            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
+            //activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
             OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
             Debug.Log("Melee Execution Logic");
         }
@@ -116,6 +118,7 @@ public class MeleePlayerAction : IPlayerAction
         TileController immediateTileController = GridManager.Instance.GetTileControllerInstance(immediateNextTile.x, immediateNextTile.y);
         if (immediateTileController == null || immediateTileController.currentSingleTileCondition == SingleTileCondition.occupied)
         {
+            currentTarget.TakeDamage(attacker.unitTemplate.meleeAttackPower);
             Debug.Log("Immediate tile in knockback path is occupied. Knockback canceled.");
             return;
         }
@@ -134,14 +137,15 @@ public class MeleePlayerAction : IPlayerAction
         if (defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             defender.ownedTile.detectedUnit = null;
+            defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
             defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y);
-            //defender.GetComponent<Unit>().SetPosition(newGridPos.x, newGridPos.y);
-            TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
-            defender.ownedTile = destinationTile;
-            destinationTile.detectedUnit = defender.gameObject;
-            Debug.Log("Enemy knocked back");
-            //Stopped here 130420241348
 
+            TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
+
+            destinationTile.detectedUnit = defender.gameObject;
+            defender.ownedTile = destinationTile;
+            defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+            Debug.Log("Enemy knocked back");
         }
         else
         {

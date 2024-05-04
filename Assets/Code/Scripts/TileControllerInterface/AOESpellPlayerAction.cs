@@ -19,6 +19,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public delegate void UsedSingleTargetSpell();
     public static event UsedSingleTargetSpell OnUsedSingleTargetSpell;
 
+    public delegate void SpellTriggeredCallout(Image calloutImage);
+    public static event SpellTriggeredCallout OnSpellTriggeredCallout;
+
     public UnityEvent playSpellVFX;
     public void Select(TileController selectedTile)
     {
