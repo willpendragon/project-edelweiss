@@ -81,7 +81,7 @@ public class MeleePlayerAction : IPlayerAction
             //savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             //savedSelectedTile.currentSingleTileCondition = SingleTileCondition.free;
 
-            //activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
+            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
             OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
             Debug.Log("Melee Execution Logic");
         }

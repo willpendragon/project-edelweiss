@@ -22,9 +22,14 @@ public class BattleCalloutsController : MonoBehaviour
 
         GameObject battleCalloutInstance = Instantiate(activePlayerUnit.unitTemplate.unitCalloutPortrait, this.gameObject.transform);
         battleCalloutInstance.GetComponentInChildren<Animator>().SetTrigger("ShowUnitCallout");
+
+        GameObject criticalHitVoiceSFX = Instantiate(activePlayerUnit.unitTemplate.unitCriticalHitVoice, Camera.main.transform);
+
         float battleCalloutDuration = 1f;
 
         Destroy(battleCalloutInstance, battleCalloutDuration);
+        Destroy(battleCalloutInstance, activePlayerUnit.unitTemplate.unitCriticalHitVoice.GetComponent<AudioSource>().clip.length);
+
     }
 
 
