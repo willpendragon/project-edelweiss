@@ -6,6 +6,8 @@ using TMPro;
 
 public class BattleInterface : MonoBehaviour
 {
+    public static BattleInterface Instance { get; private set; }
+
     [SerializeField] TextMeshProUGUI moveName;
     public TextMeshProUGUI battleEndResult;
     [SerializeField] Image moveNamePanel;
@@ -20,6 +22,17 @@ public class BattleInterface : MonoBehaviour
     [SerializeField] RectTransform battlefieldNotificationsPanel;
     [SerializeField] float battlefieldNotificationsPanelDurationTime;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private void OnEnable()
     {
         Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;

@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
-using Unity.VisualScripting;
-using System;
 
 public class DeityFeedbackController : MonoBehaviour
 {
@@ -30,6 +28,11 @@ public class DeityFeedbackController : MonoBehaviour
 
     public void PlayerUnitPrayingFeedback()
     {
+
+        Transform activePlayerUnitTransform = GameObject.FindGameObjectWithTag("ActivePlayerUnit").transform;
+        BattleInterface.Instance.SetSpellNameOnNotificationPanel("Prayer", activePlayerUnitTransform.gameObject.GetComponent<Unit>().unitTemplate.unitName);
+
+
         float playerUnitPrayerDuration = 1.5f;
         float postExposureReduction = -1.8f;
 
@@ -39,7 +42,6 @@ public class DeityFeedbackController : MonoBehaviour
         }
         ChangeLevelPostExposure(postExposureReduction, playerUnitPrayerDuration);
 
-        Transform activePlayerUnitTransform = GameObject.FindGameObjectWithTag("ActivePlayerUnit").transform;
 
         // Spawn Player Spotlight
         GameObject unitSpotLightInstance = Instantiate(unitSpotLight, activePlayerUnitTransform);
@@ -73,6 +75,11 @@ public class DeityFeedbackController : MonoBehaviour
         directionalLight.DOIntensity(directionalLightIntensityOriginalValue, lightsOnDuration);
 
         // Play Feedback on Deity
+        Deity linkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().linkedDeity;
+
+        GameObject prayingDeityVFXInstance = Instantiate(prayingVFX, linkedDeity.transform);
+        Destroy(prayingDeityVFXInstance, timeToRestore);
+
 
     }
 }
