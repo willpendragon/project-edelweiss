@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36baaa8bdcb9d8b49b9199833965d2c3, type: 3}
-  m_Name: DeityEntrance
+  m_Script: {fileID: 11500000, guid: 394a832b6a5bba9488ea31ce858fe182, type: 3}
+  m_Name: DeityPrayerPowerUp_Anguana
   m_EditorClassIdentifier: 
-  m_CustomBlends: []
+  buffAmount: 20
+  currentAffectedStat: 1

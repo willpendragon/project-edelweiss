@@ -29,7 +29,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
         if (selectedTile != null && selectionLimiter > 0)
         {
-            if (spellCastingController.currentSelectedSpell.spellType == SpellType.aoe)
+            if (spellCastingController.currentSelectedSpell.spellType == SpellType.AOE)
             {
                 foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile))
                 {
@@ -41,7 +41,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 Debug.Log("Selected AOE Spell Range");
             }
 
-            else if (spellCastingController.currentSelectedSpell.spellType == SpellType.singleTarget)
+            else if (spellCastingController.currentSelectedSpell.spellType == SpellType.SingleTarget)
             {
                 savedSelectedTile = selectedTile;
 
@@ -74,7 +74,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             // Critical hit damage calculation
             int damageToApply = baseDamage * (isCritical ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100) : 1);
 
-            if (currentSpell.spellType == SpellType.aoe)
+            if (currentSpell.spellType == SpellType.AOE)
             {
                 foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
                 {
@@ -109,7 +109,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     }
                 }
             }
-            else if (currentSpell.spellType == SpellType.singleTarget)
+            else if (currentSpell.spellType == SpellType.SingleTarget)
             {
                 if (savedSelectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
                 {

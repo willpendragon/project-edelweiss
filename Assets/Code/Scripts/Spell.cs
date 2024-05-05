@@ -12,8 +12,8 @@ public enum SpellAlignment
 }
 public enum SpellType
 {
-    singleTarget,
-    aoe,
+    SingleTarget,
+    AOE,
 }
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spell")]
 public class Spell : ScriptableObject
@@ -28,5 +28,4 @@ public class Spell : ScriptableObject
     public Vector3 spellVFXOffset;
 
     public float criticalHitChance;
-    // Add more spell properties as needed
 }

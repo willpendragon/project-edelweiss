@@ -10,14 +10,15 @@ public class PrayPlayerAction : IPlayerAction
     public int selectionLimiter = 1;
     public delegate void PlayerPrayer();
     public static event PlayerPrayer OnPlayerPrayer;
+
     public void Select(TileController selectedTile)
     {
         if (selectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity)
         {
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-            Debug.Log("Praying for the Selected Deity");
             savedSelectedTile = selectedTile;
             selectionLimiter--;
+            Debug.Log("Selected Deity Possessed Tile for Praying");
         }
     }
 
@@ -34,6 +35,7 @@ public class PrayPlayerAction : IPlayerAction
 
         if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity && currentActivePlayerUnit.unitOpportunityPoints > 0)
         {
+            Debug.Log("Praying for Deity");
             OnPlayerPrayer();
             currentActivePlayerUnit.unitOpportunityPoints--;
             CheckLinkedDeityPrayerPower();
@@ -46,14 +48,12 @@ public class PrayPlayerAction : IPlayerAction
 
     private void CheckLinkedDeityPrayerPower()
     {
-        PlayPrayerFeedback();
         Deity linkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().linkedDeity;
 
         if (linkedDeity.deityPrayerPower >= linkedDeity.deityPrayerPowerThreshold)
         {
             PerformDeityPowerUp(linkedDeity);
         }
-
     }
 
     private void PerformDeityPowerUp(Deity linkedDeity)

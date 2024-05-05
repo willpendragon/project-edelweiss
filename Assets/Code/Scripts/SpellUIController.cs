@@ -39,13 +39,13 @@ public class SpellUIController : MonoBehaviour
             GameObject spellButtonInstance = Instantiate(spellButtonPrefab, spellMenuContainer);
             Button currentSpellButton = spellButtonInstance.GetComponent<Button>();
             currentSpellButton.GetComponentInChildren<Text>().text = spell.spellName;
-            if (spell.spellType == SpellType.aoe)
+            if (spell.spellType == SpellType.AOE)
             {
                 //currentSpellButton.onClick.AddListener(() => spellCastingController.CastSpell(spell));
                 currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
                 currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
             }
-            else if (spell.spellType == SpellType.singleTarget)
+            else if (spell.spellType == SpellType.SingleTarget)
             {
                 currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
                 currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));

@@ -245,6 +245,8 @@ MonoBehaviour:
   deityPortrait: {fileID: 21300000, guid: 8f298345a85fe8d40a479ea7bd37db74, type: 3}
   deityHealthBar: {fileID: 0}
   deityPrayerPower: 0
+  deityPrayerPowerThreshold: 3
+  deityPrayerBuff: {fileID: 11400000, guid: 877944df237f9b14084c6a04dc048829, type: 2}
   deityBehavior: {fileID: 11400000, guid: 0372a198e5909a349b294db374d84b0e, type: 2}
 --- !u!114 &-5287236863881772563
 MonoBehaviour:
@@ -277,7 +279,9 @@ MonoBehaviour:
   unitExperiencePoints: 0
   coinsReward: 500000
   experiencePointsReward: 0
+  unitMagicPower: 0
   linkedDeity: {fileID: 0}
+  battleFeedbackController: {fileID: 0}
   currentUnitLifeCondition: 1
   onHealthChanged:
     m_PersistentCalls:

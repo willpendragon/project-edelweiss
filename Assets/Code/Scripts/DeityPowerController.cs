@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DeityPowerController : MonoBehaviour
 {
+    public delegate void PlayerUnitPraying();
+    public static event PlayerUnitPraying OnPlayerUnitPraying;
     private void OnEnable()
     {
         PrayPlayerAction.OnPlayerPrayer += IncreaseDeityPower;
@@ -15,8 +17,18 @@ public class DeityPowerController : MonoBehaviour
     private void IncreaseDeityPower()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        activePlayerUnit.linkedDeity.deityPrayerPower++;
-        Debug.Log("Deity Power Increases");
+        if (activePlayerUnit != null)
+        {
+            if (activePlayerUnit.linkedDeity.deityPrayerPower < activePlayerUnit.linkedDeity.deityPrayerPowerThreshold)
+            {
+                activePlayerUnit.linkedDeity.deityPrayerPower++;
+                OnPlayerUnitPraying();
+                Debug.Log("Deity Power Increases");
+            }
+            else
+            {
+                // Deity Prayer Power is already at Max Capacity
+            }
+        }
     }
-
 }

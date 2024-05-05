@@ -35,8 +35,10 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
+                deitySpawningZoneTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.yellow;
             }
-            currentActivePlayerUnit.SpendManaPoints(50);
+            int summoningCost = 50;
+            currentActivePlayerUnit.SpendManaPoints(summoningCost);
             //Beware, Magic Number
             Debug.Log("Summon Deity on Battlefield");
 

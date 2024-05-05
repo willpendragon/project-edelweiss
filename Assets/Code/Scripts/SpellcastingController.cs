@@ -25,13 +25,13 @@ public class SpellcastingController : MonoBehaviour
     {
         // Sends an event delegate that activates the Attack Selection Mode on the Grid Targeting Controller.
         // Sets the current Target Enemy and the current Spell
-        if (castedSpell != null && castedSpell.spellType == SpellType.singleTarget)
+        if (castedSpell != null && castedSpell.spellType == SpellType.SingleTarget)
         {
             OnCastingSpell();
             currentSelectedSpell = castedSpell;
             Debug.Log("Single Target - Now Casting" + castedSpell);
         }
-        else if (castedSpell != null && castedSpell.spellType == SpellType.aoe)
+        else if (castedSpell != null && castedSpell.spellType == SpellType.AOE)
         {
             OnCastingSpellAOE();
             currentSelectedSpell = castedSpell;
