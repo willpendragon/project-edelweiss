@@ -35,6 +35,10 @@ public class Deity : MonoBehaviour
     public GameObject deityHealthBar;
 
     public float deityPrayerPower;
+    public float deityPrayerPowerThreshold;
+
+    public DeityPrayerBuff deityPrayerBuff;
+
     public DeityBehavior deityBehavior;
 
     public delegate void DeityJudgment();

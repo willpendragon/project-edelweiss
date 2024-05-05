@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PrayPlayerAction : IPlayerAction
@@ -34,10 +36,54 @@ public class PrayPlayerAction : IPlayerAction
         {
             OnPlayerPrayer();
             currentActivePlayerUnit.unitOpportunityPoints--;
+            CheckLinkedDeityPrayerPower();
         }
         else
         {
             Debug.Log("Active Player Unit is unable to pray");
         }
     }
+
+    private void CheckLinkedDeityPrayerPower()
+    {
+        PlayPrayerFeedback();
+        Deity linkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().linkedDeity;
+
+        if (linkedDeity.deityPrayerPower >= linkedDeity.deityPrayerPowerThreshold)
+        {
+            PerformDeityPowerUp(linkedDeity);
+        }
+
+    }
+
+    private void PerformDeityPowerUp(Deity linkedDeity)
+    {
+        Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
+        switch (linkedDeity.deityPrayerBuff.currentAffectedStat)
+        {
+            case DeityPrayerBuff.AffectedStat.MaxHP:
+                currentActivePlayerUnit.unitMaxHealthPoints += linkedDeity.deityPrayerBuff.buffAmount;
+                PlayBuffFeedback();
+                break;
+            case DeityPrayerBuff.AffectedStat.MagicPower:
+                currentActivePlayerUnit.unitMagicPower += linkedDeity.deityPrayerBuff.buffAmount;
+                break;
+            default:
+                Debug.LogError("Unsupported stat type");
+                break;
+        }
+
+    }
+
+    private void PlayBuffFeedback()
+    {
+
+    }
+
+    private void PlayPrayerFeedback()
+    {
+
+    }
+
 }
