@@ -15,6 +15,8 @@ public class BattleFeedbackController : MonoBehaviour
     public GameObject deathDisappearAnimationVFX;
     public Animator unitAnimator;
 
+    public GameObject buffIcon;
+
 
     public void PlayMeleeAttackAnimation(Unit activePlayerUnit, Unit currentTarget)
     {

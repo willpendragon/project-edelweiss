@@ -27,7 +27,8 @@ public class DeityPowerController : MonoBehaviour
             }
             else
             {
-                // Deity Prayer Power is already at Max Capacity
+                Debug.Log("Deity Prayer Power is already at Max Capacity");
+
             }
         }
     }

@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
+using DG.Tweening;
 
-public class PrayPlayerAction : IPlayerAction
+public class PrayPlayerAction : MonoBehaviour, IPlayerAction
 {
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
@@ -32,13 +32,22 @@ public class PrayPlayerAction : IPlayerAction
     public void Execute()
     {
         Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        Deity linkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().linkedDeity;
+
 
         if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity && currentActivePlayerUnit.unitOpportunityPoints > 0)
         {
             Debug.Log("Praying for Deity");
-            OnPlayerPrayer();
-            currentActivePlayerUnit.unitOpportunityPoints--;
-            CheckLinkedDeityPrayerPower();
+            if (CheckLinkedDeityPrayerPower())
+            {
+                currentActivePlayerUnit.unitOpportunityPoints--;
+                PerformDeityPowerUp(linkedDeity);
+            }
+            else
+            {
+                currentActivePlayerUnit.unitOpportunityPoints--;
+                OnPlayerPrayer();
+            }
         }
         else
         {
@@ -46,13 +55,17 @@ public class PrayPlayerAction : IPlayerAction
         }
     }
 
-    private void CheckLinkedDeityPrayerPower()
+    private bool CheckLinkedDeityPrayerPower()
     {
         Deity linkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().linkedDeity;
 
         if (linkedDeity.deityPrayerPower >= linkedDeity.deityPrayerPowerThreshold)
         {
-            PerformDeityPowerUp(linkedDeity);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -64,10 +77,11 @@ public class PrayPlayerAction : IPlayerAction
         {
             case DeityPrayerBuff.AffectedStat.MaxHP:
                 currentActivePlayerUnit.unitMaxHealthPoints += linkedDeity.deityPrayerBuff.buffAmount;
-                PlayBuffFeedback();
+                PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
                 break;
             case DeityPrayerBuff.AffectedStat.MagicPower:
                 currentActivePlayerUnit.unitMagicPower += linkedDeity.deityPrayerBuff.buffAmount;
+                PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
                 break;
             default:
                 Debug.LogError("Unsupported stat type");
@@ -76,14 +90,25 @@ public class PrayPlayerAction : IPlayerAction
 
     }
 
-    private void PlayBuffFeedback()
+    private void PlayBuffFeedback(Unit affectedUnit, Deity linkedDeity)
     {
+        Debug.Log("Playing Buff Feedback");
+        BattleInterface.Instance.SetSpellNameOnNotificationPanel("Blessing", linkedDeity.name);
+        float moveDistance = 5f;
+        float duration = 1f;
+        //Instantiate Buff Feedback on Active Player Unit
 
+        GameObject buffIcon = Instantiate(affectedUnit.gameObject.GetComponent<BattleFeedbackController>().buffIcon, affectedUnit.gameObject.transform);
+
+        // Move the arrow upwards
+        buffIcon.transform.DOMoveY(buffIcon.transform.position.y + moveDistance, duration)
+            .SetEase(Ease.OutQuad);
+
+        // Fade out the arrow
+        buffIcon.GetComponent<SpriteRenderer>().DOFade(0, duration)
+                .SetEase(Ease.Linear);
+
+        Destroy(buffIcon, duration);
+        // Update Active Player Unit UI
     }
-
-    private void PlayPrayerFeedback()
-    {
-
-    }
-
 }

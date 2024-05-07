@@ -11,11 +11,7 @@ public class DeityAnguanaBehavior : DeityBehavior
 
         if (battleManager.currentBattleType == BattleType.regularBattle)
         {
-            if (deity.deityPrayerPower > deityPrayerPowerMinimumRequirement)
-            {
-                Debug.Log("Attacking Enemies");
-            }
-            else if (deity.PerformDeityEnmityCheck())
+            if (deity.PerformDeityEnmityCheck())
             {
                 Attack(deity);
             }

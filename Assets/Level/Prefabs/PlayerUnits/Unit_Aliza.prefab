@@ -82,6 +82,7 @@ MonoBehaviour:
   unitExperiencePoints: 0
   coinsReward: 0
   experiencePointsReward: 0
+  unitMagicPower: 0
   linkedDeity: {fileID: 0}
   battleFeedbackController: {fileID: 0}
   currentUnitLifeCondition: 0
@@ -376,6 +377,7 @@ MonoBehaviour:
         m_CallState: 2
   deathDisappearAnimationVFX: {fileID: 0}
   unitAnimator: {fileID: 0}
+  buffIcon: {fileID: 7203561652851106972, guid: 434c3c0a511b02c4aa92c6efa6dd915b, type: 3}
 --- !u!1 &4441777849958791838
 GameObject:
   m_ObjectHideFlags: 0
