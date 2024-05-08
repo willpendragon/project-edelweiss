@@ -13,15 +13,18 @@ MonoBehaviour:
   m_Name: UnitTemplate_Aliza
   m_EditorClassIdentifier: 
   unitName: Alisa
-  unitPortrait: {fileID: -758042431, guid: c24b78db1b4153d45b2bbf24431592fb, type: 3}
-  spellsList:
-  - {fileID: 11400000, guid: eb9c1d71abcc4fc4eb07b21af5c1fd68, type: 2}
   unitHealthPoints: 800
   unitMaxHealthPoints: 800
   unitManaPoints: 1000
   unitMaxManaPoints: 1000
   unitOpportunityPoints: 20
   unitShieldPoints: 1000
+  meleeAttackPower: 5
+  unitMagicPower: 0
+  spellsList:
+  - {fileID: 11400000, guid: eb9c1d71abcc4fc4eb07b21af5c1fd68, type: 2}
   unitCoinsReward: 0
   unitExperiencePointsReward: 0
-  meleeAttackPower: 5
+  unitPortrait: {fileID: -758042431, guid: c24b78db1b4153d45b2bbf24431592fb, type: 3}
+  unitCalloutPortrait: {fileID: 6531937135514718842, guid: 38d16497733bb7848b63fa93a604a653, type: 3}
+  unitCriticalHitVoice: {fileID: 3982073005121114864, guid: 869853d1f2c6c8240a8376a60856c6fb, type: 3}
