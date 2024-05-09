@@ -12,6 +12,10 @@ public class BattleFeedbackController : MonoBehaviour
     public UnityEvent PlayDeathVFX;
     public UnityEvent PlayDamageSFX;
 
+    public UnityEvent PlaySelectionSFX;
+    public UnityEvent PlaySelectionWaitingConfirmationSFX;
+    public UnityEvent PlayDeselectionSFX;
+
     public GameObject deathDisappearAnimationVFX;
     public Animator unitAnimator;
 

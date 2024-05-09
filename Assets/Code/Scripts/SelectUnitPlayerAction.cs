@@ -29,6 +29,12 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             //Beware: Magic Number
             playerSelectorIconIstance.transform.localPosition += new Vector3(0, 2.5f, 0);
             selectedUnit = selectedTile.detectedUnit;
+
+            if (selectedTile.detectedUnit.GetComponent<BattleFeedbackController>() != null)
+            {
+                BattleFeedbackController battleFeedbackController = selectedTile.detectedUnit.GetComponent<BattleFeedbackController>();
+                battleFeedbackController.PlaySelectionSFX.Invoke();
+            }
         }
     }
 
@@ -88,9 +94,15 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             if (selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected)
             {
                 CreateActivePlayerUnitProfile(selectedUnit);
-                GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon").GetComponent<SpriteRenderer>().material.color = Color.cyan;
-                Debug.Log("Executing Test");
+                GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon").GetComponentInChildren<MeshRenderer>().material.color = Color.cyan;
+
+                if (selectedUnit.GetComponent<BattleFeedbackController>() != null)
+                {
+                    BattleFeedbackController battleFeedbackController = selectedUnit.GetComponent<BattleFeedbackController>();
+                    battleFeedbackController.PlaySelectionWaitingConfirmationSFX.Invoke();
+                }
             }
+
         }
         else
         {
