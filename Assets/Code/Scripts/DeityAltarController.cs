@@ -64,6 +64,7 @@ public class DeityAltarController : MonoBehaviour
             if (deity == null) continue; // Skip if no deity found
 
             GameObject deityModel = Instantiate(deity.gameObject, deitySpot.transform.position, Quaternion.identity);
+            deityModel.transform.localScale = new Vector3(2, 2, 2);
 
             Sprite deityPortrait = deity.deityPortrait;
 
