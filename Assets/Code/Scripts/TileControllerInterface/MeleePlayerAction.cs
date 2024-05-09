@@ -93,6 +93,8 @@ public class MeleePlayerAction : IPlayerAction
 
     public void ApplyKnockback(Unit attacker, Unit defender, int knockbackStrength)
     {
+        currentTarget.TakeDamage(attacker.unitTemplate.meleeAttackPower);
+
         Vector2Int attackerPos = attacker.GetGridPosition();
         Vector2Int defenderPos = defender.GetGridPosition();
 

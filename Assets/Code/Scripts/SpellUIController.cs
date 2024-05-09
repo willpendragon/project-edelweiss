@@ -65,7 +65,6 @@ public class SpellUIController : MonoBehaviour
     //Retrieves a list of Spell from the Active Character.
     public List<Spell> GetCharacterSpells(GameObject detectedUnit)
     {
-        //GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         List<Spell> activePlayerUnitSpellsList = detectedUnit.GetComponent<Unit>().unitTemplate.spellsList;
         return activePlayerUnitSpellsList;
     }
@@ -77,7 +76,6 @@ public class SpellUIController : MonoBehaviour
         {
             tile.currentPlayerAction = new AOESpellPlayerAction();
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            Debug.Log("Switching tiles to AOE Spell Mode");
         }
 
     }

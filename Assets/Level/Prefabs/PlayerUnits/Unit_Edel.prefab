@@ -170,13 +170,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: edel_1
-  LinkedDeityId: 
+  unitTemplate: {fileID: 11400000, guid: 5df72e7ee931de640876d70637e88ac2, type: 2}
   unitMovementLimit: 5
   currentXCoordinate: 0
   currentYCoordinate: 0
   startingXCoordinate: 6
   startingYCoordinate: 2
-  unitTemplate: {fileID: 11400000, guid: 5df72e7ee931de640876d70637e88ac2, type: 2}
+  unitSelectionController: {fileID: 3379728500558068915}
   ownedTile: {fileID: 0}
   unitHealthPoints: 0
   unitMaxHealthPoints: 0
@@ -189,15 +189,15 @@ MonoBehaviour:
   coinsReward: 0
   experiencePointsReward: 0
   unitMagicPower: 0
-  linkedDeity: {fileID: 0}
-  battleFeedbackController: {fileID: 0}
   currentUnitLifeCondition: 0
+  unitStatusController: {fileID: 7598564458177837309}
+  linkedDeity: {fileID: 0}
+  LinkedDeityId: 
+  battleFeedbackController: {fileID: 0}
+  unitProfilePanel: {fileID: 0}
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
-  unitProfilePanel: {fileID: 0}
-  unitStatusController: {fileID: 7598564458177837309}
-  unitSelectionController: {fileID: 3379728500558068915}
   OnTakenDamage:
     m_PersistentCalls:
       m_Calls:
@@ -300,7 +300,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinsRewardPool: 0
   experienceRewardPool: 0
-  battleManager: {fileID: 0}
 --- !u!114 &8871339074937983577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,8 +386,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2f17572bc2bbb4ba22cb53f792c145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitDamageCounter: {fileID: 5065764558204364138}
-  unitDamageCounterAnimator: {fileID: 779112738918748926}
+  unitDamageCounter: {fileID: 6559430027168355622}
+  unitDamageCounterAnimator: {fileID: 8005579014022636984}
 --- !u!114 &-8000937635857103290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -402,7 +401,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runButtonPrefab: {fileID: 9137205279756630114, guid: 03315caf41aff3b4c9ea9f91d2a2183d, type: 3}
-  spellMenuContainer: {fileID: 0}
 --- !u!114 &4718937785285233454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,7 +492,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   deathDisappearAnimationVFX: {fileID: 0}
-  unitAnimator: {fileID: 0}
+  unitAnimator: {fileID: 467171502271026413}
   buffIcon: {fileID: 7203561652851106972, guid: 434c3c0a511b02c4aa92c6efa6dd915b, type: 3}
 --- !u!1001 &319199133720096052
 PrefabInstance:
@@ -664,22 +662,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 765e4e29da231a241bd813e767250f33, type: 3}
---- !u!95 &779112738918748926 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 2264849992010834203, guid: 765e4e29da231a241bd813e767250f33, type: 3}
-  m_PrefabInstance: {fileID: 1558716032256963557}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5065764558204364138 stripped
+--- !u!114 &6559430027168355622 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6047382121413678735, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
   m_PrefabInstance: {fileID: 1558716032256963557}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &8005579014022636984 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8842866572067722845, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+  m_PrefabInstance: {fileID: 1558716032256963557}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &9222002268443550523 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7663589220359688414, guid: 765e4e29da231a241bd813e767250f33, type: 3}

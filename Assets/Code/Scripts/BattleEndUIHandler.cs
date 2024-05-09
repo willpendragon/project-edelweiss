@@ -61,6 +61,15 @@ public class BattleEndUIHandler : MonoBehaviour
         {
             Debug.LogWarning("BattleInterfaceCanvas not found!");
         }
+        DeactivateUnitSelectionCursor();
+    }
 
+    public void DeactivateUnitSelectionCursor()
+    {
+        GameObject[] selectionCursors = GameObject.FindGameObjectsWithTag("ActivePlayerCharacterSelectionIcon");
+        foreach (var selectionCursor in selectionCursors)
+        {
+            Destroy(selectionCursor);
+        }
     }
 }

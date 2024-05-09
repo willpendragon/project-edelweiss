@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UnitUIController : MonoBehaviour
 {
-    public Text unitDamageCounter;
+    public TextMeshProUGUI unitDamageCounter;
     public Animator unitDamageCounterAnimator;
     public void SetDamageCounter(float receivedDamage)
     {

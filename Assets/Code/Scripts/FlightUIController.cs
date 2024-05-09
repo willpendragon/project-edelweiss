@@ -15,7 +15,7 @@ public class FlightUIController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
     public GameObject runButtonPrefab;
-    public Transform spellMenuContainer;
+    private Transform spellMenuContainer;
     private string buttonName;
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -24,7 +24,11 @@ public class FlightUIController : MonoBehaviour
         Debug.Log(mode);
         if (scene.name == "battle_prototype")
         {
-            spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+            GameObject spellMenuGameObject = GameObject.FindGameObjectWithTag("MovesPanel");
+            if (spellMenuGameObject != null)
+            {
+                spellMenuContainer = spellMenuGameObject.transform;
+            }
         }
     }
 

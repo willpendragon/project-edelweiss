@@ -15,8 +15,12 @@ public class Unit : MonoBehaviour
         unitAlive
     }
 
-    public string Id; /*= System.Guid.NewGuid().ToString();*/
-    public string LinkedDeityId; // This will store the ID of the linked Deity
+    [Header("Player Unit Basics")]
+
+    public string Id;
+    public UnitTemplate unitTemplate;
+
+    [Header("Grid Map Element")]
 
     public int unitMovementLimit;
     public int currentXCoordinate;
@@ -24,40 +28,50 @@ public class Unit : MonoBehaviour
     public int startingXCoordinate;
     public int startingYCoordinate;
 
-    public UnitTemplate unitTemplate;
-
+    public UnitSelectionController unitSelectionController;
     public TileController ownedTile;
 
-    //Player Stats    
+    [Header("Player Unit Instance Stats")]
+
     public float unitHealthPoints;
     public float unitMaxHealthPoints;
     public int unitOpportunityPoints;
     public float unitManaPoints;
     public float unitMaxManaPoints;
     public float unitShieldPoints;
+
+    [Header("Progression System Stats")]
+
     public float unitCoins;
     public float unitExperiencePoints;
     public float coinsReward;
     public float experiencePointsReward;
-
     public float unitMagicPower;
 
+    [Header("Gameplay Elements")]
+
+    public UnitLifeCondition currentUnitLifeCondition;
+    public UnitStatusController unitStatusController;
+
+
+    [Header("Deity Related")]
+
     public Deity linkedDeity;
+    public string LinkedDeityId; // This will store the ID of the linked Deity
+
+
+    [Header("Visuals")]
 
     public BattleFeedbackController battleFeedbackController;
+    public GameObject unitProfilePanel;
+
 
     public delegate void CheckGameOver();
     public static event CheckGameOver OnCheckGameOver;
 
-    public UnitLifeCondition currentUnitLifeCondition;
 
     public HealthChangeEvent onHealthChanged = new HealthChangeEvent();
 
-    public GameObject unitProfilePanel;
-
-    public UnitStatusController unitStatusController;
-
-    public UnitSelectionController unitSelectionController;
 
     public UnityEvent<float> OnTakenDamage;
 

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
-//using static Enemy;
 using System.Linq;
-//using static GridTargetingController;
 using Unity.VisualScripting;
 
 public class EnemyAgent : MonoBehaviour
@@ -13,8 +11,6 @@ public class EnemyAgent : MonoBehaviour
 
     [Header("Unit Statistics")]
     //To be reworked. Should uniform and make the Enemy take the statistics from its own Scriptable Object template.
-    /*public float healthPoints;
-    */
     public int speed;
     public float attackPower = 60;
 
@@ -25,6 +21,8 @@ public class EnemyAgent : MonoBehaviour
     [SerializeField] BattleManager battleManager;
     [SerializeField] int minEnemyMoveRollRange;
     [SerializeField] int maxEnemyMoveRollRange;
+    public EnemyBehavior enemyBehavior;
+
 
     [Header("Presentation")]
     [SerializeField] float enemyMoveElapsingTime;
@@ -53,12 +51,9 @@ public class EnemyAgent : MonoBehaviour
     public delegate void CheckEnemiesOnBattlefield();
     public static event CheckEnemiesOnBattlefield OnCheckEnemiesOnBattlefield;
 
-    public UnityEvent<Transform> EnemyMeleeAttack;
-    public UnityEvent EnemyTakingDamage;
+    //public UnityEvent<Transform> EnemyMeleeAttack;
 
     public GameObject unitStunStatusIcon;
-
-    public EnemyBehavior enemyBehavior;
 
     public void Start()
     {
@@ -70,5 +65,4 @@ public class EnemyAgent : MonoBehaviour
     {
         enemyBehavior.ExecuteBehavior(this);
     }
-
 }

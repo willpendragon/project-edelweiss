@@ -6,7 +6,6 @@ public class BattleRewardsController : MonoBehaviour
 {
     public float coinsRewardPool;
     public float experienceRewardPool;
-    public BattleManager battleManager;
 
     public void OnEnable()
     {
