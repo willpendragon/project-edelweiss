@@ -50,6 +50,7 @@ Transform:
   - {fileID: 1048469709117165102}
   - {fileID: 6857427782266650253}
   - {fileID: 3284268635835312326}
+  - {fileID: 1632870842191059323}
   - {fileID: 2619908655849198041}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -90,7 +91,7 @@ MonoBehaviour:
   unitStatusController: {fileID: 6804547558390777160}
   linkedDeity: {fileID: 0}
   LinkedDeityId: 
-  battleFeedbackController: {fileID: 0}
+  battleFeedbackController: {fileID: 6278929137907918091}
   unitProfilePanel: {fileID: 0}
   onHealthChanged:
     m_PersistentCalls:
@@ -377,6 +378,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5246965063792770980}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  PlayPrayerSFX:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3597229036445298344}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play
         m_Mode: 1
@@ -687,7 +703,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 452031790448863200}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6683688385654018799
 MonoBehaviour:
@@ -836,6 +852,73 @@ Transform:
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 7472373059907632207, guid: a36c3cb32524a5846a4847f14736eb08, type: 3}
   m_PrefabInstance: {fileID: 3414789924774118379}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5082043690427723104
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 452031790448863200}
+    m_Modifications:
+    - target: {fileID: 1543909443054685072, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_Name
+      value: DeityPrayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+--- !u!4 &1632870842191059323 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5777578112540849179, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+  m_PrefabInstance: {fileID: 5082043690427723104}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &3597229036445298344 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8605507457998865352, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+  m_PrefabInstance: {fileID: 5082043690427723104}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7971741247981812104
 PrefabInstance:

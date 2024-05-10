@@ -47,6 +47,9 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
             {
                 currentActivePlayerUnit.unitOpportunityPoints--;
                 OnPlayerPrayer();
+
+                // Plays the Prayer's SFX
+                currentActivePlayerUnit.battleFeedbackController.PlayPrayerSFX.Invoke();
             }
         }
         else
