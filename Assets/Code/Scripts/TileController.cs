@@ -2,11 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Unity.VisualScripting;
-using JetBrains.Annotations;
 using System;
 using UnityEditor;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using static TileController;
@@ -18,7 +15,6 @@ public enum SingleTileStatus
     waitingForConfirmationMode,
     characterSelectionModeActive,
     selectedPlayerUnitOccupiedTile,
-
 }
 
 public enum SingleTileCondition
@@ -35,16 +31,24 @@ public enum TileCurseStatus
 }
 public class TileController : MonoBehaviour, IPointerClickHandler
 {
+    [Header("Gameplay Logic")]
+
     public GameObject detectedUnit;
     public int tileXCoordinate;
     public int tileYCoordinate;
-    public SingleTileStatus currentSingleTileStatus;
-    public SingleTileCondition currentSingleTileCondition;
-    public GameObject targetIcon;
-    public TileCurseStatus currentTileCurseStatus;
 
     public IPlayerAction currentPlayerAction = new SelectUnitPlayerAction();
     public MeleePlayerAction meleeAction;
+
+    [Header("State Machines")]
+
+    public SingleTileStatus currentSingleTileStatus;
+    public SingleTileCondition currentSingleTileCondition;
+    public TileCurseStatus currentTileCurseStatus;
+
+    [Header("Visuals")]
+
+    public GameObject targetIcon;
 
     // A* Pathfinding properties
     public int gCost;

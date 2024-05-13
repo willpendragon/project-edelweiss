@@ -26,8 +26,9 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected;
             GameObject playerSelectorIconIstance = Instantiate(Resources.Load("PlayerCharacterSelectorIcon") as GameObject, selectedTile.detectedUnit.transform);
 
-            //Beware: Magic Number
-            playerSelectorIconIstance.transform.localPosition += new Vector3(0, 2.5f, 0);
+            Vector3 playerSelectionInstanceOffset = new Vector3(0, 2.5f, 0);
+            playerSelectorIconIstance.transform.localPosition += playerSelectionInstanceOffset;
+
             selectedUnit = selectedTile.detectedUnit;
 
             if (selectedTile.detectedUnit.GetComponent<BattleFeedbackController>() != null)

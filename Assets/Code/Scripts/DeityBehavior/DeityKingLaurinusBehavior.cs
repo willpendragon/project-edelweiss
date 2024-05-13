@@ -36,7 +36,6 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         try
         {
             TileController[] randomTiles = ExtractRandomTiles();
-            // Use the randomTiles array as needed, for example, to display them or trigger specific logic
         }
         catch (Exception ex)
         {

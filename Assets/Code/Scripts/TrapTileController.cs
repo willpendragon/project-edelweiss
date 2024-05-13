@@ -16,8 +16,9 @@ public class TrapTileController : MonoBehaviour
 
     public void SetTargetedTrapTile(TileController targetedTrapTile)
     {
-        currentTrapTileTargetedUnit = targetedTrapTile;
         //Sets the currently Targeted Tile (where the trap will be active).
+        currentTrapTileTargetedUnit = targetedTrapTile;
+
     }
 
     public void ExecuteTrapTileAction()

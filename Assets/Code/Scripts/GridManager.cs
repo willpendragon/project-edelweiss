@@ -129,6 +129,8 @@ public class GridManager : MonoBehaviour
             {
                 if (finalDestinationTile.detectedUnit == null)
                 {
+                    //Resets each Tile to the Character Selection Mode (consider creating a method for this).
+
                     currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = null;
                     currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
                     currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
@@ -136,7 +138,7 @@ public class GridManager : MonoBehaviour
                     currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
                     currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints--;
                     GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
-                    //Resets each Tile to the Character Selection Mode (consider creating a method for this).
+
                     foreach (var tile in tiles)
                     {
                         tile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;

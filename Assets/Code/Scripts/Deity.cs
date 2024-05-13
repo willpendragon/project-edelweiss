@@ -16,30 +16,35 @@ public enum DeityState
 [System.Serializable]
 public class Deity : MonoBehaviour
 {
-
+    [Header("Gameplay Logic")]
     public string Id = System.Guid.NewGuid().ToString();
-
     public List<GameObject> sinnersList;
-    public TextMeshProUGUI deityAttackNotification;
-    public BattleManager battleManager;
-    public BattleInterface battleInterface;
     public float enmity;
-    public GameObject deityAttackVFX;
-    public DeityState currentDeityState;
     public List<SpellAlignment> hatedSpellAlignments;
-    public GameObject deityEnmityTracker;
     public float enmityThreshold;
+
+    public DeityBehavior deityBehavior;
+    public DeityPrayerBuff deityPrayerBuff;
+
+
+    public BattleManager battleManager;
+
+    [Header("State Machine")]
+    public DeityState currentDeityState;
+
+    [Header("Deity Stats")]
     public float deitySpecialAttackPower;
-    public Sprite deityPortrait;
-
-    public GameObject deityHealthBar;
-
+    public float summoningPrice = 50;
     public float deityPrayerPower;
     public float deityPrayerPowerThreshold;
 
-    public DeityPrayerBuff deityPrayerBuff;
-
-    public DeityBehavior deityBehavior;
+    [Header("Visuals")]
+    public TextMeshProUGUI deityAttackNotification;
+    public BattleInterface battleInterface;
+    public GameObject deityAttackVFX;
+    public GameObject deityEnmityTracker;
+    public Sprite deityPortrait;
+    public GameObject deityHealthBar;
 
     public delegate void DeityJudgment();
     public static event DeityJudgment OnDeityJudgment;
@@ -76,14 +81,16 @@ public class Deity : MonoBehaviour
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
         OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
         GameObject newDeityEnmityTracker = GameObject.FindGameObjectWithTag("TurnTrackerDetailsContainer");
+
         //Finds the Turn Tracker Details Panel where to instance the Deity Enmity Tracker
         newDeityEnmityTracker = Instantiate(deityEnmityTracker, newDeityEnmityTracker.transform);
         newDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().SetDeity(this.gameObject);
         newDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
         deityEnmityTracker = newDeityEnmityTracker;
     }
-    public void DeityBehaviour(string deityText)
+
     //Retrieves the Deity Behavior from a compatible Scriptable Object add in the Inspector.
+    public void DeityBehaviour(string deityText)
     {
         StartCoroutine("EndDeityTurn");
         Debug.Log("Deity Behaviour");
@@ -95,7 +102,6 @@ public class Deity : MonoBehaviour
         Unit deityUnitComponent = GetComponentInChildren<Unit>();
         deityHealthBar.GetComponentInChildren<Slider>().value = deityUnitComponent.unitHealthPoints;
     }
-
     IEnumerator EndDeityTurn()
     {
         yield return new WaitForSeconds(1f);

@@ -54,19 +54,23 @@ public class SummoningController : MonoBehaviour
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
             }
-            currentActivePlayerUnit.GetComponent<Unit>().unitManaPoints -= 50;
-            //Hard coded summoning price
-            Debug.Log("Summon Deity on Battlefield");
+            currentActivePlayerUnit.GetComponent<Unit>().unitManaPoints -= linkedDeity.summoningPrice;
+
+            Debug.Log("Summoned Deity on Battlefield");
+
             var summonPosition = summonAreaCenterTile.transform.position + new Vector3(0, 3, 0);
             GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
             deityInstance.transform.localScale = new Vector3(2, 2, 2);
-            //deityPowerLoadingBarSliderIsActive = true;
+
         }
         else
         {
             Debug.Log("Unable to Summon Deity on Battlefield");
         }
     }
+
+    // Obsolete, consider using again the Deity Attack
+
     public void UpdateDeityPowerLoadingBar()
     {
         if (deityPowerLoadingBarSlider != null)
@@ -75,12 +79,15 @@ public class SummoningController : MonoBehaviour
             deityPowerLoadingBarSlider.maxValue = 3;
         }
     }
+
     public void UseDeityAttack()
     {
         //Play Deity Attack Feedback
         deityAttackFeedback.Play();
         Debug.Log("Unleashing Deity Attack on Battlefield");
-        //Apply Damage to Enemies
+
+        //Remember to Apply Damage to Enemies
+
         //Reset Deity Power Loading Bar
         deityPowerLoadingBarSlider.value = 0;
         StartCoroutine("StopDeityAttackFeedback");

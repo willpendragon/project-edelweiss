@@ -29,6 +29,7 @@ public class MeleePlayerAction : IPlayerAction
                 savedSelectedTile = selectedTile;
                 //Switch Selected tile to WaitingForConfirmationStatus
                 Debug.Log("Melee Select Logic");
+
                 activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
                 //Warning: magic number
                 selectionLimiter--;
@@ -58,10 +59,11 @@ public class MeleePlayerAction : IPlayerAction
         if (activePlayerUnit.unitOpportunityPoints > 0 && currentTarget.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
+
+            //Warning: remove magic number later
             int knockbackStrength = 2;
 
             DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
-            //Warning: remove magic number later
 
             if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
             {
@@ -77,10 +79,6 @@ public class MeleePlayerAction : IPlayerAction
             activePlayerUnit.unitOpportunityPoints--;
 
             UpdateActivePlayerUnitProfile(activePlayerUnit);
-
-            //savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
-            //savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            //savedSelectedTile.currentSingleTileCondition = SingleTileCondition.free;
 
             activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
             OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);

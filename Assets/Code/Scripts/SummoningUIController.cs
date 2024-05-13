@@ -14,21 +14,14 @@ public class SummoningUIController : MonoBehaviour
 
     void OnEnable()
     {
-        Debug.Log("OnEnable called");
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
     private void OnDestroy()
     {
-        // It's good practice to unsubscribe from the event when the GameObject is destroyed.
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
-
-    // called second
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("OnSceneLoaded: " + scene.name);
-        Debug.Log(mode);
-        //summoningCastingController = GameObject.FindGameObjectWithTag("SummoningController").GetComponent<SummoningController>();
         if (scene.name == "battle_prototype")
         {
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
@@ -44,7 +37,7 @@ public class SummoningUIController : MonoBehaviour
     public SummonPhase currentSummonPhase = SummonPhase.summoning;
 
     public void AddSummonButton()
-    //I will need to create a Pokémon-Style menu to summon the collected deities.
+
     {
         if (currentSummonPhase == SummonPhase.summoning)
         {
@@ -63,14 +56,16 @@ public class SummoningUIController : MonoBehaviour
     }
     public void SwitchTilesToSummonMode()
     {
-        SummonPlayerAction summonPlayerActionInstance = new SummonPlayerAction();
         //Creates a new instance of the Melee Player Action
+        SummonPlayerAction summonPlayerActionInstance = new SummonPlayerAction();
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = summonPlayerActionInstance;
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             Debug.Log("Switching tiles to Summon Mode");
         }
+
         //After clicking the Summon Button, all of the Grid Map tiles switch to Selection Mode and switch to the Summon Player Action
     }
 
@@ -79,13 +74,12 @@ public class SummoningUIController : MonoBehaviour
         currentSummonPhase = SummonPhase.praying;
         currentButton.GetComponentInChildren<Text>().text = "Pray";
         currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
-        Debug.Log("Switching Summon Button to Pray Mode");
     }
 
     public void SwitchTilesToPrayMode()
     {
-        PrayPlayerAction prayPlayerActionInstance = new PrayPlayerAction();
         //Creates a new instance of the Pray Player Action
+        PrayPlayerAction prayPlayerActionInstance = new PrayPlayerAction();
         currentPlayerAction = prayPlayerActionInstance;
 
         foreach (var tile in GridManager.Instance.gridTileControllers)
