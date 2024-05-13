@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static TileController;
 using UnityEngine.UI;
+using System.Linq;
 
 public class MovePlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -13,7 +14,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     private int destinationTileYCoordinate;
     public void Select(TileController selectedTile)
     {
-        //Beware: Magic Number
         int currentSelectionLimiter = 1;
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
@@ -21,14 +21,17 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             && selectedTile.detectedUnit == null)
         {
             var destinationTile = selectedTile;
-            //Check if the distance is available
 
-            //If yes, check distance and create the path over the grid
             activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementSelectedSFX.Invoke();
             destinationTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
 
             destinationTileXCoordinate = destinationTile.tileXCoordinate;
             destinationTileYCoordinate = destinationTile.tileYCoordinate;
+
+            List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(activePlayerUnit.currentXCoordinate, activePlayerUnit.currentYCoordinate, destinationTileXCoordinate, destinationTileYCoordinate);
+
+            UpdatePathVisual(path); // Update the LineRenderer with the new path
+
             savedSelectedTile = selectedTile;
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
 
@@ -39,6 +42,23 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         else
         {
             Debug.Log("Can't Select Destination");
+        }
+    }
+
+    private void UpdatePathVisual(List<TileController> path)
+    {
+        LineRenderer lineRenderer = GridManager.Instance.GetLineRenderer();
+        if (lineRenderer != null)
+        {
+            Vector3[] pathPoints = path.Select(tile => GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate) + new Vector3(0, 0.7f, 0)).ToArray(); // Adjust Y if necessary to prevent z-fighting
+            lineRenderer.positionCount = pathPoints.Length;
+            lineRenderer.SetPositions(pathPoints);
+            lineRenderer.startWidth = 0.25f; // Smaller width for a finer line
+            lineRenderer.endWidth = 0.25f;   // Keep consistent width along the line
+        }
+        else
+        {
+            Debug.LogError("LineRenderer is not initialized.");
         }
     }
 

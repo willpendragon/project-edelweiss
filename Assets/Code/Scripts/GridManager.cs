@@ -7,6 +7,9 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
 
+    public GameObject lineRendererPrefab; // Assign this in the Unity Editor
+    private static LineRenderer lineRendererInstance;
+
     public delegate void MoveUnitDelegate(int targetX, int targetY);
     public event MoveUnitDelegate OnMoveUnit;
 
@@ -79,8 +82,18 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    // This method retrieves a TileController Instance based on X and Y coordinates
+    public LineRenderer GetLineRenderer()
+    {
+        if (lineRendererInstance == null)
+        {
+            GameObject lineRendererObj = Instantiate(lineRendererPrefab);
+            lineRendererInstance = lineRendererObj.GetComponentInChildren<LineRenderer>();
+            lineRendererObj.transform.SetParent(transform);
+        }
+        return lineRendererInstance;
+    }
 
+    // This method retrieves a TileController Instance based on X and Y coordinates
     public TileController GetTileControllerInstance(int xCoordinate, int yCoordinate)
     {
         // Create a PositionKey with the given X and Y coordinates
