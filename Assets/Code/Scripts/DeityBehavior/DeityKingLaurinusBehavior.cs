@@ -12,7 +12,6 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         TileController[] gridTiles = ExtractRandomTiles();
         foreach (var tile in gridTiles)
         {
-            //tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.gray;
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
             Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
 
@@ -26,13 +25,10 @@ public class DeityKingLaurinusBehavior : DeityBehavior
                 {
                     playerUnit.GetComponent<Unit>().HealthPoints -= deityAttackPower;
                     //Hard coded damage. Remember to create it as a variable that I can change on the King Laurinus Behaviour Scriptable Object.
-                    Debug.Log("King Laurinus provokes massive Damage on the Unit");
+                    Debug.Log("King Laurinus executes Cursed Garden attack and provokes massive Damage on the Unit");
                 }
             }
         }
-        Debug.Log("King Laurinus Executes Cursed Garden attack");
-        // King Laurinus' specific behavior implementation goes here.
-        // For example, checking the enmity meter and unleashing an attack.
     }
 
     void Start()
@@ -48,9 +44,14 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         }
     }
 
+    // Extracts a number of random tiles. Laurinus will curse these random tiles.
     private TileController[] ExtractRandomTiles()
     {
-        int cursedTileNumber = UnityEngine.Random.Range(20, 30);
+        int randomCursedTileminRange = 20;
+        int maxCursedTileRangeMaxRange = 30;
+
+        int cursedTileNumber = UnityEngine.Random.Range(randomCursedTileminRange, maxCursedTileRangeMaxRange);
+
         // Ensure the GridManager instance and tiles array are properly initialized
         if (GridManager.Instance == null || GridManager.Instance.gridTileControllers == null)
         {
