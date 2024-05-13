@@ -46,16 +46,6 @@ public class GridManager : MonoBehaviour
     {
         gridTileControllers = GameObject.FindObjectsOfType<TileController>();
     }
-
-    private void OnEnable()
-    {
-        TileController.OnTileClicked += MoveCurrentPlayerUnit;
-    }
-    private void OnDisable()
-    {
-        TileController.OnTileClicked -= MoveCurrentPlayerUnit;
-    }
-
     public void GenerateGridMap()
     {
         Debug.Log("Generating Grid Map");

@@ -22,15 +22,10 @@ public class SummoningController : MonoBehaviour
     public void OnEnable()
     {
         BattleManager.OnChargeDeityPowerLoadingBar += IncreaseDeityPowerLoadingBar;
-        TileController.OnTileWaitingForConfirmationSummonMode += SetSummoningCenter;
-        TileController.OnTileConfirmedSummonMode += SummonDeityOnBattlefield;
     }
     public void OnDisable()
     {
         BattleManager.OnChargeDeityPowerLoadingBar -= IncreaseDeityPowerLoadingBar;
-        TileController.OnTileWaitingForConfirmationSummonMode -= SetSummoningCenter;
-        TileController.OnTileConfirmedSummonMode -= SummonDeityOnBattlefield;
-
     }
     public void Start()
     {

@@ -9,18 +9,6 @@ public class TrapTileController : MonoBehaviour
 
     public TileController currentTrapTileTargetedUnit;
 
-    public void OnEnable()
-    {
-        //GridTargetingController.OnTileSetAsTrap += SetTargetedTrapTile;
-        TileController.OnTileConfirmedTrapTileMode += ExecuteTrapTileAction;
-    }
-
-    public void OnDisable()
-    {
-        //GridTargetingController.OnTileSetAsTrap -= SetTargetedTrapTile;
-        TileController.OnTileConfirmedTrapTileMode -= ExecuteTrapTileAction;
-    }
-
     public void StartTrapTile()
     {
         OnTrapTile();

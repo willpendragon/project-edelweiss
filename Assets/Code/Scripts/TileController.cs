@@ -55,45 +55,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public float clickCooldown = 0.5f; // Cooldown in seconds between clicks
     private float lastClickTime;
 
-    public delegate void TileClicked(int x, int y);
-    public static event TileClicked OnTileClicked;
-
-    public delegate Unit TileClickedMeleeMode(int x, int y);
-    public static event TileClickedMeleeMode OnTileClickedMeleeMode;
-
-    public delegate Unit TileClickedAttackMode(int x, int y);
-    public static event TileClickedAttackMode OnTileClickedAttackMode;
-
-    public delegate Unit TileClickedAOESpellMode(int x, int y);
-    public static event TileClickedAOESpellMode OnTileClickedAOESpellMode;
-
-    public delegate TileController TileClickedTrapTileMode(int x, int y);
-    public static event TileClickedTrapTileMode OnTileClickedTrapTileMode;
-
-    public delegate void TileWaitingForConfirmationAOESpellMode(TileController spellEpicenterTarget);
-    public static event TileWaitingForConfirmationAOESpellMode OnTileWaitingForConfirmationAOESpellMode;
-
-    public delegate void TileWaitingForConfirmationSummonMode(TileController summonCenterTarget);
-    public static event TileWaitingForConfirmationSummonMode OnTileWaitingForConfirmationSummonMode;
-
-    public delegate void TileConfirmedMeleeMode();
-    public static event TileConfirmedMeleeMode OnTileConfirmedMeleeMode;
-
-    public delegate void TileConfirmedAttackMode();
-    public static event TileConfirmedAttackMode OnTileConfirmedAttackMode;
-
-    public delegate void TileConfirmedAOESpellMode();
-    public static event TileConfirmedAOESpellMode OnTileConfirmedAOESpellMode;
-
-    public delegate void TileConfirmedTrapTileMode();
-    public static event TileConfirmedTrapTileMode OnTileConfirmedTrapTileMode;
-
-    public delegate void TileConfirmedSummonMode();
-    public static event TileConfirmedSummonMode OnTileConfirmedSummonMode;
-
-    public delegate void DeselectedTileWithUnit();
-    public static event DeselectedTileWithUnit OnDeselectedTileWithUnit;
-
     public delegate void UpdateEnemyTargetUnitProfile(GameObject detectedUnit);
     public static event UpdateEnemyTargetUnitProfile OnUpdateEnemyTargetUnitProfile;
 
