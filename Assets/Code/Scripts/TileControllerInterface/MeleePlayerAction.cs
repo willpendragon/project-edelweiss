@@ -18,7 +18,7 @@ public class MeleePlayerAction : IPlayerAction
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (selectedTile != null && selectionLimiter == 1)
+        if (selectedTile != null && selectionLimiter == 1 && selectedTile.detectedUnit != null)
         {
             currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
 
@@ -36,6 +36,7 @@ public class MeleePlayerAction : IPlayerAction
         }
         else
         {
+            // Play error SFX
             Debug.Log("Can't Select Unit");
         }
     }

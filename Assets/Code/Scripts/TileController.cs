@@ -52,6 +52,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public int FCost { get { return gCost + hCost; } }
     public TileController parent;
 
+    public float clickCooldown = 0.5f; // Cooldown in seconds between clicks
+    private float lastClickTime;
+
     public delegate void TileClicked(int x, int y);
     public static event TileClicked OnTileClicked;
 
@@ -101,12 +104,14 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Left && Time.time - lastClickTime > clickCooldown)
         {
+            lastClickTime = Time.time;
             HandleTileSelection();
         }
-        else if (eventData.button == PointerEventData.InputButton.Right)
+        else if (eventData.button == PointerEventData.InputButton.Right && Time.time - lastClickTime > clickCooldown)
         {
+            lastClickTime = Time.time;
             HandleTileDeselection();
         }
     }
