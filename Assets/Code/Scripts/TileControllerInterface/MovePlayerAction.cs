@@ -13,15 +13,16 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     private int destinationTileYCoordinate;
     public void Select(TileController selectedTile)
     {
+        //Beware: Magic Number
         int currentSelectionLimiter = 1;
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
         if (selectedTile != null && currentSelectionLimiter == 1 && selectedTile != GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile
             && selectedTile.detectedUnit == null)
-        //Beware: Magic Number
         {
             var destinationTile = selectedTile;
             //Check if the distance is available
+
             //If yes, check distance and create the path over the grid
             activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementSelectedSFX.Invoke();
             destinationTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
@@ -33,8 +34,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
             selectionLimiter--;
 
-
-            Debug.Log("Move Destination Selection Logic");
+            Debug.Log("Move Destination Selection Logic Execution");
         }
         else
         {
@@ -44,15 +44,14 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
     public void Deselect()
     {
-
         selectionLimiter++;
-        //If a saved destination doesn't esist, by clicking on THAT tile, this will get back to selection mode
+
+        //If a saved destination doesn't esist, by clicking on that tile, this will get back to selection mode
         if (savedSelectedTile != null)
         {
             savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile = null;
-            //RevertToSelectionUnitPlayerAction();
         }
         else if (GridManager.Instance.currentPlayerUnit != null & savedSelectedTile == null)
         {
@@ -66,6 +65,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         }
     }
 
+    // Use this method to check if the Enemy is surrounded. Currently not used.
     public bool IsSurrounded(Unit unit)
     {
         List<TileController> neighbours = GridManager.Instance.gridMovementController.GetNeighbours(unit.ownedTile);
@@ -90,6 +90,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             //    Debug.Log("Unit is surrounded and cannot move.");
             //    // Here to add any additional logic for when the unit is surrounded
             //}
+
             if (activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate))
             {
                 //Use Grid Logic to Move the Player to Destination
@@ -122,7 +123,8 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
     public void RevertToSelectionUnitPlayerAction()
     {
-        //Loops through all the grids on the Grid Map, reactivates the select Player Unit Action Mode, deactivates the spell menu, resetc the current Active Player Unit
+        //Loops through all the grids on the Grid Map, reactivates the select Player Unit Action Mode, deactivates the spell menu, reset the current Active Player Unit
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new SelectUnitPlayerAction();
