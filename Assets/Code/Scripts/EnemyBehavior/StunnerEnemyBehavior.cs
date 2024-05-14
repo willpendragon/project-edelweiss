@@ -13,10 +13,8 @@ public class StunnerEnemyBehavior : EnemyBehavior
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
 
-
     public delegate void StunnerEnemyAttack(string attackName, string attackerName);
     public static event StunnerEnemyAttack OnStunnerEnemyAttack;
-
 
     [SerializeField] private GameObject attackVFXAnimator;
 
@@ -27,14 +25,23 @@ public class StunnerEnemyBehavior : EnemyBehavior
         if (enemyAgent.gameObject.tag != "DeadEnemy" && enemyAgent.gameObject.GetComponentInParent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             Unit targetUnit = SelectTargetUnit();
-            if (EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
+            if (targetUnit != null)
             {
-                StunAbility(targetUnit);
-                Debug.Log("Stun Ability Chance Roll Successful");
+                if (EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
+                {
+                    StunAbility(targetUnit);
+                    Debug.Log("Stun Ability Chance Roll Successful");
+                }
+                else
+                {
+                    OnStunnerEnemyAttack("Failed Stun", "Godling");
+                }
             }
             else
             {
-                OnStunnerEnemyAttack("Failed Stun", "Godling");
+                Debug.Log("No valid target available. Passing turn.");
+                // Optionally trigger an event here if other systems need to respond to a turn pass
+                OnCheckPlayer?.Invoke(); // Assuming OnCheckPlayer might be repurposed for notifying pass turn
             }
             opportunity -= 1;
         }
@@ -44,7 +51,6 @@ public class StunnerEnemyBehavior : EnemyBehavior
         }
     }
 
-    // Rolls the Move the Enemy is going to use using the local random instance
     public int EnemyMoveRoll()
     {
         Debug.Log("Rolling Enemy move");
@@ -52,16 +58,16 @@ public class StunnerEnemyBehavior : EnemyBehavior
         return enemyMoveRoll;
     }
 
-    // Selects the Target the Enemy is going to use
     public Unit SelectTargetUnit()
     {
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
 
         Unit unitWithHighestHP = playerUnitsOnBattlefield
             .Select(go => go.GetComponent<Unit>())
-            .Where(unit => unit != null)
+            .Where(unit => unit != null && unit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
             .OrderByDescending(unit => unit.unitHealthPoints)
             .FirstOrDefault();
+
         return unitWithHighestHP;
     }
 
@@ -73,7 +79,5 @@ public class StunnerEnemyBehavior : EnemyBehavior
         targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
         Instantiate(Resources.Load("StunIcon"), targetUnit.transform);
         Debug.Log("Testing Stunner Enemy Behaviour");
-        // targetUnit.PlayHurtAnimation();
-        // attackVFX.Play();
     }
 }
