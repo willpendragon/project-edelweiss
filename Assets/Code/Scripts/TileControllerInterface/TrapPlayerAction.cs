@@ -50,7 +50,9 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
         {
             trapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
             //savedSelectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
-            Instantiate(Resources.Load("TrapTileVFX"), savedSelectedTile.transform);
+            GameObject newTrap = Instantiate((GameObject)Resources.Load("TrapTileVFX"), savedSelectedTile.transform);
+
+            //Instantiate 3D Model Here
 
             activePlayerUnit.unitOpportunityPoints--;
             activePlayerUnit.unitManaPoints -= trapCreationCost;
