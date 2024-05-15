@@ -8,19 +8,28 @@ public class BattleInterface : MonoBehaviour
 {
     public static BattleInterface Instance { get; private set; }
 
-    [SerializeField] TextMeshProUGUI moveName;
-    public TextMeshProUGUI battleEndResult;
-    [SerializeField] Image moveNamePanel;
-    [SerializeField] Image fieldEffectIcon;
+    [Header("Logic")]
     [SerializeField] BattleManager battleManager;
-    [SerializeField] TextMeshProUGUI playerActionText;
-    [SerializeField] GameObject playerActionPanel;
-    [SerializeField] TextMeshProUGUI battlefieldTextNotifications;
-    [SerializeField] TextMeshProUGUI deityJudgmentLimitText;
-    [SerializeField] Player player;
-
-    [SerializeField] RectTransform battlefieldNotificationsPanel;
+    //[SerializeField] Player player;
     [SerializeField] float battlefieldNotificationsPanelDurationTime;
+    //[SerializeField] GameObject playerActionPanel;
+
+    [Header("UI Visuals")]
+    [SerializeField] Image moveNamePanel;
+    //[SerializeField] Image fieldEffectIcon;
+    [SerializeField] RectTransform battlefieldNotificationsPanel;
+    [SerializeField] public GameObject movesContainer;
+
+
+    [Header("UI Texts")]
+    [SerializeField] TextMeshProUGUI moveName;
+    [SerializeField] TextMeshProUGUI playerActionText;
+    [SerializeField] TextMeshProUGUI battlefieldTextNotifications;
+    //[SerializeField] TextMeshProUGUI deityJudgmentLimitText;
+
+    public TextMeshProUGUI battleEndResult;
+
+
 
     private void Awake()
     {
@@ -35,7 +44,7 @@ public class BattleInterface : MonoBehaviour
     }
     private void OnEnable()
     {
-        Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
+        //Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell += SetSpellNameOnNotificationPanel;
         MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;
@@ -44,7 +53,7 @@ public class BattleInterface : MonoBehaviour
     }
     private void OnDisable()
     {
-        Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
+        //Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell -= SetSpellNameOnNotificationPanel;
         MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
@@ -65,11 +74,11 @@ public class BattleInterface : MonoBehaviour
         StartCoroutine("ResetBattleFieldTextNotification");
     }
 
-    public void SetDeityJudgmentCounter(int judgmentTurnLimitNumber)
-    {
-        deityJudgmentLimitText.text = judgmentTurnLimitNumber.ToString();
-        Debug.Log("Setting Judgment Turn Warning");
-    }
+    //public void SetDeityJudgmentCounter(int judgmentTurnLimitNumber)
+    //{
+    //    deityJudgmentLimitText.text = judgmentTurnLimitNumber.ToString();
+    //    Debug.Log("Setting Judgment Turn Warning");
+    //}
     public void SetDeityNotification(string deityNotification)
     {
         battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);

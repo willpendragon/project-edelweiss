@@ -4,20 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using static TileController;
-using UnityEngine.Playables;
 
 public class BattleEndUIHandler : MonoBehaviour
 {
+    [Header("UI Behaviour")]
+    [SerializeField] float battleEndResultsScreenDelay;
+
+    [Header("UI Visuals")]
     public Image battleEndResultsScreen;
+    public RectTransform battlefieldNotificationsContainer;
+
+    [Header("UI Texts")]
     public TextMeshProUGUI battleEndMessageText;
     public TextMeshProUGUI battleEndExperiencePointsText;
     public TextMeshProUGUI battleEndWarFundsGainedText;
     public TextMeshProUGUI battleEndEnemiesKilledText;
 
-    public RectTransform battlefieldNotificationsContainer;
-
-    public PlayableDirector battleCameraPlayableDirector;
-    [SerializeField] float battleEndResultsScreenDelay;
+    //public PlayableDirector battleCameraPlayableDirector;
     public void OnEnable()
     {
         TurnController.OnBattleEnd += DisplayBattleEndScreen;
@@ -40,7 +43,6 @@ public class BattleEndUIHandler : MonoBehaviour
         yield return new WaitForSeconds(battleEndResultsScreenDelay);
         battleEndResultsScreen.transform.localScale = new Vector3(1, 1, 1);
     }
-
     public void DeactivateBattleUI()
     {
         GameObject battleInterfaceCanvas = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
@@ -61,9 +63,10 @@ public class BattleEndUIHandler : MonoBehaviour
         {
             Debug.LogWarning("BattleInterfaceCanvas not found!");
         }
+
+        BattleInterface.Instance.movesContainer.SetActive(false);
         DeactivateUnitSelectionCursor();
     }
-
     public void DeactivateUnitSelectionCursor()
     {
         GameObject[] selectionCursors = GameObject.FindGameObjectsWithTag("ActivePlayerCharacterSelectionIcon");

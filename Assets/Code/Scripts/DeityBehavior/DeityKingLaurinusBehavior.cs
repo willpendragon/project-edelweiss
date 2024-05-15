@@ -1,11 +1,14 @@
 using System.Linq;
 using System;
 using UnityEngine;
+using static Deity;
 
 [CreateAssetMenu(fileName = "KingLaurinusBehavior", menuName = "DeityBehavior/KingLaurinus")]
 public class DeityKingLaurinusBehavior : DeityBehavior
 {
-    private float deityAttackPower = 100;
+    public delegate void UsedSpecialAttack(string moveName, string attackerName);
+    public static event UsedSpecialAttack OnUsedSpecialAttack;
+
     private int attackExecutionThreshold = 2;
     public override void ExecuteBehavior(Deity deity)
     {
@@ -23,8 +26,12 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             {
                 if (playerUnit.GetComponent<Unit>().ownedTile.currentTileCurseStatus == TileCurseStatus.cursed)
                 {
-                    playerUnit.GetComponent<Unit>().HealthPoints -= deityAttackPower;
+                    playerUnit.GetComponent<Unit>().HealthPoints -= deity.deitySpecialAttackPower;
                     //Hard coded damage. Remember to create it as a variable that I can change on the King Laurinus Behaviour Scriptable Object.
+
+                    playerUnit.GetComponent<Unit>().OnTakenDamage.Invoke(deity.deitySpecialAttackPower);
+
+                    BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
                     Debug.Log("King Laurinus executes Cursed Garden attack and provokes massive Damage on the Unit");
                 }
             }

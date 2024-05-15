@@ -11,10 +11,14 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
 
         Destroy(GameObject.FindGameObjectWithTag("TargetedEnemyUnitProfile"));
         Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new SelectUnitPlayerAction();
         }
+
+        BattleInterface.Instance.movesContainer.transform.localScale = new Vector3(0, 0, 0);
+
         GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>().GameOverCheck();
     }
 }

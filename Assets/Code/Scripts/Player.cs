@@ -53,13 +53,13 @@ public class Player : MonoBehaviour
 
     public void OnEnable()
     {
-        Deity.OnDeityFieldEffectActivation += SetPlayerCurrentFieldEffectStatus;
-        Deity.OnDeityFieldEffectActivation += PlayHurtAnimation;
+        //Deity.OnDeityFieldEffectActivation += SetPlayerCurrentFieldEffectStatus;
+        //Deity.OnDeityFieldEffectActivation += PlayHurtAnimation;
     }
     public void OnDisable()
     {
-        Deity.OnDeityFieldEffectActivation -= SetPlayerCurrentFieldEffectStatus;
-        Deity.OnDeityFieldEffectActivation -= PlayHurtAnimation;
+        //Deity.OnDeityFieldEffectActivation -= SetPlayerCurrentFieldEffectStatus;
+        //Deity.OnDeityFieldEffectActivation -= PlayHurtAnimation;
     }
     public void UpdatePlayerHealthDisplay()
     {

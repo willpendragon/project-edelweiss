@@ -132,8 +132,11 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             detectedUnit.GetComponent<Unit>().ownedTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
 
             //Gameplay and Spells Buttons generation
+            GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
+            movesContainer.transform.localScale = new Vector3(0.9521077f, 0.9521077f, 0.9521077f);
+
             detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
-            detectedUnit.GetComponent<UnitSelectionController>().GenerateGameplayButtons();
+            detectedUnit.GetComponent<UnitSelectionController>().GenerateWaitButton();
             detectedUnit.GetComponent<MoveUIController>().AddMoveButton();
             detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
             detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
@@ -151,5 +154,9 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         {
             Destroy(playerUISpellButton);
         }
+
+        GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
+        movesContainer.transform.localScale = new Vector3(0, 0, 0);
+
     }
 }

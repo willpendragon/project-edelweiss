@@ -1098,7 +1098,7 @@ GameObject:
   - component: {fileID: 261502490}
   m_Layer: 5
   m_Name: MovesContainer
-  m_TagString: Untagged
+  m_TagString: MovesContainer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1112,7 +1112,7 @@ RectTransform:
   m_GameObject: {fileID: 261502488}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9521077, y: 0.9521077, z: 0.9521077}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1152607111}
@@ -3445,18 +3445,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b2fa6e338db53f42a2a96206c5a66af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveName: {fileID: 0}
-  battleEndResult: {fileID: 922938185}
-  moveNamePanel: {fileID: 0}
-  fieldEffectIcon: {fileID: 0}
   battleManager: {fileID: 90211749}
-  playerActionText: {fileID: 0}
+  player: {fileID: 0}
+  battlefieldNotificationsPanelDurationTime: 2.5
   playerActionPanel: {fileID: 0}
+  moveNamePanel: {fileID: 0}
+  battlefieldNotificationsPanel: {fileID: 2109305883}
+  movesContainer: {fileID: 261502488}
+  moveName: {fileID: 0}
+  playerActionText: {fileID: 0}
   battlefieldTextNotifications: {fileID: 35542996}
   deityJudgmentLimitText: {fileID: 0}
-  player: {fileID: 0}
-  battlefieldNotificationsPanel: {fileID: 2109305883}
-  battlefieldNotificationsPanelDurationTime: 2.5
+  battleEndResult: {fileID: 922938185}
 --- !u!114 &767884335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3483,14 +3483,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dd860628c4d2439e265113e65827b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battleEndResultsScreenDelay: 0.5
   battleEndResultsScreen: {fileID: 869859802}
+  battlefieldNotificationsContainer: {fileID: 739119494}
   battleEndMessageText: {fileID: 1180730695}
   battleEndExperiencePointsText: {fileID: 1766102753}
   battleEndWarFundsGainedText: {fileID: 749872785}
   battleEndEnemiesKilledText: {fileID: 2121085910}
-  battlefieldNotificationsContainer: {fileID: 739119494}
-  battleCameraPlayableDirector: {fileID: 588608024}
-  battleEndResultsScreenDelay: 0.5
 --- !u!1 &782934660
 GameObject:
   m_ObjectHideFlags: 0

@@ -39,10 +39,10 @@ public class UnitSelectionController : MonoBehaviour
         currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
     }
 
-    public void GenerateGameplayButtons()
-    {
-        GenerateWaitButton();
-    }
+    //public void GenerateGameplayButtons()
+    //{
+    //    GenerateWaitButton();
+    //}
 
     public void GenerateWaitButton()
     {
