@@ -12,11 +12,11 @@ public class DialogueController : MonoBehaviour
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
         if (highestUnlockedLevel == 2)
         {
-            dialogueSystemTrigger.enabled = true;
+            DialogueManager.StartConversation("Test_Conversation");
         }
         else if (highestUnlockedLevel == 4)
         {
-            dialogueSystemTrigger.enabled = true;
+            //dialogueSystemTrigger.enabled = true;
         }
 
     }

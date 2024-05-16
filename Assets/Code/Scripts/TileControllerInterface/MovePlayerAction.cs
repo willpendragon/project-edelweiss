@@ -62,6 +62,12 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         }
     }
 
+    public void ClearPath()
+    {
+        LineRenderer lineRenderer = GridManager.Instance.GetLineRenderer();
+        lineRenderer.positionCount = 0;
+    }
+
     public void Deselect()
     {
         selectionLimiter++;
@@ -83,6 +89,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         {
             RevertToSelectionUnitPlayerAction();
         }
+        ClearPath();
     }
 
     // Use this method to check if the Enemy is surrounded. Currently not used.
@@ -139,6 +146,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             UpdateActivePlayerUnitProfile(activePlayerUnit);
             Debug.Log("Not enough Opportunity Points or Unit is stunned.");
         }
+        ClearPath();
     }
 
     public void RevertToSelectionUnitPlayerAction()
