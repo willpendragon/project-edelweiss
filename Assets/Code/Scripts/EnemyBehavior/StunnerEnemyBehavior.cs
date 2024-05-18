@@ -77,7 +77,8 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
         targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
         targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
-        Instantiate(Resources.Load("StunIcon"), targetUnit.transform);
+        GameObject stunIconInstance = Instantiate(Resources.Load<GameObject>("StunIcon"), targetUnit.transform);
+        GridManager.Instance.statusIcons.Add(stunIconInstance);
         Debug.Log("Testing Stunner Enemy Behaviour");
     }
 }

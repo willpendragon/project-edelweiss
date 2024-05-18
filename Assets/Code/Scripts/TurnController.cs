@@ -216,12 +216,14 @@ public class TurnController : MonoBehaviour
                 OnBattleEnd("Defeat");
                 ResetTags();
                 DeactivateActivePlayerUnitPanel();
+
                 //Activate Game Over UI
                 //Active Game Over Flow
             }
             else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
             {
                 Debug.Log("Player Party is still in game");
+
                 //Activate Game Over UI
                 //Active Game Over Flow
             }

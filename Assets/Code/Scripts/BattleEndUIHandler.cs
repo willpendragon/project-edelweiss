@@ -21,18 +21,18 @@ public class BattleEndUIHandler : MonoBehaviour
     public TextMeshProUGUI battleEndEnemiesKilledText;
 
     //public PlayableDirector battleCameraPlayableDirector;
-    public void OnEnable()
+    private void OnEnable()
     {
         TurnController.OnBattleEnd += DisplayBattleEndScreen;
         PlaceCrystalPlayerAction.OnBattleEndCapturedDeity += DisplayBattleEndScreen;
     }
-    public void OnDisable()
+    private void OnDisable()
     {
         TurnController.OnBattleEnd -= DisplayBattleEndScreen;
         PlaceCrystalPlayerAction.OnBattleEndCapturedDeity -= DisplayBattleEndScreen;
     }
     //At the end of the Battle UI overlay appears (using Size scaling) with the results of the Battle.
-    public void DisplayBattleEndScreen(string battleEndMessage)
+    private void DisplayBattleEndScreen(string battleEndMessage)
     {
         battleEndMessageText.text = battleEndMessage;
         DeactivateBattleUI();
@@ -43,7 +43,7 @@ public class BattleEndUIHandler : MonoBehaviour
         yield return new WaitForSeconds(battleEndResultsScreenDelay);
         battleEndResultsScreen.transform.localScale = new Vector3(1, 1, 1);
     }
-    public void DeactivateBattleUI()
+    private void DeactivateBattleUI()
     {
         GameObject battleInterfaceCanvas = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
         if (battleInterfaceCanvas != null) // Check if the GameObject was found
@@ -66,13 +66,21 @@ public class BattleEndUIHandler : MonoBehaviour
 
         BattleInterface.Instance.movesContainer.SetActive(false);
         DeactivateUnitSelectionCursor();
+        DeactivateStatusIcons();
     }
-    public void DeactivateUnitSelectionCursor()
+    private void DeactivateUnitSelectionCursor()
     {
         GameObject[] selectionCursors = GameObject.FindGameObjectsWithTag("ActivePlayerCharacterSelectionIcon");
         foreach (var selectionCursor in selectionCursors)
         {
             Destroy(selectionCursor);
+        }
+    }
+    private void DeactivateStatusIcons()
+    {
+        foreach (var statusIcon in GridManager.Instance.statusIcons)
+        {
+            Destroy(statusIcon);
         }
     }
 }

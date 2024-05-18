@@ -10,6 +10,8 @@ public class GridManager : MonoBehaviour
     public GameObject lineRendererPrefab; // Assign this in the Unity Editor
     private static LineRenderer lineRendererInstance;
 
+    public List<GameObject> statusIcons = new List<GameObject>();
+
     public delegate void MoveUnitDelegate(int targetX, int targetY);
     public event MoveUnitDelegate OnMoveUnit;
 
