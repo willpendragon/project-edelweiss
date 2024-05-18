@@ -136,27 +136,13 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("All units are either dead or waiting. Swapping to enemy turn.");
             // Disable Player UI
-            ApplyTrapEffects();
+
             OnEnemyTurn("Enemy Turn");
             OnEnemyTurnSwap();
         }
         else
         {
             Debug.Log("At least one player unit can still take actions.");
-        }
-    }
-
-    public void ApplyTrapEffects()
-    {
-        //Need to move this in another class or move in a class of its own, following the single responsibility principle
-
-        foreach (var tile in GridManager.Instance.gridTileControllers)
-        {
-            TrapController trapTile = tile.GetComponent<TrapController>();
-            if (trapTile != null && trapTile.currentTrapActivationStatus == TrapController.TrapActivationStatus.active)
-            {
-                trapTile.ApplyTrapEffect();
-            }
         }
     }
 

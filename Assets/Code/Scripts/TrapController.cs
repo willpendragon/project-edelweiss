@@ -24,7 +24,8 @@ public class TrapController : MonoBehaviour
         if (GetComponentInParent<TileController>().detectedUnit != null)
         {
             Unit detectedUnitOnTrapTile = GetComponentInParent<TileController>().detectedUnit.GetComponent<Unit>();
-            detectedUnitOnTrapTile.TakeDamage(10);
+            if (detectedUnitOnTrapTile.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+                detectedUnitOnTrapTile.TakeDamage(10);
 
             OnTrapAction();
             //Beware of Magic Number

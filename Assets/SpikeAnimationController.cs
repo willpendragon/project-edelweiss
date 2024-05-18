@@ -10,15 +10,18 @@ public class SpikeAnimationController : MonoBehaviour
     }
     public void OnDisable()
     {
-        TrapController.OnTrapAction += AnimateSpikes;
+        TrapController.OnTrapAction -= AnimateSpikes;
     }
 
     public Animator spikeAnimator;
 
     public void AnimateSpikes()
     {
-        spikeAnimator.SetTrigger("ActivateTrap");
-        Debug.Log("Playing Spike Animation");
+        if (spikeAnimator != null)
+        {
+            spikeAnimator.SetTrigger("ActivateTrap");
+            Debug.Log("Playing Spike Animation");
+        }
     }
 
 }

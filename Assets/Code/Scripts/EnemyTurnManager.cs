@@ -60,6 +60,7 @@ public class EnemyTurnManager : MonoBehaviour
     }
     public void EnemyTurnSequence()
     {
+
         enemiesInQueue.Sort((a, b) => b.speed.CompareTo(a.speed));
         currentEnemyTurnIndex = 0;
         StartCoroutine(ExecuteTurns());
@@ -77,6 +78,7 @@ public class EnemyTurnManager : MonoBehaviour
                 yield return new WaitForSeconds(singleEnemyturnDuration);
                 currentEnemyTurnIndex++;
             }
+            TrapBehaviour();
             if (deity != null)
             {
                 OnDeityTurn("Deity Turn");
@@ -96,4 +98,19 @@ public class EnemyTurnManager : MonoBehaviour
             OnDeityTurn("Deity Turn");
         }
     }
+
+    public void TrapBehaviour()
+    {
+        //Need to move this in another class or move in a class of its own, following the single responsibility principle
+
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            TrapController trapTile = tile.GetComponent<TrapController>();
+            if (trapTile != null && trapTile.currentTrapActivationStatus == TrapController.TrapActivationStatus.active)
+            {
+                trapTile.ApplyTrapEffect();
+            }
+        }
+    }
+
 }

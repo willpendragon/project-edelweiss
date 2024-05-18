@@ -191,6 +191,7 @@ public class Unit : MonoBehaviour
                     Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
 
                 }
+                ownedTile.currentSingleTileCondition = SingleTileCondition.free;
                 ownedTile.detectedUnit = null;
                 ownedTile = null;
 
