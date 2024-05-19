@@ -54,11 +54,12 @@ MonoBehaviour:
   tileYCoordinate: 0
   currentSingleTileStatus: 1
   currentSingleTileCondition: 0
-  targetIcon: {fileID: 4764740750085911474, guid: f7bbcd16cf4e68e4b867220eaf3631ce, type: 3}
   currentTileCurseStatus: 0
+  targetIcon: {fileID: 4764740750085911474, guid: f7bbcd16cf4e68e4b867220eaf3631ce, type: 3}
   gCost: 0
   hCost: 0
   parent: {fileID: 0}
+  clickCooldown: 0.5
 --- !u!65 &1295778487736933772
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -335,7 +336,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: a14ea0247d3f71a498aafdc4fd4f222d, type: 3}
     - target: {fileID: 9101934754106659931, guid: 6b264cba8ac1eb5408f24797e7c634b0, type: 3}
       propertyPath: m_Color.a
-      value: 0.78431374
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9101934754106659931, guid: 6b264cba8ac1eb5408f24797e7c634b0, type: 3}
       propertyPath: m_SortingOrder

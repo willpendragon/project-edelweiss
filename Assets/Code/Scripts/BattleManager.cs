@@ -25,6 +25,8 @@ public enum BattleType
 
 public class BattleManager : MonoBehaviour
 {
+    public static BattleManager Instance { get; private set; }
+
     [SerializeField] GameObject battleMomentsScreen;
     [SerializeField] float enemyTurnDuration;
     [SerializeField] BattleInterface battleInterface;
@@ -70,16 +72,23 @@ public class BattleManager : MonoBehaviour
 
     public GridManager gridManager;
 
-    void Awake()
+    private void Awake()
     {
-        SetBattleType(currentBattleType);
-        enemiesOnBattlefield = GameManager.Instance.currentEnemySelection;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        EnemyTurnManager.OnPlayerTurn += ActivateBattleMomentsScreen;
+        EnemyTurnManager.OnDeityTurn += ActivateBattleMomentsScreen;
     }
 
     private void OnEnable()
     {
-        EnemyTurnManager.OnPlayerTurn += ActivateBattleMomentsScreen;
-        EnemyTurnManager.OnDeityTurn += ActivateBattleMomentsScreen;
+
         TurnController.OnEnemyTurn += ActivateBattleMomentsScreen;
     }
 

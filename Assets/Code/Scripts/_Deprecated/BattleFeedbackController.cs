@@ -5,22 +5,29 @@ using UnityEngine.Events;
 
 public class BattleFeedbackController : MonoBehaviour
 {
+
+    [Header("Player Actions SFX")]
+
     public UnityEvent PlayMeleeAttackSFX;
     public UnityEvent PlaySpellSFX;
     public UnityEvent PlayMovementSelectedSFX;
     public UnityEvent PlayMovementConfirmedSFX;
-    public UnityEvent PlayDeathVFX;
     public UnityEvent PlayDamageSFX;
-
+    public UnityEvent PlayPlaceCrystalSFX;
     public UnityEvent PlayPrayerSFX;
+
+    [Header("Unit Management SFX")]
 
     public UnityEvent PlaySelectionSFX;
     public UnityEvent PlaySelectionWaitingConfirmationSFX;
     public UnityEvent PlayDeselectionSFX;
 
+
+    [Header("Visuals")]
+
+    public UnityEvent PlayDeathVFX;
     public GameObject deathDisappearAnimationVFX;
     public Animator unitAnimator;
-
     public GameObject buffIcon;
 
 

@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8642592451490499264}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3301523452230230834
 MonoBehaviour:
@@ -203,6 +203,7 @@ Transform:
   - {fileID: 5933883950973350340}
   - {fileID: 4288533122201988351}
   - {fileID: 5624836886759035625}
+  - {fileID: 8882790433252042313}
   - {fileID: 561548677593423225}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -523,13 +524,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  PlayDeathVFX:
-    m_PersistentCalls:
-      m_Calls: []
   PlayDamageSFX:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7195967560871940475}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  PlayPlaceCrystalSFX:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3600169363753559496}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play
         m_Mode: 1
@@ -587,6 +600,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   PlayDeselectionSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayDeathVFX:
     m_PersistentCalls:
       m_Calls: []
   deathDisappearAnimationVFX: {fileID: 1874694411823686601, guid: 455892cabea2a6c4e9135d46170a809f, type: 3}
@@ -1060,6 +1076,73 @@ AudioSource:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3658304403213116481, guid: 9118da58b7df0fd458e38493ab2cdabc, type: 3}
   m_PrefabInstance: {fileID: 5812780358282362098}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6311667163729804443
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8642592451490499264}
+    m_Modifications:
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533243964974082771, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: m_Name
+      value: PlacingCrystalSFX
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+--- !u!82 &3600169363753559496 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7377412060224346451, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+  m_PrefabInstance: {fileID: 6311667163729804443}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8882790433252042313 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3229513102209145554, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+  m_PrefabInstance: {fileID: 6311667163729804443}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7034744263294175928
 PrefabInstance:

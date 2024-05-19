@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Newtonsoft.Json;
-using System.IO;
-using Unity.VisualScripting;
+using DG.Tweening;
+using TMPro;
 
 public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -23,15 +22,23 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
     public void Select(TileController selectedTile)
     {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-
-        if (activePlayerUnit.unitOpportunityPoints > 0 && selectionLimiter > 0)
+        if (BattleManager.Instance.currentBattleType == BattleType.battleWithDeity)
         {
-            selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-            currentSavedTile = selectedTile;
-            activePlayerUnit.SpendManaPoints(ManaCost);
-            activePlayerUnit.unitOpportunityPoints--;
-            selectionLimiter--;
+            Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
+            if (activePlayerUnit.unitOpportunityPoints > 0 && selectionLimiter > 0)
+            {
+                selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+                currentSavedTile = selectedTile;
+                selectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+                activePlayerUnit.SpendManaPoints(ManaCost);
+                activePlayerUnit.unitOpportunityPoints--;
+                selectionLimiter--;
+            }
+        }
+        else
+        {
+            Debug.Log("This is not a Deity Battle therefore the Player can't place Capture Crystals");
         }
     }
 
@@ -44,8 +51,13 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
             if (activePlayerUnit.unitManaPoints > 0)
             {
                 GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, currentSavedTile.transform.position, Quaternion.identity);
-                Debug.Log("Attempt to Capture the Deity");
+                AnimateCrystal(captureCrystalInstance, currentSavedTile.transform.position);
+
+                Debug.Log("Placing Crystal, attempting to Capture the Deity");
+
+                activePlayerUnit.GetComponent<BattleFeedbackController>().PlayPlaceCrystalSFX.Invoke();
                 activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+
                 if (DeityCaptureRoll() > CaptureDifficulty)
                 {
                     Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
@@ -64,6 +76,28 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                 }
             }
         }
+    }
+
+    private void AnimateCrystal(GameObject captureCrystalInstance, Vector3 currentSavedTilePosition)
+    {
+        // Instantiate the crystal at the initial small size and initial position
+        captureCrystalInstance.transform.localScale = Vector3.zero;
+
+        // Define the sequence of animations
+        Sequence crystalSequence = DOTween.Sequence();
+
+        // Step 1: Move up slightly while staying small
+        crystalSequence.Append(captureCrystalInstance.transform.DOMoveY(currentSavedTilePosition.y + 2, 0.5f).SetEase(Ease.OutQuad));
+
+        // Step 2: Scale up a bit and move down to original Y position
+        crystalSequence.Append(captureCrystalInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 1f).SetEase(Ease.OutQuad))
+                       .Join(captureCrystalInstance.transform.DOMoveY(currentSavedTilePosition.y, 1f).SetEase(Ease.OutQuad));
+
+        // Step 3: Scale down to the real size
+        crystalSequence.Append(captureCrystalInstance.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutQuad));
+
+        // Play the sequence
+        crystalSequence.Play();
     }
 
     public void Deselect()
