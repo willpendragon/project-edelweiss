@@ -23,7 +23,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             var destinationTile = selectedTile;
 
             activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementSelectedSFX.Invoke();
-            destinationTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
+            destinationTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
 
             destinationTileXCoordinate = destinationTile.tileXCoordinate;
             destinationTileYCoordinate = destinationTile.tileYCoordinate;
@@ -75,9 +75,10 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         //If a saved destination doesn't esist, by clicking on that tile, this will get back to selection mode
         if (savedSelectedTile != null)
         {
-            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
+            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile = null;
+            ClearPath();
         }
         else if (GridManager.Instance.currentPlayerUnit != null & savedSelectedTile == null)
         {
@@ -89,7 +90,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         {
             RevertToSelectionUnitPlayerAction();
         }
-        ClearPath();
+
     }
 
     // Use this method to check if the Enemy is surrounded. Currently not used.
@@ -122,6 +123,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             {
                 //Use Grid Logic to Move the Player to Destination
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementConfirmedSFX.Invoke();
+                ClearPath();
 
                 activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
                 activePlayerUnit.ownedTile.detectedUnit = null;
@@ -146,7 +148,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             UpdateActivePlayerUnitProfile(activePlayerUnit);
             Debug.Log("Not enough Opportunity Points or Unit is stunned.");
         }
-        ClearPath();
     }
 
     public void RevertToSelectionUnitPlayerAction()

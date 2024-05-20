@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13abacb2f534ff34dbea42f20c42b229, type: 3}
-  m_Name: Eclair_HP_Recovery
+  m_Name: Tart_HP_Recovery
   m_EditorClassIdentifier: 
-  itemFoodName: Eclair
-  itemFoodDescription: 'Description Description Description Description Description
-    Description Description Description Description '
-  itemFoodPrice: 20
-  recoveryAmount: 20
+  itemFoodName: Tart
+  itemFoodDescription: 'A vibrant pastry infused with revitalizing magic. Its golden
+    crust and radiant filling restore energy and invigorate adventurers with a burst
+    of vitality.        '
+  itemFoodPrice: 200
+  recoveryAmount: 500
   itemFoodType: 0
-  foodIcon: {fileID: 21300000, guid: edd0b97b475b15842a6de3b5e5f485a4, type: 3}
+  foodIcon: {fileID: 21300000, guid: ca5e1f429d19afb489944f7dbd1add03, type: 3}

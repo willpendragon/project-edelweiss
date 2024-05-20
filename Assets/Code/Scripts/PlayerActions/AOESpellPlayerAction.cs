@@ -33,7 +33,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             {
                 foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile))
                 {
-                    tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
+                    tile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
                     selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 }
                 savedSelectedTile = selectedTile;
@@ -45,7 +45,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             {
                 savedSelectedTile = selectedTile;
 
-                savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.cyan;
+                savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
                 if (selectedTile.detectedUnit != null && selectedTile.detectedUnit.tag != "Player" && selectedTile.detectedUnit.tag != "ActivePlayerUnit")
                 {
                     currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
@@ -79,7 +79,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
                 {
                     Debug.Log("Using AOE Spell on Multiple Targets");
-                    tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
+                    tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
                     if (tile.detectedUnit == null || tile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
                     {
                         Debug.Log("No Unit found or found Unit has died. Can't apply damage");
@@ -124,7 +124,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     }
 
                     savedSelectedTile.detectedUnit.GetComponent<Unit>().TakeDamage(damageToApply);
-                    savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
                     activePlayerUnit.SpendManaPoints(currentSpell.manaPointsCost);
                     activePlayerUnit.unitOpportunityPoints--;
                     UpdateActivePlayerUnitMana(activePlayerUnit);
@@ -147,7 +146,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         {
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
             {
-                tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
                 tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             }
             Debug.Log("Deselecting AOE Range");

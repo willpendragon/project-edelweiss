@@ -9,7 +9,7 @@ public class MeleePlayerAction : IPlayerAction
     public Unit currentTarget;
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
-    public TileController savedPreviewDestinationTile;
+    //public TileController savedPreviewDestinationTile;
 
     public delegate void UsedMeleeAction(string moveName, string attackerName);
     public static event UsedMeleeAction OnUsedMeleeAction;
@@ -24,7 +24,7 @@ public class MeleePlayerAction : IPlayerAction
 
             if (currentTarget.gameObject.tag == "Enemy")
             {
-                selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 savedSelectedTile = selectedTile;
                 //Switch Selected tile to WaitingForConfirmationStatus
@@ -35,11 +35,11 @@ public class MeleePlayerAction : IPlayerAction
                 selectionLimiter--;
 
                 //Magic Number
-                int basicKnockbackStrength = 2;
-                Vector2Int destination = PreviewKnockback(activePlayerUnit, currentTarget, basicKnockbackStrength);
-                TileController previewDestinationTile = GridManager.Instance.GetTileControllerInstance(destination.x, destination.y);
-                previewDestinationTile.GetComponentInChildren<SpriteRenderer>().color = Color.magenta;
-                savedPreviewDestinationTile = previewDestinationTile;
+                //int basicKnockbackStrength = 2;
+                //Vector2Int destination = PreviewKnockback(activePlayerUnit, currentTarget, basicKnockbackStrength);
+                //TileController previewDestinationTile = GridManager.Instance.GetTileControllerInstance(destination.x, destination.y);
+                //previewDestinationTile.GetComponentInChildren<SpriteRenderer>().color = Color.magenta;
+                //savedPreviewDestinationTile = previewDestinationTile;
             }
         }
         else
@@ -92,50 +92,50 @@ public class MeleePlayerAction : IPlayerAction
         }
     }
 
-    public Vector2Int PreviewKnockback(Unit attacker, Unit defender, int knockbackStrength)
-    {
-        Vector2Int attackerPos = attacker.GetGridPosition();
-        Vector2Int defenderPos = defender.GetGridPosition();
+    //public Vector2Int PreviewKnockback(Unit attacker, Unit defender, int knockbackStrength)
+    //{
+    //    Vector2Int attackerPos = attacker.GetGridPosition();
+    //    Vector2Int defenderPos = defender.GetGridPosition();
 
-        // Calculate the difference in positions
-        int deltaX = attackerPos.x - defenderPos.x;
-        int deltaY = attackerPos.y - defenderPos.y;
+    //    // Calculate the difference in positions
+    //    int deltaX = attackerPos.x - defenderPos.x;
+    //    int deltaY = attackerPos.y - defenderPos.y;
 
-        // Determine the direction of the knockback
-        Vector2Int knockbackDirection = Vector2Int.zero;
-        if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
-        {
-            knockbackDirection.x = -(int)Mathf.Sign(deltaX);
-        }
-        else
-        {
-            knockbackDirection.y = -(int)Mathf.Sign(deltaY);
-        }
+    //    // Determine the direction of the knockback
+    //    Vector2Int knockbackDirection = Vector2Int.zero;
+    //    if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
+    //    {
+    //        knockbackDirection.x = -(int)Mathf.Sign(deltaX);
+    //    }
+    //    else
+    //    {
+    //        knockbackDirection.y = -(int)Mathf.Sign(deltaY);
+    //    }
 
-        // Check the immediate next tile in the knockback direction
-        Vector2Int immediateNextTile = defenderPos + knockbackDirection;
+    //    // Check the immediate next tile in the knockback direction
+    //    Vector2Int immediateNextTile = defenderPos + knockbackDirection;
 
-        //// If the immediate next tile is occupied, do not apply knockback
-        //TileController immediateTileController = GridManager.Instance.GetTileControllerInstance(immediateNextTile.x, immediateNextTile.y);
-        //if (immediateTileController == null || immediateTileController.currentSingleTileCondition == SingleTileCondition.occupied)
-        //{
-        //    currentTarget.TakeDamage(attacker.unitTemplate.meleeAttackPower);
-        //    Debug.Log("Immediate tile in knockback path is occupied. Knockback canceled.");
-        //    return false;
-        //}
+    //    //// If the immediate next tile is occupied, do not apply knockback
+    //    //TileController immediateTileController = GridManager.Instance.GetTileControllerInstance(immediateNextTile.x, immediateNextTile.y);
+    //    //if (immediateTileController == null || immediateTileController.currentSingleTileCondition == SingleTileCondition.occupied)
+    //    //{
+    //    //    currentTarget.TakeDamage(attacker.unitTemplate.meleeAttackPower);
+    //    //    Debug.Log("Immediate tile in knockback path is occupied. Knockback canceled.");
+    //    //    return false;
+    //    //}
 
-        // Apply the knockback strength within the limit of 1, 2, or 3 tiles
-        knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
+    //    // Apply the knockback strength within the limit of 1, 2, or 3 tiles
+    //    knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
 
-        // Calculate the new grid position with the possibly adjusted knockback strength
-        Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
+    //    // Calculate the new grid position with the possibly adjusted knockback strength
+    //    Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
-        // Clamp the new position to the grid bounds
-        newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
-        newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
+    //    // Clamp the new position to the grid bounds
+    //    newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
+    //    newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
-        return newGridPos;
-    }
+    //    return newGridPos;
+    //}
 
     public void ApplyKnockback(Unit attacker, Unit defender, int knockbackStrength)
     {
@@ -217,12 +217,12 @@ public class MeleePlayerAction : IPlayerAction
             Debug.Log("Deselecting Currently Selected Tile");
         }
 
-        if (savedPreviewDestinationTile != null)
-        {
-            savedPreviewDestinationTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-            savedPreviewDestinationTile = null;
-            Debug.Log("Deselecting Knockback Preview Tile");
+        //if (savedPreviewDestinationTile != null)
+        //{
+        //    savedPreviewDestinationTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+        //    savedPreviewDestinationTile = null;
+        //    Debug.Log("Deselecting Knockback Preview Tile");
 
-        }
+        //}
     }
 }

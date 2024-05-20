@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 public class DeitySpawner : MonoBehaviour
 {
@@ -36,8 +37,41 @@ public class DeitySpawner : MonoBehaviour
         Debug.Log($"Deity Index: {deityIndex} - {spawnableDeities[deityIndex].name}");
 
         GameObject spawningDeity = spawnableDeities[deityIndex];
-        Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
-        GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().deity = spawningDeity.GetComponent<Deity>();
+        GameObject deityOnBattlefield = Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
+
+        BattleManager.Instance.deity = deityOnBattlefield.GetComponent<Deity>();
+
+        // Set initial scale and transparency
+        deityOnBattlefield.transform.localScale = Vector3.zero;
+        MeshRenderer[] meshRenderers = deityOnBattlefield.GetComponentsInChildren<MeshRenderer>();
+        foreach (var renderer in meshRenderers)
+        {
+            foreach (var material in renderer.materials)
+            {
+                Color initialColor = material.color;
+                initialColor.a = 0f; // Make the deity almost invisible
+                material.color = initialColor;
+            }
+        }
+
+        // Define the sequence of animations
+        Sequence deitySequence = DOTween.Sequence();
+
+        // Step 1: Fade in and scale up
+        foreach (var renderer in meshRenderers)
+        {
+            foreach (var material in renderer.materials)
+            {
+                deitySequence.Join(material.DOFade(1f, 1f).SetEase(Ease.InQuad));
+            }
+        }
+        deitySequence.Join(deityOnBattlefield.transform.DOScale(new Vector3(7.5f, 7.5f, 7.5f), 1f).SetEase(Ease.OutQuad));
+
+        // Step 2: Scale down to the final size
+        deitySequence.Append(deityOnBattlefield.transform.DOScale(new Vector3(6.667861f, 6.667861f, 6.667861f), 0.5f).SetEase(Ease.InOutQuad));
+
+        // Play the sequence
+        deitySequence.Play();
     }
     void CreateDeityHealthBar(GameObject spawnedUnboundDeity)
     {

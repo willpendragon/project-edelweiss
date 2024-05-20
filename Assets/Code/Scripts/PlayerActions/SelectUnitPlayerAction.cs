@@ -26,6 +26,8 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitTemporarilySelected;
             GameObject playerSelectorIconIstance = Instantiate(Resources.Load("PlayerCharacterSelectorIcon") as GameObject, selectedTile.detectedUnit.transform);
 
+            selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+
             Vector3 playerSelectionInstanceOffset = new Vector3(0, 2.5f, 0);
             playerSelectorIconIstance.transform.localPosition += playerSelectionInstanceOffset;
 
@@ -85,6 +87,8 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             }
 
         }
+        selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+
 
     }
     public void Execute()

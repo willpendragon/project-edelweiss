@@ -19,6 +19,26 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
 
         BattleInterface.Instance.movesContainer.transform.localScale = new Vector3(0, 0, 0);
 
-        GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>().GameOverCheck();
+        ResetTileControllersColours();
+        ClearPath();
+
+        BattleManager.Instance.GetComponent<TurnController>().GameOverCheck();
+    }
+
+    public void ResetTileControllersColours()
+    {
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            Debug.Log("Resetting Tile Colours");
+            tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+        }
+
+
+    }
+
+    public void ClearPath()
+    {
+        LineRenderer lineRenderer = GridManager.Instance.GetLineRenderer();
+        lineRenderer.positionCount = 0;
     }
 }

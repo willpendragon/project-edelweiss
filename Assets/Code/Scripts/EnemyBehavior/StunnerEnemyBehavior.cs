@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,8 +78,50 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
         targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
         targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
-        GameObject stunIconInstance = Instantiate(Resources.Load<GameObject>("StunIcon"), targetUnit.transform);
-        GridManager.Instance.statusIcons.Add(stunIconInstance);
-        Debug.Log("Testing Stunner Enemy Behaviour");
+        // Define the Y offset for the VFX spawn position
+        float yOffset = 1.0f;
+
+        // Calculate the new spawn position with the Y offset
+        Vector3 stunVFXSpawnPosition = targetUnit.transform.position + new Vector3(0, yOffset, 0);
+
+        // Instantiate the VFX at the new position
+        GameObject stunVFX = Instantiate(Resources.Load<GameObject>("StunAttackVFX"), stunVFXSpawnPosition, Quaternion.identity);
+
+        // Get the duration of the VFX animation (you can set this to the actual duration of your VFX animation)
+        float vfxDuration = 1.0f; // replace with the actual duration
+
+        // Create a sequence
+        Sequence sequence = DOTween.Sequence();
+
+        // Add a delay to the sequence equal to the duration of the VFX
+        sequence.AppendInterval(vfxDuration);
+
+        // Add a callback to the sequence to instantiate the StunIcon after the delay
+        sequence.AppendCallback(() =>
+        {
+            // Instantiate the StunIcon
+            GameObject stunIconInstance = Instantiate(Resources.Load<GameObject>("StunIcon"), targetUnit.transform);
+            GridManager.Instance.statusIcons.Add(stunIconInstance);
+
+            // Create a sequence for the StunIcon animations
+            Sequence iconSequence = DOTween.Sequence();
+
+            // Add a scale up animation for the pop effect
+            iconSequence.Append(stunIconInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.2f).SetEase(Ease.OutBack));
+
+            // Add a scale back to normal size
+            iconSequence.Append(stunIconInstance.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack));
+
+            // Add a shake animation
+            iconSequence.Append(stunIconInstance.transform.DOShakePosition(0.5f, new Vector3(0.2f, 0.2f, 0), 10, 90, false, true));
+
+            // Play the icon sequence
+            iconSequence.Play();
+        });
+
+        float stunVFXDestroyCountdown = 1.5f;
+        Destroy(stunVFX, stunVFXDestroyCountdown);
+
+        Debug.Log("Stunner Enemy Behaviour");
     }
 }

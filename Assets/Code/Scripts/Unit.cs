@@ -132,7 +132,7 @@ public class Unit : MonoBehaviour
             foreach (var tile in path)
             {
                 // Apply visual feedback for the path
-                tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
+                //tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
 
                 // Convert grid coordinates back to world position for actual movement
                 Vector3 worldPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate);
