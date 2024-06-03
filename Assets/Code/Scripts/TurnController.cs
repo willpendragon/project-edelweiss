@@ -192,10 +192,13 @@ public class TurnController : MonoBehaviour
                     }
                 }
 
+                gameStatsManager.captureCrystalsCount += BattleManager.Instance.captureCrystalsRewardPool;
+
                 gameStatsManager.SaveEnemiesKilled();
                 gameStatsManager.SaveCharacterData();
                 gameStatsManager.SaveWarFunds(warFunds);
                 gameStatsManager.SaveUsedSingleTargetSpells();
+                gameStatsManager.SaveCaptureCrystalsCount(gameStatsManager.captureCrystalsCount);
                 Debug.Log("Saving Character Stats Data");
 
                 UpdateBattleEndUIPanel();
@@ -283,6 +286,7 @@ public class TurnController : MonoBehaviour
     {
         battleEndUIHandler.battleEndEnemiesKilledText.text = enemiesKilledInCurrentBattle.ToString();
         battleEndUIHandler.battleEndWarFundsGainedText.text = warFunds.ToString();
+        battleEndUIHandler.battleEndCrystalObtainedText.text = battleManager.captureCrystalsRewardPool.ToString();
     }
 
     public void RunFromBattle()

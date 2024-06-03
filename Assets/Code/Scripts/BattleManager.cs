@@ -41,6 +41,9 @@ public class BattleManager : MonoBehaviour
     public Deity deity;
     public TurnOrder currentTurnOrder;
     public EnemySelection enemySelection;
+
+    public int captureCrystalsRewardPool;
+
     public FieldEffectStatus fieldEffectStatus;
 
     private GameManager gameManager;
@@ -103,7 +106,6 @@ public class BattleManager : MonoBehaviour
     public void SetBattleType(BattleType battleType)
     {
         currentBattleType = battleType;
-        //DeityCameraMovement();
     }
     void Start()
     {

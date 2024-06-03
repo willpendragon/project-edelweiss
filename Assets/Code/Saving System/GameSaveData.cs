@@ -8,6 +8,7 @@ public class GameSaveData
     public int highestUnlockedLevel;
     public int timesSingleTargetSpellWasUsed;
 
+
     public List<CharacterData> characterData = new List<CharacterData>();
     public ResourceData resourceData = new ResourceData();
 
@@ -32,5 +33,6 @@ public class ResourceData
 {
     public float warFunds;
     public float experiencePointsReward;
+    public int captureCrystalsCount;
 }
 

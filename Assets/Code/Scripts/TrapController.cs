@@ -24,13 +24,37 @@ public class TrapController : MonoBehaviour
         if (GetComponentInParent<TileController>().detectedUnit != null)
         {
             Unit detectedUnitOnTrapTile = GetComponentInParent<TileController>().detectedUnit.GetComponent<Unit>();
-            if (detectedUnitOnTrapTile.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-                detectedUnitOnTrapTile.TakeDamage(10);
+            float spikeDamage = 10;
 
-            OnTrapAction();
-            //Beware of Magic Number
+            if (SpikeKillingPlayer(detectedUnitOnTrapTile, spikeDamage))
+            {
+                detectedUnitOnTrapTile.GetComponent<CrystalHandler>().TurnUnitIntoCrystal();
+                detectedUnitOnTrapTile.TakeDamage(spikeDamage);
+                Debug.Log("Targeted Unit became a Capture Crystal");
+            }
+            else if (detectedUnitOnTrapTile.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+            {
+                //Beware of Magic Number
 
-            Debug.Log("Applying Trap Effect to the Unit standing on the Trap Tile");
+                detectedUnitOnTrapTile.TakeDamage(spikeDamage);
+
+                OnTrapAction();
+                Debug.Log("Applying Trap Effect to the Unit standing on the Trap Tile");
+                TurnController.Instance.GameOverCheck();
+            }
+        }
+    }
+
+    public bool SpikeKillingPlayer(Unit detectedUnitOnTraptile, float spikeDamage)
+    {
+        float predictedHPOutcome = detectedUnitOnTraptile.unitHealthPoints - spikeDamage;
+        if (predictedHPOutcome <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }

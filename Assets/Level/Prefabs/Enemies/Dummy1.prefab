@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 2788514426886983777}
   - component: {fileID: 5410876119120275068}
   - component: {fileID: 7127888063209652432}
+  - component: {fileID: 975513701372675069}
   m_Layer: 0
   m_Name: Dummy1
   m_TagString: Enemy
@@ -446,9 +447,6 @@ MonoBehaviour:
   PlayMovementConfirmedSFX:
     m_PersistentCalls:
       m_Calls: []
-  PlayDeathVFX:
-    m_PersistentCalls:
-      m_Calls: []
   PlayDamageSFX:
     m_PersistentCalls:
       m_Calls:
@@ -464,6 +462,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  PlayPlaceCrystalSFX:
+    m_PersistentCalls:
+      m_Calls: []
   PlayPrayerSFX:
     m_PersistentCalls:
       m_Calls: []
@@ -500,9 +501,24 @@ MonoBehaviour:
   PlayDeselectionSFX:
     m_PersistentCalls:
       m_Calls: []
+  PlayDeathVFX:
+    m_PersistentCalls:
+      m_Calls: []
   deathDisappearAnimationVFX: {fileID: 1874694411823686601, guid: 455892cabea2a6c4e9135d46170a809f, type: 3}
   unitAnimator: {fileID: 369530382422409763}
   buffIcon: {fileID: 0}
+--- !u!114 &975513701372675069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009294011632168286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 598c7b7f31d57d24e90c949b320fd3aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public class GameStatsManager : MonoBehaviour
     public int enemiesKilled;
     public float warFunds;
     public int timesSingleTargetSpellWasUsed;
+    public int captureCrystalsCount;
 
     private CharacterData characterData;
 
@@ -23,6 +24,7 @@ public class GameStatsManager : MonoBehaviour
         LoadEnemiesKilled();
         LoadCharacterData();
         LoadUsedSingleTargetSpells();
+        LoadCaptureCrystalsCount();
     }
 
     public void SaveCharacterData()
@@ -123,6 +125,29 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log("Loading the number of killed Enemies");
         }
     }
+
+
+    public void LoadCaptureCrystalsCount()
+    {
+        GameSaveData resourceSaveData = SaveStateManager.saveData;
+        if (resourceSaveData != null && resourceSaveData.resourceData != null)
+        {
+            captureCrystalsCount = resourceSaveData.resourceData.captureCrystalsCount;
+            Debug.Log($"Loaded Capture Crystals: {captureCrystalsCount}");
+        }
+    }
+
+    public void SaveCaptureCrystalsCount(int captureCrystalsAmount)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.captureCrystalsCount += captureCrystalsAmount;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Capture Crystals: {captureCrystalsAmount}");
+        }
+    }
+
     public void SaveEnemiesKilled()
     {
         Debug.Log("Increasing Enemies Killed");

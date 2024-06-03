@@ -19,6 +19,7 @@ public class BattleEndUIHandler : MonoBehaviour
     public TextMeshProUGUI battleEndExperiencePointsText;
     public TextMeshProUGUI battleEndWarFundsGainedText;
     public TextMeshProUGUI battleEndEnemiesKilledText;
+    public TextMeshProUGUI battleEndCrystalObtainedText;
 
     //public PlayableDirector battleCameraPlayableDirector;
     private void OnEnable()

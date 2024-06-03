@@ -47,10 +47,22 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
         if (currentSavedTile.currentSingleTileStatus == SingleTileStatus.waitingForConfirmationMode)
         {
             Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+            GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
 
-            if (activePlayerUnit.unitManaPoints > 0)
+            if (activePlayerUnit.unitManaPoints > 0 && gameStatsManager.captureCrystalsCount > 0)
             {
                 GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, currentSavedTile.transform.position, Quaternion.identity);
+                gameStatsManager.captureCrystalsCount--;
+
+                GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
+                foreach (var playerUISpellButton in playerUISpellButtons)
+                {
+                    CapsuleCrystalCounterHandler handler = playerUISpellButton.GetComponent<CapsuleCrystalCounterHandler>();
+                    if (handler != null)
+                    {
+                        handler.UpdateCapsuleCounterText();
+                    }
+                }
                 AnimateCrystal(captureCrystalInstance, currentSavedTile.transform.position);
 
                 Debug.Log("Placing Crystal, attempting to Capture the Deity");
