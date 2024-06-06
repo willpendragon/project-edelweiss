@@ -49,6 +49,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     [Header("Visuals")]
 
     public GameObject targetIcon;
+    public TileShaderController tileShaderController;
 
     // A* Pathfinding properties
     public int gCost;

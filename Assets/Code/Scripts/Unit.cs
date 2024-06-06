@@ -152,6 +152,26 @@ public class Unit : MonoBehaviour
             return false;
         }
     }
+
+    public bool CheckTileAvailability(int targetX, int targetY)
+    {
+        // Convert current world position to grid coordinates
+        Vector2Int startGridPos = GridManager.Instance.GetGridCoordinatesFromWorldPosition(transform.position);
+
+        // Find path using grid coordinates
+        List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
+
+        if (path != null && path.Count > 0 && path.Count <= unitMovementLimit)
+        {
+            return true;
+        }
+        else
+        {
+            Debug.Log("No valid path found or path exceeds movement limit.");
+            return false;
+        }
+    }
+
     public void CheckUnitHealthStatus()
     {
         if (unitHealthPoints > 0)

@@ -4,6 +4,7 @@ using UnityEngine;
 using static TileController;
 using UnityEngine.UI;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class MovePlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -22,8 +23,21 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         {
             var destinationTile = selectedTile;
 
+            if (activePlayerUnit.CheckTileAvailability(selectedTile.tileXCoordinate, selectedTile.tileYCoordinate))
+            {
+                selectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.2f, Color.green);
+                Debug.Log("Tile is within Character Movement Limit");
+            }
+            else if (!activePlayerUnit.CheckTileAvailability(selectedTile.tileXCoordinate, selectedTile.tileYCoordinate))
+            {
+                selectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.2f, Color.red);
+                Debug.Log("Tile is not within Character Movement Limit");
+            }
+
+
             activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementSelectedSFX.Invoke();
-            destinationTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+            //destinationTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+
 
             destinationTileXCoordinate = destinationTile.tileXCoordinate;
             destinationTileYCoordinate = destinationTile.tileYCoordinate;
@@ -72,22 +86,34 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     {
         selectionLimiter++;
 
-        //If a saved destination doesn't esist, by clicking on that tile, this will get back to selection mode
+        //If a saved destination esists, by clicking on that tile, this will get back to selection mode
         if (savedSelectedTile != null)
         {
             savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            savedSelectedTile.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
+
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile = null;
             ClearPath();
         }
+
+        //If a saved destination doesn't exist, by clicking on that tile, it will call the RevertToSelectionUnitPlayerAction method
+
         else if (GridManager.Instance.currentPlayerUnit != null & savedSelectedTile == null)
         {
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            }
             Debug.Log("Resetting Current Active Player Selection");
             RevertToSelectionUnitPlayerAction();
         }
-        //If a saved destination exist, by clicking on any tile, it will call the RevertToSelectionUnitPlayerAction method
         else if (savedSelectedTile == null)
         {
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            }
             RevertToSelectionUnitPlayerAction();
         }
 
@@ -123,6 +149,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             {
                 //Use Grid Logic to Move the Player to Destination
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementConfirmedSFX.Invoke();
+                savedSelectedTile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
                 ClearPath();
 
                 activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
@@ -157,6 +184,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new SelectUnitPlayerAction();
+            tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
         }
         GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
         foreach (var playerUISpellButton in playerUISpellButtons)
@@ -166,6 +194,11 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         Destroy(GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitProfilePanel);
         GridManager.Instance.currentPlayerUnit.tag = "Player";
         GridManager.Instance.currentPlayerUnit = null;
+
+        GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
+        movesContainer.transform.localScale = new Vector3(0, 0, 0);
+        Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+        ClearPath();
     }
 
     public string FindAnimationTrigger(Unit activePlayerUnit, TileController destinationTile)
