@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9bf9d7c58a60514f82f4e8516356b1b, type: 3}
+  m_Name: BumperGodlingTemplate
+  m_EditorClassIdentifier: 
+  unitName: Stunner Godling
+  unitHealthPoints: 10
+  unitMaxHealthPoints: 10
+  unitManaPoints: 10
+  unitMaxManaPoints: 10
+  unitOpportunityPoints: 10
+  unitShieldPoints: 10
+  meleeAttackPower: 2
+  unitMagicPower: 2
+  spellsList: []
+  unitCoinsReward: 200
+  unitExperiencePointsReward: 300
+  unitPortrait: {fileID: 21300000, guid: 2ee8ead0aa6dca04f80c73082055e9c9, type: 3}
+  unitCalloutPortrait: {fileID: 0}
+  unitCriticalHitVoice: {fileID: 0}
+  enemyPersonality: 0
