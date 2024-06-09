@@ -5,6 +5,7 @@ using static TileController;
 using UnityEngine.UI;
 using System.Linq;
 using Unity.VisualScripting;
+using System;
 
 public class MovePlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -162,6 +163,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
                 activePlayerUnit.unitOpportunityPoints--;
                 UpdateActivePlayerUnitProfile(activePlayerUnit);
 
+                activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
 
                 Debug.Log("Moving Character Execution Logic");
             }

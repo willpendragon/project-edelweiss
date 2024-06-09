@@ -227,6 +227,7 @@ GameObject:
   - component: {fileID: 5410876119120275068}
   - component: {fileID: 7127888063209652432}
   - component: {fileID: 975513701372675069}
+  - component: {fileID: 1254154078120300381}
   m_Layer: 0
   m_Name: Dummy1
   m_TagString: Enemy
@@ -341,6 +342,7 @@ MonoBehaviour:
   unitMagicPower: 0
   currentUnitLifeCondition: 0
   unitStatusController: {fileID: 361118017173477511}
+  fieldPrizeController: {fileID: 1254154078120300381}
   linkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 7127888063209652432}
@@ -519,6 +521,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 598c7b7f31d57d24e90c949b320fd3aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1254154078120300381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009294011632168286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6652aa2d868819449909f670b3923924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fieldPrizeVisuals: {fileID: 67632292693706767, guid: 6b2300afed068b24394e325c341abb48, type: 3}
+  fieldPrize: {fileID: 11400000, guid: da9b3b277abd4464c878b543c8d9372d, type: 2}
+  weights: 1e0000001e000000
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

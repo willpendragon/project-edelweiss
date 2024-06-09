@@ -694,7 +694,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -716,7 +716,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 30
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &73197619
 GameObject:
@@ -772,7 +772,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -794,7 +794,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 26
+  m_RootOrder: 32
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &90211748
 GameObject:
@@ -827,10 +827,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333121726ca123e4fa72503fa1ad78c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  battleBeginsScreen: {fileID: 463913747}
+  battleMomentsScreen: {fileID: 0}
   enemyTurnDuration: 4.5
   battleInterface: {fileID: 767884334}
+  battleMomentsScreenDeactivationTime: 0
+  deityAchievementsController: {fileID: 0}
   turnDisplay: {fileID: 782934662}
   turnTracker: {fileID: 873232010}
   turnCounter: 0
@@ -838,8 +839,10 @@ MonoBehaviour:
   deity: {fileID: 1380747461}
   currentTurnOrder: 0
   enemySelection: {fileID: 0}
+  captureCrystalsRewardPool: 0
   fieldEffectStatus: 1
   enemyTurnManager: {fileID: 90211751}
+  currentBattleType: 0
   PlayerTurnStarts:
     m_PersistentCalls:
       m_Calls:
@@ -896,7 +899,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &90211751
 MonoBehaviour:
@@ -929,7 +932,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinsRewardPool: 0
   experienceRewardPool: 0
-  battleManager: {fileID: 90211749}
 --- !u!1 &102931232
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,7 +986,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -1006,7 +1008,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 28
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &112918973
 GameObject:
@@ -5886,7 +5888,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &185470049
 GameObject:
@@ -6023,6 +6025,186 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 185470049}
   m_CullTransparentMesh: 1
+--- !u!1 &190587257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 190587259}
+  - component: {fileID: 190587258}
+  m_Layer: 0
+  m_Name: Reflection Probe
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!215 &190587258
+ReflectionProbe:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190587257}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Type: 0
+  m_Mode: 0
+  m_RefreshMode: 0
+  m_TimeSlicingMode: 0
+  m_Resolution: 128
+  m_UpdateFrequency: 0
+  m_BoxSize: {x: 1.1474135, y: 1.234585, z: 1.2817426}
+  m_BoxOffset: {x: -0.043963313, y: 0.016950727, z: 0.17668748}
+  m_NearClip: 0.3
+  m_FarClip: 1000
+  m_ShadowDistance: 100
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IntensityMultiplier: 1
+  m_BlendDistance: 1
+  m_HDR: 1
+  m_BoxProjection: 0
+  m_RenderDynamicObjects: 0
+  m_UseOcclusionCulling: 1
+  m_Importance: 1
+  m_CustomBakedTexture: {fileID: 0}
+--- !u!4 &190587259
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190587257}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.3, y: 5.66, z: -7.08}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &211724029
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 211724032}
+  - component: {fileID: 211724031}
+  - component: {fileID: 211724030}
+  m_Layer: 0
+  m_Name: Point Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &211724030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211724029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+--- !u!108 &211724031
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211724029}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 2
+  m_Shape: 0
+  m_Color: {r: 0.645283, g: 0.89718825, b: 1, a: 1}
+  m_Intensity: 11.89
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 4.04
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &211724032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211724029}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.3000002, y: 4.97, z: -7.08}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 43
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &215077102
 GameObject:
   m_ObjectHideFlags: 0
@@ -15959,7 +16141,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 33
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &447422448
 GameObject:
@@ -16575,7 +16757,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -16597,7 +16779,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 39
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &496356835
 GameObject:
@@ -16744,6 +16926,7 @@ GameObject:
   m_Component:
   - component: {fileID: 511038727}
   - component: {fileID: 511038726}
+  - component: {fileID: 511038728}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -16826,8 +17009,28 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 31
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &511038728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511038725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &525129316
 GameObject:
   m_ObjectHideFlags: 0
@@ -16931,7 +17134,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 34
+  m_RootOrder: 38
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &536088310
 GameObject:
@@ -16962,7 +17165,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &549978328
 GameObject:
@@ -17018,7 +17221,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -17040,7 +17243,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 25
+  m_RootOrder: 45
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &563278381
 GameObject:
@@ -22336,13 +22539,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588608016}
-  m_LocalRotation: {x: 0.12206889, y: 2.651251e-15, z: -6.609271e-16, w: 0.99252164}
+  m_LocalRotation: {x: 0.122068875, y: -0.000000022184587, z: 0.000000002728452, w: 0.99252164}
   m_LocalPosition: {x: -0.3, y: 6.1, z: -13.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &588608020
 MonoBehaviour:
@@ -22423,7 +22626,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &608943681
 GameObject:
@@ -22479,7 +22682,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -22501,7 +22704,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 41
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619810515
 GameObject:
@@ -22532,7 +22735,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &621708313
 GameObject:
@@ -22666,7 +22869,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -22688,7 +22891,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 38
+  m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &672136153
 GameObject:
@@ -22804,10 +23007,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faefbabe9cfbeb546b8f8e28be482e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileCursor: {fileID: 1097080607}
-  currentTileCursorStatus: 1
-  currentTileCursorActivationStatus: 0
-  moveset: {fileID: 0}
 --- !u!114 &672136159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22820,20 +23019,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185bfb664cf82fa4c8e29adf0232781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  proximityDistance: 1.5
   detectedUnit: {fileID: 0}
   tileXCoordinate: 0
   tileYCoordinate: 0
+  tileCurrentFieldPrize: {fileID: 0}
   currentSingleTileStatus: 0
   currentSingleTileCondition: 0
-  targetIcon: {fileID: 0}
-  currentlySelectedUnitPanel: {fileID: 0}
   currentTileCurseStatus: 0
+  targetIcon: {fileID: 0}
+  tileShaderController: {fileID: 0}
   gCost: 0
   hCost: 0
   parent: {fileID: 0}
-  redParticle: {fileID: 112918976}
-  blueParticle: {fileID: 780418557}
+  clickCooldown: 0.5
 --- !u!1 &714902639
 GameObject:
   m_ObjectHideFlags: 0
@@ -23023,7 +23221,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -23045,7 +23243,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 42
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &730227994
 GameObject:
@@ -23744,7 +23942,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -23766,7 +23964,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 29
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &757158018
 GameObject:
@@ -23860,7 +24058,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 23
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: -270}
 --- !u!1 &767884329
 GameObject:
@@ -23882,7 +24080,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &767884330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23968,7 +24166,7 @@ RectTransform:
   - {fileID: 1490576771}
   - {fileID: 483119669}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 37
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -23987,16 +24185,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b2fa6e338db53f42a2a96206c5a66af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveName: {fileID: 453303977}
-  battleEndResult: {fileID: 922938185}
-  moveNamePanel: {fileID: 1824631129}
-  fieldEffectIcon: {fileID: 63442584}
   battleManager: {fileID: 90211749}
+  battlefieldNotificationsPanelDurationTime: 0
+  moveNamePanel: {fileID: 1824631129}
+  battlefieldNotificationsPanel: {fileID: 0}
+  movesContainer: {fileID: 0}
+  moveName: {fileID: 453303977}
   playerActionText: {fileID: 2050227108}
-  playerActionPanel: {fileID: 621708313}
   battlefieldTextNotifications: {fileID: 35542996}
-  deityJudgmentLimitText: {fileID: 496356837}
-  player: {fileID: 0}
+  battleEndResult: {fileID: 922938185}
 --- !u!114 &767884335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29267,7 +29464,7 @@ Transform:
   - {fileID: 808165000}
   - {fileID: 66754190}
   m_Father: {fileID: 0}
-  m_RootOrder: 21
+  m_RootOrder: 42
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &808164998
 GameObject:
@@ -29877,10 +30074,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faefbabe9cfbeb546b8f8e28be482e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileCursor: {fileID: 1517829015}
-  currentTileCursorStatus: 1
-  currentTileCursorActivationStatus: 0
-  moveset: {fileID: 0}
 --- !u!114 &919636736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29893,20 +30086,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185bfb664cf82fa4c8e29adf0232781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  proximityDistance: 1.5
   detectedUnit: {fileID: 0}
   tileXCoordinate: 0
   tileYCoordinate: 0
+  tileCurrentFieldPrize: {fileID: 0}
   currentSingleTileStatus: 0
   currentSingleTileCondition: 0
-  targetIcon: {fileID: 0}
-  currentlySelectedUnitPanel: {fileID: 0}
   currentTileCurseStatus: 0
+  targetIcon: {fileID: 0}
+  tileShaderController: {fileID: 0}
   gCost: 0
   hCost: 0
   parent: {fileID: 0}
-  redParticle: {fileID: 1916949785}
-  blueParticle: {fileID: 215077105}
+  clickCooldown: 0.5
 --- !u!1 &922938183
 GameObject:
   m_ObjectHideFlags: 0
@@ -30096,7 +30288,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -30118,7 +30310,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 31
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &940355467
 GameObject:
@@ -30150,7 +30342,7 @@ Transform:
   m_Children:
   - {fileID: 58517958}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 49
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &940762613
 GameObject:
@@ -30793,7 +30985,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -30815,7 +31007,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 32
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1075973161
 GameObject:
@@ -30871,7 +31063,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -30893,7 +31085,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 27
+  m_RootOrder: 26
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1080557543
 GameObject:
@@ -31153,7 +31345,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -31175,7 +31367,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 47
+  m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1179271423
 GameObject:
@@ -31208,7 +31400,7 @@ Transform:
   - {fileID: 1687671457}
   - {fileID: 1080557546}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 46
   m_LocalEulerAnglesHint: {x: 0, y: -105, z: 0}
 --- !u!1 &1180730693
 GameObject:
@@ -31375,6 +31567,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fea609580c6e52478b4ff90f9de9571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemiesKilled: 0
+  warFunds: 0
+  timesSingleTargetSpellWasUsed: 0
+  captureCrystalsCount: 0
 --- !u!4 &1195676640
 Transform:
   m_ObjectHideFlags: 0
@@ -31388,7 +31584,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 33
+  m_RootOrder: 44
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1204261906
 GameObject:
@@ -31579,7 +31775,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -31601,7 +31797,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 40
+  m_RootOrder: 39
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1239776213
 GameObject:
@@ -31637,7 +31833,7 @@ Transform:
   - {fileID: 1548170325}
   - {fileID: 1408716686}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1248081780
 GameObject:
@@ -37619,10 +37815,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faefbabe9cfbeb546b8f8e28be482e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileCursor: {fileID: 740413234}
-  currentTileCursorStatus: 1
-  currentTileCursorActivationStatus: 0
-  moveset: {fileID: 0}
 --- !u!114 &1408716691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37635,20 +37827,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185bfb664cf82fa4c8e29adf0232781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  proximityDistance: 1.5
   detectedUnit: {fileID: 0}
   tileXCoordinate: 0
   tileYCoordinate: 0
+  tileCurrentFieldPrize: {fileID: 0}
   currentSingleTileStatus: 0
   currentSingleTileCondition: 0
-  targetIcon: {fileID: 0}
-  currentlySelectedUnitPanel: {fileID: 0}
   currentTileCurseStatus: 0
+  targetIcon: {fileID: 0}
+  tileShaderController: {fileID: 0}
   gCost: 0
   hCost: 0
   parent: {fileID: 0}
-  redParticle: {fileID: 1260111403}
-  blueParticle: {fileID: 1688795794}
+  clickCooldown: 0.5
 --- !u!1 &1451125272
 GameObject:
   m_ObjectHideFlags: 3
@@ -38252,20 +38443,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185bfb664cf82fa4c8e29adf0232781d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  proximityDistance: 1.5
   detectedUnit: {fileID: 0}
   tileXCoordinate: 0
   tileYCoordinate: 0
+  tileCurrentFieldPrize: {fileID: 0}
   currentSingleTileStatus: 0
   currentSingleTileCondition: 0
-  targetIcon: {fileID: 0}
-  currentlySelectedUnitPanel: {fileID: 0}
   currentTileCurseStatus: 0
+  targetIcon: {fileID: 0}
+  tileShaderController: {fileID: 0}
   gCost: 0
   hCost: 0
   parent: {fileID: 0}
-  redParticle: {fileID: 403502853}
-  blueParticle: {fileID: 588278670}
+  clickCooldown: 0.5
 --- !u!114 &1548170330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38278,10 +38468,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faefbabe9cfbeb546b8f8e28be482e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileCursor: {fileID: 1529878158}
-  currentTileCursorStatus: 1
-  currentTileCursorActivationStatus: 0
-  moveset: {fileID: 0}
 --- !u!1 &1577990124
 GameObject:
   m_ObjectHideFlags: 0
@@ -38336,7 +38522,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -38358,7 +38544,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 45
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1591960316
 GameObject:
@@ -38414,7 +38600,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -38436,7 +38622,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 37
+  m_RootOrder: 47
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1595605655
 GameObject:
@@ -38467,7 +38653,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1607368016
 GameObject:
@@ -43618,7 +43804,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705384762}
-  m_LocalRotation: {x: -0.0024380977, y: -0.7334764, z: -0.002630974, w: 0.6797055}
+  m_LocalRotation: {x: -0.002438098, y: -0.7334764, z: -0.002630974, w: 0.6797055}
   m_LocalPosition: {x: 9.235524, y: -5.285242, z: -1.6729782}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -43895,8 +44081,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfb83a52bcfb2594a96a7338f2287336, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deity: {fileID: 3348349630364506734, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
+  spawnableDeities: []
   deitySpawnPosition: {fileID: 1790485010}
+  deityAchievementsController: {fileID: 0}
+  battleManager: {fileID: 0}
+  currentUnboundDeity: {fileID: 0}
+  deityHealthBar: {fileID: 0}
 --- !u!4 &1790485010
 Transform:
   m_ObjectHideFlags: 0
@@ -43910,7 +44100,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 24
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1809052568
 GameObject:
@@ -43966,7 +44156,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -43988,7 +44178,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 46
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1824631127
 GameObject:
@@ -44224,7 +44414,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 50
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1851290609
 GameObject:
@@ -44476,7 +44666,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -44498,7 +44688,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 44
+  m_RootOrder: 40
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1867095332
 PrefabInstance:
@@ -44615,7 +44805,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -44637,7 +44827,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 43
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1916949782
 GameObject:
@@ -49742,7 +49932,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1928030092538474427, guid: 9bd2b17ccd2d70e4890d08479ab9f4a2, type: 3}
       propertyPath: m_RootOrder
-      value: 19
+      value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 1928030092538474427, guid: 9bd2b17ccd2d70e4890d08479ab9f4a2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -49941,7 +50131,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2004839532}
-  m_LocalRotation: {x: 0.12206889, y: 2.651251e-15, z: -6.609271e-16, w: 0.99252164}
+  m_LocalRotation: {x: 0.122068875, y: -0.000000022184587, z: 0.000000002728452, w: 0.99252164}
   m_LocalPosition: {x: -6.514475, y: -0.18524218, z: -13.092949}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -49979,7 +50169,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2050227106
 GameObject:
@@ -50125,7 +50315,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8846347044957032884, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
       propertyPath: m_RootOrder
-      value: 22
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 8846347044957032884, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -50261,7 +50451,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1339483653523732534, guid: b7016aae7bbdcd54fb4bf3a41bf01a60, type: 3}
       propertyPath: m_RootOrder
-      value: 20
+      value: 51
       objectReference: {fileID: 0}
     - target: {fileID: 1339483653523732534, guid: b7016aae7bbdcd54fb4bf3a41bf01a60, type: 3}
       propertyPath: m_LocalScale.x
@@ -50788,7 +50978,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -50810,7 +51000,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2137499245
 GameObject:
@@ -50947,6 +51137,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137499245}
   m_CullTransparentMesh: 1
+--- !u!1001 &1671662830011547085
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_RootOrder
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.002144
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223601, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1671662830342223604, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
+      propertyPath: m_Name
+      value: FieldPrizeCrystal
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 542215d7977ee6b4d85886e1ec3431be, type: 3}
 --- !u!1001 &2012499425961364109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51048,7 +51295,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812976, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 41
       objectReference: {fileID: 0}
     - target: {fileID: 2012499427021812976, guid: 0f353615c121e4344923c96d65e538f1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -51177,11 +51424,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49061b32be4ab2c4e801392d4fbd3849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerUnit: {fileID: 2012499425961364110}
-  restorePlayerUnitPositionCooldown: 1
-  castSpellVFX: {fileID: 1624102598683904, guid: 475b6b2fd1a7be84b943245ecbc0810a, type: 3}
-  mainCharacterPlayableDirector: {fileID: 0}
-  unitOriginalPosition: {x: 0, y: 0, z: 0}
+  PlayMeleeAttackSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlaySpellSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayMovementSelectedSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayMovementConfirmedSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayDamageSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayPlaceCrystalSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayPrayerSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlaySelectionSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlaySelectionWaitingConfirmationSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayDeselectionSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayDeathVFX:
+    m_PersistentCalls:
+      m_Calls: []
+  deathDisappearAnimationVFX: {fileID: 0}
+  unitAnimator: {fileID: 0}
+  buffIcon: {fileID: 0}
 --- !u!1001 &3087296942157347676
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51252,7 +51530,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3348349630364506730, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 3348349630364506730, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
       propertyPath: m_LocalPosition.x

@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using static TileController;
+using Unity.VisualScripting;
 
 public enum SingleTileStatus
 {
@@ -39,6 +40,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public IPlayerAction currentPlayerAction = new SelectUnitPlayerAction();
     public MeleePlayerAction meleeAction;
+    public GameObject tileCurrentFieldPrize;
 
     [Header("State Machines")]
 
@@ -98,5 +100,17 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public void HandleTileDeselection()
     {
         currentPlayerAction.Deselect();
+    }
+
+    public void CheckFieldPrizes(TileController destinationTile, Unit activePlayerUnit)
+    {
+        if (destinationTile != null && destinationTile.tileCurrentFieldPrize != null)
+        {
+            FieldPrizeController fieldPrizeController = destinationTile.tileCurrentFieldPrize.GetComponent<FieldPrizeController>();
+            activePlayerUnit.unitMagicPower += fieldPrizeController.fieldPrize.powerUpAmount;
+            //Need to Use Switch Case
+            Destroy(fieldPrizeController.gameObject);
+            Debug.Log("Applied Power Up");
+        }
     }
 }

@@ -52,6 +52,7 @@ public class Unit : MonoBehaviour
 
     public UnitLifeCondition currentUnitLifeCondition;
     public UnitStatusController unitStatusController;
+    public FieldPrizeController fieldPrizeController;
 
 
     [Header("Deity Related")]
@@ -210,6 +211,11 @@ public class Unit : MonoBehaviour
                     activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
                     Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
 
+                    //Spawn Prize on Battlefield
+                    if (fieldPrizeController != null)
+                    {
+                        fieldPrizeController.SpawnFieldPrize(ownedTile);
+                    }
                 }
                 ownedTile.currentSingleTileCondition = SingleTileCondition.free;
                 ownedTile.detectedUnit = null;
