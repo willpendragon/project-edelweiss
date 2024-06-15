@@ -112,13 +112,13 @@ public class GridMovementController : MonoBehaviour
 
     //Use this method to select the AOE Range. In the future, I will need to change the values dynamically retrieving info about the AOE Spell from the AOE Spell Scriptable Object.
     //Use the same system also for the Deities spawning.
-    public List<TileController> GetMultipleTiles(TileController tile)
+    public List<TileController> GetMultipleTiles(TileController tile, int numberOfTiles)
     {
         List<TileController> neighbours = new List<TileController>();
 
-        for (int x = -2; x <= 2; x++)
+        for (int x = -numberOfTiles; x <= numberOfTiles; x++)
         {
-            for (int y = -2; y <= 2; y++)
+            for (int y = -numberOfTiles; y <= numberOfTiles; y++)
             {
                 int checkX = tile.tileXCoordinate + x;
                 int checkY = tile.tileYCoordinate + y;

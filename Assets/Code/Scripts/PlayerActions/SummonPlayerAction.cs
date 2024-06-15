@@ -14,7 +14,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
     {
         if (selectionLimiter > 0)
         {
-            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile))
+            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile, 2))
             {
                 tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
@@ -32,7 +32,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         if (linkedDeity != null && currentActivePlayerUnit.unitOpportunityPoints > 0 && deityLimiter > 0)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
-            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, 2))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
                 deitySpawningZoneTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.yellow;
@@ -64,7 +64,8 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         selectionLimiter++;
         if (savedSelectedTile != null)
         {
-            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile))
+            int summoningRange = 2;
+            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, summoningRange))
             {
                 tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
                 tile.currentSingleTileStatus = SingleTileStatus.selectionMode;

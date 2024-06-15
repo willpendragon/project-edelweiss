@@ -50,7 +50,8 @@ public class SummoningController : MonoBehaviour
         if (linkedDeity != null)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
-            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(summonAreaCenterTile))
+            int summoningRange = 2;
+            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(summonAreaCenterTile, summoningRange))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
             }

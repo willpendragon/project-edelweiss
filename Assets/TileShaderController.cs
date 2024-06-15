@@ -31,4 +31,9 @@ public class TileShaderController : MonoBehaviour
                 .SetEase(animationEase); // Apply easing to the animation
         }
     }
+
+    public void ResetTileFadeHeightAnimation(TileController tileToReset)
+    {
+        tileToReset.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
+    }
 }
