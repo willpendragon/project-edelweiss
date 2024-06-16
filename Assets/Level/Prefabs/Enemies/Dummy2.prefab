@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2426416996133809433}
   - component: {fileID: 5596889259312912661}
+  - component: {fileID: 2589683984642565530}
   m_Layer: 8
   m_Name: stunner_enemy
   m_TagString: Untagged
@@ -84,6 +85,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &2589683984642565530
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 452078786909909995}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1591224fd9625d24f9595c5f3031aedf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &210011986481823578
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -211,6 +232,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7127888063209652432, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: unitAnimator
+      value: 
+      objectReference: {fileID: 2589683984642565530}
     - target: {fileID: 7127888063209652432, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: PlayDeathVFX.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
