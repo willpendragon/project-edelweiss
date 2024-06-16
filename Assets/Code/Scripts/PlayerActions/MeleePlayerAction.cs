@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static TileController;
 using UnityEngine.UI;
+using UnityEditor.Experimental.GraphView;
 
 public class MeleePlayerAction : IPlayerAction
 {
@@ -34,6 +35,8 @@ public class MeleePlayerAction : IPlayerAction
                 //Warning: magic number
                 selectionLimiter--;
 
+                CheckKnockback(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
+
                 //Magic Number
                 //int basicKnockbackStrength = 2;
                 //Vector2Int destination = PreviewKnockback(activePlayerUnit, currentTarget, basicKnockbackStrength);
@@ -54,6 +57,62 @@ public class MeleePlayerAction : IPlayerAction
         selectionLimiter++;
         ResetTileColours();
     }
+
+    public void CheckKnockback(Unit attacker, Unit defender)
+    {
+        int knockbackStrength = 2;
+
+        DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
+
+        if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
+        {
+            Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+            float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
+            attackPower = attackPower * 2;
+            knockbackStrength = knockbackStrength * 2;
+            //Warning: remove magic numbers later
+
+            Vector2Int attackerPos = attacker.GetGridPosition();
+            Vector2Int defenderPos = defender.GetGridPosition();
+
+            // Calculate the difference in positions
+            int deltaX = attackerPos.x - defenderPos.x;
+            int deltaY = attackerPos.y - defenderPos.y;
+
+            // Determine the direction of the knockback
+            Vector2Int knockbackDirection = Vector2Int.zero;
+            if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
+            {
+                knockbackDirection.x = -(int)Mathf.Sign(deltaX);
+            }
+            else
+            {
+                knockbackDirection.y = -(int)Mathf.Sign(deltaY);
+            }
+
+            // Check the immediate next tile in the knockback direction
+            Vector2Int immediateNextTile = defenderPos + knockbackDirection;
+
+            // If the immediate next tile is occupied, do not apply knockback
+
+            // Apply the knockback strength within the limit of 1, 2, or 3 tiles
+            knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
+
+            // Calculate the new grid position with the possibly adjusted knockback strength
+            Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
+
+            // Clamp the new position to the grid bounds
+            newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
+            newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
+
+            TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
+
+            destinationTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
+            Debug.Log("Enemy knocked back");
+
+        }
+    }
+
     public void Execute()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
