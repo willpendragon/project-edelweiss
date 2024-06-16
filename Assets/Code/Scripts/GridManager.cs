@@ -22,6 +22,8 @@ public class GridManager : MonoBehaviour
     public float inBetweenTilesYOffset;
     public GameObject currentPlayerUnit;
 
+    public int moveSelectionLimiter = 1;
+
     public TileController[] gridTileControllers;
 
     private Dictionary<PositionKey, TileController> gridMapDictionary = new Dictionary<PositionKey, TileController>();
