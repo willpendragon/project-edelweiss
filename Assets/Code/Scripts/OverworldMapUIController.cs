@@ -5,10 +5,12 @@ using TMPro;
 
 public class OverworldMapUIController : MonoBehaviour
 {
-    public TextMeshProUGUI warFundsCounter;
+    [SerializeField] TextMeshProUGUI warFundsCounter;
+    [SerializeField] TextMeshProUGUI crystalsCounter;
     public GameStatsManager gameStatsManager;
     void Start()
     {
         warFundsCounter.text = gameStatsManager.warFunds.ToString();
+        crystalsCounter.text = gameStatsManager.captureCrystalsCount.ToString();
     }
 }
