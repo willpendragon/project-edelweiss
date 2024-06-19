@@ -198,7 +198,7 @@ public class TurnController : MonoBehaviour
                 gameStatsManager.SaveCharacterData();
                 gameStatsManager.SaveWarFunds(warFunds);
                 gameStatsManager.SaveUsedSingleTargetSpells();
-                gameStatsManager.SaveCaptureCrystalsCount(gameStatsManager.captureCrystalsCount);
+                gameStatsManager.SaveCaptureCrystalsCount();
                 Debug.Log("Saving Character Stats Data");
 
                 UpdateBattleEndUIPanel();

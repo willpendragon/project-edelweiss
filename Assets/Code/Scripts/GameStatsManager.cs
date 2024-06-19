@@ -137,14 +137,14 @@ public class GameStatsManager : MonoBehaviour
         }
     }
 
-    public void SaveCaptureCrystalsCount(int captureCrystalsAmount)
+    public void SaveCaptureCrystalsCount()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
         if (gameSaveData.resourceData != null)
         {
-            gameSaveData.resourceData.captureCrystalsCount += captureCrystalsAmount;
+            gameSaveData.resourceData.captureCrystalsCount = captureCrystalsCount;
             SaveStateManager.SaveGame(gameSaveData);
-            Debug.Log($"Saved Capture Crystals: {captureCrystalsAmount}");
+            Debug.Log($"Saved Capture Crystals: {captureCrystalsCount}");
         }
     }
 
