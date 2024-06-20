@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class TrapPlayerAction : MonoBehaviour, IPlayerAction
 {
-
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
     public float trapCreationCost = 5;
@@ -44,21 +43,33 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
+        if (activePlayerUnit.unitOpportunityPoints == 0)
+        {
+            Debug.Log("Can't place Trap: No opportunity points left");
+            return;
+        }
+
         TrapController trapController = savedSelectedTile.GetComponentInChildren<TrapController>();
 
         if (trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active)
         {
             trapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
-            //savedSelectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
-            GameObject newTrap = Instantiate((GameObject)Resources.Load("TrapTileVFX"), savedSelectedTile.transform);
 
-            //Instantiate 3D Model Here
+            GameObject newTrap = Instantiate((GameObject)Resources.Load("TrapTileVFX"), savedSelectedTile.transform);
+            // Instantiate 3D Model
 
             activePlayerUnit.unitOpportunityPoints--;
-            activePlayerUnit.unitManaPoints -= trapCreationCost;
-
-            activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
-            Debug.Log("This Tile is now a Trap");
+            if (activePlayerUnit.unitManaPoints - trapCreationCost >= 0)
+            {
+                activePlayerUnit.unitManaPoints -= trapCreationCost;
+                activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+            }
+            else
+            {
+                Debug.Log("Can't place Trap: Not enough mana points");
+                // Optionally, you might want to revert the opportunity points deduction if the trap placement fails.
+                activePlayerUnit.unitOpportunityPoints++;
+            }
         }
     }
 }
