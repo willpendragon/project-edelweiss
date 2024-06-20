@@ -249,6 +249,7 @@ public class TurnController : MonoBehaviour
                 }
                 gameStatsManager.SaveCharacterData();
                 gameStatsManager.SaveWarFunds(warFunds);
+                gameStatsManager.SaveCaptureCrystalsCount();
                 UpdateBattleEndUIPanel();
             }
             else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))

@@ -79,6 +79,8 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                     TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
                     turnController.ResetTags();
                     turnController.UnlockNextLevel();
+                    gameStatsManager.SaveCaptureCrystalsCount();
+
 
                     CreateDictionaryEntry(capturedUnboundDeity);
                 }
