@@ -113,28 +113,26 @@ public class GridMovementController : MonoBehaviour
 
     public List<TileController> GetMultipleTiles(TileController tile, int numberOfTiles)
     {
-        List<TileController> neighbours = new List<TileController>();
+        List<TileController> tilesInRange = new List<TileController>();
 
-        for (int x = -numberOfTiles; x <= numberOfTiles; x++)
+        int startX = Mathf.Max(0, tile.tileXCoordinate - numberOfTiles);
+        int endX = Mathf.Min(gridManager.gridHorizontalSize - 1, tile.tileXCoordinate + numberOfTiles);
+        int startY = Mathf.Max(0, tile.tileYCoordinate - numberOfTiles);
+        int endY = Mathf.Min(gridManager.gridVerticalSize - 1, tile.tileYCoordinate + numberOfTiles);
+
+        for (int x = startX; x <= endX; x++)
         {
-            for (int y = -numberOfTiles; y <= numberOfTiles; y++)
+            for (int y = startY; y <= endY; y++)
             {
-                int checkX = tile.tileXCoordinate + x;
-                int checkY = tile.tileXCoordinate + y;
-
-                // Check if the neighbor is within the grid bounds
-                if (checkX >= 0 && checkX < gridManager.gridHorizontalSize && checkY >= 0 && checkY < gridManager.gridVerticalSize)
+                TileController neighbour = gridManager.GetTileControllerInstance(x, y);
+                if (neighbour != null)
                 {
-                    TileController neighbour = gridManager.GetTileControllerInstance(checkX, checkY);
-                    if (neighbour != null)
-                    {
-                        neighbours.Add(neighbour);
-                    }
+                    tilesInRange.Add(neighbour);
                 }
             }
         }
 
-        return neighbours;
+        return tilesInRange;
     }
 
     public int GetDistance(TileController tileA, TileController tileB)
