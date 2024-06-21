@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -37,6 +35,10 @@ public class GridManager : MonoBehaviour
 
     public delegate void SetUnitInitialPositionOnGrid();
     public static event SetUnitInitialPositionOnGrid OnSetUnitInitialPositionOnGrid;
+
+    // Add a reference to the MapData
+    public MapData currentMapData;
+
     private void Awake()
     {
         if (Instance == null)
@@ -47,43 +49,55 @@ public class GridManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        GenerateGridMap();
+        GenerateGridMapFromData();
     }
+
     private void Start()
     {
         gridTileControllers = GameObject.FindObjectsOfType<TileController>();
     }
-    public void GenerateGridMap()
-    {
-        Debug.Log("Generating Grid Map");
-        for (int x = 0; x < gridHorizontalSize; x++)
-        {
-            for (int y = 0; y < gridVerticalSize; y++)
-            {
-                Vector3 tilePosition = new Vector3(x * (1 + inBetweenTilesXOffset), 0, y * (1 + inBetweenTilesYOffset));
-                GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.Euler(0, 0, 0));
-                TileController tileController = tilePrefabInstance.GetComponent<TileController>();
-                tileController.tileXCoordinate = x;
-                tileController.tileYCoordinate = y;
-                PositionKey positionKey = new PositionKey(x, y, tilePrefab);
-                Debug.Log(gridMapDictionary);
 
-                //Adds the Tile GameObject to the dictionary
-                if (!gridMapDictionary.ContainsKey(positionKey))
-                {
-                    gridMapDictionary.Add(positionKey, tilePrefabInstance.GetComponent<TileController>());
-                }
-                else
-                {
-                    Debug.LogWarning("Duplicate key found when adding GameObject to dictionary!");
-                }
-                Debug.Log("Dictionary Count: " + gridMapDictionary.Count);
-                foreach (var entry in gridMapDictionary)
-                {
-                    Debug.Log($"PositionKey: {entry.Key.indexTileXPosition}, {entry.Key.indexTileYPosition}, GameObject: {entry.Value.name}");
-                }
+    // Update GenerateGridMap to use MapData
+    public void GenerateGridMapFromData()
+    {
+        ClearGridMap();
+
+        if (currentMapData == null)
+        {
+            Debug.LogError("No MapData assigned to GridManager.");
+            return;
+        }
+
+        Debug.Log("Generating Grid Map from MapData");
+        foreach (var position in currentMapData.tilePositions)
+        {
+            Vector3 tilePosition = new Vector3(position.x * (1 + inBetweenTilesXOffset), 0, position.y * (1 + inBetweenTilesYOffset));
+            GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
+            TileController tileController = tilePrefabInstance.GetComponent<TileController>();
+            tileController.tileXCoordinate = position.x;
+            tileController.tileYCoordinate = position.y;
+            PositionKey positionKey = new PositionKey(position.x, position.y, tilePrefab);
+
+            if (!gridMapDictionary.ContainsKey(positionKey))
+            {
+                gridMapDictionary.Add(positionKey, tileController);
+            }
+            else
+            {
+                Debug.LogWarning("Duplicate key found when adding GameObject to dictionary!");
             }
         }
+
+        Debug.Log("Dictionary Count: " + gridMapDictionary.Count);
+    }
+
+    private void ClearGridMap()
+    {
+        foreach (var tile in gridMapDictionary.Values)
+        {
+            Destroy(tile.gameObject);
+        }
+        gridMapDictionary.Clear();
     }
 
     public LineRenderer GetLineRenderer()
@@ -97,18 +111,14 @@ public class GridManager : MonoBehaviour
         return lineRendererInstance;
     }
 
-    // This method retrieves a TileController Instance based on X and Y coordinates
     public TileController GetTileControllerInstance(int xCoordinate, int yCoordinate)
     {
-        // Create a PositionKey with the given X and Y coordinates
         PositionKey positionKeyToFind = new PositionKey(xCoordinate, yCoordinate, null);
 
-        // Use TryGetValue to check if the key exists in the Grid Map Dictionary
         if (gridMapDictionary.TryGetValue(positionKeyToFind, out TileController result))
         {
             if (result != null)
             {
-                // Gives back the indexed Tile Controller instance as a result
                 TileController tileController = result.GetComponent<TileController>();
 
                 if (tileController != null)
@@ -123,31 +133,27 @@ public class GridManager : MonoBehaviour
             }
             else
             {
-                // Result GameObject is null
                 Debug.LogError("GameObject is null.");
                 return null;
             }
         }
         else
         {
-            // Key not found, return null
             Debug.Log("Key not found");
             return null;
         }
     }
+
     public void MoveCurrentPlayerUnit(int targetX, int targetY)
     {
         if (currentPlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
         {
-            //Add check for Current Player Unit to avoid Null Ref error if clicking on a Tile while the Active Character Unit is not set.
             currentPlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
             currentPlayerUnit.GetComponent<Unit>().MoveUnit(targetX, targetY);
             TileController finalDestinationTile = GetTileControllerInstance(targetX, targetY);
             {
                 if (finalDestinationTile.detectedUnit == null)
                 {
-                    //Resets each Tile to the Character Selection Mode (consider creating a method for this).
-
                     currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = null;
                     currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
                     currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
@@ -165,7 +171,6 @@ public class GridManager : MonoBehaviour
                 }
             }
             Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
-
         }
     }
 

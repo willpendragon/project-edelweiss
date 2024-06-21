@@ -4381,8 +4381,10 @@ MonoBehaviour:
   inBetweenTilesXOffset: 0.1
   inBetweenTilesYOffset: 0.1
   currentPlayerUnit: {fileID: 0}
+  moveSelectionLimiter: 1
   gridTileControllers: []
   gridMovementController: {fileID: 1717157114}
+  currentMapData: {fileID: 11400000, guid: f43a7862c78c6b54ca3eb20e0dfc95a9, type: 2}
 --- !u!4 &810722615
 Transform:
   m_ObjectHideFlags: 0

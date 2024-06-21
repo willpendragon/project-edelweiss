@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridMovementController : MonoBehaviour
@@ -24,9 +21,8 @@ public class GridMovementController : MonoBehaviour
             return null; // Diagonal move not allowed
         }
 
-        List<TileController> openSet = new List<TileController>();
+        List<TileController> openSet = new List<TileController> { startTile };
         HashSet<TileController> closedSet = new HashSet<TileController>();
-        openSet.Add(startTile);
 
         while (openSet.Count > 0)
         {
@@ -49,7 +45,7 @@ public class GridMovementController : MonoBehaviour
 
             foreach (TileController neighbour in GetNeighbours(currentTile))
             {
-                if (neighbour.currentSingleTileCondition == SingleTileCondition.occupied || closedSet.Contains(neighbour))
+                if (neighbour == null || neighbour.currentSingleTileCondition == SingleTileCondition.occupied || closedSet.Contains(neighbour))
                 {
                     continue;
                 }
@@ -96,13 +92,18 @@ public class GridMovementController : MonoBehaviour
                 // Skip the current tile and any diagonal tiles
                 if (x == 0 && y == 0 || x != 0 && y != 0)
                     continue;
+
                 int checkX = tile.tileXCoordinate + x;
                 int checkY = tile.tileYCoordinate + y;
 
                 // Check if the neighbor is within the grid bounds
                 if (checkX >= 0 && checkX < gridManager.gridHorizontalSize && checkY >= 0 && checkY < gridManager.gridVerticalSize)
                 {
-                    neighbours.Add(gridManager.GetTileControllerInstance(checkX, checkY));
+                    TileController neighbour = gridManager.GetTileControllerInstance(checkX, checkY);
+                    if (neighbour != null)
+                    {
+                        neighbours.Add(neighbour);
+                    }
                 }
             }
         }
@@ -110,8 +111,6 @@ public class GridMovementController : MonoBehaviour
         return neighbours;
     }
 
-    //Use this method to select the AOE Range. In the future, I will need to change the values dynamically retrieving info about the AOE Spell from the AOE Spell Scriptable Object.
-    //Use the same system also for the Deities spawning.
     public List<TileController> GetMultipleTiles(TileController tile, int numberOfTiles)
     {
         List<TileController> neighbours = new List<TileController>();
@@ -121,25 +120,28 @@ public class GridMovementController : MonoBehaviour
             for (int y = -numberOfTiles; y <= numberOfTiles; y++)
             {
                 int checkX = tile.tileXCoordinate + x;
-                int checkY = tile.tileYCoordinate + y;
+                int checkY = tile.tileXCoordinate + y;
 
                 // Check if the neighbor is within the grid bounds
                 if (checkX >= 0 && checkX < gridManager.gridHorizontalSize && checkY >= 0 && checkY < gridManager.gridVerticalSize)
                 {
-                    neighbours.Add(gridManager.GetTileControllerInstance(checkX, checkY));
+                    TileController neighbour = gridManager.GetTileControllerInstance(checkX, checkY);
+                    if (neighbour != null)
+                    {
+                        neighbours.Add(neighbour);
+                    }
                 }
             }
         }
 
         return neighbours;
     }
+
     public int GetDistance(TileController tileA, TileController tileB)
     {
         int distX = Mathf.Abs(tileA.tileXCoordinate - tileB.tileXCoordinate);
         int distY = Mathf.Abs(tileA.tileYCoordinate - tileB.tileYCoordinate);
 
-        if (distX > distY)
-            return 14 * distY + 10 * (distX - distY);
-        return 14 * distX + 10 * (distY - distX);
+        return 10 * (distX + distY);
     }
 }
