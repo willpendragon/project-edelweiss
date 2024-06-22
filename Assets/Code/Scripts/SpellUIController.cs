@@ -21,7 +21,7 @@ public class SpellUIController : MonoBehaviour
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "battle_prototype")
+        if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype")
         {
             spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;

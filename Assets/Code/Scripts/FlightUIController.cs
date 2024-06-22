@@ -22,7 +22,7 @@ public class FlightUIController : MonoBehaviour
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
         Debug.Log(mode);
-        if (scene.name == "battle_prototype")
+        if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype")
         {
             GameObject spellMenuGameObject = GameObject.FindGameObjectWithTag("MovesPanel");
             if (spellMenuGameObject != null)

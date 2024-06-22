@@ -30,6 +30,15 @@ public enum TileCurseStatus
     notCursed,
     cursed
 }
+
+public enum TileType
+{
+    Basic,
+    ActivationPlatform
+}
+
+
+
 public class TileController : MonoBehaviour, IPointerClickHandler
 {
     [Header("Gameplay Logic")]
@@ -47,6 +56,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     public SingleTileStatus currentSingleTileStatus;
     public SingleTileCondition currentSingleTileCondition;
     public TileCurseStatus currentTileCurseStatus;
+
+    [Header("Tile Type")]
+    public TileType tileType;  // New property for tile type
 
     [Header("Visuals")]
 

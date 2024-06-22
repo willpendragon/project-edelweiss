@@ -15,6 +15,9 @@ public class MapEditorWindow : EditorWindow
     private bool isPlacingTile = false;
     private bool isDeletingTile = false;
 
+    // Tile type selector
+    private TileType selectedTileType = TileType.Basic;
+
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow()
     {
@@ -40,6 +43,9 @@ public class MapEditorWindow : EditorWindow
         tileOffsetX = EditorGUILayout.FloatField("Tile Offset X", tileOffsetX);
         tileOffsetY = EditorGUILayout.FloatField("Tile Offset Y", tileOffsetY);
         tilePrefab = (GameObject)EditorGUILayout.ObjectField("Tile Prefab", tilePrefab, typeof(GameObject), false);
+
+        // Tile type selection
+        selectedTileType = (TileType)EditorGUILayout.EnumPopup("Tile Type", selectedTileType);
 
         if (GUILayout.Button("Generate Map"))
         {
@@ -92,7 +98,7 @@ public class MapEditorWindow : EditorWindow
 
                 if (isPlacingTile && Event.current.button == 0)
                 {
-                    PlaceTile(gridPos);
+                    PlaceTile(gridPos, selectedTileType);
                 }
                 else if (isDeletingTile && Event.current.button == 1)
                 {
@@ -106,7 +112,7 @@ public class MapEditorWindow : EditorWindow
         Handles.color = Color.cyan;
         for (int x = 0; x < gridWidth; x++)
         {
-            for (int y = 0; y < gridHeight; y++)
+            for (int y = 0; y <= gridHeight; y++)  // Fixed: should be y <= gridHeight
             {
                 Vector3 tilePosition = new Vector3(x * tileOffsetX, 0, y * tileOffsetY);
                 Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
@@ -123,7 +129,7 @@ public class MapEditorWindow : EditorWindow
         return new Vector2Int(x, y);
     }
 
-    private void PlaceTile(Vector2Int position)
+    private void PlaceTile(Vector2Int position, TileType tileType)
     {
         if (tiles.ContainsKey(position))
         {
@@ -136,9 +142,21 @@ public class MapEditorWindow : EditorWindow
         tile.name = $"Tile_{position.x}_{position.y}";
         tiles[position] = tile;
 
+        // Set the tile type
+        TileController tileController = tile.GetComponent<TileController>();
+        if (tileController != null)
+        {
+            tileController.tileType = tileType;
+        }
+
         if (currentMap != null)
         {
-            currentMap.tilePositions.Add(position);
+            MapData.TileData tileData = new MapData.TileData
+            {
+                position = position,
+                tileType = tileType
+            };
+            currentMap.tilePositions.Add(tileData);
             EditorUtility.SetDirty(currentMap);
         }
     }
@@ -157,7 +175,7 @@ public class MapEditorWindow : EditorWindow
 
         if (currentMap != null)
         {
-            currentMap.tilePositions.Remove(position);
+            currentMap.tilePositions.RemoveAll(t => t.position == position);
             EditorUtility.SetDirty(currentMap);
         }
     }
@@ -174,7 +192,29 @@ public class MapEditorWindow : EditorWindow
                 GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
                 tile.name = $"Tile_{x}_{y}";
                 tiles[new Vector2Int(x, y)] = tile;
+
+                // Set the tile type
+                TileController tileController = tile.GetComponent<TileController>();
+                if (tileController != null)
+                {
+                    tileController.tileType = selectedTileType;
+                }
+
+                if (currentMap != null)
+                {
+                    MapData.TileData tileData = new MapData.TileData
+                    {
+                        position = new Vector2Int(x, y),
+                        tileType = selectedTileType
+                    };
+                    currentMap.tilePositions.Add(tileData);
+                }
             }
+        }
+
+        if (currentMap != null)
+        {
+            EditorUtility.SetDirty(currentMap);
         }
     }
 
@@ -192,9 +232,18 @@ public class MapEditorWindow : EditorWindow
         if (currentMap != null)
         {
             currentMap.tilePositions.Clear();
-            foreach (var tile in tiles.Keys)
+            foreach (var tile in tiles)
             {
-                currentMap.tilePositions.Add(tile);
+                TileController tileController = tile.Value.GetComponent<TileController>();
+                if (tileController != null)
+                {
+                    MapData.TileData tileData = new MapData.TileData
+                    {
+                        position = tile.Key,
+                        tileType = tileController.tileType
+                    };
+                    currentMap.tilePositions.Add(tileData);
+                }
             }
             EditorUtility.SetDirty(currentMap);
             AssetDatabase.SaveAssets();
@@ -210,12 +259,19 @@ public class MapEditorWindow : EditorWindow
         if (currentMap != null)
         {
             ClearMap();
-            foreach (var position in currentMap.tilePositions)
+            foreach (var tileData in currentMap.tilePositions)
             {
-                Vector3 tilePosition = new Vector3(position.x * tileOffsetX, 0, position.y * tileOffsetY);
+                Vector3 tilePosition = new Vector3(tileData.position.x * tileOffsetX, 0, tileData.position.y * tileOffsetY);
                 GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
-                tile.name = $"Tile_{position.x}_{position.y}";
-                tiles[position] = tile;
+                tile.name = $"Tile_{tileData.position.x}_{tileData.position.y}";
+                tiles[tileData.position] = tile;
+
+                // Load the tile type
+                TileController tileController = tile.GetComponent<TileController>();
+                if (tileController != null)
+                {
+                    tileController.tileType = tileData.tileType;
+                }
             }
         }
         else

@@ -69,14 +69,15 @@ public class GridManager : MonoBehaviour
         }
 
         Debug.Log("Generating Grid Map from MapData");
-        foreach (var position in currentMapData.tilePositions)
+        foreach (var tileData in currentMapData.tilePositions)
         {
-            Vector3 tilePosition = new Vector3(position.x * (1 + inBetweenTilesXOffset), 0, position.y * (1 + inBetweenTilesYOffset));
+            Vector3 tilePosition = new Vector3(tileData.position.x * (1 + inBetweenTilesXOffset), 0, tileData.position.y * (1 + inBetweenTilesYOffset));
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
             TileController tileController = tilePrefabInstance.GetComponent<TileController>();
-            tileController.tileXCoordinate = position.x;
-            tileController.tileYCoordinate = position.y;
-            PositionKey positionKey = new PositionKey(position.x, position.y, tilePrefab);
+            tileController.tileXCoordinate = tileData.position.x;
+            tileController.tileYCoordinate = tileData.position.y;
+            tileController.tileType = tileData.tileType; // Set the tile type
+            PositionKey positionKey = new PositionKey(tileData.position.x, tileData.position.y, tilePrefab);
 
             if (!gridMapDictionary.ContainsKey(positionKey))
             {
