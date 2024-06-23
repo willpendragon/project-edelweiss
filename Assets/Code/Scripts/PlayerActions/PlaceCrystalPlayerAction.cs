@@ -83,6 +83,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
 
                     CreateDictionaryEntry(capturedUnboundDeity);
+                    GameManager.Instance.ApplyDeityLinks();
                 }
                 else
                 {
