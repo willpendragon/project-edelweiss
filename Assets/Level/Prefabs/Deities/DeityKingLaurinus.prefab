@@ -259,7 +259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 8d4a606a-763f-4d62-8d05-dcaa32728101
-  unitTemplate: {fileID: 0}
+  unitTemplate: {fileID: 11400000, guid: ecd5f9fdf47ae014e84bd708323dc1dc, type: 2}
   unitMovementLimit: 100
   currentXCoordinate: 0
   currentYCoordinate: 0
@@ -280,6 +280,7 @@ MonoBehaviour:
   unitMagicPower: 0
   currentUnitLifeCondition: 1
   unitStatusController: {fileID: 0}
+  fieldPrizeController: {fileID: 0}
   linkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 0}

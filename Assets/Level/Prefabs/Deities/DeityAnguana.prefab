@@ -232,22 +232,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: c7882194-7721-4dc5-a732-073fb47b0c6a
   sinnersList: []
-  deityAttackNotification: {fileID: 0}
-  battleManager: {fileID: 0}
-  battleInterface: {fileID: 0}
   enmity: 0
-  deityAttackVFX: {fileID: 7005278960792100175, guid: a718b9300d9d5e645918850cfa72fec1, type: 3}
-  currentDeityState: 0
   hatedSpellAlignments: 04000000
-  deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
   enmityThreshold: 4
+  deityBehavior: {fileID: 11400000, guid: 0372a198e5909a349b294db374d84b0e, type: 2}
+  deityPrayerBuff: {fileID: 11400000, guid: 877944df237f9b14084c6a04dc048829, type: 2}
+  battleManager: {fileID: 0}
   deitySpecialAttackPower: 35
-  deityPortrait: {fileID: 21300000, guid: 8f298345a85fe8d40a479ea7bd37db74, type: 3}
-  deityHealthBar: {fileID: 0}
+  summoningPrice: 50
   deityPrayerPower: 0
   deityPrayerPowerThreshold: 3
-  deityPrayerBuff: {fileID: 11400000, guid: 877944df237f9b14084c6a04dc048829, type: 2}
-  deityBehavior: {fileID: 11400000, guid: 0372a198e5909a349b294db374d84b0e, type: 2}
+  deityAttackNotification: {fileID: 0}
+  battleInterface: {fileID: 0}
+  deityAttackVFX: {fileID: 7005278960792100175, guid: a718b9300d9d5e645918850cfa72fec1, type: 3}
+  deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
+  deityPortrait: {fileID: 21300000, guid: 8f298345a85fe8d40a479ea7bd37db74, type: 3}
+  deityHealthBar: {fileID: 0}
 --- !u!114 &-5287236863881772563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,13 +261,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 71b81b9b-f7d2-4fb2-8a3d-e64ca1898d3b
-  LinkedDeityId: 
+  unitTemplate: {fileID: 11400000, guid: aca597d63c21f5d4296a623d236b7be9, type: 2}
   unitMovementLimit: 100
   currentXCoordinate: 0
   currentYCoordinate: 0
   startingXCoordinate: 0
   startingYCoordinate: 0
-  unitTemplate: {fileID: 0}
+  unitSelectionController: {fileID: 8320840809267973040}
   ownedTile: {fileID: 0}
   unitHealthPoints: 1000
   unitMaxHealthPoints: 1000
@@ -280,9 +280,13 @@ MonoBehaviour:
   coinsReward: 500000
   experiencePointsReward: 0
   unitMagicPower: 0
-  linkedDeity: {fileID: 0}
-  battleFeedbackController: {fileID: 0}
   currentUnitLifeCondition: 1
+  unitStatusController: {fileID: 0}
+  fieldPrizeController: {fileID: 0}
+  linkedDeity: {fileID: 0}
+  LinkedDeityId: 
+  battleFeedbackController: {fileID: 0}
+  unitProfilePanel: {fileID: 0}
   onHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -298,9 +302,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  unitProfilePanel: {fileID: 0}
-  unitStatusController: {fileID: 0}
-  unitSelectionController: {fileID: 8320840809267973040}
   OnTakenDamage:
     m_PersistentCalls:
       m_Calls: []

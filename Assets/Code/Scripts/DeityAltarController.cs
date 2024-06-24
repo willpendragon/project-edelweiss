@@ -22,6 +22,8 @@ public class DeityAltarController : MonoBehaviour
     public RectTransform deityLinkMenuContainer;
     public RectTransform saveDeityLinkButtonContainer;
     public TextMeshProUGUI nameLabelPrefab;
+    [SerializeField] GameObject playerUnitProfileGO;
+    [SerializeField] GameObject deityProfileGO;
 
     [SerializeField] Transform deitySpot;
 
@@ -31,16 +33,18 @@ public class DeityAltarController : MonoBehaviour
     public void Start()
     {
         GameManager.Instance.ApplyDeityLinks();
-        //CreateLinkButton();
         foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
         {
-            Sprite playerUnitPortrait = playerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
-            GameObject newPlayerUnitImage = Instantiate(playerUnitImageGO, playerPartyMembembersContainer);
-            newPlayerUnitImage.GetComponent<Image>().sprite = playerUnitPortrait;
-            newPlayerUnitImage.tag = "Player";
-            newPlayerUnitImage.GetComponent<UnitImageController>().unitReference = playerUnit;
-            TextMeshProUGUI playerName = Instantiate(nameLabelPrefab, playerPartyMembembersContainer).GetComponent<TextMeshProUGUI>();
-            playerName.text = playerUnit.unitTemplate.unitName;
+            GameObject newPlayerUnitProfileInstance = Instantiate(playerUnitProfileGO, playerPartyMembembersContainer);
+            newPlayerUnitProfileInstance.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(playerUnit);
+
+            //Sprite playerUnitPortrait = playerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
+            //GameObject newPlayerUnitImage = Instantiate(playerUnitImageGO, playerPartyMembembersContainer);
+            //newPlayerUnitImage.GetComponent<Image>().sprite = playerUnitPortrait;
+            //newPlayerUnitImage.tag = "Player";
+            //newPlayerUnitImage.GetComponent<UnitImageController>().unitReference = playerUnit;
+            //TextMeshProUGUI playerName = Instantiate(nameLabelPrefab, playerPartyMembembersContainer).GetComponent<TextMeshProUGUI>();
+            //playerName.text = playerUnit.unitTemplate.unitName;
         }
 
 
@@ -63,27 +67,24 @@ public class DeityAltarController : MonoBehaviour
             var deity = GameManager.Instance.collectibleDeities.Find(d => d.Id == unit.LinkedDeityId);
             if (deity == null) continue; // Skip if no deity found
 
-            GameObject deityModel = Instantiate(deity.gameObject, deitySpot.transform.position, Quaternion.identity);
-            deityModel.transform.localScale = new Vector3(2, 2, 2);
+            GameObject newDeityUnitProfileInstance = Instantiate(deityProfileGO, capturedDeitiesContainer);
+            newDeityUnitProfileInstance.GetComponent<AltarDeityUnitProfileController>().PopulatePlayerUnitProfile(deity.GetComponent<Unit>(), deity);
 
-            Sprite deityPortrait = deity.deityPortrait;
 
-            GameObject newDeityUnitImage = Instantiate(deityImageGO, capturedDeitiesContainer);
-            newDeityUnitImage.tag = "Deity";
-            newDeityUnitImage.GetComponent<Image>().sprite = deityPortrait;
-            newDeityUnitImage.GetComponent<UnitImageController>().deityReference = deity;
+            //GameObject deityModel = Instantiate(deity.gameObject, deitySpot.transform.position, Quaternion.identity);
+            //deityModel.transform.localScale = new Vector3(2, 2, 2);
 
-            TextMeshProUGUI deityName = Instantiate(nameLabelPrefab, capturedDeitiesContainer).GetComponent<TextMeshProUGUI>();
-            deityName.text = deity.name;
+            //Sprite deityPortrait = deity.deityPortrait;
+
+            //GameObject newDeityUnitImage = Instantiate(deityImageGO, capturedDeitiesContainer);
+            //newDeityUnitImage.tag = "Deity";
+            //newDeityUnitImage.GetComponent<Image>().sprite = deityPortrait;
+            //newDeityUnitImage.GetComponent<UnitImageController>().deityReference = deity;
+
+            //TextMeshProUGUI deityName = Instantiate(nameLabelPrefab, capturedDeitiesContainer).GetComponent<TextMeshProUGUI>();
+            //deityName.text = deity.name;
         }
     }
-
-    //public void CreateLinkButton()
-    //{
-    //    GameObject deityLinkButtonInstance = Instantiate(deityLinkButtonPrefab, saveDeityLinkButtonContainer);
-    //    Button currentdDeityLinkButton = deityLinkButtonInstance.GetComponent<Button>();
-    //    currentdDeityLinkButton.onClick.AddListener(() => GameManager.Instance.ApplyDeityLinks());
-    //}
 
     public void SetCurrentSelectedUnit(Unit unit)
     {
@@ -98,17 +99,4 @@ public class DeityAltarController : MonoBehaviour
         SaveStateManager.SaveGame(saveData);
         GameManager.Instance.ApplyDeityLinks();
     }
-    //public void CreateDictionaryEntry(Deity deity)
-    //{
-    //    string selectedPlayerUnitId = selectedPlayerUnit.Id;
-    //    unitsLinkedToDeities[selectedPlayerUnitId] = deity.Id;
-    //    SaveDictionaryToFile(unitsLinkedToDeities);
-    //}
-    //public void SaveDictionaryToFile(Dictionary<string, string> unitsLinkedToDeities)
-    //{
-    //    string saveState = JsonConvert.SerializeObject(unitsLinkedToDeities, Formatting.Indented);
-    //    File.WriteAllText(Application.persistentDataPath + "/savegame.json", saveState);
-
-    //    Debug.Log("Saving Dictionary");
-    //}
 }

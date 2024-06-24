@@ -68,8 +68,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9191c87aab5c6164087525c5b65d85f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Id: aliza_1
-  unitTemplate: {fileID: 11400000, guid: b660816490f17e64aa34b2945649e9d3, type: 2}
+  Id: violet_1
+  unitTemplate: {fileID: 11400000, guid: d1e4936fce73b3a409cfaabe6c77734c, type: 2}
   unitMovementLimit: 3
   currentXCoordinate: 0
   currentYCoordinate: 0
@@ -90,6 +90,7 @@ MonoBehaviour:
   unitMagicPower: 0
   currentUnitLifeCondition: 0
   unitStatusController: {fileID: 6804547558390777160}
+  fieldPrizeController: {fileID: 0}
   linkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 6278929137907918091}
