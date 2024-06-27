@@ -102,9 +102,11 @@ MonoBehaviour:
   detectedUnit: {fileID: 0}
   tileXCoordinate: 0
   tileYCoordinate: 0
+  tileCurrentFieldPrize: {fileID: 0}
   currentSingleTileStatus: 1
   currentSingleTileCondition: 0
   currentTileCurseStatus: 0
+  tileType: 0
   targetIcon: {fileID: 4764740750085911474, guid: f7bbcd16cf4e68e4b867220eaf3631ce, type: 3}
   tileShaderController: {fileID: 4269068434396144711}
   gCost: 0
@@ -333,6 +335,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1392167960337012757, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5073b1c9a5e31a8429b4b6199f7396c8, type: 2}
     - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
       propertyPath: m_RootOrder
       value: 3
