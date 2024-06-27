@@ -68,7 +68,7 @@ public class DeityAltarController : MonoBehaviour
             if (deity == null) continue; // Skip if no deity found
 
             GameObject newDeityUnitProfileInstance = Instantiate(deityProfileGO, capturedDeitiesContainer);
-            newDeityUnitProfileInstance.GetComponent<AltarDeityUnitProfileController>().PopulatePlayerUnitProfile(deity.GetComponent<Unit>(), deity);
+            newDeityUnitProfileInstance.GetComponent<AltarDeityUnitProfileController>().PopulateDeityUnitProfile(deity.GetComponent<Unit>(), deity);
 
 
             //GameObject deityModel = Instantiate(deity.gameObject, deitySpot.transform.position, Quaternion.identity);
@@ -93,10 +93,52 @@ public class DeityAltarController : MonoBehaviour
 
     public void AssignDeityToUnit(Deity deity)
     {
-        string selectedPlayerUnitId = selectedPlayerUnit.Id;
+        if (selectedPlayerUnit == null)
+        {
+            Debug.LogError("No player unit selected.");
+            return;
+        }
+
+        if (deity == null)
+        {
+            Debug.LogError("No deity selected.");
+            return;
+        }
+
         GameSaveData saveData = SaveStateManager.saveData;
-        saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deity.Id);
+
+        string selectedPlayerUnitId = selectedPlayerUnit.Id;
+        string deityId = deity.Id;
+
+        // Find if the deity is already linked to another unit
+        string oldLinkedUnitId = null;
+        foreach (var entry in saveData.unitsLinkedToDeities)
+        {
+            if (entry.Value == deityId)
+            {
+                oldLinkedUnitId = entry.Key;
+                break;
+            }
+        }
+
+        // If the deity is already linked, remove the old link
+        if (oldLinkedUnitId != null)
+        {
+            saveData.unitsLinkedToDeities.Remove(oldLinkedUnitId);
+        }
+
+        // Remove existing link for the selected unit if it exists
+        if (saveData.unitsLinkedToDeities.ContainsKey(selectedPlayerUnitId))
+        {
+            saveData.unitsLinkedToDeities.Remove(selectedPlayerUnitId);
+        }
+
+        // Add the new link
+        saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deityId);
         SaveStateManager.SaveGame(saveData);
         GameManager.Instance.ApplyDeityLinks();
+
+        Debug.Log("Deity successfully assigned to unit.");
     }
+
 }

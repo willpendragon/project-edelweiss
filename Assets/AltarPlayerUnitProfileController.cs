@@ -18,6 +18,10 @@ public class AltarPlayerUnitProfileController : MonoBehaviour
     [SerializeField] TextMeshProUGUI linkedDeityName;
     [SerializeField] Image playerUnitMiniPortrait;
 
+    [SerializeField] Button selectPlayerButton;
+
+    private Unit selectedPlayerUnit;
+
     public void PopulatePlayerUnitProfile(Unit playerUnit)
     {
         playerUnitName.text = playerUnit.unitTemplate.unitName;
@@ -29,5 +33,16 @@ public class AltarPlayerUnitProfileController : MonoBehaviour
         {
             linkedDeityName.text = playerUnit.linkedDeity.GetComponent<Unit>().unitTemplate.unitName.ToString();
         }
+
+        selectedPlayerUnit = playerUnit;
+
+        selectPlayerButton.onClick.AddListener(SelectPlayerUnit);
+    }
+
+    public void SelectPlayerUnit()
+    {
+        Debug.Log("SelectedPlayerUnit");
+        DeityAltarController deityAltarController = GameObject.FindGameObjectWithTag("DeityAltarController").GetComponent<DeityAltarController>();
+        deityAltarController.SetCurrentSelectedUnit(selectedPlayerUnit);
     }
 }
