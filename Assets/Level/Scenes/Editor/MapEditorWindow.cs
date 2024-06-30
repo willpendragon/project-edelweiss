@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using System.IO;
+
 
 public class MapEditorWindow : EditorWindow
 {
