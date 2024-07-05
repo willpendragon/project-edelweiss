@@ -19,20 +19,21 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         //int currentSelectionLimiter = 1;
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (selectedTile != null && GridManager.Instance.moveSelectionLimiter == 1 && selectedTile != GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile
+        if (selectedTile != null && GridManager.Instance.tileSelectionPermitted == true && selectedTile != GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile
             && selectedTile.detectedUnit == null)
         {
             var destinationTile = selectedTile;
 
             if (activePlayerUnit.CheckTileAvailability(selectedTile.tileXCoordinate, selectedTile.tileYCoordinate))
             {
-                GridManager.Instance.moveSelectionLimiter--;
+                GridManager.Instance.tileSelectionPermitted = false;
                 selectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.2f, Color.green);
                 Debug.Log("Tile is within Character Movement Limit");
             }
             else if (!activePlayerUnit.CheckTileAvailability(selectedTile.tileXCoordinate, selectedTile.tileYCoordinate))
             {
-                GridManager.Instance.moveSelectionLimiter--;
+                GridManager.Instance.tileSelectionPermitted = false;
+                //GridManager.Instance.moveSelectionLimiter--;
                 selectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.2f, Color.red);
                 Debug.Log("Tile is not within Character Movement Limit");
             }
@@ -87,7 +88,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
     public void Deselect()
     {
-        GridManager.Instance.moveSelectionLimiter++;
+        //GridManager.Instance.moveSelectionLimiter++;
 
         //If a saved destination esists, by clicking on that tile, this will get back to selection mode
         if (savedSelectedTile != null)
@@ -97,6 +98,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile = null;
+            GridManager.Instance.tileSelectionPermitted = true;
             ClearPath();
         }
 
@@ -150,6 +152,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
             if (activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate))
             {
+                GridManager.Instance.tileSelectionPermitted = true;
                 //Use Grid Logic to Move the Player to Destination
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementConfirmedSFX.Invoke();
                 savedSelectedTile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
@@ -167,6 +170,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
                 activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
 
+
                 Debug.Log("Moving Character Execution Logic");
             }
             else
@@ -179,9 +183,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             UpdateActivePlayerUnitProfile(activePlayerUnit);
             Debug.Log("Not enough Opportunity Points or Unit is stunned.");
         }
-
-        GridManager.Instance.moveSelectionLimiter++;
-
     }
 
     public void RevertToSelectionUnitPlayerAction()

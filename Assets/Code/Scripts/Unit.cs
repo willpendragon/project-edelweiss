@@ -120,6 +120,21 @@ public class Unit : MonoBehaviour
         unitManaPoints -= spentManaAmount;
     }
 
+    private IEnumerator MoveToPosition(Vector3 targetPosition, float duration)
+    {
+        Vector3 startPosition = transform.position;
+        float time = 0;
+
+        while (time < duration)
+        {
+            transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = targetPosition;
+    }
+
     public bool MoveUnit(int targetX, int targetY)
     {
         // Convert current world position to grid coordinates
@@ -130,21 +145,7 @@ public class Unit : MonoBehaviour
 
         if (path != null && path.Count > 0 && path.Count <= unitMovementLimit)
         {
-            foreach (var tile in path)
-            {
-                // Apply visual feedback for the path
-                //tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
-
-                // Convert grid coordinates back to world position for actual movement
-                Vector3 worldPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate);
-                transform.position = worldPosition + new Vector3(0, transform.localScale.y / 2, 0);
-
-                // Update current grid coordinates
-                currentXCoordinate = tile.tileXCoordinate;
-                currentYCoordinate = tile.tileYCoordinate;
-
-                Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
-            }
+            StartCoroutine(FollowPath(path));
             return true;
         }
         else
@@ -153,6 +154,26 @@ public class Unit : MonoBehaviour
             return false;
         }
     }
+
+    private IEnumerator FollowPath(List<TileController> path)
+    {
+        foreach (var tile in path)
+        {
+            // Convert grid coordinates back to world position for actual movement
+            Vector3 worldPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate);
+            Vector3 targetPosition = worldPosition + new Vector3(0, transform.localScale.y / 2, 0);
+
+            // Move to the next tile
+            yield return StartCoroutine(MoveToPosition(targetPosition, 0.5f)); // Adjust the duration as needed
+
+            // Update current grid coordinates
+            currentXCoordinate = tile.tileXCoordinate;
+            currentYCoordinate = tile.tileYCoordinate;
+            Debug.Log(tile.name);
+            Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
+        }
+    }
+
 
     public bool CheckTileAvailability(int targetX, int targetY)
     {

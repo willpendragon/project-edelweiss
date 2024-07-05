@@ -20,7 +20,9 @@ public class GridManager : MonoBehaviour
     public float inBetweenTilesYOffset;
     public GameObject currentPlayerUnit;
 
-    public int moveSelectionLimiter = 1;
+    //public int moveSelectionLimiter = 1;
+
+    public bool tileSelectionPermitted;
 
     public TileController[] gridTileControllers;
 

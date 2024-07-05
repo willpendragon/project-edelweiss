@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9173261220362152791}
   - component: {fileID: 6536159133322198358}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TrapTileVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,6 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9173261220362152790}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 21.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 512701885956272936}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6536159133322198358
 MonoBehaviour:
@@ -51,8 +51,13 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 9173261220362152791}
     m_Modifications:
+    - target: {fileID: -8700617353114198275, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -97,6 +102,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7139261109480557378, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: -6210141383899247147, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -121,11 +130,29 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 65702495048144492, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_Name
       value: spike_tile
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953606483559150473, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1432537562659258425}
   m_SourcePrefab: {fileID: 100100000, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
 --- !u!4 &512701885956272936 stripped
 Transform:
@@ -139,7 +166,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &1432537562659258425
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -156,4 +183,5 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

@@ -16,11 +16,6 @@ public class GridMovementController : MonoBehaviour
             return null;
         }
 
-        if (Mathf.Abs(startTile.tileXCoordinate - targetTile.tileXCoordinate) == 1 && Mathf.Abs(startTile.tileYCoordinate - targetTile.tileYCoordinate) == 1)
-        {
-            return null; // Diagonal move not allowed
-        }
-
         List<TileController> openSet = new List<TileController> { startTile };
         HashSet<TileController> closedSet = new HashSet<TileController>();
 
@@ -61,10 +56,52 @@ public class GridMovementController : MonoBehaviour
                         openSet.Add(neighbour);
                 }
             }
+
+            // Check for L-shaped moves
+            if (Mathf.Abs(currentTile.tileXCoordinate - targetTile.tileXCoordinate) == 1 && Mathf.Abs(currentTile.tileYCoordinate - targetTile.tileYCoordinate) == 1)
+            {
+                // Find the intermediate tile
+                int midX1 = currentTile.tileXCoordinate;
+                int midY1 = targetTile.tileYCoordinate;
+                int midX2 = targetTile.tileXCoordinate;
+                int midY2 = currentTile.tileYCoordinate;
+
+                TileController midTile1 = GridManager.Instance.GetTileControllerInstance(midX1, midY1);
+                TileController midTile2 = GridManager.Instance.GetTileControllerInstance(midX2, midY2);
+
+                if (midTile1 != null && midTile1.currentSingleTileCondition != SingleTileCondition.occupied && !closedSet.Contains(midTile1))
+                {
+                    int newMovementCostToMidTile1 = currentTile.gCost + GetDistance(currentTile, midTile1);
+                    if (newMovementCostToMidTile1 < midTile1.gCost || !openSet.Contains(midTile1))
+                    {
+                        midTile1.gCost = newMovementCostToMidTile1;
+                        midTile1.hCost = GetDistance(midTile1, targetTile);
+                        midTile1.parent = currentTile;
+
+                        if (!openSet.Contains(midTile1))
+                            openSet.Add(midTile1);
+                    }
+                }
+
+                if (midTile2 != null && midTile2.currentSingleTileCondition != SingleTileCondition.occupied && !closedSet.Contains(midTile2))
+                {
+                    int newMovementCostToMidTile2 = currentTile.gCost + GetDistance(currentTile, midTile2);
+                    if (newMovementCostToMidTile2 < midTile2.gCost || !openSet.Contains(midTile2))
+                    {
+                        midTile2.gCost = newMovementCostToMidTile2;
+                        midTile2.hCost = GetDistance(midTile2, targetTile);
+                        midTile2.parent = currentTile;
+
+                        if (!openSet.Contains(midTile2))
+                            openSet.Add(midTile2);
+                    }
+                }
+            }
         }
 
         return null;
     }
+
 
     private List<TileController> RetracePath(TileController startTile, TileController endTile)
     {
@@ -73,13 +110,23 @@ public class GridMovementController : MonoBehaviour
 
         while (currentTile != startTile)
         {
+            if (currentTile == null)
+            {
+                Debug.LogError("Parent link not set correctly, path retrace failed.");
+                return null;
+            }
+
             path.Add(currentTile);
             currentTile = currentTile.parent;
         }
+
+        // Add the start tile to the path
+        path.Add(startTile);
         path.Reverse();
 
         return path;
     }
+
 
     public List<TileController> GetNeighbours(TileController tile)
     {

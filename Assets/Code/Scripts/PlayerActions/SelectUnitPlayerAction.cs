@@ -130,7 +130,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         if (detectedUnit.tag == "Player")
         {
             GridManager.Instance.currentPlayerUnit = detectedUnit;
-
+            GridManager.Instance.tileSelectionPermitted = true;
             //The Unit tag becomes ActivePlayerUnit
             detectedUnit.tag = "ActivePlayerUnit";
             detectedUnit.GetComponent<Unit>().ownedTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
