@@ -147,6 +147,16 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    public List<Vector2Int> GetExistingTileCoordinates()
+    {
+        List<Vector2Int> existingTiles = new List<Vector2Int>();
+        foreach (var key in gridMapDictionary.Keys)
+        {
+            existingTiles.Add(new Vector2Int(key.indexTileXPosition, key.indexTileYPosition));
+        }
+        return existingTiles;
+    }
+
     public void MoveCurrentPlayerUnit(int targetX, int targetY)
     {
         if (currentPlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)

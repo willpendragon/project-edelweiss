@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class OverworldMapGenerator : MonoBehaviour
 {
@@ -16,10 +15,8 @@ public class OverworldMapGenerator : MonoBehaviour
     private List<Vector3> nodePositions = new List<Vector3>();
 
     public GameObject[] partyMemberIcons;
-
     public float iconZOffset = 1f;
 
-    // Awake is called before the first frame update
     void Awake()
     {
         Random.InitState(randomSeed); // Initialize the random number generator with a seed for consistency
@@ -75,10 +72,8 @@ public class OverworldMapGenerator : MonoBehaviour
             {
                 // Instantiate the node
                 GameObject newNode = Instantiate(mapNode, newPosition, Quaternion.identity);
-                newNode.GetComponent<EnemySelection>().EnemyTypeIds = levelList[i].EnemyTypeIds;
-                newNode.GetComponent<EnemySelection>().EnemyCoordinates = levelList[i].UnitCoordinates;
                 newNode.GetComponent<EnemySelection>().levelData = levelList[i];
-                newNode.GetComponent<EnemySelection>().levelNumber = i; // Assign level number
+                newNode.GetComponent<EnemySelection>().levelNumber = levelList[i].levelNumber;
 
                 // Update the material color and lock status based on level progression
                 if (i == highestUnlockedLevel)

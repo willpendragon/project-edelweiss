@@ -12,8 +12,8 @@ public class EnemySelection : MonoBehaviour
     public Level levelData;
     public int levelNumber;
 
-    public void SelectedMapNode()
+    public void SelectMapNode()
     {
-        GameManager.Instance.UpdateEnemyData(levelData);
+        GameManager.Instance.GenerateLevelData(levelData); // Generate random enemy data
     }
 }
