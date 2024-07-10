@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10f59b06a46d8d842a35a787e59b306d, type: 3}
+  m_Name: UnitTemplate_Aliza
+  m_EditorClassIdentifier: 
+  unitName: Aliza
+  unitHealthPoints: 250
+  unitMaxHealthPoints: 250
+  unitManaPoints: 100
+  unitMaxManaPoints: 100
+  unitOpportunityPoints: 3
+  unitShieldPoints: 1000
+  meleeAttackPower: 2
+  unitMagicPower: 20
+  spellsList:
+  - {fileID: 11400000, guid: eb9c1d71abcc4fc4eb07b21af5c1fd68, type: 2}
+  unitCoinsReward: 0
+  unitExperiencePointsReward: 0
+  unitPortrait: {fileID: -758042431, guid: c24b78db1b4153d45b2bbf24431592fb, type: 3}
+  unitMiniPortrait: {fileID: 21300000, guid: ee5e0e9c74e0aad49beb8e766d0aac50, type: 3}
+  unitCalloutPortrait: {fileID: 6531937135514718842, guid: 38d16497733bb7848b63fa93a604a653, type: 3}
+  unitCriticalHitVoice: {fileID: 3982073005121114864, guid: 869853d1f2c6c8240a8376a60856c6fb, type: 3}
