@@ -9,7 +9,8 @@ public class DistanceController : MonoBehaviour
     public bool CheckDistance(TileController attackerTile, TileController defenderTile)
     {
         int distanceThreshold = 10;
-        if (gridMovementController.GetDistance(attackerTile, defenderTile) <= distanceThreshold)
+        int distance = gridMovementController.GetDistance(attackerTile, defenderTile);
+        if (distance <= distanceThreshold)
         {
             Debug.Log("Distance Check: Attacker is close to Defender. Attack Modifier will apply");
             return true;
@@ -17,8 +18,10 @@ public class DistanceController : MonoBehaviour
         else
         {
             Debug.Log("Distance Check: Attacker is distant from Defender. Attack Modifier will NOT apply");
+            Debug.Log($"Attacker coordinates {attackerTile.tileXCoordinate}, {attackerTile.tileYCoordinate}");
+            Debug.Log($"Defender coordinates {defenderTile.tileXCoordinate}, {defenderTile.tileYCoordinate}");
+
             return false;
         }
     }
-
 }

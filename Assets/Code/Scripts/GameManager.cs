@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded; // Subscribe to the sceneLoaded event
 
             // Initialize the random number generator with a seed for consistency
-            random = new System.Random(12345); // Use a specific seed or get it from game data
+            random = new System.Random(); // Use a specific seed or get it from game data
         }
         else if (Instance != this)
         {
