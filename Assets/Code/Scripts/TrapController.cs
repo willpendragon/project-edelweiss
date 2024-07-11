@@ -7,6 +7,8 @@ public class TrapController : MonoBehaviour
 
     public delegate void TrapAction();
     public static event TrapAction OnTrapAction;
+    float spikeDamage = 3;
+
     public enum TrapActivationStatus
     {
         active,
@@ -24,7 +26,6 @@ public class TrapController : MonoBehaviour
         if (GetComponentInParent<TileController>().detectedUnit != null)
         {
             Unit detectedUnitOnTrapTile = GetComponentInParent<TileController>().detectedUnit.GetComponent<Unit>();
-            float spikeDamage = 10;
 
             if (SpikeKillingPlayer(detectedUnitOnTrapTile, spikeDamage))
             {
@@ -34,11 +35,9 @@ public class TrapController : MonoBehaviour
             }
             else if (detectedUnitOnTrapTile.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
             {
-                //Beware of Magic Number
-
+                OnTrapAction();
                 detectedUnitOnTrapTile.TakeDamage(spikeDamage);
 
-                OnTrapAction();
                 Debug.Log("Applying Trap Effect to the Unit standing on the Trap Tile");
                 TurnController.Instance.GameOverCheck();
             }
