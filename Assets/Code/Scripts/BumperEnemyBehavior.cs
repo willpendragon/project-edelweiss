@@ -68,6 +68,14 @@ public class BumperEnemyBehavior : EnemyBehavior
     }
     public void MoveToPlayerTarget(Unit defenderPlayerUnit, EnemyAgent enemyAttacker)
     {
+        Unit enemyUnit = enemyAttacker.gameObject.GetComponent<Unit>();
+
+        if (enemyUnit.unitStatusController.unitCurrentStatus == UnitStatus.stun)
+        {
+            Debug.Log("Enemy Unit is stunned and can't move");
+            return; // Early exit if the unit is stunned
+        }
+
         if (CheckDistanceBetweenUnits(defenderPlayerUnit.ownedTile, enemyAttacker.gameObject.GetComponent<Unit>().ownedTile))
         {
             Debug.Log("Enemy Unit is near Player Target. Enemy Unit stays still");
@@ -104,15 +112,18 @@ public class BumperEnemyBehavior : EnemyBehavior
             }
         }
     }
+
     private void MoveUnitToTile(Unit unit, TileController destinationTile)
     {
-        //// Clear the current tile
-        //unit.ownedTile.detectedUnit = null;
-        //unit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+        // Check if the unit is stunned before moving
+        if (unit.unitStatusController.unitCurrentStatus == UnitStatus.stun)
+        {
+            Debug.Log("This Bumper Enemy Unit is stunned and can't move");
+            return; // Early exit if the unit is stunned
+        }
 
         // Move and update the unit's tile
         if (unit.MoveUnit(destinationTile.tileXCoordinate, destinationTile.tileYCoordinate))
-
         {
             if (destinationTile.currentSingleTileCondition == SingleTileCondition.free)
             {
@@ -124,12 +135,14 @@ public class BumperEnemyBehavior : EnemyBehavior
                 destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
                 Debug.Log("Bumper Enemy Moved");
                 // Potentially update visuals or other game elements here as needed
-
             }
         }
         else
+        {
             Debug.Log("This Bumper Enemy Unit can't move");
+        }
     }
+
 
 
     public bool CheckDistanceBetweenUnits(TileController attackerTile, TileController defenderTile)
