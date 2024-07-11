@@ -15,6 +15,14 @@ public enum SpellType
     SingleTarget,
     AOE,
 }
+
+public enum SpellSecundaryEffect
+{
+    NoEffect,
+    Stun
+}
+
+
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spell")]
 public class Spell : ScriptableObject
 {
@@ -24,8 +32,10 @@ public class Spell : ScriptableObject
     public int opportunityPointsCost;
     public SpellAlignment alignment;
     public SpellType spellType;
+    public SpellSecundaryEffect spellSecundaryEffect;
     public GameObject spellVFX;
     public Vector3 spellVFXOffset;
+
 
     public float criticalHitChance;
 }

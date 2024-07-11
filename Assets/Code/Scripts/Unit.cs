@@ -15,7 +15,7 @@ public class Unit : MonoBehaviour
         unitAlive
     }
 
-    [Header("Player Unit Basics")]
+    [Header("Unit Basics")]
 
     public string Id;
     public UnitTemplate unitTemplate;
@@ -31,7 +31,7 @@ public class Unit : MonoBehaviour
     public UnitSelectionController unitSelectionController;
     public TileController ownedTile;
 
-    [Header("Player Unit Instance Stats")]
+    [Header("Unit Instance Stats")]
 
     public float unitHealthPoints;
     public float unitMaxHealthPoints;
