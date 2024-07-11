@@ -14,16 +14,19 @@ public class DeitySpawner : MonoBehaviour
 
     private System.Random localRandom = new System.Random(); // Local random number generator
 
-
     public Deity currentUnboundDeity;
-    // Start is called before the first frame update
     public GameObject deityHealthBar;
     void Start()
     {
         if (battleManager.currentBattleType == BattleType.regularBattle)
         {
-            var deityRoll = localRandom.Next(0, 7); // Use System.Random for roll
-            if (deityRoll >= 3 && deityRoll <= 6)
+            int deityRollMinRange = 0;
+            int deityRollMaxRange = 7;
+            var deityRoll = localRandom.Next(deityRollMinRange, deityRollMaxRange);
+
+            int deityRollFirstThreshold = 3;
+            int deityRollSecondThreshold = 6;
+            if (deityRollFirstThreshold >= 3 && deityRollSecondThreshold <= 6)
             {
                 DeitySelector();
                 Debug.Log("Rolled Deity arrival on battlefield");
@@ -92,14 +95,14 @@ public class DeitySpawner : MonoBehaviour
     }
     public void UpdateDeityHealthBar()
     {
-
+        // Use this method to Update the Deity's Health Bar during the fight
     }
 
     public void InitiateBattleWithDeity(GameObject unlockedDeity)
     {
         //Unlocks Anguana as an Unbound Entity
-        //0 is a magic number, remove it later
         Debug.Log("Unbound Anguana Unlocked");
+
         unlockedDeity.GetComponent<Unit>().startingXCoordinate = 5;
         unlockedDeity.GetComponent<Unit>().startingYCoordinate = 9;
         GameObject unboundDeity = Instantiate(unlockedDeity);
@@ -107,15 +110,17 @@ public class DeitySpawner : MonoBehaviour
         if (unboundDeity != null)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
-            unboundDeity.GetComponent<Unit>().MoveUnit(5, 9);
-            //Beware, Magic Numbers
-            TileController deitySpawningTile = GridManager.Instance.GetTileControllerInstance(5, 9);
+            int deityTilePositionX = 5;
+            int deityTilePositionY = 9;
+            unboundDeity.GetComponent<Unit>().MoveUnit(deityTilePositionX, deityTilePositionY);
+            TileController deitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityTilePositionX, deityTilePositionY);
 
             unboundDeity.GetComponent<Unit>().ownedTile = deitySpawningTile;
 
             //Deity occupies multiple tiles
             int summoningRange = 2;
-            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(deitySpawningTile, summoningRange))
+            GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
+            foreach (var deitySpawningZoneTile in gridMovementController.GetMultipleTiles(deitySpawningTile, summoningRange))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
                 deitySpawningZoneTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
