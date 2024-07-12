@@ -133,7 +133,10 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                         }
                         Unit spellTarget = savedSelectedTile.detectedUnit.GetComponent<Unit>();
                         spellTarget.TakeDamage(damageToApply);
-                        spellTarget.unitStatusController.unitCurrentStatus = UnitStatus.stun;
+                        if (spellTarget.unitStatusController != null)
+                        {
+                            spellTarget.unitStatusController.unitCurrentStatus = UnitStatus.stun;
+                        }
                         Debug.Log("The Target is now Stun and unable to move");
                         activePlayerUnit.SpendManaPoints(currentSpell.manaPointsCost);
                         activePlayerUnit.unitOpportunityPoints--;
