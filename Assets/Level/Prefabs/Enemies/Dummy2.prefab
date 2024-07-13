@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 452078786909909995}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.881, z: 0}
   m_LocalScale: {x: 3.0893352, y: 2.8738, z: 2.8738}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5147203796786549248}
-  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5596889259312912661
 SpriteRenderer:
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &2589683984642565530
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -104,14 +104,20 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &210011986481823578
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1254154078120300381, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: fieldPrize
+      value: 
+      objectReference: {fileID: 11400000, guid: 27cb5a7026d37d84692fa4ea27970834, type: 2}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitHealth
       value: 100
@@ -257,6 +263,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5009294011632168282, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2426416996133809433}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
 --- !u!4 &5147203796786549248 stripped
 Transform:

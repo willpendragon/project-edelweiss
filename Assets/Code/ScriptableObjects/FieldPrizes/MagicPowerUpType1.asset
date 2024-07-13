@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be31a10f631a1584ca665839ceecdf7b, type: 3}
-  m_Name: AttackPowerUpType1
+  m_Name: MagicPowerUpType1
   m_EditorClassIdentifier: 
-  itemFieldPrizeName: Attack Power Up Type 1
-  itemFieldPrizeDescription: This is the Attack Power Up Type 1
-  itemFieldPrizeType: 0
-  powerUpAmount: 10
+  itemFieldPrizeName: Magic Power Up Type 1
+  itemFieldPrizeDescription: This is the Magic Power Up Type 1
+  itemFieldPrizeType: 1
+  powerUpAmount: 20

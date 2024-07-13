@@ -6,13 +6,13 @@ using UnityEngine;
 
 public static class SaveStateManager
 {
-    private static string saveFilePath
-    {
-        get
-        {
-            return Path.Combine(Application.persistentDataPath, "achievements.json");
-        }
-    }
+    //private static string saveFilePath
+    //{
+    //    get
+    //    {
+    //        return Path.Combine(Application.persistentDataPath, "achievements.json");
+    //    }
+    //}
 
     private static string saveFilePathTest
     {

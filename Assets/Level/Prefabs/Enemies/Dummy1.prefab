@@ -287,7 +287,7 @@ MonoBehaviour:
   minEnemyMoveRollRange: 1
   maxEnemyMoveRollRange: 20
   enemyBehavior: {fileID: 11400000, guid: 942df072a2e990a4799e28f0faee4951, type: 2}
-  enemyMoveElapsingTime: 2
+  enemyMoveElapsingTime: 1
   enemyAnimator: {fileID: 0}
   attackVFXAnimator: {fileID: 2579693216120635807, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
   enemyOriginalPosition: {x: 0, y: 0, z: 0}
@@ -6147,9 +6147,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: DamageOutputCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 1093630016137419302, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 2941086080749836231, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3260903837899864580, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 6047382121413678735, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_Text

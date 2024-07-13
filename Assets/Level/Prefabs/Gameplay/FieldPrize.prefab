@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 67632292693706766}
   - component: {fileID: 67632292693706761}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FieldPrize
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,6 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 67632292693706767}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 8992135779467649832}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &67632292693706761
 MonoBehaviour:
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 8992135779467649839}
   - component: {fileID: 8992135779467649838}
   - component: {fileID: 8992135779467649833}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FieldPrizeVisuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,13 +74,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8992135779467649837}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: -0.11, z: 0}
   m_LocalScale: {x: 0.41553771, y: 0.41553771, z: 0.41553771}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 67632292693706766}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8992135779467649839
 MeshFilter:
