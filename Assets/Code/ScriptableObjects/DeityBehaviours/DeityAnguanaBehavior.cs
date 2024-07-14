@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AnguanaBehavior", menuName = "DeityBehavior/Anguana")]
 public class DeityAnguanaBehavior : DeityBehavior
 {
-    public int deityPrayerPowerMinimumRequirement = 3;
+    //public int deityPrayerPowerMinimumRequirement = 3;
     public int vfxDurationDelay = 3;
     public override void ExecuteBehavior(Deity deity)
     {
@@ -32,6 +32,7 @@ public class DeityAnguanaBehavior : DeityBehavior
         Destroy(newDeityAttackVFX, vfxDurationDelay);
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
         foreach (var playerUnit in playerUnitsOnBattlefield)
+
         {
             playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
         }
