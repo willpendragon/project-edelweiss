@@ -11,6 +11,14 @@ public class SceneLoader : MonoBehaviour
 
     public delegate void LoadingScene();
     public static event LoadingScene OnLoadingScene;
+    public void Start()
+    {
+        if (sceneName == "battle_prototype")
+        {
+            SceneManager.LoadSceneAsync(sceneName);
+        }
+    }
+
     public void ChangeScene()
     {
         OnLoadingScene();
