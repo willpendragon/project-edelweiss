@@ -19,7 +19,7 @@ public class DeityPowerController : MonoBehaviour
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         if (activePlayerUnit != null)
         {
-            if (activePlayerUnit.linkedDeity.deityPrayerPower < activePlayerUnit.linkedDeity.deityPrayerPowerThreshold)
+            if (activePlayerUnit.linkedDeity.deityPrayerPower < activePlayerUnit.linkedDeity.deityPrayerBuff.deityPrayerBuffThreshold)
             {
                 activePlayerUnit.linkedDeity.deityPrayerPower++;
                 OnPlayerUnitPraying();

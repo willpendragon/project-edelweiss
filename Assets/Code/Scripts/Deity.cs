@@ -16,6 +16,7 @@ public class Deity : MonoBehaviour
     public float enmityThreshold;
 
     public DeityBehavior deityBehavior;
+    public DeityBehavior summoningBehaviour;
     public DeityPrayerBuff deityPrayerBuff;
 
 
@@ -25,7 +26,7 @@ public class Deity : MonoBehaviour
     public float deitySpecialAttackPower;
     public float summoningPrice = 50;
     public float deityPrayerPower;
-    public float deityPrayerPowerThreshold;
+    //public float deityPrayerPowerThreshold;
 
     [Header("Visuals")]
     public TextMeshProUGUI deityAttackNotification;
@@ -70,7 +71,7 @@ public class Deity : MonoBehaviour
         deityEnmityTracker = newDeityEnmityTracker;
     }
 
-    //Retrieves the Deity Behavior from a compatible Scriptable Object add in the Inspector.
+    //Retrieves the Deity Behavior from a compatible Scriptable Object added in the Inspector.
     public void DeityBehaviour(string deityText)
     {
         StartCoroutine("EndDeityTurn");

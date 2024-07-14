@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Deity Prayer Power Up", menuName = "Deity Prayer Buff")]
+[CreateAssetMenu(fileName = "Deity Prayer Buff", menuName = "Deity Prayer Buff")]
 
 public class DeityPrayerBuff : ScriptableObject
 {

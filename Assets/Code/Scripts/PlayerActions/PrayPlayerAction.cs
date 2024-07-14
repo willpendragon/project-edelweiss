@@ -62,7 +62,7 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
     {
         Deity linkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().linkedDeity;
 
-        if (linkedDeity.deityPrayerPower >= linkedDeity.deityPrayerPowerThreshold)
+        if (linkedDeity.deityPrayerPower >= linkedDeity.deityPrayerBuff.deityPrayerBuffThreshold)
         {
             return true;
         }

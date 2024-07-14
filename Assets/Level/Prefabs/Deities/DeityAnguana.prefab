@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 599463992057181316}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3348349630364506730}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &8214377848972271374
 AudioSource:
@@ -157,6 +157,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3348349630364506734}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6.6678615, y: 6.6678615, z: 6.6678615}
@@ -166,7 +167,6 @@ Transform:
   - {fileID: 6900425455491816123}
   - {fileID: 7804889686926811615}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3348349630364506733
 MeshFilter:
@@ -231,17 +231,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: c7882194-7721-4dc5-a732-073fb47b0c6a
-  sinnersList: []
   enmity: 0
   hatedSpellAlignments: 04000000
   enmityThreshold: 4
   deityBehavior: {fileID: 11400000, guid: 0372a198e5909a349b294db374d84b0e, type: 2}
+  summoningBehaviour: {fileID: 0}
   deityPrayerBuff: {fileID: 11400000, guid: 877944df237f9b14084c6a04dc048829, type: 2}
   battleManager: {fileID: 0}
   deitySpecialAttackPower: 35
   summoningPrice: 50
   deityPrayerPower: 0
-  deityPrayerPowerThreshold: 3
   deityAttackNotification: {fileID: 0}
   battleInterface: {fileID: 0}
   deityAttackVFX: {fileID: 7005278960792100175, guid: a718b9300d9d5e645918850cfa72fec1, type: 3}
@@ -269,8 +268,8 @@ MonoBehaviour:
   startingYCoordinate: 0
   unitSelectionController: {fileID: 8320840809267973040}
   ownedTile: {fileID: 0}
-  unitHealthPoints: 1000
-  unitMaxHealthPoints: 1000
+  unitHealthPoints: 100
+  unitMaxHealthPoints: 100
   unitOpportunityPoints: 0
   unitManaPoints: 0
   unitMaxManaPoints: 0
@@ -340,6 +339,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 3348349630364506730}
     m_Modifications:
     - target: {fileID: 5693058009958798207, guid: f8550245053610d41b7b5556ba4dea6f, type: 3}
@@ -403,6 +403,9 @@ PrefabInstance:
       value: Krake_B
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8550245053610d41b7b5556ba4dea6f, type: 3}
 --- !u!4 &6900425455491816123 stripped
 Transform:
@@ -414,6 +417,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 3348349630364506730}
     m_Modifications:
     - target: {fileID: 4673050221343872805, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
@@ -481,6 +485,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
 --- !u!4 &7975233190445547534 stripped
 Transform:
