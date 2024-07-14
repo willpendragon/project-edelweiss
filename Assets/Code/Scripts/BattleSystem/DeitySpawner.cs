@@ -11,11 +11,13 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] Transform deitySpawnPosition;
     [SerializeField] DeityAchievementsController deityAchievementsController;
     [SerializeField] BattleManager battleManager;
+    private GameObject deityHealthBarInstance;
 
     private System.Random localRandom = new System.Random(); // Local random number generator
 
     public Deity currentUnboundDeity;
     public GameObject deityHealthBar;
+
     void Start()
     {
         if (battleManager.currentBattleType == BattleType.regularBattle)
@@ -32,11 +34,19 @@ public class DeitySpawner : MonoBehaviour
                 Debug.Log("Rolled Deity arrival on battlefield");
             }
         }
+        else if (battleManager.currentBattleType == BattleType.battleWithDeity)
+        {
+            if (deityHealthBarInstance != null)
+            {
+                PopulateDeityHealthBar();
+            }
+        }
+
     }
     public void DeitySelector()
     {
         Debug.Log("Rolling which Deity will appear");
-        int deityIndex = localRandom.Next(0, spawnableDeities.Length); // Use System.Random for deity selection
+        int deityIndex = localRandom.Next(0, spawnableDeities.Length); // Use System.Random for Deity selection
         Debug.Log($"Deity Index: {deityIndex} - {spawnableDeities[deityIndex].name}");
 
         GameObject spawningDeity = spawnableDeities[deityIndex];
@@ -76,37 +86,19 @@ public class DeitySpawner : MonoBehaviour
         // Play the sequence
         deitySequence.Play();
     }
-    void CreateDeityHealthBar(GameObject spawnedUnboundDeity)
-    {
-        Deity currentSpawnedUnboundDeity = spawnedUnboundDeity.GetComponent<Deity>();
-
-        GameObject battleInterfaceCanvasGO = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
-        GameObject deityHealthBarInstance = Instantiate(deityHealthBar, battleInterfaceCanvasGO.transform);
-        Slider deityHPSlider = deityHealthBarInstance.GetComponentInChildren<Slider>();
-        currentSpawnedUnboundDeity.deityHealthBar = deityHealthBarInstance;
-
-        Unit currentSpawnedUnboundDeityUnit = currentSpawnedUnboundDeity.GetComponentInChildren<Unit>();
-
-        deityHPSlider.maxValue = currentSpawnedUnboundDeityUnit.unitMaxHealthPoints;
-        deityHPSlider.value = currentSpawnedUnboundDeityUnit.unitHealthPoints;
-        deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text = currentSpawnedUnboundDeityUnit.unitMaxHealthPoints.ToString();
-
-        Debug.Log("Spawning Deity Health Bar");
-    }
-    public void UpdateDeityHealthBar()
-    {
-        // Use this method to Update the Deity's Health Bar during the fight
-    }
-
     public void InitiateBattleWithDeity(GameObject unlockedDeity)
     {
-        //Unlocks Anguana as an Unbound Entity
-        Debug.Log("Unbound Anguana Unlocked");
+        //Unlocks Deity as an Unbound Entity
+        Debug.Log("Unbound Deity Unlocked");
 
-        unlockedDeity.GetComponent<Unit>().startingXCoordinate = 5;
-        unlockedDeity.GetComponent<Unit>().startingYCoordinate = 9;
+        int unlockedDeityStartingTileXCoordinate = 5;
+        int unlockedDeityStartingTileYCoordinate = 9;
+
+        unlockedDeity.GetComponent<Unit>().startingXCoordinate = unlockedDeityStartingTileXCoordinate;
+        unlockedDeity.GetComponent<Unit>().startingYCoordinate = unlockedDeityStartingTileYCoordinate;
         GameObject unboundDeity = Instantiate(unlockedDeity);
         Debug.Log("Moving Unbound Deity to Starting Position");
+
         if (unboundDeity != null)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
@@ -136,5 +128,26 @@ public class DeitySpawner : MonoBehaviour
             unboundDeity.gameObject.tag = "Enemy";
             CreateDeityHealthBar(unboundDeity);
         }
+    }
+
+    void CreateDeityHealthBar(GameObject spawnedUnboundDeity)
+    {
+        currentUnboundDeity = spawnedUnboundDeity.GetComponent<Deity>();
+
+        GameObject battleInterfaceCanvasGO = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
+        deityHealthBarInstance = Instantiate(deityHealthBar, battleInterfaceCanvasGO.transform);
+        currentUnboundDeity.deityHealthBar = deityHealthBarInstance;
+        Debug.Log("Spawning Deity Health Bar");
+    }
+
+    void PopulateDeityHealthBar()
+    {
+        Slider deityHPSlider = deityHealthBarInstance.GetComponentInChildren<Slider>();
+
+        Unit currentUnboundDeityUnit = currentUnboundDeity.gameObject.GetComponent<Unit>();
+
+        deityHPSlider.maxValue = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints;
+        deityHPSlider.value = currentUnboundDeityUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints; ;
+        deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints.ToString();
     }
 }
