@@ -6,19 +6,11 @@ using UnityEngine.UI;
 using Unity.VisualScripting;
 using static Deity;
 
-public enum DeityState
-{
-    indifferent,
-    aggressive,
-    gridaltering
-}
-
 [System.Serializable]
 public class Deity : MonoBehaviour
 {
     [Header("Gameplay Logic")]
     public string Id = System.Guid.NewGuid().ToString();
-    public List<GameObject> sinnersList;
     public float enmity;
     public List<SpellAlignment> hatedSpellAlignments;
     public float enmityThreshold;
