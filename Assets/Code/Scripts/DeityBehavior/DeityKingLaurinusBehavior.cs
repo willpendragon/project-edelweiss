@@ -9,7 +9,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     public delegate void UsedSpecialAttack(string moveName, string attackerName);
     public static event UsedSpecialAttack OnUsedSpecialAttack;
 
-    private int attackExecutionThreshold = 2;
+    public int attackExecutionThreshold = 2;
     public override void ExecuteBehavior(Deity deity)
     {
         TileController[] gridTiles = ExtractRandomTiles();
@@ -19,20 +19,20 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
 
         }
-        if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>().turnCounter >= attackExecutionThreshold)
+        TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
+        if (turnController.turnCounter >= attackExecutionThreshold)
         {
-            Debug.Log("Reached Turn 3. King Laurinus attacks the Player Units on the cursed tiles");
+            Debug.Log("Reached Attack Execution Turn. King Laurinus attacks the Player Units on the cursed tiles");
             foreach (var playerUnit in GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield)
             {
                 if (playerUnit.GetComponent<Unit>().ownedTile.currentTileCurseStatus == TileCurseStatus.cursed)
                 {
                     playerUnit.GetComponent<Unit>().HealthPoints -= deity.deitySpecialAttackPower;
-                    //Hard coded damage. Remember to create it as a variable that I can change on the King Laurinus Behaviour Scriptable Object.
 
                     playerUnit.GetComponent<Unit>().OnTakenDamage.Invoke(deity.deitySpecialAttackPower);
 
                     BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
-                    Debug.Log("King Laurinus executes Cursed Garden attack and provokes massive Damage on the Unit");
+                    Debug.Log("King Laurinus executes its Special Attack.");
                 }
             }
         }
