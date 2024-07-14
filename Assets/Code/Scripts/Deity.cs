@@ -43,17 +43,9 @@ public class Deity : MonoBehaviour
     public Sprite deityPortrait;
     public GameObject deityHealthBar;
 
-    //public delegate void DeityJudgment();
-    //public static event DeityJudgment OnDeityJudgment;
-
-    //public delegate void DeityJudgmentCounterUpdate(int judgmentTurnLimitNumber);
-    //public static event DeityJudgmentCounterUpdate OnDeityJudgmentCounterUpdate;
 
     public delegate void DeityNotificationUpdate(string deityNotificationText);
     public static event DeityNotificationUpdate OnDeityNotificationUpdate;
-
-    //public delegate void DeityFieldEffectActivation();
-    //public static event DeityFieldEffectActivation OnDeityFieldEffectActivation;
 
     public delegate void PlayerTurnSwap();
     public static event PlayerTurnSwap OnPlayerTurnSwap;
@@ -90,8 +82,8 @@ public class Deity : MonoBehaviour
     public void DeityBehaviour(string deityText)
     {
         StartCoroutine("EndDeityTurn");
-        Debug.Log("Deity Behaviour");
         deityBehavior.ExecuteBehavior(this);
+        Debug.Log("Deity Behaviour");
     }
 
     public void UpdateDeityHealthBar()
