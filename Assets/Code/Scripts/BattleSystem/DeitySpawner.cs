@@ -28,7 +28,7 @@ public class DeitySpawner : MonoBehaviour
 
             int deityRollFirstThreshold = 3;
             int deityRollSecondThreshold = 6;
-            if (deityRollFirstThreshold >= 3 && deityRollSecondThreshold <= 6)
+            if (deityRoll >= deityRollFirstThreshold && deityRoll <= deityRollSecondThreshold)
             {
                 DeitySelector();
                 Debug.Log("Rolled Deity arrival on battlefield");
