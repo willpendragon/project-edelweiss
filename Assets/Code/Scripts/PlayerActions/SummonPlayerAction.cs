@@ -44,15 +44,18 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
 
             var summonPosition = savedSelectedTile.transform.position + new Vector3(0, 3, 0);
             GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
-            currentActivePlayerUnit.linkedDeity = deityInstance.GetComponent<Deity>();
+            currentActivePlayerUnit.summonedLinkedDeity = deityInstance.GetComponent<Deity>();
             deityInstance.transform.localScale = new Vector3(2, 2, 2);
-            //deityPowerLoadingBarSliderIsActive = true;
 
             currentActivePlayerUnit.GetComponent<SummoningUIController>().SwitchButtonToPrayMode();
-            //22022024 This switches the Summon Button to Pray Mode only for the Active Player. Consider also spawning a Pray Button on the other Player Units.
+            //22022024 This switches the Summon Button to Pray Mode only for the Active Player.
             currentActivePlayerUnit.unitOpportunityPoints--;
             deityLimiter--;
             Debug.Log("Summoning Deity");
+        }
+        else if (currentActivePlayerUnit.summonedLinkedDeity != null)
+        {
+            Debug.Log("This Unit already has summoned a Deity on the Battlefield");
         }
         else
         {
