@@ -34,7 +34,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             float reducedDamage = attackPower; //* damageReductionFactor//
             enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>().PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
             OnBumperEnemyAttack("Bump", "Godling");
-            targetPlayerUnit.HealthPoints -= (reducedDamage);
+            targetPlayerUnit.TakeDamage(reducedDamage);
             targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
 
             //const float targetUnitReductionFactor = 0.05f;
@@ -129,6 +129,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             {
                 unit.ownedTile.detectedUnit = null;
                 unit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                //160720240901 Correct
                 GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
                 unit.ownedTile = destinationTile;
                 destinationTile.detectedUnit = unit.gameObject;
