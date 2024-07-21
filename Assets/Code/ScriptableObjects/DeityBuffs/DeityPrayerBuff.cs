@@ -16,4 +16,5 @@ public class DeityPrayerBuff : ScriptableObject
     public int buffAmount;
     public AffectedStat currentAffectedStat;
     public float deityPrayerBuffThreshold;
+
 }
