@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class PrayPlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -32,24 +33,30 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
     public void Execute()
     {
         Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        Deity linkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().linkedDeity;
-
+        Deity summonedLinkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().summonedLinkedDeity;
 
         if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity && currentActivePlayerUnit.unitOpportunityPoints > 0)
         {
-            Debug.Log("Praying for Deity");
             if (CheckLinkedDeityPrayerPower())
             {
+                BattleInterface.Instance.SetSpellNameOnNotificationPanel(summonedLinkedDeity.name, "is fulfilling the Prayer from" + currentActivePlayerUnit.unitTemplate.name);
                 currentActivePlayerUnit.unitOpportunityPoints--;
-                PerformDeityPowerUp(linkedDeity);
+                //PerformDeityPowerUp(linkedDeity);
+                summonedLinkedDeity.summoningBehaviour.ExecuteBehavior(summonedLinkedDeity);
+                Debug.Log("The Deity is fulfilling the Current Active User's prayer.");
+                ResetSummonBehaviour(currentActivePlayerUnit);
+                Destroy(summonedLinkedDeity.gameObject, 3);
+                Debug.Log("Summoned Deity disappears from the Battlefield.");
             }
             else
             {
+                BattleInterface.Instance.SetSpellNameOnNotificationPanel(currentActivePlayerUnit.unitTemplate.name, "is praying" + summonedLinkedDeity.name);
                 currentActivePlayerUnit.unitOpportunityPoints--;
                 OnPlayerPrayer();
 
                 // Plays the Prayer's SFX
                 currentActivePlayerUnit.battleFeedbackController.PlayPrayerSFX.Invoke();
+                Debug.Log("The Current Active Unit is praying to the Linked Deity");
             }
         }
         else
@@ -60,9 +67,9 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
 
     private bool CheckLinkedDeityPrayerPower()
     {
-        Deity linkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().linkedDeity;
+        Deity summonedLinkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().summonedLinkedDeity;
 
-        if (linkedDeity.deityPrayerPower >= linkedDeity.deityPrayerBuff.deityPrayerBuffThreshold)
+        if (summonedLinkedDeity.deityPrayerPower >= summonedLinkedDeity.deityPrayerBuff.deityPrayerBuffThreshold)
         {
             return true;
         }
@@ -72,26 +79,33 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
         }
     }
 
-    private void PerformDeityPowerUp(Deity linkedDeity)
+    private void ResetSummonBehaviour(Unit currentActivePlayerUnit)
     {
-        Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-
-        switch (linkedDeity.deityPrayerBuff.currentAffectedStat)
-        {
-            case DeityPrayerBuff.AffectedStat.MaxHP:
-                currentActivePlayerUnit.unitMaxHealthPoints += linkedDeity.deityPrayerBuff.buffAmount;
-                PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
-                break;
-            case DeityPrayerBuff.AffectedStat.MagicPower:
-                currentActivePlayerUnit.unitMagicPower += linkedDeity.deityPrayerBuff.buffAmount;
-                PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
-                break;
-            default:
-                Debug.LogError("Unsupported stat type");
-                break;
-        }
-
+        SummoningUIController currentActivePlayerUnitSummoningUIController = currentActivePlayerUnit.gameObject.GetComponent<SummoningUIController>();
+        currentActivePlayerUnitSummoningUIController.currentSummonPhase = SummoningUIController.SummonPhase.summoning;
+        currentActivePlayerUnitSummoningUIController.currentButton.GetComponentInChildren<Text>().text = "Summon";
     }
+
+    //private void PerformDeityPowerUp(Deity linkedDeity)
+    //{
+    //    Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
+    //    switch (linkedDeity.deityPrayerBuff.currentAffectedStat)
+    //    {
+    //        case DeityPrayerBuff.AffectedStat.MaxHP:
+    //            currentActivePlayerUnit.unitMaxHealthPoints += linkedDeity.deityPrayerBuff.buffAmount;
+    //            PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
+    //            break;
+    //        case DeityPrayerBuff.AffectedStat.MagicPower:
+    //            currentActivePlayerUnit.unitMagicPower += linkedDeity.deityPrayerBuff.buffAmount;
+    //            PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
+    //            break;
+    //        default:
+    //            Debug.LogError("Unsupported stat type");
+    //            break;
+    //    }
+
+    //}
 
     private void PlayBuffFeedback(Unit affectedUnit, Deity linkedDeity)
     {
