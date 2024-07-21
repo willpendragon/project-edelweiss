@@ -15,23 +15,24 @@ public class SummoningController : MonoBehaviour
     public Button useDeityAttack;
     public bool deityPowerLoadingBarSliderIsActive;
     public TileController summonAreaCenterTile;
+    public GameObject summonedLinkedDeityInstance;
 
     public delegate void SummoningRitual();
     public static event SummoningRitual OnSummoningRitual;
 
     public void OnEnable()
     {
-        BattleManager.OnChargeDeityPowerLoadingBar += IncreaseDeityPowerLoadingBar;
+        //BattleManager.OnChargeDeityPowerLoadingBar += IncreaseDeityPowerLoadingBar;
     }
     public void OnDisable()
     {
-        BattleManager.OnChargeDeityPowerLoadingBar -= IncreaseDeityPowerLoadingBar;
+        //BattleManager.OnChargeDeityPowerLoadingBar -= IncreaseDeityPowerLoadingBar;
     }
     public void Start()
     {
         if (currentDeity != null)
         {
-            UpdateDeityPowerLoadingBar();
+            //UpdateDeityPowerLoadingBar();
         }
     }
     public void SetSummoningCenter(TileController summonAreaCenter)
@@ -47,22 +48,21 @@ public class SummoningController : MonoBehaviour
     {
         GameObject currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         Deity linkedDeity = currentActivePlayerUnit.GetComponent<Unit>().linkedDeity;
-        if (linkedDeity != null)
+        if (linkedDeity != null && currentActivePlayerUnit.GetComponent<Unit>().unitManaPoints >= linkedDeity.summoningPrice)
         {
-            Debug.Log("Start of Summon Deity on Battlefield");
             int summoningRange = 2;
+
             foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(summonAreaCenterTile, summoningRange))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
             }
             currentActivePlayerUnit.GetComponent<Unit>().unitManaPoints -= linkedDeity.summoningPrice;
 
-            Debug.Log("Summoned Deity on Battlefield");
+            Debug.Log("Summoned Unit's Linked Deity on Battlefield");
 
             var summonPosition = summonAreaCenterTile.transform.position + new Vector3(0, 3, 0);
-            GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
-            deityInstance.transform.localScale = new Vector3(2, 2, 2);
-
+            summonedLinkedDeityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
+            summonedLinkedDeityInstance.transform.localScale = new Vector3(2, 2, 2);
         }
         else
         {
@@ -70,47 +70,47 @@ public class SummoningController : MonoBehaviour
         }
     }
 
-    // Obsolete, consider using again the Deity Attack
+    //// Obsolete, consider using again the Deity Attack
 
-    public void UpdateDeityPowerLoadingBar()
-    {
-        if (deityPowerLoadingBarSlider != null)
-        {
-            deityPowerLoadingBarSlider.value = 0;
-            deityPowerLoadingBarSlider.maxValue = 3;
-        }
-    }
+    //public void UpdateDeityPowerLoadingBar()
+    //{
+    //    if (deityPowerLoadingBarSlider != null)
+    //    {
+    //        deityPowerLoadingBarSlider.value = 0;
+    //        deityPowerLoadingBarSlider.maxValue = 3;
+    //    }
+    //}
 
-    public void UseDeityAttack()
-    {
-        //Play Deity Attack Feedback
-        deityAttackFeedback.Play();
-        Debug.Log("Unleashing Deity Attack on Battlefield");
+    //public void UseDeityAttack()
+    //{
+    //    //Play Deity Attack Feedback
+    //    deityAttackFeedback.Play();
+    //    Debug.Log("Unleashing Deity Attack on Battlefield");
 
-        //Remember to Apply Damage to Enemies
+    //    //Remember to Apply Damage to Enemies
 
-        //Reset Deity Power Loading Bar
-        deityPowerLoadingBarSlider.value = 0;
-        StartCoroutine("StopDeityAttackFeedback");
-    }
-    public void IncreaseDeityPowerLoadingBar()
-    {
-        if (deityPowerLoadingBarSliderIsActive == true)
-        {
-            deityPowerLoadingBarSlider.value += 1;
-        }
-    }
-    IEnumerator StopDeityAttackFeedback()
-    {
-        yield return new WaitForSeconds(deityAttackFeedbackTimeToDeactivation);
-        deityAttackFeedback.Stop();
-    }
-    public void CheckIfPowerLoadingBarSliderIsFull()
-    {
-        if (deityPowerLoadingBarSlider.value == deityPowerLoadingBarSlider.maxValue)
-        {
-            //Execute "Deity Attack is ready" feedback
-            useDeityAttack.interactable = true;
-        }
-    }
+    //    //Reset Deity Power Loading Bar
+    //    deityPowerLoadingBarSlider.value = 0;
+    //    StartCoroutine("StopDeityAttackFeedback");
+    //}
+    //public void IncreaseDeityPowerLoadingBar()
+    //{
+    //    if (deityPowerLoadingBarSliderIsActive == true)
+    //    {
+    //        deityPowerLoadingBarSlider.value += 1;
+    //    }
+    //}
+    //IEnumerator StopDeityAttackFeedback()
+    //{
+    //    yield return new WaitForSeconds(deityAttackFeedbackTimeToDeactivation);
+    //    deityAttackFeedback.Stop();
+    //}
+    //public void CheckIfPowerLoadingBarSliderIsFull()
+    //{
+    //    if (deityPowerLoadingBarSlider.value == deityPowerLoadingBarSlider.maxValue)
+    //    {
+    //        //Execute "Deity Attack is ready" feedback
+    //        useDeityAttack.interactable = true;
+    //    }
+    //}
 }
