@@ -27,7 +27,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             {
                 if (playerUnit.GetComponent<Unit>().ownedTile.currentTileCurseStatus == TileCurseStatus.cursed)
                 {
-                    playerUnit.GetComponent<Unit>().HealthPoints -= deity.deitySpecialAttackPower;
+                    playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
 
                     playerUnit.GetComponent<Unit>().OnTakenDamage.Invoke(deity.deitySpecialAttackPower);
 
