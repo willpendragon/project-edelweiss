@@ -38,6 +38,9 @@ public class TurnController : MonoBehaviour
     public delegate void BattleEnd(string battleEndMessage);
     public static event BattleEnd OnBattleEnd;
 
+    public delegate void ResetUnitUI();
+    public static event ResetUnitUI OnResetUnitUI;
+
     public float warFunds;
     public int enemiesKilledInCurrentBattle;
     public BattleManager battleManager;
@@ -174,6 +177,7 @@ public class TurnController : MonoBehaviour
                 Debug.Log("Enemy Party was defeated");
                 OnBattleEnd("Victory");
                 ResetTags();
+                OnResetUnitUI();
                 DeactivateActivePlayerUnitPanel();
                 UnlockNextLevel();
                 foreach (var player in playerUnitsOnBattlefield)
@@ -218,6 +222,7 @@ public class TurnController : MonoBehaviour
                 Debug.Log("Player Party was defeated");
                 OnBattleEnd("Defeat");
                 ResetTags();
+                OnResetUnitUI();
                 DeactivateActivePlayerUnitPanel();
 
                 //Activate Game Over UI
@@ -240,6 +245,7 @@ public class TurnController : MonoBehaviour
                 Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
                 OnBattleEnd("Victory");
                 ResetTags();
+                OnResetUnitUI();
                 DeactivateActivePlayerUnitPanel();
                 UnlockNextLevel();
                 foreach (var player in playerUnitsOnBattlefield)
@@ -261,6 +267,18 @@ public class TurnController : MonoBehaviour
             }
         }
     }
+    public void RunFromBattle()
+    {
+        Debug.Log("Player Party was defeated");
+        OnBattleEnd("Fleed");
+        OnResetUnitUI();
+        ResetTags();
+        DeactivateActivePlayerUnitPanel();
+
+        //Activate Game Over UI
+        //Active Game Over Flow
+    }
+
     public void ResetTags()
     {
         foreach (var player in GameManager.Instance.playerPartyMembersInstances)
@@ -290,14 +308,5 @@ public class TurnController : MonoBehaviour
         battleEndUIHandler.battleEndCrystalObtainedText.text = battleManager.captureCrystalsRewardPool.ToString();
     }
 
-    public void RunFromBattle()
-    {
-        Debug.Log("Player Party was defeated");
-        OnBattleEnd("Fleed");
-        ResetTags();
-        DeactivateActivePlayerUnitPanel();
-        //Activate Game Over UI
-        //Active Game Over Flow
-    }
 
 }
