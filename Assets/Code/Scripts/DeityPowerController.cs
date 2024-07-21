@@ -17,11 +17,11 @@ public class DeityPowerController : MonoBehaviour
     private void IncreaseDeityPower()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        if (activePlayerUnit != null)
+        if (activePlayerUnit != null && activePlayerUnit.summonedLinkedDeity != null)
         {
-            if (activePlayerUnit.linkedDeity.deityPrayerPower < activePlayerUnit.linkedDeity.deityPrayerBuff.deityPrayerBuffThreshold)
+            if (activePlayerUnit.summonedLinkedDeity.deityPrayerPower < activePlayerUnit.summonedLinkedDeity.deityPrayerBuff.deityPrayerBuffThreshold)
             {
-                activePlayerUnit.linkedDeity.deityPrayerPower++;
+                activePlayerUnit.summonedLinkedDeity.deityPrayerPower++;
                 OnPlayerUnitPraying();
                 Debug.Log("Deity Power Increases");
             }
