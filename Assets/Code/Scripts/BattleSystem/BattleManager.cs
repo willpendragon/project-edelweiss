@@ -28,7 +28,7 @@ public class BattleManager : MonoBehaviour
     public static BattleManager Instance { get; private set; }
 
     [SerializeField] GameObject battleMomentsScreen;
-    [SerializeField] float enemyTurnDuration;
+    //[SerializeField] float enemyTurnDuration;
     [SerializeField] BattleInterface battleInterface;
     [SerializeField] float battleMomentsScreenDeactivationTime;
 
@@ -61,8 +61,8 @@ public class BattleManager : MonoBehaviour
     public delegate void SavePlayerExperienceReward(float experienceReward);
     public static event SavePlayerExperienceReward OnSavePlayerExperienceReward;
 
-    public delegate void BattleEnd();
-    public static event BattleEnd OnBattleEnd;
+    //public delegate void BattleEnd();
+    //public static event BattleEnd OnBattleEnd;
 
     public delegate void BattleEndResultsScreen(string battleEndMessage);
     public static event BattleEndResultsScreen OnBattleEndResultsScreen;
