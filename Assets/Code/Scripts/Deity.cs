@@ -74,9 +74,9 @@ public class Deity : MonoBehaviour
     //Retrieves the Deity Behavior from a compatible Scriptable Object added in the Inspector.
     public void DeityBehaviour(string deityText)
     {
+        Debug.Log("Deity Behaviour Starts");
         StartCoroutine("EndDeityTurn");
         deityBehavior.ExecuteBehavior(this);
-        Debug.Log("Deity Behaviour");
     }
 
     public void UpdateDeityHealthBar()
