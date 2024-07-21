@@ -58,6 +58,7 @@ public class Unit : MonoBehaviour
     [Header("Deity Related")]
 
     public Deity linkedDeity;
+    public Deity summonedLinkedDeity;
     public string LinkedDeityId; // This will store the ID of the linked Deity
 
 
@@ -110,9 +111,26 @@ public class Unit : MonoBehaviour
 
     public void TakeDamage(float receivedDamage)
     {
-        HealthPoints -= receivedDamage;
+        // Calculate the effective damage after considering the shield points
+        float effectiveDamage = CalculateEffectiveDamage(receivedDamage, unitShieldPoints);
+
+        // Apply the effective damage to health points
+        HealthPoints -= effectiveDamage;
+
+        // Invoke the event with the received damage before mitigation
         OnTakenDamage.Invoke(receivedDamage);
-        Debug.Log("Unit receives Damage");
+
+        // Log the received and effective damage
+        Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
+    }
+
+    private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
+    {
+        // Example formula inspired by Pokémon-style damage mitigation
+        float damageMitigationPercentage = shieldPoints / (shieldPoints + 100); // Arbitrary scaling factor for shield effectiveness
+        float effectiveDamage = receivedDamage * (1 - damageMitigationPercentage);
+
+        return effectiveDamage;
     }
 
     public void SpendManaPoints(int spentManaAmount)
