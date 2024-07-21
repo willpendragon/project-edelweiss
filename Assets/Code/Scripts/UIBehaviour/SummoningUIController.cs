@@ -15,10 +15,12 @@ public class SummoningUIController : MonoBehaviour
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        TurnController.OnResetUnitUI += ResetButtonToSummonMode;
     }
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        TurnController.OnResetUnitUI -= ResetButtonToSummonMode;
     }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -74,6 +76,11 @@ public class SummoningUIController : MonoBehaviour
         currentSummonPhase = SummonPhase.praying;
         currentButton.GetComponentInChildren<Text>().text = "Pray";
         currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
+    }
+    public void ResetButtonToSummonMode()
+    {
+        Debug.Log("Reset Button to Summon Mode");
+        currentSummonPhase = SummonPhase.summoning;
     }
 
     public void SwitchTilesToPrayMode()
