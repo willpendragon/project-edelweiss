@@ -29,8 +29,6 @@ public class BattleInterface : MonoBehaviour
 
     public TextMeshProUGUI battleEndResult;
 
-
-
     private void Awake()
     {
         if (Instance == null)
@@ -73,12 +71,6 @@ public class BattleInterface : MonoBehaviour
         battlefieldTextNotifications.text = attackerName + " used " + meleeAttack;
         StartCoroutine("ResetBattleFieldTextNotification");
     }
-
-    //public void SetDeityJudgmentCounter(int judgmentTurnLimitNumber)
-    //{
-    //    deityJudgmentLimitText.text = judgmentTurnLimitNumber.ToString();
-    //    Debug.Log("Setting Judgment Turn Warning");
-    //}
     public void SetDeityNotification(string deityNotification)
     {
         battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
