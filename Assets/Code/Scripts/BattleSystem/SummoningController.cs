@@ -20,21 +20,6 @@ public class SummoningController : MonoBehaviour
     public delegate void SummoningRitual();
     public static event SummoningRitual OnSummoningRitual;
 
-    public void OnEnable()
-    {
-        //BattleManager.OnChargeDeityPowerLoadingBar += IncreaseDeityPowerLoadingBar;
-    }
-    public void OnDisable()
-    {
-        //BattleManager.OnChargeDeityPowerLoadingBar -= IncreaseDeityPowerLoadingBar;
-    }
-    public void Start()
-    {
-        if (currentDeity != null)
-        {
-            //UpdateDeityPowerLoadingBar();
-        }
-    }
     public void SetSummoningCenter(TileController summonAreaCenter)
     {
         summonAreaCenterTile = summonAreaCenter;
@@ -63,6 +48,7 @@ public class SummoningController : MonoBehaviour
             var summonPosition = summonAreaCenterTile.transform.position + new Vector3(0, 3, 0);
             summonedLinkedDeityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
             summonedLinkedDeityInstance.transform.localScale = new Vector3(2, 2, 2);
+
         }
         else
         {
@@ -70,47 +56,5 @@ public class SummoningController : MonoBehaviour
         }
     }
 
-    //// Obsolete, consider using again the Deity Attack
 
-    //public void UpdateDeityPowerLoadingBar()
-    //{
-    //    if (deityPowerLoadingBarSlider != null)
-    //    {
-    //        deityPowerLoadingBarSlider.value = 0;
-    //        deityPowerLoadingBarSlider.maxValue = 3;
-    //    }
-    //}
-
-    //public void UseDeityAttack()
-    //{
-    //    //Play Deity Attack Feedback
-    //    deityAttackFeedback.Play();
-    //    Debug.Log("Unleashing Deity Attack on Battlefield");
-
-    //    //Remember to Apply Damage to Enemies
-
-    //    //Reset Deity Power Loading Bar
-    //    deityPowerLoadingBarSlider.value = 0;
-    //    StartCoroutine("StopDeityAttackFeedback");
-    //}
-    //public void IncreaseDeityPowerLoadingBar()
-    //{
-    //    if (deityPowerLoadingBarSliderIsActive == true)
-    //    {
-    //        deityPowerLoadingBarSlider.value += 1;
-    //    }
-    //}
-    //IEnumerator StopDeityAttackFeedback()
-    //{
-    //    yield return new WaitForSeconds(deityAttackFeedbackTimeToDeactivation);
-    //    deityAttackFeedback.Stop();
-    //}
-    //public void CheckIfPowerLoadingBarSliderIsFull()
-    //{
-    //    if (deityPowerLoadingBarSlider.value == deityPowerLoadingBarSlider.maxValue)
-    //    {
-    //        //Execute "Deity Attack is ready" feedback
-    //        useDeityAttack.interactable = true;
-    //    }
-    //}
 }
