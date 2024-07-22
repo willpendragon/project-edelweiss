@@ -67,8 +67,8 @@ public class BattleManager : MonoBehaviour
     public delegate void BattleEndResultsScreen(string battleEndMessage);
     public static event BattleEndResultsScreen OnBattleEndResultsScreen;
 
-    public delegate void ChargeDeityPowerLoadingBar();
-    public static event ChargeDeityPowerLoadingBar OnChargeDeityPowerLoadingBar;
+    //public delegate void ChargeDeityPowerLoadingBar();
+    //public static event ChargeDeityPowerLoadingBar OnChargeDeityPowerLoadingBar;
 
     public UnityEvent PlayerTurnStarts;
     public UnityEvent PlayerTurnEnds;
@@ -131,7 +131,7 @@ public class BattleManager : MonoBehaviour
         UpdateTurnCounter();
         Debug.Log("Turn Passed to Player");
         PlayerTurnStarts.Invoke();
-        OnChargeDeityPowerLoadingBar();
+        //OnChargeDeityPowerLoadingBar();
     }
     public bool AllEnemiesOpportunityZero()
     {
