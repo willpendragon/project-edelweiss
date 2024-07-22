@@ -86,27 +86,6 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
         currentActivePlayerUnitSummoningUIController.currentButton.GetComponentInChildren<Text>().text = "Summon";
     }
 
-    //private void PerformDeityPowerUp(Deity linkedDeity)
-    //{
-    //    Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-
-    //    switch (linkedDeity.deityPrayerBuff.currentAffectedStat)
-    //    {
-    //        case DeityPrayerBuff.AffectedStat.MaxHP:
-    //            currentActivePlayerUnit.unitMaxHealthPoints += linkedDeity.deityPrayerBuff.buffAmount;
-    //            PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
-    //            break;
-    //        case DeityPrayerBuff.AffectedStat.MagicPower:
-    //            currentActivePlayerUnit.unitMagicPower += linkedDeity.deityPrayerBuff.buffAmount;
-    //            PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
-    //            break;
-    //        default:
-    //            Debug.LogError("Unsupported stat type");
-    //            break;
-    //    }
-
-    //}
-
     private void PlayBuffFeedback(Unit affectedUnit, Deity linkedDeity)
     {
         Debug.Log("Playing Buff Feedback");
