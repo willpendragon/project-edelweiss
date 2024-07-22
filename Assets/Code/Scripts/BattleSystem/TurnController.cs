@@ -41,6 +41,9 @@ public class TurnController : MonoBehaviour
     public delegate void ResetUnitUI();
     public static event ResetUnitUI OnResetUnitUI;
 
+    public delegate void ResetSummonBuffs();
+    public static event ResetSummonBuffs OnResetSummonBuffs;
+
     public float warFunds;
     public int enemiesKilledInCurrentBattle;
     public BattleManager battleManager;
@@ -157,11 +160,12 @@ public class TurnController : MonoBehaviour
         if (!isAnyPlayerUnitAlive) // If no units are alive, then the player party has been defeated.
         {
             Debug.Log("Player Party was defeated");
-            OnBattleEnd("Player Party was defeated");
-            // Activate Game Over UI
-            // Active Game Over Flow
-            ResetTags();
-            DeactivateActivePlayerUnitPanel();
+            OnBattleEnd("Defeat");
+            //ResetTags();
+            //OnResetUnitUI();
+            //DeactivateActivePlayerUnitPanel();
+            //OnResetSummonBuffs();
+            ResetBattleToInitialStatus();
         }
         else
         {
@@ -176,9 +180,8 @@ public class TurnController : MonoBehaviour
             {
                 Debug.Log("Enemy Party was defeated");
                 OnBattleEnd("Victory");
-                ResetTags();
-                OnResetUnitUI();
-                DeactivateActivePlayerUnitPanel();
+                ResetBattleToInitialStatus();
+
                 UnlockNextLevel();
                 foreach (var player in playerUnitsOnBattlefield)
                 {
@@ -195,20 +198,10 @@ public class TurnController : MonoBehaviour
                         Debug.Log("Adding enemies to kill count");
                     }
                 }
-
-                gameStatsManager.captureCrystalsCount += BattleManager.Instance.captureCrystalsRewardPool;
-
-                gameStatsManager.SaveEnemiesKilled();
-                gameStatsManager.SaveCharacterData();
-                gameStatsManager.SaveWarFunds(warFunds);
-                gameStatsManager.SaveUsedSingleTargetSpells();
-                gameStatsManager.SaveCaptureCrystalsCount();
-                Debug.Log("Saving Character Stats Data");
+                ApplyRewardsAndSave(gameStatsManager);
 
                 UpdateBattleEndUIPanel();
 
-                //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
-                //Saving each Player's Health Points, Coins and Experience Rewards
 
                 //Activate Game Over UI
                 //Active Game Over Flow
@@ -221,19 +214,15 @@ public class TurnController : MonoBehaviour
             {
                 Debug.Log("Player Party was defeated");
                 OnBattleEnd("Defeat");
-                ResetTags();
-                OnResetUnitUI();
-                DeactivateActivePlayerUnitPanel();
-
-                //Activate Game Over UI
-                //Active Game Over Flow
+                //ResetTags();
+                //OnResetUnitUI();
+                //DeactivateActivePlayerUnitPanel();
+                //OnResetSummonBuffs();
+                ResetBattleToInitialStatus();
             }
             else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
             {
                 Debug.Log("Player Party is still in game");
-
-                //Activate Game Over UI
-                //Active Game Over Flow
             }
         }
         else if (battleManager.currentBattleType == BattleType.battleWithDeity)
@@ -244,9 +233,11 @@ public class TurnController : MonoBehaviour
 
                 Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
                 OnBattleEnd("Victory");
-                ResetTags();
-                OnResetUnitUI();
-                DeactivateActivePlayerUnitPanel();
+                //ResetTags();
+                //OnResetUnitUI();
+                //DeactivateActivePlayerUnitPanel();
+                //OnResetSummonBuffs();
+                ResetBattleToInitialStatus();
                 UnlockNextLevel();
                 foreach (var player in playerUnitsOnBattlefield)
                 {
@@ -262,8 +253,11 @@ public class TurnController : MonoBehaviour
             {
                 Debug.Log("Player Party was defeated by the Deity");
                 OnBattleEnd("Defeat");
-                ResetTags();
-                DeactivateActivePlayerUnitPanel();
+                //ResetTags();
+                //OnResetUnitUI();
+                //DeactivateActivePlayerUnitPanel();
+                //OnResetSummonBuffs();
+                ResetBattleToInitialStatus();
             }
         }
     }
@@ -271,12 +265,26 @@ public class TurnController : MonoBehaviour
     {
         Debug.Log("Player Party was defeated");
         OnBattleEnd("Fleed");
-        OnResetUnitUI();
-        ResetTags();
-        DeactivateActivePlayerUnitPanel();
+        //OnResetUnitUI();
+        //ResetTags();
+        //DeactivateActivePlayerUnitPanel();
+        //OnResetSummonBuffs();
+        ResetBattleToInitialStatus();
+    }
 
-        //Activate Game Over UI
-        //Active Game Over Flow
+    public void ApplyRewardsAndSave(GameStatsManager gameStatsManager)
+    {
+        //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
+        //Saving each Player's Health Points, Coins and Experience Rewards
+
+        gameStatsManager.captureCrystalsCount += BattleManager.Instance.captureCrystalsRewardPool;
+        gameStatsManager.SaveEnemiesKilled();
+        gameStatsManager.SaveCharacterData();
+        gameStatsManager.SaveWarFunds(warFunds);
+        gameStatsManager.SaveUsedSingleTargetSpells();
+        gameStatsManager.SaveCaptureCrystalsCount();
+        Debug.Log("Saving Character Stats Data");
+
     }
 
     public void ResetTags()
@@ -308,5 +316,11 @@ public class TurnController : MonoBehaviour
         battleEndUIHandler.battleEndCrystalObtainedText.text = battleManager.captureCrystalsRewardPool.ToString();
     }
 
-
+    public void ResetBattleToInitialStatus()
+    {
+        ResetTags();
+        OnResetUnitUI();
+        DeactivateActivePlayerUnitPanel();
+        OnResetSummonBuffs();
+    }
 }
