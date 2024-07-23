@@ -4,7 +4,6 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class AchievementsManager : MonoBehaviour
 {
@@ -45,7 +44,7 @@ public class AchievementsManager : MonoBehaviour
         // Define the chance of spawning the deity (e.g., 10% chance)
         // Beware, Magic Number
         double spawnChance = 0.5;
-       
+
         // Check if there is a deity to spawn and make a probability roll
         if (achievement.spawnableDeity != null && localRandom.NextDouble() <= spawnChance)
         {

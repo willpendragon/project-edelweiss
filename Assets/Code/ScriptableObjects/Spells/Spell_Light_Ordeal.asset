@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Spell_Light_Ordeal
   m_EditorClassIdentifier: 
   spellName: Light Ordeal
-  damage: 30
-  manaPointsCost: 5
+  damage: 15
+  manaPointsCost: 10
   opportunityPointsCost: 2
   alignment: 4
   spellType: 1
+  spellSecundaryEffect: 0
   spellVFX: {fileID: 6649555857121154940, guid: 4ab3af5f464f1bc428922789c2cb081f, type: 3}
   spellVFXOffset: {x: 0, y: 5, z: 0}
   criticalHitChance: 0.1

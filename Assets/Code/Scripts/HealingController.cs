@@ -10,17 +10,17 @@ public class HealingController : MonoBehaviour
     public delegate void SavePoint(float savedPlayerHealth);
     public static event SavePoint OnSavePoint;
 
-    public Player player;
+    //public Player player;
     [SerializeField] float healingAmount;
     [SerializeField] float healingPrice;
 
-    public void HealPlayer()
-    {
-        if (player.coins > 0 && player.coins >= healingAmount)
-        {
-            player.healthPoints += healingAmount;
-            player.coins -= healingPrice;
-            OnSavePoint(player.healthPoints);
-        }
-    }
+    //public void HealPlayer()
+    //{
+    //    if (player.coins > 0 && player.coins >= healingAmount)
+    //    {
+    //        player.healthPoints += healingAmount;
+    //        player.coins -= healingPrice;
+    //        OnSavePoint(player.healthPoints);
+    //    }
+    //}
 }

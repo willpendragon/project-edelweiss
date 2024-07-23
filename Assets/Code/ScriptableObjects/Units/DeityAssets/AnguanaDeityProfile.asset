@@ -15,16 +15,16 @@ MonoBehaviour:
   unitName: Anguana
   unitHealthPoints: 1800
   unitMaxHealthPoints: 1800
-  unitManaPoints: 0
-  unitMaxManaPoints: 0
-  unitOpportunityPoints: 0
-  unitShieldPoints: 0
-  meleeAttackPower: 0
-  unitMagicPower: 0
+  unitManaPoints: 10
+  unitMaxManaPoints: 10
+  unitOpportunityPoints: 10
+  unitShieldPoints: 10
+  meleeAttackPower: 10
+  unitMagicPower: 10
   spellsList: []
   unitCoinsReward: 0
   unitExperiencePointsReward: 0
   unitPortrait: {fileID: 21300000, guid: 8f298345a85fe8d40a479ea7bd37db74, type: 3}
-  unitMiniPortrait: {fileID: 0}
+  unitMiniPortrait: {fileID: 21300000, guid: 1e599f2f687d217409c0c3a5b04aefd9, type: 3}
   unitCalloutPortrait: {fileID: 0}
   unitCriticalHitVoice: {fileID: 0}

@@ -550,7 +550,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleMomentsScreen: {fileID: 463913747}
-  enemyTurnDuration: 4.5
   battleInterface: {fileID: 767884334}
   battleMomentsScreenDeactivationTime: 1
   deityAchievementsController: {fileID: 0}
@@ -638,7 +637,7 @@ MonoBehaviour:
   enemiesInQueue: []
   currentEnemyTurnIndex: 0
   battleManager: {fileID: 90211749}
-  singleEnemyturnDuration: 1.5
+  singleEnemyturnDuration: 2
   deity: {fileID: 0}
 --- !u!114 &90211752
 MonoBehaviour:
@@ -3443,7 +3442,7 @@ GameObject:
   - component: {fileID: 739119494}
   - component: {fileID: 739119495}
   m_Layer: 5
-  m_Name: Battlefield NotificationsContainer
+  m_Name: BattlefieldNotificationsContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7948,6 +7947,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1739556450}
   m_CullTransparentMesh: 1
+--- !u!1 &1745898677
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1745898679}
+  - component: {fileID: 1745898678}
+  m_Layer: 0
+  m_Name: DeitySummoningBuffsController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1745898678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745898677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8c09e68eb242a945b95f83e8f13360d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1745898679
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745898677}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.0520344, y: 1.306315, z: 6.3860073}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1766102751
 GameObject:
   m_ObjectHideFlags: 0
@@ -9595,6 +9638,7 @@ SceneRoots:
   - {fileID: 635511267}
   - {fileID: 263591584}
   - {fileID: 1197766510}
+  - {fileID: 1745898679}
   - {fileID: 72223943}
   - {fileID: 103291618}
   - {fileID: 959631476}

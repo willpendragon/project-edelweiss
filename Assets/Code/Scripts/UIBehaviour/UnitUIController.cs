@@ -43,7 +43,7 @@ public class UnitUIController : MonoBehaviour
 
     public void SetBuffCounter(string receivedBuff)
     {
-        if (unitBuffCounter != null && unitBuffCounterAnimator != null)
+        if (this.gameObject.GetComponent<Unit>().linkedDeity != null && unitBuffCounter != null && unitBuffCounterAnimator != null)
         {
             unitBuffCounter.text = receivedBuff;
             unitBuffCounterAnimator.SetTrigger("activate_buff_counter");

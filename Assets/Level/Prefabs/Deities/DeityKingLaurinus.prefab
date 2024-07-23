@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3193659577510601186}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3348349630364506730}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &3413119085260301697
 AudioSource:
@@ -156,6 +156,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3348349630364506734}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5.2338, y: 5.2338, z: 5.2338}
@@ -164,7 +165,6 @@ Transform:
   - {fileID: 7975233190445547534}
   - {fileID: 1936697732298262016}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3348349630364506733
 MeshFilter:
@@ -229,17 +229,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 240bede4-13c3-4ae1-a9f2-3a0925297baf
-  sinnersList: []
   enmity: 0
   hatedSpellAlignments: 02000000
   enmityThreshold: 4
   deityBehavior: {fileID: 11400000, guid: 1a06f3618540056499d1e486d9c85b97, type: 2}
+  summoningBehaviour: {fileID: 11400000, guid: bdbff392e5094494193f767007d0503f, type: 2}
   deityPrayerBuff: {fileID: 11400000, guid: 877944df237f9b14084c6a04dc048829, type: 2}
   battleManager: {fileID: 0}
   deitySpecialAttackPower: 25
   summoningPrice: 50
   deityPrayerPower: 0
-  deityPrayerPowerThreshold: 3
   deityAttackNotification: {fileID: 0}
   battleInterface: {fileID: 0}
   deityAttackVFX: {fileID: 7005278960792100175, guid: a718b9300d9d5e645918850cfa72fec1, type: 3}
@@ -277,11 +276,13 @@ MonoBehaviour:
   unitExperiencePoints: 0
   coinsReward: 1000000
   experiencePointsReward: 0
+  unitAttackPower: 0
   unitMagicPower: 0
   currentUnitLifeCondition: 1
   unitStatusController: {fileID: 0}
   fieldPrizeController: {fileID: 0}
   linkedDeity: {fileID: 0}
+  summonedLinkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 0}
   unitProfilePanel: {fileID: 0}
@@ -326,6 +327,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 3348349630364506730}
     m_Modifications:
     - target: {fileID: 4673050221336721577, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
@@ -397,6 +399,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
 --- !u!4 &7975233190445547534 stripped
 Transform:

@@ -46,6 +46,7 @@ public class Unit : MonoBehaviour
     public float unitExperiencePoints;
     public float coinsReward;
     public float experiencePointsReward;
+    public float unitAttackPower;
     public float unitMagicPower;
 
     [Header("Gameplay Elements")]
@@ -100,6 +101,8 @@ public class Unit : MonoBehaviour
             unitMaxManaPoints = unitTemplate.unitManaPoints;
             unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
             unitShieldPoints = unitTemplate.unitShieldPoints;
+
+            unitAttackPower = unitTemplate.meleeAttackPower;
             unitMagicPower = unitTemplate.unitMagicPower;
 
             currentUnitLifeCondition = UnitLifeCondition.unitAlive;

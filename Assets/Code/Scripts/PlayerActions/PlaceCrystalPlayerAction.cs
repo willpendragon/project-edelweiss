@@ -14,8 +14,6 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
     private System.Random localRandom = new System.Random(); // Local random number generator
 
     private const int ManaCost = 20;
-    private const int CaptureDifficulty = 20; // Adjusted for a low to medium capture probability
-    private const int MaxCaptureRoll = 11; // Max roll value to determine capture outcome
 
     public delegate void BattleEndCapturedDeity(string battleEndMessage);
     public static event BattleEndCapturedDeity OnBattleEndCapturedDeity;
@@ -70,7 +68,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayPlaceCrystalSFX.Invoke();
                 activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
 
-                if (DeityCaptureRoll() > CaptureDifficulty)
+                if (AttemptCapture())
                 {
                     Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
                     Debug.Log("Deity was captured");
@@ -80,7 +78,6 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                     turnController.ResetTags();
                     turnController.UnlockNextLevel();
                     gameStatsManager.SaveCaptureCrystalsCount();
-
 
                     CreateDictionaryEntry(capturedUnboundDeity);
                     GameManager.Instance.ApplyDeityLinks();
@@ -120,12 +117,39 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
         // Logic to handle deselection if needed
     }
 
-    public int DeityCaptureRoll()
+    private bool AttemptCapture()
     {
-        int deityCaptureRoll = localRandom.Next(0, MaxCaptureRoll);
-        GameObject[] captureCrystalsOnBattlefield = GameObject.FindGameObjectsWithTag("CaptureCrystal");
-        deityCaptureRoll = deityCaptureRoll * captureCrystalsOnBattlefield.Length;
-        return deityCaptureRoll;
+        Deity deity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
+        if (deity == null)
+        {
+            Debug.LogError("No deity found for capture attempt.");
+            return false;
+        }
+
+        int maxHP = deity.gameObject.GetComponent<Unit>().unitTemplate.unitMaxHealthPoints;
+        int currentHP = deity.gameObject.GetComponent<Unit>().unitTemplate.unitHealthPoints;
+        int healthPercentage = (int)(((float)currentHP / maxHP) * 100);
+
+        // Calculate the capture probability
+        float captureProbability = 0.1f; // Default probability
+        switch (healthPercentage)
+        {
+            case <= 30:
+                captureProbability = 0.6f; // 60% chance to capture if below 30% HP
+                break;
+            case <= 60:
+                captureProbability = 0.3f; // 30% chance to capture if between 31% and 60% HP
+                break;
+            default:
+                captureProbability = 0.1f; // 10% chance to capture if above 60% HP
+                break;
+        }
+
+        // Generate a random number between 0 and 1
+        float captureRoll = (float)localRandom.NextDouble();
+
+        // Return true if captureRoll is less than captureProbability, indicating a successful capture
+        return captureRoll < captureProbability;
     }
 
     public void CreateDictionaryEntry(Deity capturedDeity)

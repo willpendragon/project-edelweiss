@@ -235,7 +235,7 @@ MonoBehaviour:
   hatedSpellAlignments: 04000000
   enmityThreshold: 4
   deityBehavior: {fileID: 11400000, guid: 0372a198e5909a349b294db374d84b0e, type: 2}
-  summoningBehaviour: {fileID: 0}
+  summoningBehaviour: {fileID: 11400000, guid: bdbff392e5094494193f767007d0503f, type: 2}
   deityPrayerBuff: {fileID: 11400000, guid: 877944df237f9b14084c6a04dc048829, type: 2}
   battleManager: {fileID: 0}
   deitySpecialAttackPower: 35
@@ -283,6 +283,7 @@ MonoBehaviour:
   unitStatusController: {fileID: 0}
   fieldPrizeController: {fileID: 0}
   linkedDeity: {fileID: 0}
+  summonedLinkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 0}
   unitProfilePanel: {fileID: 0}

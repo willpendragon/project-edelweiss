@@ -16,7 +16,7 @@ public class EnemyAgent : MonoBehaviour
 
     [Header("Gameplay Logic")]
     //To be reworked. Player is a Unit now.
-    public Player player;
+    //public Player player;
     public int opportunity;
     [SerializeField] BattleManager battleManager;
     [SerializeField] int minEnemyMoveRollRange;
