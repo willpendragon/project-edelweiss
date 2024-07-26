@@ -4,8 +4,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
 using System.Linq;
-using Unity.VisualScripting;
-
 public class EnemyAgent : MonoBehaviour
 {
 
@@ -39,11 +37,11 @@ public class EnemyAgent : MonoBehaviour
     public int currentXCoordinate;
     public int currentYCoordinate;
 
-    public delegate void ExperienceRewardDelegate(float applicableExperienceReward);
-    public static event ExperienceRewardDelegate OnExperienceReward;
+    //public delegate void ExperienceRewardDelegate(float applicableExperienceReward);
+    //public static event ExperienceRewardDelegate OnExperienceReward;
 
-    public delegate void CoinsRewardDelegate(float applicableCoinReward);
-    public static event CoinsRewardDelegate OnCoinsReward;
+    //public delegate void CoinsRewardDelegate(float applicableCoinReward);
+    //public static event CoinsRewardDelegate OnCoinsReward;
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
