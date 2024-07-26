@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fefbf6998d53fe45ba97e63239c2b6a, type: 3}
-  m_Name: Randomized_Level_Test
+  m_Name: Level_13
   m_EditorClassIdentifier: 
   levelNumber: 0
-  minEnemyPoolSize: 2
-  maxEnemyPoolSize: 5
+  minEnemyPoolSize: 8
+  maxEnemyPoolSize: 15
   enemyWeights:
   - enemyType: 0
     weight: 2
   - enemyType: 1
-    weight: 2
+    weight: 4
   - enemyType: 2
-    weight: 8
+    weight: 5
