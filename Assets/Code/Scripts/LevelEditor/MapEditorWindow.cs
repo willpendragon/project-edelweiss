@@ -38,6 +38,9 @@ public class MapEditorWindow : EditorWindow
         SceneView.duringSceneGui -= OnSceneGUI;
     }
 
+    private Vector2Int lastGridPosition = Vector2Int.one * int.MinValue;
+
+
     private void OnGUI()
     {
         GUILayout.Label("Map Settings", EditorStyles.boldLabel);
@@ -83,46 +86,59 @@ public class MapEditorWindow : EditorWindow
 
     private void OnSceneGUI(SceneView sceneView)
     {
-        Handles.color = Color.green;
-
-        foreach (var tile in tiles.Keys)
         {
-            Vector3 tilePosition = new Vector3(tile.x * tileOffsetX, 0, tile.y * tileOffsetY);
-            Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
-        }
+            Handles.color = Color.green;
 
-        // Check if Shift is pressed along with the left mouse button
-        if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
-        {
-            Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+            foreach (var tile in tiles.Keys)
+            {
+                Vector3 tilePosition = new Vector3(tile.x * tileOffsetX, 0, tile.y * tileOffsetY);
+                Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
+            }
+
+            Event currentEvent = Event.current;
+            Ray ray = HandleUtility.GUIPointToWorldRay(currentEvent.mousePosition);
             Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+
             if (groundPlane.Raycast(ray, out float enter))
             {
                 Vector3 hitPoint = ray.GetPoint(enter);
                 Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
 
-                if (isPlacingTile)
+                if (currentEvent.type == EventType.MouseDown || currentEvent.type == EventType.MouseDrag)
                 {
-                    PlaceTile(gridPos, selectedTileType);
-                    Event.current.Use(); // Consume the event to prevent default selection
+                    if (gridPos != lastGridPosition)
+                    {
+                        if (currentEvent.button == 0 && isPlacingTile)
+                        {
+                            PlaceTile(gridPos, selectedTileType);
+                        }
+                        else if (currentEvent.button == 1 && isDeletingTile)
+                        {
+                            DeleteTile(gridPos);
+                        }
+                        lastGridPosition = gridPos;
+                    }
+                    currentEvent.Use(); // Consume the event
                 }
-            }
-        }
-        else if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
-        {
-            Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-            if (groundPlane.Raycast(ray, out float enter))
-            {
-                Vector3 hitPoint = ray.GetPoint(enter);
-                Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
 
-                if (isDeletingTile)
+                if (currentEvent.type == EventType.MouseUp)
                 {
-                    DeleteTile(gridPos);
-                    Event.current.Use(); // Consume the event to prevent default selection
+                    lastGridPosition = Vector2Int.one * int.MinValue; // Reset to an invalid position
                 }
             }
+
+            // Add a visual guide for the grid
+            Handles.color = Color.cyan;
+            for (int x = 0; x < gridWidth; x++)
+            {
+                for (int y = 0; y <= gridHeight; y++)
+                {
+                    Vector3 tilePosition = new Vector3(x * tileOffsetX, 0, y * tileOffsetY);
+                    Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
+                }
+            }
+
+            SceneView.RepaintAll();
         }
 
         // Add a visual guide for the grid
