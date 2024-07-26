@@ -20,6 +20,8 @@ public class CameraDistanceController : MonoBehaviour
         // Update the list of units on the battlefield.
         unitsOnBattlefield.Clear();
         unitsOnBattlefield.AddRange(FindGameObjectsInLayer(LayerMask.NameToLayer("Unit")));
+        unitsOnBattlefield.AddRange(FindGameObjectsInLayer(LayerMask.NameToLayer("UnitMapIcon")));
+
 
         // Sort the list of units by their distance from the camera. The unit farthest from the camera gets the highest sorting order.
         unitsOnBattlefield.Sort((unit1, unit2) =>
@@ -30,7 +32,8 @@ public class CameraDistanceController : MonoBehaviour
         // so it's rendered on top of others, and so on.
         for (int i = 0; i < unitsOnBattlefield.Count; i++)
         {
-            unitsOnBattlefield[i].GetComponentInChildren<SpriteRenderer>().sortingOrder = i;
+            //160720240901 Correct
+            //unitsOnBattlefield[i].GetComponentInChildren<SpriteRenderer>().sortingOrder = i;
         }
     }
 
