@@ -91,7 +91,8 @@ public class MapEditorWindow : EditorWindow
             Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
         }
 
-        if (Event.current.type == EventType.MouseDown && (Event.current.button == 0 || Event.current.button == 1))
+        // Check if Shift is pressed along with the left mouse button
+        if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
         {
             Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
             Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
@@ -100,23 +101,35 @@ public class MapEditorWindow : EditorWindow
                 Vector3 hitPoint = ray.GetPoint(enter);
                 Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
 
-                if (isPlacingTile && Event.current.button == 0)
+                if (isPlacingTile)
                 {
                     PlaceTile(gridPos, selectedTileType);
-                }
-                else if (isDeletingTile && Event.current.button == 1)
-                {
-                    DeleteTile(gridPos);
+                    Event.current.Use(); // Consume the event to prevent default selection
                 }
             }
-            Event.current.Use();
+        }
+        else if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
+        {
+            Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+            if (groundPlane.Raycast(ray, out float enter))
+            {
+                Vector3 hitPoint = ray.GetPoint(enter);
+                Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
+
+                if (isDeletingTile)
+                {
+                    DeleteTile(gridPos);
+                    Event.current.Use(); // Consume the event to prevent default selection
+                }
+            }
         }
 
         // Add a visual guide for the grid
         Handles.color = Color.cyan;
         for (int x = 0; x < gridWidth; x++)
         {
-            for (int y = 0; y <= gridHeight; y++)  // Fixed: should be y <= gridHeight
+            for (int y = 0; y <= gridHeight; y++)
             {
                 Vector3 tilePosition = new Vector3(x * tileOffsetX, 0, y * tileOffsetY);
                 Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
@@ -126,10 +139,11 @@ public class MapEditorWindow : EditorWindow
         SceneView.RepaintAll();
     }
 
+
     private Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPosition)
     {
-        int x = Mathf.FloorToInt(worldPosition.x / tileOffsetX);
-        int y = Mathf.FloorToInt(worldPosition.z / tileOffsetY);
+        int x = Mathf.FloorToInt((worldPosition.x + tileOffsetX / 2f) / tileOffsetX);
+        int y = Mathf.FloorToInt((worldPosition.z + tileOffsetY / 2f) / tileOffsetY);
         return new Vector2Int(x, y);
     }
 
