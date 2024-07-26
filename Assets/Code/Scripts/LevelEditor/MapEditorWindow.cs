@@ -93,11 +93,22 @@ public class MapEditorWindow : EditorWindow
 
         if (Event.current.type == EventType.MouseDown && (Event.current.button == 0 || Event.current.button == 1))
         {
-            Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-            if (groundPlane.Raycast(ray, out float enter))
+            //Ray ray = SceneView.lastActiveSceneView.camera.ScreenPointToRay(Input.mousePosition);
+            Vector3 rayOrigin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            rayOrigin.y = 100;
+
+            Vector3 rayDirection = Vector3.down;
+
+            //Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+            Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, float.MaxValue);
             {
-                Vector3 hitPoint = ray.GetPoint(enter);
+                Vector3 hitPoint = hitInfo.point;
+                if(hitInfo.transform == null)
+                {
+                    hitPoint = hitInfo.point;
+                    hitPoint.y = 0;
+                }
+
                 Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
 
                 if (isPlacingTile && Event.current.button == 0)
