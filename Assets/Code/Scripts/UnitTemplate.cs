@@ -16,15 +16,20 @@ public class UnitTemplate : ScriptableObject
     public int unitMaxManaPoints;
     public int unitOpportunityPoints;
 
+    public int unitMovemementLimit;
+
     public int unitShieldPoints;
     public float meleeAttackPower;
     public float unitMagicPower;
 
+    public float unitMeleeAttackBaseDamage;
+
     [Header("Gameplay")]
 
     public List<Spell> spellsList;
-    public float unitCoinsReward;
+    public Vector2 coinsRewardRange;
     public float unitExperiencePointsReward;
+
 
 
     [Header("Visuals")]
