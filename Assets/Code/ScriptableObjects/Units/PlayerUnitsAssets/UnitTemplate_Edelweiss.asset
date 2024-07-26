@@ -13,17 +13,19 @@ MonoBehaviour:
   m_Name: UnitTemplate_Edelweiss
   m_EditorClassIdentifier: 
   unitName: Edelweiss
-  unitHealthPoints: 500
-  unitMaxHealthPoints: 500
-  unitManaPoints: 50
-  unitMaxManaPoints: 50
+  unitHealthPoints: 150
+  unitMaxHealthPoints: 150
+  unitManaPoints: 80
+  unitMaxManaPoints: 80
   unitOpportunityPoints: 4
-  unitShieldPoints: 0
-  meleeAttackPower: 4
-  unitMagicPower: 10
+  unitMovemementLimit: 5
+  unitShieldPoints: 20
+  meleeAttackPower: 7
+  unitMagicPower: 2.5
+  unitMeleeAttackBaseDamage: 1.5
   spellsList:
-  - {fileID: 11400000, guid: 3948a3c4f71c31643be6797ac9bfdfe1, type: 2}
-  unitCoinsReward: 0
+  - {fileID: 11400000, guid: eb9c1d71abcc4fc4eb07b21af5c1fd68, type: 2}
+  coinsRewardRange: {x: 0, y: 0}
   unitExperiencePointsReward: 0
   unitPortrait: {fileID: 954586422, guid: d268698e4c801414880837311d66cfb6, type: 3}
   unitMiniPortrait: {fileID: 21300000, guid: 9403ec44ea8adfe40ae3d4d2be0147ca, type: 3}

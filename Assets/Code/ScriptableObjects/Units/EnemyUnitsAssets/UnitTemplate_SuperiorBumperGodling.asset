@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9bf9d7c58a60514f82f4e8516356b1b, type: 3}
-  m_Name: BumperGodlingTemplate
+  m_Name: UnitTemplate_SuperiorBumperGodling
   m_EditorClassIdentifier: 
-  unitName: Stunner Godling
-  unitHealthPoints: 10
-  unitMaxHealthPoints: 10
-  unitManaPoints: 10
-  unitMaxManaPoints: 10
-  unitOpportunityPoints: 10
+  unitName: Superior Bumper Godling
+  unitHealthPoints: 60
+  unitMaxHealthPoints: 60
+  unitManaPoints: 0
+  unitMaxManaPoints: 0
+  unitOpportunityPoints: 3
+  unitMovemementLimit: 10
   unitShieldPoints: 10
-  meleeAttackPower: 2
-  unitMagicPower: 2
+  meleeAttackPower: 35
+  unitMagicPower: 0
   spellsList: []
-  unitCoinsReward: 200
+  coinsRewardRange: {x: 15, y: 25}
   unitExperiencePointsReward: 300
-  unitPortrait: {fileID: 21300000, guid: 2ee8ead0aa6dca04f80c73082055e9c9, type: 3}
+  unitPortrait: {fileID: 21300000, guid: d1ee3fde4e15e2a4cb4a6437bc2d2a4c, type: 3}
+  unitMiniPortrait: {fileID: 0}
   unitCalloutPortrait: {fileID: 0}
   unitCriticalHitVoice: {fileID: 0}
   enemyPersonality: 0

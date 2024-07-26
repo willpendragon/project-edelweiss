@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static TileController;
 using UnityEngine.UI;
+using UnityEditor.Experimental.GraphView;
 
 public class MeleePlayerAction : IPlayerAction
 {
@@ -127,7 +128,7 @@ public class MeleePlayerAction : IPlayerAction
             }
             else
             {
-                currentTarget.TakeDamage(attackPower);
+                currentTarget.TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
             }
             activePlayerUnit.unitOpportunityPoints--;
 
@@ -146,7 +147,7 @@ public class MeleePlayerAction : IPlayerAction
 
     public void ApplyKnockback(Unit attacker, Unit defender, int knockbackStrength)
     {
-        currentTarget.TakeDamage(attacker.unitTemplate.meleeAttackPower);
+        currentTarget.TakeDamage(attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage);
 
         Vector2Int attackerPos = attacker.GetGridPosition();
         Vector2Int defenderPos = defender.GetGridPosition();

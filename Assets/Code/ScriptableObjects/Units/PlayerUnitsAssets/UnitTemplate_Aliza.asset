@@ -13,17 +13,19 @@ MonoBehaviour:
   m_Name: UnitTemplate_Aliza
   m_EditorClassIdentifier: 
   unitName: Aliza
-  unitHealthPoints: 250
-  unitMaxHealthPoints: 250
-  unitManaPoints: 100
-  unitMaxManaPoints: 100
+  unitHealthPoints: 100
+  unitMaxHealthPoints: 100
+  unitManaPoints: 150
+  unitMaxManaPoints: 150
   unitOpportunityPoints: 3
-  unitShieldPoints: 0
-  meleeAttackPower: 2
+  unitMovemementLimit: 6
+  unitShieldPoints: 10
+  meleeAttackPower: 0.5
   unitMagicPower: 5
+  unitMeleeAttackBaseDamage: 1.5
   spellsList:
-  - {fileID: 11400000, guid: eb9c1d71abcc4fc4eb07b21af5c1fd68, type: 2}
-  unitCoinsReward: 0
+  - {fileID: 11400000, guid: 3948a3c4f71c31643be6797ac9bfdfe1, type: 2}
+  coinsRewardRange: {x: 0, y: 0}
   unitExperiencePointsReward: 0
   unitPortrait: {fileID: -758042431, guid: c24b78db1b4153d45b2bbf24431592fb, type: 3}
   unitMiniPortrait: {fileID: 21300000, guid: ee5e0e9c74e0aad49beb8e766d0aac50, type: 3}

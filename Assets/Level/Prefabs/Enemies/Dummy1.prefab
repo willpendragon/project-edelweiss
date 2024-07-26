@@ -281,7 +281,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   attackPower: 2.5
-  player: {fileID: 0}
   opportunity: 1
   battleManager: {fileID: 0}
   minEnemyMoveRollRange: 1
@@ -339,13 +338,15 @@ MonoBehaviour:
   unitShieldPoints: 0
   unitCoins: 0
   unitExperiencePoints: 0
-  coinsReward: 0
+  coinsRewardRange: 0
   experiencePointsReward: 0
+  unitAttackPower: 0
   unitMagicPower: 0
   currentUnitLifeCondition: 0
   unitStatusController: {fileID: 361118017173477511}
   fieldPrizeController: {fileID: 1254154078120300381}
   linkedDeity: {fileID: 0}
+  summonedLinkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 7127888063209652432}
   unitProfilePanel: {fileID: 0}
@@ -427,6 +428,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitDamageCounter: {fileID: 7131712829199056365}
   unitDamageCounterAnimator: {fileID: 6261884067613232499}
+  unitBuffCounter: {fileID: 0}
+  unitBuffCounterAnimator: {fileID: 0}
 --- !u!114 &7127888063209652432
 MonoBehaviour:
   m_ObjectHideFlags: 0
