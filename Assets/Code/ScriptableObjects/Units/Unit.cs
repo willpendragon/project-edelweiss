@@ -44,10 +44,12 @@ public class Unit : MonoBehaviour
 
     public float unitCoins;
     public float unitExperiencePoints;
-    public float coinsReward;
+    public Vector2 coinsRewardRange;
     public float experiencePointsReward;
     public float unitAttackPower;
     public float unitMagicPower;
+
+    public float unitMeleeAttackBaseDamage;
 
     [Header("Gameplay Elements")]
 
@@ -91,6 +93,9 @@ public class Unit : MonoBehaviour
             }
         }
     }
+
+    private System.Random localRandom = new System.Random();
+
     public void Start()
     {
         if (unitTemplate != null)
@@ -101,13 +106,15 @@ public class Unit : MonoBehaviour
             unitMaxManaPoints = unitTemplate.unitManaPoints;
             unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
             unitShieldPoints = unitTemplate.unitShieldPoints;
-
+            coinsRewardRange = unitTemplate.coinsRewardRange;
             unitAttackPower = unitTemplate.meleeAttackPower;
             unitMagicPower = unitTemplate.unitMagicPower;
+            unitMovementLimit = unitTemplate.unitMovemementLimit;
+            unitMeleeAttackBaseDamage = unitTemplate.unitMeleeAttackBaseDamage;
 
             currentUnitLifeCondition = UnitLifeCondition.unitAlive;
 
-            coinsReward = GetComponent<Unit>().unitTemplate.unitCoinsReward;
+            //coinsReward = GetComponent<Unit>().unitTemplate.unitCoinsReward;
             experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
         }
     }
@@ -129,7 +136,6 @@ public class Unit : MonoBehaviour
 
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
     {
-        // Example formula inspired by Pokémon-style damage mitigation
         float damageMitigationPercentage = shieldPoints / (shieldPoints + 100); // Arbitrary scaling factor for shield effectiveness
         float effectiveDamage = receivedDamage * (1 - damageMitigationPercentage);
 
@@ -249,7 +255,7 @@ public class Unit : MonoBehaviour
                 var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
                 if (activePlayerUnit != null)
                 {
-                    activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(coinsReward);
+                    activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(CalculateCoinsReward());
                     activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
                     Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
 
@@ -266,6 +272,14 @@ public class Unit : MonoBehaviour
             }
             OnCheckGameOver();
         }
+    }
+
+    public float CalculateCoinsReward()
+    {
+        int coinsRewardMinRange = (int)coinsRewardRange.x;
+        int coinsRewardMaxRange = (int)coinsRewardRange.y;
+        float finalCoinsReward = localRandom.Next(coinsRewardMinRange, coinsRewardMaxRange);
+        return finalCoinsReward;
     }
 
     public Vector2Int GetGridPosition()
