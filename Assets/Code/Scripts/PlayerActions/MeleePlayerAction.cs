@@ -125,6 +125,7 @@ public class MeleePlayerAction : IPlayerAction
                 knockbackStrength = knockbackStrength * 2;
                 //Warning: remove magic numbers later
                 ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
+                Debug.Log($"Defending Unit receives" + attackPower + "damage points");
             }
             else
             {

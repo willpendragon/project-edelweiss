@@ -73,10 +73,19 @@ public class EnemyTurnManager : MonoBehaviour
             {
                 EnemyAgent currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
                 Debug.Log("Current Turn: " + currentEnemy.name);
-                currentEnemy.EnemyTurnEvents();
+                if (currentEnemy.gameObject.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+                {
+                    currentEnemy.EnemyTurnEvents();
+                    yield return new WaitForSeconds(singleEnemyturnDuration);
+                    currentEnemyTurnIndex++;
+                }
+                else
+                {
+                    float deadEnemyTurnWaitingTime = 0.1f;
+                    yield return new WaitForSeconds(deadEnemyTurnWaitingTime);
+                    currentEnemyTurnIndex++;
+                }
                 //Add the logic for the Enemy's turn here
-                yield return new WaitForSeconds(singleEnemyturnDuration);
-                currentEnemyTurnIndex++;
             }
             TrapBehaviour();
             if (deity != null)

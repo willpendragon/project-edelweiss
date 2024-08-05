@@ -20,10 +20,11 @@ public class CharacterData
 {
     public string unitId;
     public float unitHealthPoints;
-    public float unitManaPoints;
+    public float unitSavedManaPoints;
     public float unitShieldPoints;
     public string name;
     public string description;
+    public Unit.UnitLifeCondition unitLifeCondition;
 }
 
 [System.Serializable]

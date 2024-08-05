@@ -105,9 +105,13 @@ public class TurnController : MonoBehaviour
         foreach (var playerUnitGO in playerUnitsOnBattlefield)
         {
             Unit playerUnit = playerUnitGO.GetComponent<Unit>();
-            playerUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive;
+            //playerUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive;
             playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-            playerUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
+            if (playerUnit.currentUnitLifeCondition == UnitLifeCondition.unitDead)
+            {
+                playerUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
+            }
+            //Removes all ailments from previous battles.
             playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.basic;
         }
     }

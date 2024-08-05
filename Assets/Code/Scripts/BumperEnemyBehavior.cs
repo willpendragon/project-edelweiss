@@ -34,8 +34,20 @@ public class BumperEnemyBehavior : EnemyBehavior
             float reducedDamage = attackPower; //* damageReductionFactor//
             enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>().PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
             OnBumperEnemyAttack("Bump", "Godling");
-            targetPlayerUnit.TakeDamage(reducedDamage);
-            targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
+
+            if (GridManager.Instance.GetComponentInChildren<DistanceController>().CheckDistance(enemyUnit.ownedTile.GetComponent<TileController>(), targetPlayerUnit.ownedTile.GetComponent<TileController>()))
+            {
+                float attackProximityModifier = 1.5f;
+                reducedDamage = reducedDamage * attackProximityModifier;
+                targetPlayerUnit.TakeDamage(reducedDamage);
+                targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
+                Debug.Log("If Enemy is near the Player Unit, the Attack Proximity Modifier applies");
+            }
+            else
+            {
+                targetPlayerUnit.TakeDamage(reducedDamage);
+                targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
+            }
 
             //const float targetUnitReductionFactor = 0.05f;
             //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));

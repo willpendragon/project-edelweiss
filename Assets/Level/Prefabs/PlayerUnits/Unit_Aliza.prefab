@@ -87,10 +87,12 @@ MonoBehaviour:
   unitShieldPoints: 0
   unitCoins: 0
   unitExperiencePoints: 0
-  coinsReward: 0
+  coinsRewardRange: {x: 0, y: 0}
   experiencePointsReward: 0
+  unitAttackPower: 0
   unitMagicPower: 0
-  currentUnitLifeCondition: 0
+  unitMeleeAttackBaseDamage: 0
+  currentUnitLifeCondition: 1
   unitStatusController: {fileID: 6804547558390777160}
   fieldPrizeController: {fileID: 0}
   linkedDeity: {fileID: 0}
