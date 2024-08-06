@@ -18,7 +18,7 @@ public class BumperEnemyBehavior : EnemyBehavior
     public static event BumperEnemyAttack OnBumperEnemyAttack;
 
     [SerializeField] GameObject attackVFXAnimator;
-    public float attackPower = 1;
+    //public float attackPower = 1;
     //Beware, magic number
 
 
@@ -31,7 +31,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             Unit enemyUnit = enemyAgent.gameObject.GetComponent<Unit>();
             Unit targetPlayerUnit = SelectTargetPlayerUnit();
             MoveToPlayerTarget(targetPlayerUnit, enemyAgent);
-            float reducedDamage = attackPower; //* damageReductionFactor//
+            float reducedDamage = enemyUnit.unitMeleeAttackBaseDamage; //* damageReductionFactor//
             enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>().PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
             OnBumperEnemyAttack("Bump", "Godling");
 
@@ -135,7 +135,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         }
 
         // Move and update the unit's tile
-        if (unit.MoveUnit(destinationTile.tileXCoordinate, destinationTile.tileYCoordinate))
+        if (unit.MoveUnit(destinationTile.tileXCoordinate, destinationTile.tileYCoordinate, false))
         {
             if (destinationTile.currentSingleTileCondition == SingleTileCondition.free)
             {
