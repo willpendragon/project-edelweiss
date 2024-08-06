@@ -25,6 +25,9 @@ public class CharacterData
     public string name;
     public string description;
     public Unit.UnitLifeCondition unitLifeCondition;
+
+    public float unitAttackPower;
+    public float unitMagicPower;
 }
 
 [System.Serializable]

@@ -46,6 +46,13 @@ public class GameStatsManager : MonoBehaviour
                 // Update existing character data
                 existingCharacterData.unitHealthPoints = unitComponent.unitHealthPoints;
                 existingCharacterData.unitSavedManaPoints = unitComponent.unitManaPoints;
+                existingCharacterData.unitShieldPoints = unitComponent.unitShieldPoints;
+
+                existingCharacterData.unitLifeCondition = unitComponent.currentUnitLifeCondition;
+
+                existingCharacterData.unitAttackPower = unitComponent.unitAttackPower;
+                existingCharacterData.unitMagicPower = unitComponent.unitMagicPower;
+
                 // Update other stats as necessary
             }
             else if (existingCharacterData == null)
@@ -56,134 +63,147 @@ public class GameStatsManager : MonoBehaviour
                     unitId = unitComponent.Id,
                     unitHealthPoints = unitComponent.unitHealthPoints,
                     unitSavedManaPoints = unitComponent.unitManaPoints,
-                    unitLifeCondition = unitComponent.currentUnitLifeCondition,
-            };
-            characterSaveData.characterData.Add(newCharacterData);
-        }
-    }
+                    unitShieldPoints = unitComponent.unitShieldPoints,
 
-    SaveStateManager.SaveGame(characterSaveData);
+                    unitLifeCondition = unitComponent.currentUnitLifeCondition,
+
+                    unitAttackPower = unitComponent.unitAttackPower,
+                    unitMagicPower = unitComponent.unitMagicPower,
+
+
+                };
+                characterSaveData.characterData.Add(newCharacterData);
+            }
+        }
+
+        SaveStateManager.SaveGame(characterSaveData);
     }
-public void LoadCharacterData()
-{
-    Debug.Log("Loading Player Character's Data");
-    GameObject[] playerUnits = null;
-    if (TurnController.Instance != null)
+    public void LoadCharacterData()
     {
-        playerUnits = TurnController.Instance.playerUnitsOnBattlefield;
-    }
-    if (playerUnits != null)
-    {
-        GameSaveData characterSaveData = SaveStateManager.saveData;
-        foreach (var playerUnit in playerUnits)
+        Debug.Log("Loading Player Character's Data");
+        GameObject[] playerUnits = null;
+        if (TurnController.Instance != null)
         {
-            Unit unitComponent = playerUnit.GetComponent<Unit>();
-            CharacterData loadedCharacterData = characterSaveData.characterData.Find(character => character.unitId == unitComponent.Id);
-            if (loadedCharacterData != null)
+            playerUnits = TurnController.Instance.playerUnitsOnBattlefield;
+        }
+        if (playerUnits != null)
+        {
+            GameSaveData characterSaveData = SaveStateManager.saveData;
+            foreach (var playerUnit in playerUnits)
             {
-                unitComponent.unitHealthPoints = loadedCharacterData.unitHealthPoints;
-                unitComponent.unitManaPoints = loadedCharacterData.unitSavedManaPoints;
-                //unitComponent.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
-                // Set other stats as necessary
-                Debug.Log("Restoring Player Units HP and Mana");
+                Unit unitComponent = playerUnit.GetComponent<Unit>();
+                CharacterData loadedCharacterData = characterSaveData.characterData.Find(character => character.unitId == unitComponent.Id);
+                if (loadedCharacterData != null)
+                {
+                    unitComponent.unitHealthPoints = loadedCharacterData.unitHealthPoints;
+                    unitComponent.unitManaPoints = loadedCharacterData.unitSavedManaPoints;
+                    unitComponent.unitShieldPoints = loadedCharacterData.unitShieldPoints;
+
+                    unitComponent.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
+
+                    unitComponent.unitAttackPower = loadedCharacterData.unitAttackPower;
+                    unitComponent.unitMagicPower = loadedCharacterData.unitMagicPower;
+
+                    // Set other stats as necessary
+                    Debug.Log("Restoring Player Units HP and Mana");
+                }
             }
         }
     }
-}
 
-public void LoadWarFunds()
-{
-    GameSaveData resourceSaveData = SaveStateManager.saveData;
-    if (resourceSaveData != null && resourceSaveData.resourceData != null)
+    public void LoadWarFunds()
     {
-        warFunds = resourceSaveData.resourceData.warFunds;
-        Debug.Log($"Loaded War Funds: {warFunds}");
+        GameSaveData resourceSaveData = SaveStateManager.saveData;
+        if (resourceSaveData != null && resourceSaveData.resourceData != null)
+        {
+            warFunds = resourceSaveData.resourceData.warFunds;
+            Debug.Log($"Loaded War Funds: {warFunds}");
+        }
     }
-}
 
-public void SaveWarFunds(float newWarFunds)
-{
-    GameSaveData gameSaveData = SaveStateManager.saveData;
-    if (gameSaveData.resourceData != null)
+    public void SaveWarFunds(float newWarFunds)
     {
-        gameSaveData.resourceData.warFunds += newWarFunds;
-        SaveStateManager.SaveGame(gameSaveData);
-        Debug.Log($"Saved War Funds: {newWarFunds}");
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.warFunds += newWarFunds;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved War Funds: {newWarFunds}");
+        }
     }
-}
 
-public void SaveSpentWarFunds(float spentWarFunds)
-{
-    GameSaveData gameSaveData = SaveStateManager.saveData;
-    if (gameSaveData.resourceData != null)
+    public void SaveSpentWarFunds(float spentWarFunds)
     {
-        gameSaveData.resourceData.warFunds -= spentWarFunds;
-        SaveStateManager.SaveGame(gameSaveData);
-        Debug.Log($"Spent War Funds: {spentWarFunds}");
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.warFunds -= spentWarFunds;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Spent War Funds: {spentWarFunds}");
+        }
     }
-}
 
-public void LoadEnemiesKilled()
-{
-    GameSaveData gameSaveData = SaveStateManager.saveData;
-    if (gameSaveData != null)
+    public void LoadEnemiesKilled()
     {
-        enemiesKilled = gameSaveData.enemiesKilled;
-        Debug.Log("Loading the number of killed Enemies");
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            enemiesKilled = gameSaveData.enemiesKilled;
+            Debug.Log("Loading the number of killed Enemies");
+        }
     }
-}
 
 
-public void LoadCaptureCrystalsCount()
-{
-    GameSaveData resourceSaveData = SaveStateManager.saveData;
-    if (resourceSaveData != null && resourceSaveData.resourceData != null)
+    public void LoadCaptureCrystalsCount()
     {
-        captureCrystalsCount = resourceSaveData.resourceData.captureCrystalsCount;
-        Debug.Log($"Loaded Capture Crystals: {captureCrystalsCount}");
+        GameSaveData resourceSaveData = SaveStateManager.saveData;
+        if (resourceSaveData != null && resourceSaveData.resourceData != null)
+        {
+            captureCrystalsCount = resourceSaveData.resourceData.captureCrystalsCount;
+            Debug.Log($"Loaded Capture Crystals: {captureCrystalsCount}");
+        }
     }
-}
 
-public void SaveCaptureCrystalsCount()
-{
-    GameSaveData gameSaveData = SaveStateManager.saveData;
-    if (gameSaveData.resourceData != null)
+    public void SaveCaptureCrystalsCount()
     {
-        gameSaveData.resourceData.captureCrystalsCount = captureCrystalsCount;
-        SaveStateManager.SaveGame(gameSaveData);
-        Debug.Log($"Saved Capture Crystals: {captureCrystalsCount}");
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.captureCrystalsCount = captureCrystalsCount;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Capture Crystals: {captureCrystalsCount}");
+        }
     }
-}
 
-public void SaveEnemiesKilled()
-{
-    Debug.Log("Increasing Enemies Killed");
-
-    // Prepare the save data
-    GameSaveData saveData = SaveStateManager.saveData;
-    saveData.enemiesKilled = enemiesKilled;
-
-    SaveStateManager.SaveGame(saveData);
-}
-
-public void LoadUsedSingleTargetSpells()
-{
-    GameSaveData gameSaveData = SaveStateManager.saveData;
-    if (gameSaveData != null)
+    public void SaveEnemiesKilled()
     {
-        timesSingleTargetSpellWasUsed = gameSaveData.timesSingleTargetSpellWasUsed;
-        Debug.Log("Loading the number of killed Enemies");
+        Debug.Log("Increasing Enemies Killed");
+
+        // Prepare the save data
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.enemiesKilled = enemiesKilled;
+
+        SaveStateManager.SaveGame(saveData);
     }
-}
 
-public void SaveUsedSingleTargetSpells()
-{
-    Debug.Log("Increasing Used Single Target Spells statistics");
+    public void LoadUsedSingleTargetSpells()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            timesSingleTargetSpellWasUsed = gameSaveData.timesSingleTargetSpellWasUsed;
+            Debug.Log("Loading the number of killed Enemies");
+        }
+    }
 
-    // Prepare the save data
-    GameSaveData saveData = SaveStateManager.saveData;
-    saveData.timesSingleTargetSpellWasUsed = timesSingleTargetSpellWasUsed;
+    public void SaveUsedSingleTargetSpells()
+    {
+        Debug.Log("Increasing Used Single Target Spells statistics");
 
-    SaveStateManager.SaveGame(saveData);
-}
+        // Prepare the save data
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.timesSingleTargetSpellWasUsed = timesSingleTargetSpellWasUsed;
+
+        SaveStateManager.SaveGame(saveData);
+    }
 }
