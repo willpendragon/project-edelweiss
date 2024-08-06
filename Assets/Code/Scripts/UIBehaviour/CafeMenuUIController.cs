@@ -211,6 +211,8 @@ public class CafeMenuUIController : MonoBehaviour
             }
         }
         currentPurchasedFood = null;
+        SaveRestoredCharacterStats();
+
         DisableFeedingCharactersButtons();
     }
 
@@ -254,5 +256,13 @@ public class CafeMenuUIController : MonoBehaviour
         float clearNotificationWaitingTime = 1.5f;
         yield return new WaitForSeconds(clearNotificationWaitingTime);
         notificationTexts.text = "";
+    }
+
+    public void SaveRestoredCharacterStats()
+    {
+        //Saves the stats after feeding.
+        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+        gameStatsManager.SaveCharacterData();
+        Debug.Log("Character Stats Saved");
     }
 }
