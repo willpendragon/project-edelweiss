@@ -18,10 +18,11 @@ MonoBehaviour:
   unitManaPoints: 20
   unitMaxManaPoints: 20
   unitOpportunityPoints: 3
-  unitMovemementLimit: 10
+  unitMovemementLimit: 2
   unitShieldPoints: 5
   meleeAttackPower: 5
   unitMagicPower: 15
+  unitMeleeAttackBaseDamage: 0
   spellsList: []
   coinsRewardRange: {x: 10, y: 15}
   unitExperiencePointsReward: 300

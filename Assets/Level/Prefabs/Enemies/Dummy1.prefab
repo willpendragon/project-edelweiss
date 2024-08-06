@@ -293,7 +293,7 @@ MonoBehaviour:
   healthPointsCounter: {fileID: 4714583909786951188}
   opportunityCounter: {fileID: 7140207064783089265}
   receivedDamageCounter: {fileID: 2064509822520070637}
-  unitMovementLimit: 10
+  unitMovementLimit: 3
   currentXCoordinate: 0
   currentYCoordinate: 0
   unitStunStatusIcon: {fileID: 3406946445924013396, guid: e9adfb87616477e4784c4a1060a542fd, type: 3}
@@ -322,8 +322,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 
-  unitTemplate: {fileID: 11400000, guid: d58a773ea7748e54ba1b4b49570112e2, type: 2}
-  unitMovementLimit: 10
+  unitTemplate: {fileID: 11400000, guid: 88458dea7ee0203439a2738c36592545, type: 2}
+  unitMovementLimit: 0
   currentXCoordinate: 0
   currentYCoordinate: 0
   startingXCoordinate: 0
@@ -338,10 +338,11 @@ MonoBehaviour:
   unitShieldPoints: 0
   unitCoins: 0
   unitExperiencePoints: 0
-  coinsRewardRange: 0
+  coinsRewardRange: {x: 0, y: 0}
   experiencePointsReward: 0
   unitAttackPower: 0
   unitMagicPower: 0
+  unitMeleeAttackBaseDamage: 0
   currentUnitLifeCondition: 0
   unitStatusController: {fileID: 361118017173477511}
   fieldPrizeController: {fileID: 1254154078120300381}
