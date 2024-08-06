@@ -85,14 +85,14 @@ public class TurnController : MonoBehaviour
         foreach (var playerUnitGO in playerUnitsOnBattlefield)
         {
             Unit playerUnit = playerUnitGO.GetComponent<Unit>();
-            playerUnit.GetComponent<Unit>().MoveUnit(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate);
+            playerUnit.GetComponent<Unit>().MoveUnit(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate, false);
             playerUnit.GetComponent<Unit>().SetPosition(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate);
             Debug.Log("Moving Player Units at Initial Position");
         }
         foreach (var enemyUnitGO in enemyUnitsOnBattlefield)
         {
             Unit enemyUnit = enemyUnitGO.GetComponent<Unit>();
-            enemyUnit.GetComponent<Unit>().MoveUnit(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate);
+            enemyUnit.GetComponent<Unit>().MoveUnit(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate, false);
             enemyUnit.GetComponent<Unit>().SetPosition(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate);
             Debug.Log("Moving Player Units at Initial Position");
         }

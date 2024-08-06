@@ -150,7 +150,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             //    // Here to add any additional logic for when the unit is surrounded
             //}
 
-            if (activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate))
+            if (activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate, false))
             {
                 GridManager.Instance.tileSelectionPermitted = true;
                 //Use Grid Logic to Move the Player to Destination

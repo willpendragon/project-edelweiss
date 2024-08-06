@@ -104,7 +104,7 @@ public class DeitySpawner : MonoBehaviour
             Debug.Log("Start of Summon Deity on Battlefield");
             int deityTilePositionX = 5;
             int deityTilePositionY = 9;
-            unboundDeity.GetComponent<Unit>().MoveUnit(deityTilePositionX, deityTilePositionY);
+            unboundDeity.GetComponent<Unit>().MoveUnit(deityTilePositionX, deityTilePositionY, false);
             TileController deitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityTilePositionX, deityTilePositionY);
 
             unboundDeity.GetComponent<Unit>().ownedTile = deitySpawningTile;

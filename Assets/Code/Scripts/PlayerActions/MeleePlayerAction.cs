@@ -191,11 +191,12 @@ public class MeleePlayerAction : IPlayerAction
         newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
         // Move the defender to the new grid position
-        if (defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+        if (defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y, true) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             defender.ownedTile.detectedUnit = null;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-            defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y);
+            //The Knockback will ignore the movement limit            
+            defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y, true);
 
             TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
 

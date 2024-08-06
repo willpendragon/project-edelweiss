@@ -162,7 +162,7 @@ public class Unit : MonoBehaviour
         transform.position = targetPosition;
     }
 
-    public bool MoveUnit(int targetX, int targetY)
+    public bool MoveUnit(int targetX, int targetY, bool ignoreUnitMovementLimit)
     {
         // Convert current world position to grid coordinates
         Vector2Int startGridPos = GridManager.Instance.GetGridCoordinatesFromWorldPosition(transform.position);
@@ -170,13 +170,23 @@ public class Unit : MonoBehaviour
         // Find path using grid coordinates
         List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
 
+        if (ignoreUnitMovementLimit == true)
+        {
+            unitMovementLimit = 10000;
+            Debug.Log("Unit Movement Limit arbitrarility set to 10000");
+        }
+        // 05082024 Temporary fix. Sets a very high number that actually makes the Unit move in virtually any gameplay situation where the
+        // flag ignoreMovementLimit is set to true.
+
         if (path != null && path.Count > 0 && path.Count <= unitMovementLimit)
         {
             StartCoroutine(FollowPath(path));
+            unitMovementLimit = unitTemplate.unitMovemementLimit;
             return true;
         }
         else
         {
+            unitMovementLimit = unitTemplate.unitMovemementLimit;
             Debug.Log("No valid path found or path exceeds movement limit.");
             return false;
         }
@@ -191,7 +201,8 @@ public class Unit : MonoBehaviour
             Vector3 targetPosition = worldPosition + new Vector3(0, transform.localScale.y / 2, 0);
 
             // Move to the next tile
-            yield return StartCoroutine(MoveToPosition(targetPosition, 0.5f)); // Adjust the duration as needed
+            float moveToTileDurationTime = 0.25f; 
+            yield return StartCoroutine(MoveToPosition(targetPosition, moveToTileDurationTime)); // Adjust the duration as needed
 
             // Update current grid coordinates
             currentXCoordinate = tile.tileXCoordinate;
