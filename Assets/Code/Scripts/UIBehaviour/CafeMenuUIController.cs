@@ -174,6 +174,7 @@ public class CafeMenuUIController : MonoBehaviour
                     fedUnit.unitHealthPoints = fedUnit.unitMaxHealthPoints;
                 }
                 UpdateCharacterStatsCounter(fedUnit);
+                SaveRestoredCharacterStats();
                 notificationTexts.text = fedUnit.unitTemplate.unitName + " recovered " + currentPurchasedFood.recoveryAmount.ToString() + " HP!";
 
                 GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
@@ -197,6 +198,7 @@ public class CafeMenuUIController : MonoBehaviour
                     fedUnit.unitManaPoints = fedUnit.unitMaxManaPoints;
                 }
                 UpdateCharacterStatsCounter(fedUnit);
+                SaveRestoredCharacterStats();
                 notificationTexts.text = fedUnit.unitTemplate.unitName + " recovered " + currentPurchasedFood.recoveryAmount.ToString() + " MP!";
 
                 GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
@@ -211,7 +213,6 @@ public class CafeMenuUIController : MonoBehaviour
             }
         }
         currentPurchasedFood = null;
-        SaveRestoredCharacterStats();
 
         DisableFeedingCharactersButtons();
     }
