@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,7 +6,7 @@ public class SceneLoader : MonoBehaviour
 {
     [SerializeField] string sceneName;
     [SerializeField] string currentSceneName;
-    private float loadingBattleSceneWaitTime = 1;
+    private float loadingSceneWaitTime = 1;
 
     public delegate void LoadingScene();
     public static event LoadingScene OnLoadingScene;
@@ -17,12 +15,20 @@ public class SceneLoader : MonoBehaviour
         if (currentSceneName == "battle_transition")
         {
             // Start the Mountain Ascending Sequence
+            StartCoroutine("LoadBattle");
             Debug.Log("Playing the Mountain Ascending Sequence");
         }
         else if (sceneName == "battle_prototype")
         {
             SceneManager.LoadSceneAsync(sceneName);
         }
+    }
+
+    IEnumerator LoadBattle()
+    {
+        float loadingBattleSceneWaitTime = 2.8f;
+        yield return new WaitForSeconds(loadingBattleSceneWaitTime);
+        SceneManager.LoadSceneAsync("battle_prototype");
     }
 
     public void ChangeScene()
@@ -32,7 +38,7 @@ public class SceneLoader : MonoBehaviour
     }
     IEnumerator LoadScene()
     {
-        yield return new WaitForSeconds(loadingBattleSceneWaitTime);
+        yield return new WaitForSeconds(loadingSceneWaitTime);
         SceneManager.LoadSceneAsync(sceneName);
     }
 }

@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 public class BattleInterface : MonoBehaviour
 {
@@ -19,6 +19,7 @@ public class BattleInterface : MonoBehaviour
     //[SerializeField] Image fieldEffectIcon;
     [SerializeField] RectTransform battlefieldNotificationsPanel;
     [SerializeField] public GameObject movesContainer;
+    [SerializeField] CanvasGroup fadePanel;
 
 
     [Header("UI Texts")]
@@ -57,6 +58,23 @@ public class BattleInterface : MonoBehaviour
         MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetMeleeAttackOnNotificationPanel;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetMeleeAttackOnNotificationPanel;
+    }
+
+    public void Start()
+    {
+        FadeIn();
+    }
+    public void FadeIn()
+    {
+        float duration = 0.5f;
+        if (fadePanel != null)
+        {
+            // Animate the CanvasGroup alpha to 0 (fully transparent)
+            fadePanel.DOFade(0, duration);
+
+            fadePanel.interactable = false;
+            fadePanel.blocksRaycasts = false;
+        }
     }
 
     public void SetSpellNameOnNotificationPanel(string spellName, string casterName)
