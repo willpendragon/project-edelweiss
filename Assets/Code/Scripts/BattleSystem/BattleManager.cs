@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 
@@ -28,7 +26,6 @@ public class BattleManager : MonoBehaviour
     public static BattleManager Instance { get; private set; }
 
     [SerializeField] GameObject battleMomentsScreen;
-    //[SerializeField] float enemyTurnDuration;
     [SerializeField] BattleInterface battleInterface;
     [SerializeField] float battleMomentsScreenDeactivationTime;
 
@@ -61,14 +58,8 @@ public class BattleManager : MonoBehaviour
     public delegate void SavePlayerExperienceReward(float experienceReward);
     public static event SavePlayerExperienceReward OnSavePlayerExperienceReward;
 
-    //public delegate void BattleEnd();
-    //public static event BattleEnd OnBattleEnd;
-
     public delegate void BattleEndResultsScreen(string battleEndMessage);
     public static event BattleEndResultsScreen OnBattleEndResultsScreen;
-
-    //public delegate void ChargeDeityPowerLoadingBar();
-    //public static event ChargeDeityPowerLoadingBar OnChargeDeityPowerLoadingBar;
 
     public UnityEvent PlayerTurnStarts;
     public UnityEvent PlayerTurnEnds;
@@ -131,7 +122,6 @@ public class BattleManager : MonoBehaviour
         UpdateTurnCounter();
         Debug.Log("Turn Passed to Player");
         PlayerTurnStarts.Invoke();
-        //OnChargeDeityPowerLoadingBar();
     }
     public bool AllEnemiesOpportunityZero()
     {
