@@ -62,25 +62,27 @@ public class PlayerProfileController : MonoBehaviour
             case "Enemy":
                 if (currentProfileOwner != ProfileOwner.playerUnit && currentProfileOwner != ProfileOwner.activePlayerUnit)
                 {
-                    Debug.Log("Updating Unit Profile with Enemy Info");
                     ApplyProfileChanges(detectedUnit, ProfileOwner.enemyUnit);
+                    Debug.Log("Updated Unit Profile with Enemy Info");
+
                 }
                 break;
             case "Player":
                 if (currentProfileOwner != ProfileOwner.enemyUnit)
                 {
-                    Debug.Log("Updating Unit Profile with Player Info");
                     ApplyProfileChanges(detectedUnit, ProfileOwner.playerUnit);
                     UpdateLinkedDeityIcon(detectedUnit);
+                    Debug.Log("Updated Unit Profile with Player Info");
+
                 }
                 break;
             case "ActivePlayerUnit":
             case "TargetedEnemyUnitProfile":
                 if (currentProfileOwner != ProfileOwner.enemyUnit)
                 {
-                    Debug.Log("Updating Active Player Unit Profile");
                     ApplyProfileChanges(detectedUnit, ProfileOwner.activePlayerUnit);
                     UpdateLinkedDeityIcon(detectedUnit);
+                    Debug.Log("Updated Active Player Unit Profile");
                 }
                 break;
             default:
@@ -91,37 +93,37 @@ public class PlayerProfileController : MonoBehaviour
 
     void ApplyProfileChanges(GameObject detectedUnit, ProfileOwner profileOwner)
     {
-        Debug.Log("Updating Unit Profile with " + detectedUnit + " Info");
-
-        // Update Unit Profile Portrait and Name
+        // Update Unit Profile Portrait and Name.
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = detectedUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
         activeCharacterName.text = detectedUnit.GetComponent<Unit>().unitTemplate.unitName;
 
-        // Update numeric gameplay values
+        // Update numeric gameplay values.
         activeCharacterHealthPoints.text = detectedUnit.GetComponent<Unit>().unitHealthPoints.ToString();
         activeCharacterManaPoints.text = detectedUnit.GetComponent<Unit>().unitManaPoints.ToString();
         activeCharacterShieldPoints.text = detectedUnit.GetComponent<Unit>().unitShieldPoints.ToString();
         activeCharacterOpportunityPoints.text = detectedUnit.GetComponent<Unit>().unitOpportunityPoints.ToString();
 
-        //Update numeric Unit stats
+        //Update numeric Unit stats.
         activeCharacterAttackPower.text = detectedUnit.GetComponent<Unit>().unitAttackPower.ToString();
         activeCharacterMagicPower.text = detectedUnit.GetComponent<Unit>().unitMagicPower.ToString();
 
+        // Update Stats Slider's Max Value.
+        activeCharacterHealthPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints;
+        activeCharacterManaPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitTemplate.unitManaPoints;
+        activeCharacterShieldPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitTemplate.unitShieldPoints;
+        activeCharacterOpportunityPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitTemplate.unitOpportunityPoints;
 
-        // Update Stats Slider's Max Value
-        activeCharacterHealthPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitHealthPoints;
-        activeCharacterManaPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitManaPoints;
-        activeCharacterShieldPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitShieldPoints;
-        activeCharacterOpportunityPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitOpportunityPoints;
+        // Update Stats Slider's Value.
         activeCharacterHealthPointsSlider.value = detectedUnit.GetComponent<Unit>().unitHealthPoints;
-
-        // Update Stats Slider's Value
         activeCharacterManaPointsSlider.value = detectedUnit.GetComponent<Unit>().unitManaPoints;
         activeCharacterShieldPointsSlider.value = detectedUnit.GetComponent<Unit>().unitShieldPoints;
         activeCharacterOpportunityPointsSlider.value = detectedUnit.GetComponent<Unit>().unitOpportunityPoints;
 
-        // Update Profile Owner
+        // Update Profile Owner.
         currentProfileOwner = profileOwner;
+
+        Debug.Log("Updated" + detectedUnit + "Profile" + "with Current Info");
+
     }
 
     public void UpdateActivePlayerProfile(Unit activePlayerUnit)

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -62,7 +61,7 @@ public class Unit : MonoBehaviour
 
     public Deity linkedDeity;
     public Deity summonedLinkedDeity;
-    public string LinkedDeityId; // This will store the ID of the linked Deity
+    public string LinkedDeityId; // This will store the ID of the linked Deity.
 
 
     [Header("Visuals")]
@@ -76,7 +75,6 @@ public class Unit : MonoBehaviour
 
 
     public HealthChangeEvent onHealthChanged = new HealthChangeEvent();
-
 
     public UnityEvent<float> OnTakenDamage;
 
@@ -114,29 +112,28 @@ public class Unit : MonoBehaviour
 
             currentUnitLifeCondition = UnitLifeCondition.unitAlive;
 
-            //coinsReward = GetComponent<Unit>().unitTemplate.unitCoinsReward;
             experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
         }
     }
 
     public void TakeDamage(float receivedDamage)
     {
-        // Calculate the effective damage after considering the shield points
+        // Calculate the effective damage after considering the shield points.
         float effectiveDamage = CalculateEffectiveDamage(receivedDamage, unitShieldPoints);
 
-        // Apply the effective damage to health points
+        // Apply the effective damage to health points.
         HealthPoints -= effectiveDamage;
 
-        // Invoke the event with the received damage before mitigation
+        // Invoke the event with the received damage before mitigation.
         OnTakenDamage.Invoke(receivedDamage);
 
-        // Log the received and effective damage
+        // Log the received and effective damage.
         Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
     }
 
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
     {
-        float damageMitigationPercentage = shieldPoints / (shieldPoints + 100); // Arbitrary scaling factor for shield effectiveness
+        float damageMitigationPercentage = shieldPoints / (shieldPoints + 100); // Arbitrary scaling factor for shield effectiveness.
         float effectiveDamage = receivedDamage * (1 - damageMitigationPercentage);
 
         return effectiveDamage;
@@ -164,10 +161,10 @@ public class Unit : MonoBehaviour
 
     public bool MoveUnit(int targetX, int targetY, bool ignoreUnitMovementLimit)
     {
-        // Convert current world position to grid coordinates
+        // Convert current world position to grid coordinates.
         Vector2Int startGridPos = GridManager.Instance.GetGridCoordinatesFromWorldPosition(transform.position);
 
-        // Find path using grid coordinates
+        // Find path using grid coordinates.
         List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
 
         if (ignoreUnitMovementLimit == true)
@@ -196,13 +193,13 @@ public class Unit : MonoBehaviour
     {
         foreach (var tile in path)
         {
-            // Convert grid coordinates back to world position for actual movement
+            // Convert grid coordinates back to world position for actual movement.
             Vector3 worldPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate);
             Vector3 targetPosition = worldPosition + new Vector3(0, transform.localScale.y / 2, 0);
 
-            // Move to the next tile
-            float moveToTileDurationTime = 0.25f; 
-            yield return StartCoroutine(MoveToPosition(targetPosition, moveToTileDurationTime)); // Adjust the duration as needed
+            // The Unit moves to the next Tile.
+            float moveToTileDurationTime = 0.25f;
+            yield return StartCoroutine(MoveToPosition(targetPosition, moveToTileDurationTime)); // Adjust the duration as needed.
 
             // Update current grid coordinates
             currentXCoordinate = tile.tileXCoordinate;
@@ -215,10 +212,10 @@ public class Unit : MonoBehaviour
 
     public bool CheckTileAvailability(int targetX, int targetY)
     {
-        // Convert current world position to grid coordinates
+        // Convert current world position to grid coordinates.
         Vector2Int startGridPos = GridManager.Instance.GetGridCoordinatesFromWorldPosition(transform.position);
 
-        // Find path using grid coordinates
+        // Find path using grid coordinates.
         List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
 
         if (path != null && path.Count > 0 && path.Count <= unitMovementLimit)
@@ -245,7 +242,7 @@ public class Unit : MonoBehaviour
 
             if (spriteRenderer != null)
             {
-                //Play Fade Animation on Sprite
+                // Play Fade Animation on Sprite.
                 spriteRenderer.material.color = Color.black;
                 if (battleFeedbackController != null)
                 {
@@ -257,10 +254,13 @@ public class Unit : MonoBehaviour
                 meshRenderer.material.color = Color.black;
             }
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
-            unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             Debug.Log("This Unit has died");
+
+            unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
+
             Destroy(unitProfilePanel);
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+
             if (this.gameObject.tag == "Enemy")
             {
                 var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
@@ -270,7 +270,7 @@ public class Unit : MonoBehaviour
                     activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
                     Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
 
-                    //Spawn Prize on Battlefield
+                    // Spawn Prize on Battlefield.
                     if (fieldPrizeController != null)
                     {
                         fieldPrizeController.SpawnFieldPrize(ownedTile);
@@ -300,15 +300,15 @@ public class Unit : MonoBehaviour
 
     public void SetPosition(int x, int y)
     {
-        // Update the unit's logical grid coordinates
+        // Update the unit's logical grid coordinates.
         currentXCoordinate = x;
         currentYCoordinate = y;
 
-        // Update the unit's physical position
+        // Update the unit's physical position.
         Vector3 newPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(x, y);
         transform.position = newPosition + new Vector3(0, transform.localScale.y / 2, 0);
 
-        // Update the TileController's detected unit for both the old and new positions
+        // Update the TileController's detected unit for both the old and new positions.
         TileController oldTile = GridManager.Instance.GetTileControllerInstance(currentXCoordinate, currentYCoordinate);
         if (oldTile != null)
         {
