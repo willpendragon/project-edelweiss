@@ -1,13 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using static PlayerProfileController;
 using UnityEngine.UI;
-using Newtonsoft.Json;
 using Unity.VisualScripting;
-using System.IO;
 using TMPro;
+using DG.Tweening;
 
 public class DeityAltarController : MonoBehaviour
 {
@@ -25,6 +22,8 @@ public class DeityAltarController : MonoBehaviour
     [SerializeField] GameObject playerUnitProfileGO;
     [SerializeField] GameObject deityProfileGO;
 
+    [SerializeField] Image fadePanel;
+
     [SerializeField] Transform deitySpot;
 
     [Serialize]
@@ -37,16 +36,7 @@ public class DeityAltarController : MonoBehaviour
         {
             GameObject newPlayerUnitProfileInstance = Instantiate(playerUnitProfileGO, playerPartyMembembersContainer);
             newPlayerUnitProfileInstance.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(playerUnit);
-
-            //Sprite playerUnitPortrait = playerUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
-            //GameObject newPlayerUnitImage = Instantiate(playerUnitImageGO, playerPartyMembembersContainer);
-            //newPlayerUnitImage.GetComponent<Image>().sprite = playerUnitPortrait;
-            //newPlayerUnitImage.tag = "Player";
-            //newPlayerUnitImage.GetComponent<UnitImageController>().unitReference = playerUnit;
-            //TextMeshProUGUI playerName = Instantiate(nameLabelPrefab, playerPartyMembembersContainer).GetComponent<TextMeshProUGUI>();
-            //playerName.text = playerUnit.unitTemplate.unitName;
         }
-
 
         Dictionary<string, string> unitsLinkedToDeities = SaveStateManager.saveData.unitsLinkedToDeities;
         foreach (var entry in unitsLinkedToDeities)
@@ -58,31 +48,17 @@ public class DeityAltarController : MonoBehaviour
         foreach (var unitPrefab in GameManager.Instance.playerPartyMembersInstances)
         {
             Unit unit = unitPrefab.GetComponent<Unit>();
-            if (unit == null) continue; // Safety check
+            if (unit == null) continue; // Safety check.
 
             unitsLinkedToDeities.TryGetValue(unit.Id, out string connectedDeityId);
             unit.LinkedDeityId = connectedDeityId;
 
-            // Safely find the linked deity
+            // Safely find the linked Deity.
             var deity = GameManager.Instance.collectibleDeities.Find(d => d.Id == unit.LinkedDeityId);
-            if (deity == null) continue; // Skip if no deity found
+            if (deity == null) continue; // Skip if no deity found.
 
             GameObject newDeityUnitProfileInstance = Instantiate(deityProfileGO, capturedDeitiesContainer);
             newDeityUnitProfileInstance.GetComponent<AltarDeityUnitProfileController>().PopulateDeityUnitProfile(deity.GetComponent<Unit>(), deity);
-
-
-            //GameObject deityModel = Instantiate(deity.gameObject, deitySpot.transform.position, Quaternion.identity);
-            //deityModel.transform.localScale = new Vector3(2, 2, 2);
-
-            //Sprite deityPortrait = deity.deityPortrait;
-
-            //GameObject newDeityUnitImage = Instantiate(deityImageGO, capturedDeitiesContainer);
-            //newDeityUnitImage.tag = "Deity";
-            //newDeityUnitImage.GetComponent<Image>().sprite = deityPortrait;
-            //newDeityUnitImage.GetComponent<UnitImageController>().deityReference = deity;
-
-            //TextMeshProUGUI deityName = Instantiate(nameLabelPrefab, capturedDeitiesContainer).GetComponent<TextMeshProUGUI>();
-            //deityName.text = deity.name;
         }
     }
 
@@ -110,7 +86,7 @@ public class DeityAltarController : MonoBehaviour
         string selectedPlayerUnitId = selectedPlayerUnit.Id;
         string deityId = deity.Id;
 
-        // Find if the deity is already linked to another unit
+        // Find if the deity is already linked to another Unit.
         string oldLinkedUnitId = null;
         foreach (var entry in saveData.unitsLinkedToDeities)
         {
@@ -121,24 +97,45 @@ public class DeityAltarController : MonoBehaviour
             }
         }
 
-        // If the deity is already linked, remove the old link
+        // If the deity is already linked, remove the old link.
         if (oldLinkedUnitId != null)
         {
             saveData.unitsLinkedToDeities.Remove(oldLinkedUnitId);
         }
 
-        // Remove existing link for the selected unit if it exists
+        // Remove existing link for the selected unit (if it exists).
         if (saveData.unitsLinkedToDeities.ContainsKey(selectedPlayerUnitId))
         {
             saveData.unitsLinkedToDeities.Remove(selectedPlayerUnitId);
         }
 
-        // Add the new link
+        // Add the new link.
+        PlayLinkAnimation(selectedPlayerUnit, deity);
         saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deityId);
         SaveStateManager.SaveGame(saveData);
         GameManager.Instance.ApplyDeityLinks();
 
         Debug.Log("Deity successfully assigned to unit.");
+    }
+
+    public void PlayLinkAnimation(Unit selectedPlayerUnit, Deity deity)
+    {
+        FadeEffect();
+        Sprite playerUnitPortrait = Instantiate(selectedPlayerUnit.unitTemplate.unitPortrait);
+        Sprite deityPortrait = Instantiate(deity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait);
+    }
+
+    public void FadeEffect()
+    {
+        float fadeDuration = 1.0f;
+        // Fade to black
+        if (fadePanel != null)
+        {
+            fadePanel.DOFade(1f, fadeDuration).OnComplete(() =>
+            {
+                fadePanel.DOFade(0f, fadeDuration);
+            });
+        }
     }
 
 }
