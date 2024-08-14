@@ -181,6 +181,7 @@ public class TurnController : MonoBehaviour
                 ResetBattleToInitialStatus();
 
                 UnlockNextLevel();
+
                 foreach (var player in playerUnitsOnBattlefield)
                 {
                     player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
@@ -198,11 +199,12 @@ public class TurnController : MonoBehaviour
                 }
                 ApplyRewardsAndSave(gameStatsManager);
 
+                Debug.Log("Rolling Convo Unlock");
+                ConversationManager.Instance.UnlockRandomConversation();
+
+                //Activate Game Over UI Flow
                 UpdateBattleEndUIPanel();
 
-
-                //Activate Game Over UI
-                //Active Game Over Flow
             }
             else if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
             {
@@ -273,7 +275,6 @@ public class TurnController : MonoBehaviour
         gameStatsManager.SaveUsedSingleTargetSpells();
         gameStatsManager.SaveCaptureCrystalsCount();
         Debug.Log("Saving Character Stats Data");
-
     }
 
     public void ResetTags()

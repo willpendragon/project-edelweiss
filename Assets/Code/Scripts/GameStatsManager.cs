@@ -1,12 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using Newtonsoft.Json;
-using System.IO;
-using System.Linq;
-using JetBrains.Annotations;
 
 public class GameStatsManager : MonoBehaviour
 

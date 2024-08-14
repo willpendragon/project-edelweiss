@@ -13,6 +13,8 @@ public class GameSaveData
     public ResourceData resourceData = new ResourceData();
 
     public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
+    public List<ConversationData> unlockedConversations = new List<ConversationData>();
+
 }
 
 [System.Serializable]
@@ -38,5 +40,19 @@ public class ResourceData
     public float warFunds;
     public float experiencePointsReward;
     public int captureCrystalsCount;
+}
+
+[System.Serializable]
+public class ConversationData
+{
+    public string conversationID;
+    public bool isUnlocked;
+
+    // Constructor with ID and unlocked status
+    public ConversationData(string id, bool unlocked)
+    {
+        conversationID = id;
+        isUnlocked = unlocked;
+    }
 }
 
