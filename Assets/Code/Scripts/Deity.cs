@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Unity.VisualScripting;
-using static Deity;
 
 [System.Serializable]
 public class Deity : MonoBehaviour
@@ -35,6 +33,8 @@ public class Deity : MonoBehaviour
     public GameObject deityEnmityTracker;
     public Sprite deityPortrait;
     public GameObject deityHealthBar;
+
+    public AudioSource deityCry;
 
 
     public delegate void DeityNotificationUpdate(string deityNotificationText);
