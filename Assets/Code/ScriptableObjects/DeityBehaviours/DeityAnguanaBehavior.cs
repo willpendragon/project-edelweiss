@@ -28,8 +28,11 @@ public class DeityAnguanaBehavior : DeityBehavior
 
     public void Attack(Deity deity)
     {
+        deity.deityCry.Play();
+
         GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX, deity.transform);
         Destroy(newDeityAttackVFX, vfxDurationDelay);
+
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
         foreach (var playerUnit in playerUnitsOnBattlefield)
 

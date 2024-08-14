@@ -13,16 +13,21 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     public override void ExecuteBehavior(Deity deity)
     {
         TileController[] gridTiles = ExtractRandomTiles();
+
+        deity.deityCry.Play();
         foreach (var tile in gridTiles)
         {
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
             Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
-
         }
+
         TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
         if (turnController.turnCounter >= attackExecutionThreshold)
         {
             Debug.Log("Reached Attack Execution Turn. King Laurinus attacks the Player Units on the cursed tiles");
+
+            deity.deityCry.Play();
+
             foreach (var playerUnit in GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield)
             {
                 if (playerUnit.GetComponent<Unit>().ownedTile.currentTileCurseStatus == TileCurseStatus.cursed)
@@ -32,6 +37,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
                     playerUnit.GetComponent<Unit>().OnTakenDamage.Invoke(deity.deitySpecialAttackPower);
 
                     BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
+
                     Debug.Log("King Laurinus executes its Special Attack.");
                 }
             }
