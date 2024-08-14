@@ -262,8 +262,28 @@ public class CafeMenuUIController : MonoBehaviour
     public void SaveRestoredCharacterStats()
     {
         //Saves the stats after feeding.
-        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-        gameStatsManager.SaveCharacterData();
-        Debug.Log("Character Stats Saved");
+        GameSaveData characterSaveData = SaveStateManager.saveData;
+
+        foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
+        {
+            CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
+            if (existingCharacterData != null)
+            {
+                // Update existing character data
+                existingCharacterData.unitHealthPoints = playerUnit.unitHealthPoints;
+                existingCharacterData.unitSavedManaPoints = playerUnit.unitManaPoints;
+                existingCharacterData.unitShieldPoints = playerUnit.unitShieldPoints;
+
+                existingCharacterData.unitLifeCondition = playerUnit.currentUnitLifeCondition;
+
+                existingCharacterData.unitAttackPower = playerUnit.unitAttackPower;
+                existingCharacterData.unitMagicPower = playerUnit.unitMagicPower;
+
+                // Update other stats as necessary
+
+                Debug.Log("Character Stats Saved");
+            }
+        }
+        SaveStateManager.SaveGame(characterSaveData);
     }
 }
