@@ -32,8 +32,8 @@ public class CameraDistanceController : MonoBehaviour
         // so it's rendered on top of others, and so on.
         for (int i = 0; i < unitsOnBattlefield.Count; i++)
         {
-            //160720240901 Correct
-            //unitsOnBattlefield[i].GetComponentInChildren<SpriteRenderer>().sortingOrder = i;
+            if (unitsOnBattlefield[i].GetComponentInChildren<SpriteRenderer>() != null)
+                unitsOnBattlefield[i].GetComponentInChildren<SpriteRenderer>().sortingOrder = i;
         }
     }
 
