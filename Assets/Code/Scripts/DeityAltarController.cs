@@ -19,8 +19,13 @@ public class DeityAltarController : MonoBehaviour
     public RectTransform saveDeityLinkButtonContainer;
     public TextMeshProUGUI nameLabelPrefab;
 
+    [SerializeField] DeityLinkCalloutController deityLinkCalloutController;
+
     [SerializeField] GameObject playerUnitProfileGO;
     [SerializeField] GameObject deityProfileGO;
+
+
+    private GameObject selectedPlayerUnitProfileGO;
 
     [SerializeField] Image fadePanel;
     [SerializeField] Transform deitySpot;
@@ -61,8 +66,9 @@ public class DeityAltarController : MonoBehaviour
         }
     }
 
-    public void SetCurrentSelectedUnit(Unit unit)
+    public void SetCurrentSelectedUnit(Unit unit, GameObject unitPanel)
     {
+        selectedPlayerUnitProfileGO = unitPanel;
         selectedPlayerUnit = unit;
     }
 
@@ -107,11 +113,16 @@ public class DeityAltarController : MonoBehaviour
         {
             RemoveDeityBuffsOnUnit(selectedPlayerUnit, deity);
             saveData.unitsLinkedToDeities.Remove(selectedPlayerUnitId);
+            selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = "No Link";
+
         }
 
         // Add the new link.
         PlayLinkAnimation(selectedPlayerUnit, deity);
         saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deityId);
+
+        selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = deity.GetComponent<Unit>().unitTemplate.unitName;
+
         GameManager.Instance.ApplyDeityLinks();
 
         ApplyDeityBuffsOnUnit(selectedPlayerUnit, deity);
@@ -124,9 +135,10 @@ public class DeityAltarController : MonoBehaviour
 
     public void PlayLinkAnimation(Unit selectedPlayerUnit, Deity deity)
     {
-        FadeEffect();
-        Sprite playerUnitPortrait = Instantiate(selectedPlayerUnit.unitTemplate.unitPortrait);
-        Sprite deityPortrait = Instantiate(deity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait);
+        Sprite selectedPlayerUnitPortrait = selectedPlayerUnit.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
+        Sprite linkedDeityUnitPortrait = deity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
+
+        deityLinkCalloutController.PlayDeityLinkCalloutTransition(selectedPlayerUnitPortrait, linkedDeityUnitPortrait);
     }
 
     public void ApplyDeityBuffsOnUnit(Unit unit, Deity deity)
@@ -153,18 +165,18 @@ public class DeityAltarController : MonoBehaviour
         }
     }
 
-    public void FadeEffect()
-    {
-        float fadeDuration = 1.0f;
+    //public void FadeEffect()
+    //{
+    //    float fadeDuration = 1.0f;
 
-        // Fade to black
-        if (fadePanel != null)
-        {
-            fadePanel.DOFade(1f, fadeDuration).OnComplete(() =>
-            {
-                fadePanel.DOFade(0f, fadeDuration);
-            });
-        }
-    }
+    //    // Fade to black
+    //    if (fadePanel != null)
+    //    {
+    //        fadePanel.DOFade(1f, fadeDuration).OnComplete(() =>
+    //        {
+    //            fadePanel.DOFade(0f, fadeDuration);
+    //        });
+    //    }
+    //}
 
 }

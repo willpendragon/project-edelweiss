@@ -49,7 +49,7 @@ public class UnitImageController : MonoBehaviour, IPointerClickHandler
 
         if (currentIconSelectionStatus == IconSelectionStatus.playerSelectionMode && this.gameObject.tag == "Player")
         {
-            deityAltarController.SetCurrentSelectedUnit(unitReference);
+            deityAltarController.SetCurrentSelectedUnit(unitReference, this.gameObject);
             Debug.Log("Selected Player Unit");
         }
         else if (this.gameObject.tag == "Deity" && currentIconSelectionStatus == IconSelectionStatus.deitySelectionMode)

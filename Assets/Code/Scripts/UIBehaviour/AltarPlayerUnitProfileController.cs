@@ -20,7 +20,7 @@ public class AltarPlayerUnitProfileController : MonoBehaviour
 
     [Header("Playable Character Details")]
     [SerializeField] TextMeshProUGUI playerUnitName;
-    [SerializeField] TextMeshProUGUI linkedDeityName;
+    public TextMeshProUGUI linkedDeityName;
     [SerializeField] Image playerUnitMiniPortrait;
 
     [SerializeField] Button selectPlayerButton;
@@ -55,6 +55,6 @@ public class AltarPlayerUnitProfileController : MonoBehaviour
     {
         Debug.Log("SelectedPlayerUnit");
         DeityAltarController deityAltarController = GameObject.FindGameObjectWithTag("DeityAltarController").GetComponent<DeityAltarController>();
-        deityAltarController.SetCurrentSelectedUnit(selectedPlayerUnit);
+        deityAltarController.SetCurrentSelectedUnit(selectedPlayerUnit, this.gameObject);
     }
 }
