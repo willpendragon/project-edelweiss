@@ -1,13 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using System;
-using UnityEditor;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using static TileController;
-using Unity.VisualScripting;
 
 public enum SingleTileStatus
 {
@@ -64,6 +58,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
 
     public GameObject targetIcon;
     public TileShaderController tileShaderController;
+    public GameObject tilePrefabSprite;
 
     // A* Pathfinding properties
     public int gCost;
@@ -80,6 +75,12 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     void Start()
     {
         currentTileCurseStatus = TileCurseStatus.notCursed;
+
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        if (currentSceneName == "overworld_map")
+        {
+            tilePrefabSprite.GetComponent<SpriteRenderer>().enabled = false;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)

@@ -3,7 +3,22 @@ guid: 66e27c59c80f1884ea04f7a5d7e64ce5
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: 3363eb986d3a80c4396591d25a7752f6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: right_room_pixel_texture
+    second: {fileID: 2100000, guid: 2996a2e2b6a3594418ef451cd859ff2d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: room_pixel_texture
+    second: {fileID: 2100000, guid: 55d76fe5adbac5c40a72a05580727a4d, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
