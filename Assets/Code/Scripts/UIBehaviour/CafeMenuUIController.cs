@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,9 +26,6 @@ public class CafeMenuUIController : MonoBehaviour
     [SerializeField] TextMeshProUGUI notificationTexts;
     [SerializeField] GameObject loveIconPrefab;
     [SerializeField] Transform loveIconPrefabTransform;
-
-
-
     void Start()
     {
         gameStatsManager = GameObject.FindWithTag("GameStatsManager").GetComponent<GameStatsManager>();
@@ -126,29 +122,35 @@ public class CafeMenuUIController : MonoBehaviour
             // Create the button GameObject
             GameObject feedCharacterButtonGO = new GameObject("CharacterFeedButton");
 
+            // Add RectTransform and set its size
             RectTransform rectTransform = feedCharacterButtonGO.AddComponent<RectTransform>();
             rectTransform.SetParent(characterProfile.transform, false); // Set parent with worldPositionStays = false to maintain proper UI scaling and positioning
+
+            // Set the size of the button
+            rectTransform.sizeDelta = new Vector2(128, 32);
 
             Image buttonImage = feedCharacterButtonGO.AddComponent<Image>();
 
             // Add the button component
             Button feedCharacterButton = feedCharacterButtonGO.AddComponent<Button>();
 
+            // Create the text GameObject
             GameObject textGO = new GameObject("ButtonText");
             RectTransform textRectTransform = textGO.AddComponent<RectTransform>();
             textRectTransform.SetParent(feedCharacterButtonGO.transform, false);
 
+            // Set anchors and sizeDelta for the text to make it fit within the button
             textRectTransform.anchorMin = Vector2.zero;
             textRectTransform.anchorMax = Vector2.one;
             textRectTransform.sizeDelta = Vector2.zero;
 
             TextMeshProUGUI textMeshPro = textGO.AddComponent<TextMeshProUGUI>();
-
             textMeshPro.text = "Feed";
             textMeshPro.fontSize = 24;
             textMeshPro.alignment = TextAlignmentOptions.Center;
             textMeshPro.color = Color.black;
 
+            // Customize button colors
             ColorBlock colors = feedCharacterButton.colors;
             colors.normalColor = Color.white;
             colors.highlightedColor = new Color(0.8f, 0.8f, 0.8f, 1);

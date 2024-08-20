@@ -1,9 +1,24 @@
 fileFormatVersion: 2
 guid: 5d272442cb4d8bf42a57885bd7f2aaec
 ModelImporter:
-  serializedVersion: 21300
+  serializedVersion: 22200
   internalIDToNameTable: []
   externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: chimney_pixel_texture
+    second: {fileID: 2100000, guid: 7f12dd64406b50841b8d2614c407aeb4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: counter_bottom_pixel_texture
+    second: {fileID: 2100000, guid: 69e2a50814d8cdb42bf772464554eeb3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: counter_top_pixel_texture.001
+    second: {fileID: 2100000, guid: f877ca3cfef9d7443a543c4ac23ebe0c, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -17,8 +32,23 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: pixel_floor_material.001
+    second: {fileID: 2100000, guid: 8544075cd0838e543a457a69c3eb85d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: pixel_tea_table_material
     second: {fileID: 2100000, guid: 0994081dbcf2ea64c8ad0cf7682ccf42, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pixel_tea_table_material.001
+    second: {fileID: 2100000, guid: ef3026b5049af924bb06584bbc3fc40a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pixel_tea_table_material.002
+    second: {fileID: 2100000, guid: 8843e9be54d14374c89b283b10928540, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -70,6 +100,7 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 0
@@ -97,6 +128,7 @@ ModelImporter:
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -129,6 +161,7 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 0
   remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 
