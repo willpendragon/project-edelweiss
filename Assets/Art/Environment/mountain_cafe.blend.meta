@@ -17,6 +17,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: roof_pixel_texture
+    second: {fileID: 2100000, guid: 6b171c3173159a245be8fed7388f7710, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: room_pixel_texture
     second: {fileID: 2100000, guid: 55d76fe5adbac5c40a72a05580727a4d, type: 2}
   materials:
