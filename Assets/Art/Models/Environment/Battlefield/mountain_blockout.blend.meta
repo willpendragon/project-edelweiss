@@ -7,13 +7,28 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: central_altar_pixel_texture
+    second: {fileID: 2100000, guid: dd2cfdb1ecd9ab8478360158d1f954a4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: central_platform_pixel_painting
     second: {fileID: 2100000, guid: de7ec6f438cbefe40886ce448d073470, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: central_tower_pixel_texture
+    second: {fileID: 2100000, guid: 58972f21ab6316641a749a87a305e063, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: default_material
     second: {fileID: 2100000, guid: 996a658d8d71e48429c504fb4a6492ed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: default_material.001
+    second: {fileID: 2100000, guid: 2e96dc69d97fa8e4e8a4635d677c2923, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -24,6 +39,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: staircase_top_pixel_texture
     second: {fileID: 2100000, guid: 6ed29ecda6d91534fa281f3c18c3c583, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tower_lateral_element_pixel_texture
+    second: {fileID: 2100000, guid: b992ef148ac985d4289b6e57884d70ed, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
