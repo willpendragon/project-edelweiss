@@ -17,6 +17,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: central_tower_main_bridge_pixel_texture
+    second: {fileID: 2100000, guid: 3f7a6851c6bb29e4787ac9e3ac146ccf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: central_tower_pixel_texture
     second: {fileID: 2100000, guid: 58972f21ab6316641a749a87a305e063, type: 2}
   - first:
@@ -44,6 +49,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: staircase_top_pixel_texture
     second: {fileID: 2100000, guid: 6ed29ecda6d91534fa281f3c18c3c583, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: staircase_top_pixel_texture.001
+    second: {fileID: 2100000, guid: db8e73c0d1e4d1c43911db01f5bfbd35, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
