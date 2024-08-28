@@ -726,7 +726,7 @@ GameObject:
   - component: {fileID: 2803219925591249153}
   - component: {fileID: 6180686884810482089}
   m_Layer: 8
-  m_Name: AlizaSprite
+  m_Name: VioletSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -788,7 +788,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -723126166, guid: d34d4541dfd47d54bb49b12995171e0d, type: 3}
+  m_Sprite: {fileID: 590908083, guid: ebc4843f90e967142a0be273d1ed1d59, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -809,7 +809,7 @@ Animator:
   m_GameObject: {fileID: 6249773756369735894}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9f0b3d5b913771348b9bee379ee8a26c, type: 2}
+  m_Controller: {fileID: 9100000, guid: 459ccbc35ed0e2842997a7fe0280a634, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
