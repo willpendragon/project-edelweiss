@@ -243,7 +243,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &81435930
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -572,7 +572,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &635286811
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -726,7 +726,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &940278660
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1013,7 +1013,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1113077815
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1304,7 +1304,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1720295870
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1460,6 +1460,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
+--- !u!1001 &1941479996
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.14
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.061268
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_Name
+      value: jacobs_ladder_transition_model
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4bb728e4beaf3d946b09c96e2784c317, type: 3}
 --- !u!1 &2043471750
 GameObject:
   m_ObjectHideFlags: 0
@@ -1575,7 +1636,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &2049080689
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1680,7 +1741,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &2068159637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1773,16 +1834,17 @@ SceneRoots:
   m_Roots:
   - {fileID: 961739753}
   - {fileID: 203844589}
+  - {fileID: 1871501094}
+  - {fileID: 1263483346}
+  - {fileID: 828466572}
   - {fileID: 635286814}
   - {fileID: 2068159640}
   - {fileID: 1720295873}
   - {fileID: 81435933}
-  - {fileID: 1871501094}
-  - {fileID: 828466572}
   - {fileID: 133541104}
-  - {fileID: 1263483346}
   - {fileID: 1113077818}
   - {fileID: 2049080692}
   - {fileID: 940278663}
   - {fileID: 28703516}
   - {fileID: 1212076222}
+  - {fileID: 1941479996}
