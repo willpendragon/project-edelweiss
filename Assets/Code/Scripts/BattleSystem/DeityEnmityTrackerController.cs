@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 
 public class DeityEnmityTrackerController : MonoBehaviour
 {
@@ -14,6 +11,7 @@ public class DeityEnmityTrackerController : MonoBehaviour
     {
         SpellcastingController.OnCastedSpellTypeHatedbyDeity -= UpdateDeityEnmityTracker;
     }
+
     public TextMeshProUGUI deityEnmityPointsCounter;
     public Deity deity;
     public void SetDeity(GameObject deityGO)
