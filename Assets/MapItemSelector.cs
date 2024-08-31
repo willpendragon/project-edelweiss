@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class MapItemSelector : MonoBehaviour, IPointerClickHandler
 {
@@ -17,6 +18,7 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     public GameObject activateEnterMenuPanelGO;
     public Canvas overworldMapCanvas;
     public SceneLoader selectedNodeSceneLoader;
+    public TextMeshProUGUI footerMarqueeText;
 
     private SelectionStatus currentStatus = SelectionStatus.Deselected;
 
@@ -70,6 +72,7 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     private void SelectItem()
     {
         currentStatus = SelectionStatus.Selected;
+        footerMarqueeText.text = $"{gameObject.name} selected";
         // Implement logic for when the item is selected
         Debug.Log($"{gameObject.name} selected");
     }
