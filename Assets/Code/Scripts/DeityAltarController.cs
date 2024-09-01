@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 using TMPro;
-using DG.Tweening;
-using UnityEditor.Timeline.Actions;
-
 public class DeityAltarController : MonoBehaviour
 {
     public RectTransform playerPartyMembembersContainer;
