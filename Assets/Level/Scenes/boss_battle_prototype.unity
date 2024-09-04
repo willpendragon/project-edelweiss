@@ -888,6 +888,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3655355274866399775, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -1285,6 +1289,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Static Ray 7 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1555709989414630647, guid: 08c3ba4b83e8b6647baaef039083513b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 1844732509267918260, guid: 08c3ba4b83e8b6647baaef039083513b, type: 3}
@@ -1554,6 +1562,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &267459866
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0000019073486
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.6466866
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_Name
+      value: church_boss_environmentblend
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
 --- !u!1 &351897756
 GameObject:
   m_ObjectHideFlags: 0
@@ -5042,6 +5107,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 871809831}
+  - component: {fileID: 871809832}
   m_Layer: 0
   m_Name: ObstacleController
   m_TagString: Untagged
@@ -5064,6 +5130,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &871809832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871809830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2959e04737a29344a3ca8c3409177f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &873232008
 GameObject:
   m_ObjectHideFlags: 0
@@ -5778,6 +5856,37 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &1036750653
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1036750655}
+  m_Layer: 0
+  m_Name: MirrorController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1036750655
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036750653}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1114723494
 GameObject:
   m_ObjectHideFlags: 0
@@ -5864,6 +5973,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnTrackerText: {fileID: 782934662}
+  turnCounter: 0
 --- !u!1 &1118968325
 GameObject:
   m_ObjectHideFlags: 0
@@ -7689,6 +7799,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Static Ray 7
       objectReference: {fileID: 0}
+    - target: {fileID: 1555709989414630647, guid: 08c3ba4b83e8b6647baaef039083513b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 1844732509267918260, guid: 08c3ba4b83e8b6647baaef039083513b, type: 3}
@@ -7794,6 +7908,51 @@ MonoBehaviour:
   m_YawDamping: 0
   m_RollDamping: 0
   m_AngularDamping: 0
+--- !u!1 &1508039770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1508039772}
+  - component: {fileID: 1508039771}
+  m_Layer: 0
+  m_Name: BossController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1508039771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508039770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2135220559ef067408fab014c0c58145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossUnit: {fileID: 0}
+--- !u!4 &1508039772
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508039770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1531555549
 GameObject:
   m_ObjectHideFlags: 0
@@ -9015,6 +9174,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1850559077}
+  - component: {fileID: 1850559079}
+  - component: {fileID: 1850559078}
   m_Layer: 0
   m_Name: MoonPhaseController
   m_TagString: Untagged
@@ -9037,6 +9198,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1850559078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850559076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e63a44bda2e2e340af7ffb87a41da9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossController: {fileID: 1508039771}
+  turnTrackerController: {fileID: 0}
+  phaseOnebuffAmount: 0
+  phaseTwobuffAmount: 0
+  phaseThreebuffAmount: 0
+--- !u!114 &1850559079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850559076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e593af9decde6b43a4d24e24b56f3f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnTrackerText: {fileID: 0}
+  turnCounter: 0
 --- !u!1 &1878946398
 GameObject:
   m_ObjectHideFlags: 0
@@ -9417,6 +9609,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnTrackerText: {fileID: 1382720821}
+  turnCounter: 0
 --- !u!114 &2029499022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9590,6 +9783,10 @@ PrefabInstance:
     - target: {fileID: 4970429104571415182, guid: 967d12d055188ba49a46916bcf2a49e9, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4970429104571415182, guid: 967d12d055188ba49a46916bcf2a49e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4970429104571415181, guid: 967d12d055188ba49a46916bcf2a49e9, type: 3}
@@ -10398,4 +10595,7 @@ SceneRoots:
   - {fileID: 1930827732}
   - {fileID: 1559636503}
   - {fileID: 1850559077}
+  - {fileID: 1508039772}
   - {fileID: 871809831}
+  - {fileID: 1036750655}
+  - {fileID: 267459866}

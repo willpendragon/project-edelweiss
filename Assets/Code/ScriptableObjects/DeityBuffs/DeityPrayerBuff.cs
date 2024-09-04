@@ -10,6 +10,7 @@ public class DeityPrayerBuff : ScriptableObject
     {
         AttackPower,
         MagicPower,
+        ShieldPower,
         MaxHP
     }
 

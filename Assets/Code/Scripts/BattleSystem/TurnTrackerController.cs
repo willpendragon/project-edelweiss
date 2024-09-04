@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class TurnTrackerController : MonoBehaviour
 {
     public TextMeshProUGUI turnTrackerText;
+    public int turnCounter;
     public void OnEnable()
     {
         TurnController.OnEnemyTurn += SetTurnTrackerText;
@@ -18,10 +17,22 @@ public class TurnTrackerController : MonoBehaviour
         EnemyTurnManager.OnPlayerTurn -= SetTurnTrackerText;
         Deity.OnPlayerTurn += SetTurnTrackerText;
     }
+
+    public delegate void IncreaseTurnCounter();
+    public static event IncreaseTurnCounter OnIncreaseTurnCounter;
     public void SetTurnTrackerText(string turnText)
     {
-        turnTrackerText.text = turnText;
+        if (turnTrackerText != null)
+        {
+            turnTrackerText.text = turnText;
+        }
+        turnCounter++;
+        //Change the name of the method
+        OnIncreaseTurnCounter();
     }
 
-
+    public void IncreaseLunarPhasesCounter()
+    {
+        // Send message to MoonPhaseController
+    }
 }
