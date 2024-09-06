@@ -7,7 +7,6 @@ public class EnemyPoolController : MonoBehaviour
 {
     public GameObject[] EnemyPoolGameObjects;
     [SerializeField] BattleManager battleManager;
-    // Start is called before the first frame update
     void OnEnable()
     {
         if (battleManager.currentBattleType == BattleType.regularBattle)
@@ -18,6 +17,11 @@ public class EnemyPoolController : MonoBehaviour
         {
             SpawnBossBattleEnemies();
         }
+    }
+
+    private void Start()
+    {
+        SetEnemiesStartingCoordinatesInBossBattle();
     }
 
     void SpawnEnemies()
@@ -41,29 +45,37 @@ public class EnemyPoolController : MonoBehaviour
         Debug.Log("Spawning Boss Battle Enemies");
         List<Vector2> enemyCoords = GameManager.Instance.currentEnemySelectionCoords;
 
+        foreach (var enemy in GameManager.Instance.currentEnemySelection)
+        {
+            Instantiate(enemy);
+        }
+    }
+    void SetEnemiesStartingCoordinatesInBossBattle()
+    {
+        List<Vector2> enemyCoords = GameManager.Instance.currentEnemySelectionCoords;
+
         for (int i = 0; i < enemyCoords.Count; i++)
         {
-            GameObject unitObject = GameManager.Instance.currentEnemySelection[i]; // Get the GameObject from the list
+            GameObject unitObject = BattleManager.Instance.enemiesOnBattlefield[i]; // Get the Enemy GameObject from the Enemies on Battlefield array
             Unit unitComponent = unitObject.GetComponent<Unit>(); // Access the Unit component
 
             if (unitComponent != null)
             {
                 // Get the corresponding Vector2 from the coordinates list
                 Vector2 coord = enemyCoords[i];
-
+                Debug.Log(coord);
                 // Assign the x and y values from the Vector2 to the Unit's coordinates
                 unitComponent.startingXCoordinate = (int)coord.x;
                 unitComponent.startingYCoordinate = (int)coord.y;
+                SetTileDetectedUnit(unitComponent, unitObject);
+                unitComponent.MoveUnit(unitComponent.startingXCoordinate, unitComponent.startingYCoordinate, false);
+                unitComponent.SetPosition(unitComponent.startingXCoordinate, unitComponent.startingYCoordinate);
+                Debug.Log("Assigned starting coordinates");
             }
             else
             {
                 Debug.LogError($"GameObject at index {i} does not have a Unit component.");
             }
-        }
-
-        foreach (var enemy in GameManager.Instance.currentEnemySelection)
-        {
-            Instantiate(enemy);
         }
     }
 
