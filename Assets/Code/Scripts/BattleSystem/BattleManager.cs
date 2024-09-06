@@ -18,7 +18,8 @@ public enum FieldEffectStatus
 public enum BattleType
 {
     regularBattle,
-    battleWithDeity
+    battleWithDeity,
+    BossBattle
 }
 
 public class BattleManager : MonoBehaviour

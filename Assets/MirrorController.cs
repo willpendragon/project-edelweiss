@@ -8,6 +8,14 @@ public class MirrorController : MonoBehaviour
     List<TileController> activationPlatforms = new List<TileController>();
     private int activatedPlatformsCount;
 
+    public void OnEnable()
+    {
+        EnemyTurnManager.OnPlayerTurn += ActivateMirrors;
+    }
+    public void OnDisable()
+    {
+        EnemyTurnManager.OnPlayerTurn -= ActivateMirrors;
+    }
 
     public void Start()
     {
@@ -25,6 +33,19 @@ public class MirrorController : MonoBehaviour
                     Debug.Log(activationPlatforms);
                 }
             }
+        }
+    }
+
+    public void ActivateMirrors(string test)
+    {
+        // Added a "string" argument since the original delegate required it.
+        // Need to create a new delegate without the parameters, specifically for the
+        // Player turn handover.
+
+        CheckActivationPlatformsStatus();
+        if (CheckActivatedPlatformsRequisite())
+        {
+            UnleashMirrorAttack();
         }
     }
 
@@ -52,15 +73,6 @@ public class MirrorController : MonoBehaviour
         else
         {
             return false;
-        }
-    }
-
-    public void ActivateMirrors()
-    {
-        CheckActivationPlatformsStatus();
-        if (CheckActivatedPlatformsRequisite())
-        {
-            UnleashMirrorAttack();
         }
     }
     private void UnleashMirrorAttack()

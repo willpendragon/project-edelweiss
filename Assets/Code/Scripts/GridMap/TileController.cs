@@ -28,7 +28,8 @@ public enum TileCurseStatus
 public enum TileType
 {
     Basic,
-    ActivationPlatform
+    ActivationPlatform,
+    Obstacle
 }
 
 

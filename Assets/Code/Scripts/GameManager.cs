@@ -67,10 +67,20 @@ public class GameManager : MonoBehaviour
         //currentEnemySelection = enemySelection;
     }
 
-    public void UpdateEnemyData(Level level)
-    {
-        GenerateLevelData(level); // Generate random enemy data
-    }
+    //public void UpdateEnemyData(Level level)
+    //{
+    //    if (BattleManager.Instance.currentBattleType == BattleType.regularBattle)
+    //    {
+    //        GenerateLevelData(level); // Generate random enemy data
+    //        Debug.Log("This is a regular battle");
+
+    //    }
+    //    else if (BattleManager.Instance.currentBattleType == BattleType.BossBattle)
+    //    {
+    //        // Retrieve Enemyies from hand-picked selection
+    //        Debug.Log("This is a boss battle");
+    //    }
+    //}
 
     public void InstantiateUnits()
     {

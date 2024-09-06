@@ -26,9 +26,9 @@ public class TurnTrackerController : MonoBehaviour
         {
             turnTrackerText.text = turnText;
         }
+        OnIncreaseTurnCounter();
         turnCounter++;
         //Change the name of the method
-        OnIncreaseTurnCounter();
     }
 
     public void IncreaseLunarPhasesCounter()

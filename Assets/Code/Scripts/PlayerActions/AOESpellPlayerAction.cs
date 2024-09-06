@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static TileController;
-using UnityEngine.UI;
 using UnityEngine.Events;
 
 public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
@@ -14,7 +10,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public Deity unboundDeity;
 
     private int aoeRange = 1;
-
 
     public delegate void UsedSpell(string spellName, string casterName);
     public static event UsedSpell OnUsedSpell;

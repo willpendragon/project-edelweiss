@@ -563,7 +563,7 @@ MonoBehaviour:
   captureCrystalsRewardPool: 0
   fieldEffectStatus: 1
   enemyTurnManager: {fileID: 90211751}
-  currentBattleType: 0
+  currentBattleType: 2
   PlayerTurnStarts:
     m_PersistentCalls:
       m_Calls:
@@ -767,7 +767,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &103291617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1613,6 +1613,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
       propertyPath: m_Name
       value: church_boss_environmentblend
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7aeded4048bd6464caccd1f9ebc065ba, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4748,7 +4752,7 @@ MonoBehaviour:
   tileSelectionPermitted: 0
   gridTileControllers: []
   gridMovementController: {fileID: 1717157114}
-  currentMapData: {fileID: 11400000, guid: f43a7862c78c6b54ca3eb20e0dfc95a9, type: 2}
+  currentMapData: {fileID: 11400000, guid: b5868fbdab7a12e49be0a18a8e2c683b, type: 2}
 --- !u!4 &810722615
 Transform:
   m_ObjectHideFlags: 0
@@ -5142,6 +5146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2959e04737a29344a3ca8c3409177f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridManager: {fileID: 0}
 --- !u!1 &873232008
 GameObject:
   m_ObjectHideFlags: 0
@@ -5901,6 +5906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
+  bossController: {fileID: 0}
 --- !u!1 &1114723494
 GameObject:
   m_ObjectHideFlags: 0
@@ -9225,10 +9231,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bossController: {fileID: 1508039771}
-  turnTrackerController: {fileID: 0}
-  phaseOnebuffAmount: 0
-  phaseTwobuffAmount: 0
-  phaseThreebuffAmount: 0
+  turnTrackerController: {fileID: 1850559079}
+  phaseOnebuffAmount: 50
+  phaseTwobuffAmount: 50
+  phaseThreebuffAmount: 50
 --- !u!114 &1850559079
 MonoBehaviour:
   m_ObjectHideFlags: 0
