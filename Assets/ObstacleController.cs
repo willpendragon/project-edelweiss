@@ -8,6 +8,47 @@ public class ObstacleController : MonoBehaviour
     List<TileController> obstacles = new List<TileController>();
 
     // Subscribe to Player Turn
+
+    private void Start()
+    {
+        foreach (var tile in gridManager?.gridTileControllers)
+        {
+            if (tile.tileType == TileType.Obstacle)
+            {
+                var spriteRenderer = tile.gameObject.GetComponentInChildren<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = Color.red;
+                    Debug.Log("Set up Obstacle Color");
+                    OccupyObstacleTile(tile);
+                }
+                else
+                {
+                    Debug.Log("Unable to find SpriteRenderer Component in Obstacle Tile");
+                }
+            }
+        }
+    }
+
+    private void OccupyObstacleTile(TileController obstacleTile)
+    {
+        obstacleTile.currentSingleTileCondition = SingleTileCondition.occupied;
+        Debug.Log(obstacleTile + " set to" + obstacleTile.currentSingleTileCondition);
+    }
+    private List<TileController> GetObstaclesList()
+    {
+
+        foreach (var tile in gridManager?.gridTileControllers)
+        {
+            if (tile.tileType == TileType.Obstacle)
+            {
+                int obstacleHazardRange = 1;
+                gridManager.gameObject.GetComponentInChildren<GridMovementController>().GetMultipleTiles(tile, obstacleHazardRange);
+                obstacles.Add(tile);
+            }
+        }
+        return obstacles;
+    }
     private void ActivateObstacles()
     {
         // I should prevent Player Action during this phase, deactivating the Player Input, sending a notification to the UI
@@ -20,20 +61,10 @@ public class ObstacleController : MonoBehaviour
                 int obstacleDamage = 20;
                 target.GetComponent<Unit>().HealthPoints -= obstacleDamage;
             }
-        }
-    }
-    private List<TileController> GetObstaclesList()
-    {
-
-        foreach (var tile in gridManager.gridTileControllers)
-        {
-            if (tile.tileType == TileType.Obstacle)
+            else
             {
-                int obstacleHazardRange = 1;
-                gridManager.gameObject.GetComponentInChildren<GridMovementController>().GetMultipleTiles(tile, obstacleHazardRange);
-                obstacles.Add(tile);
+                Debug.Log("No targets found around the Obstacle");
             }
         }
-        return obstacles;
     }
 }

@@ -29,7 +29,8 @@ public enum TileType
 {
     Basic,
     ActivationPlatform,
-    Obstacle
+    Obstacle,
+    Mirror
 }
 
 

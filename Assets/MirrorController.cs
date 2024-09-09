@@ -5,7 +5,11 @@ public class MirrorController : MonoBehaviour
 {
     [SerializeField] GridManager gridManager;
     [SerializeField] BossController bossController;
+    [SerializeField] GameObject mirrorGO;
+    [SerializeField] GameObject activationPlatformGO;
+
     List<TileController> activationPlatforms = new List<TileController>();
+
     private int activatedPlatformsCount;
 
     public void OnEnable()
@@ -20,19 +24,61 @@ public class MirrorController : MonoBehaviour
     public void Start()
     {
         PopulateActivationPlatformList();
+        SpawnMirrors();
     }
     private void PopulateActivationPlatformList()
     {
-        if (gridManager != null)
+        foreach (var tile in gridManager?.gridTileControllers)
         {
-            foreach (var tile in gridManager.gridTileControllers)
+            if (tile != null && tile.tileType == TileType.ActivationPlatform)
             {
-                if (tile != null && tile.tileType == TileType.ActivationPlatform)
+                activationPlatforms.Add(tile);
+                ChangeTileColor(tile);
+                if (activationPlatformGO != null)
                 {
-                    activationPlatforms.Add(tile);
-                    Debug.Log(activationPlatforms);
+                    Instantiate(activationPlatformGO, tile.gameObject.transform);
                 }
+                Debug.Log(activationPlatforms);
             }
+            else
+            {
+                Debug.Log("No Activation Platform Tile found");
+            }
+        }
+    }
+
+    private void SpawnMirrors()
+    {
+        foreach (var tile in gridManager?.gridTileControllers)
+        {
+            if (tile != null && tile.tileType == TileType.Mirror)
+            {
+                if (mirrorGO != null)
+                {
+                    Instantiate(mirrorGO, tile.gameObject.transform);
+                }
+                OccupyTile(tile);
+                Debug.Log(activationPlatforms);
+            }
+            else
+            {
+                Debug.Log("No Mirror Tile found");
+            }
+        }
+    }
+
+    private void OccupyTile(TileController tileToOccupy)
+    {
+        tileToOccupy.currentSingleTileCondition = SingleTileCondition.occupied;
+        Debug.Log(tileToOccupy + " set to" + tileToOccupy.currentSingleTileCondition);
+    }
+
+    private void ChangeTileColor(TileController mirrorTile)
+    {
+        SpriteRenderer tileSpriteRenderer = mirrorTile.gameObject.GetComponentInChildren<SpriteRenderer>();
+        if (tileSpriteRenderer != null)
+        {
+            tileSpriteRenderer.color = Color.yellow;
         }
     }
 
@@ -60,6 +106,10 @@ public class MirrorController : MonoBehaviour
                     activatedPlatformsCount++;
                 }
             }
+            else
+            {
+                Debug.Log("No Player Unit found on the Mirror Activation Platforms");
+            }
         }
     }
 
@@ -83,5 +133,6 @@ public class MirrorController : MonoBehaviour
         Unit mirrorTarget = bossController.bossUnit;
         int mirrorDamage = 200;
         mirrorTarget.HealthPoints -= mirrorDamage;
+        Debug.Log("Used Mirror Attack on Boss Unit");
     }
 }

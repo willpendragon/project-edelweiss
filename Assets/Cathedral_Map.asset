@@ -120,7 +120,7 @@ MonoBehaviour:
   - position: {x: 7, y: 1}
     tileType: 0
   - position: {x: 7, y: 2}
-    tileType: 0
+    tileType: 1
   - position: {x: 7, y: 3}
     tileType: 0
   - position: {x: 7, y: 4}
@@ -131,8 +131,8 @@ MonoBehaviour:
     tileType: 0
   - position: {x: 7, y: 7}
     tileType: 0
-  - position: {x: 7, y: 8}
-    tileType: 0
+  - position: {x: 13, y: 8}
+    tileType: 2
   - position: {x: 7, y: 9}
     tileType: 0
   - position: {x: 7, y: 10}
@@ -247,8 +247,8 @@ MonoBehaviour:
     tileType: 0
   - position: {x: 13, y: 7}
     tileType: 0
-  - position: {x: 13, y: 8}
-    tileType: 0
+  - position: {x: 7, y: 8}
+    tileType: 2
   - position: {x: 13, y: 9}
     tileType: 0
   - position: {x: 13, y: 10}
@@ -314,7 +314,7 @@ MonoBehaviour:
   - position: {x: 18, y: 4}
     tileType: 0
   - position: {x: 18, y: 5}
-    tileType: 0
+    tileType: 3
   - position: {x: 18, y: 6}
     tileType: 0
   - position: {x: 18, y: 7}
@@ -324,7 +324,7 @@ MonoBehaviour:
   - position: {x: 18, y: 9}
     tileType: 0
   - position: {x: 18, y: 10}
-    tileType: 0
+    tileType: 3
   - position: {x: 18, y: 11}
     tileType: 0
   - position: {x: 18, y: 12}
@@ -367,8 +367,8 @@ MonoBehaviour:
     tileType: 0
   - position: {x: 20, y: 3}
     tileType: 0
-  - position: {x: 20, y: 4}
-    tileType: 0
+  - position: {x: 20, y: 11}
+    tileType: 1
   - position: {x: 20, y: 5}
     tileType: 0
   - position: {x: 20, y: 6}
@@ -381,8 +381,8 @@ MonoBehaviour:
     tileType: 0
   - position: {x: 20, y: 10}
     tileType: 0
-  - position: {x: 20, y: 11}
-    tileType: 0
+  - position: {x: 20, y: 4}
+    tileType: 1
   - position: {x: 20, y: 12}
     tileType: 0
   - position: {x: 20, y: 13}
@@ -464,4 +464,36 @@ MonoBehaviour:
   - position: {x: 25, y: 8}
     tileType: 0
   - position: {x: 25, y: 9}
+    tileType: 0
+  - position: {x: 6, y: 0}
+    tileType: 0
+  - position: {x: 7, y: 0}
+    tileType: 0
+  - position: {x: 8, y: 0}
+    tileType: 0
+  - position: {x: 9, y: 0}
+    tileType: 0
+  - position: {x: 6, y: 15}
+    tileType: 0
+  - position: {x: 7, y: 15}
+    tileType: 0
+  - position: {x: 8, y: 15}
+    tileType: 0
+  - position: {x: 9, y: 15}
+    tileType: 0
+  - position: {x: 18, y: 15}
+    tileType: 0
+  - position: {x: 19, y: 15}
+    tileType: 0
+  - position: {x: 20, y: 15}
+    tileType: 0
+  - position: {x: 21, y: 15}
+    tileType: 0
+  - position: {x: 18, y: 0}
+    tileType: 0
+  - position: {x: 19, y: 0}
+    tileType: 0
+  - position: {x: 20, y: 0}
+    tileType: 0
+  - position: {x: 21, y: 0}
     tileType: 0

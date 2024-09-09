@@ -56,6 +56,8 @@ public class Unit : MonoBehaviour
     public UnitStatusController unitStatusController;
     public FieldPrizeController fieldPrizeController;
 
+    public bool bossFlag = false;
+
 
     [Header("Deity Related")]
 

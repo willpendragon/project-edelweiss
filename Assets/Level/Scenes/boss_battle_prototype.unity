@@ -2049,7 +2049,7 @@ GameObject:
   m_Component:
   - component: {fileID: 496236981}
   m_Layer: 0
-  m_Name: == BATTLE LOGIC == (1)
+  m_Name: == BATTLE LOGIC ==
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2895,7 +2895,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6
+  near clip plane: -16
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -2924,7 +2924,7 @@ Transform:
   m_GameObject: {fileID: 588608016}
   serializedVersion: 2
   m_LocalRotation: {x: 0.28678817, y: -0.28678817, z: 0.09042394, w: 0.90957606}
-  m_LocalPosition: {x: 7.53, y: 5.9, z: 0}
+  m_LocalPosition: {x: 7.53, y: 5.9, z: 9.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4744,8 +4744,8 @@ MonoBehaviour:
   lineRendererPrefab: {fileID: 4486333903196572156, guid: aa54c5ae19f45294494001ec6843f6f6, type: 3}
   statusIcons: []
   tilePrefab: {fileID: 5273139076148632550, guid: ee3b17d23f7729846ae56be732f1cfa3, type: 3}
-  gridHorizontalSize: 10
-  gridVerticalSize: 10
+  gridHorizontalSize: 26
+  gridVerticalSize: 15
   inBetweenTilesXOffset: 0.1
   inBetweenTilesYOffset: 0.1
   currentPlayerUnit: {fileID: 0}
@@ -5146,7 +5146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2959e04737a29344a3ca8c3409177f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridManager: {fileID: 0}
+  gridManager: {fileID: 810722614}
 --- !u!1 &873232008
 GameObject:
   m_ObjectHideFlags: 0
@@ -5293,7 +5293,7 @@ GameObject:
   m_Layer: 0
   m_Name: == BOSS BATTLE LOGIC ==
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -5738,7 +5738,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6
+  near clip plane: -16
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -5767,7 +5767,7 @@ Transform:
   m_GameObject: {fileID: 985621543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.28678817, y: -0.28678817, z: 0.09042394, w: 0.90957606}
-  m_LocalPosition: {x: 7.53, y: 5.9, z: 0}
+  m_LocalPosition: {x: 13.89, y: 1.7, z: 9.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5905,8 +5905,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64ff2a35297d32a429ea37383a603b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridManager: {fileID: 0}
-  bossController: {fileID: 0}
+  gridManager: {fileID: 810722614}
+  bossController: {fileID: 1508039771}
+  mirrorGO: {fileID: 8423353141563557332, guid: f48f6a2e602294c49a16a18693db2840, type: 3}
+  activationPlatformGO: {fileID: 8182234101745996692, guid: 1a0bb5c61af8a0643a6e0bfdab867171, type: 3}
 --- !u!1 &1114723494
 GameObject:
   m_ObjectHideFlags: 0
@@ -6161,7 +6163,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6
+  near clip plane: -16
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -6190,7 +6192,7 @@ Transform:
   m_GameObject: {fileID: 1118968325}
   serializedVersion: 2
   m_LocalRotation: {x: 0.28678817, y: -0.28678817, z: 0.09042394, w: 0.90957606}
-  m_LocalPosition: {x: 7.53, y: 5.9, z: 0}
+  m_LocalPosition: {x: 13.89, y: 1.7, z: 9.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7417,7 +7419,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6
+  near clip plane: -16
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -7446,7 +7448,7 @@ Transform:
   m_GameObject: {fileID: 1362109339}
   serializedVersion: 2
   m_LocalRotation: {x: 0.28678817, y: -0.28678817, z: 0.09042394, w: 0.90957606}
-  m_LocalPosition: {x: 7.53, y: 5.9, z: 0}
+  m_LocalPosition: {x: 13.89, y: 1.7, z: 9.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10579,6 +10581,10 @@ SceneRoots:
   - {fileID: 814362705}
   - {fileID: 709194842}
   - {fileID: 877626850}
+  - {fileID: 1850559077}
+  - {fileID: 1508039772}
+  - {fileID: 871809831}
+  - {fileID: 1036750655}
   - {fileID: 363277734}
   - {fileID: 810722615}
   - {fileID: 1720886331}
@@ -10614,8 +10620,4 @@ SceneRoots:
   - {fileID: 806932566}
   - {fileID: 1930827732}
   - {fileID: 1559636503}
-  - {fileID: 1850559077}
-  - {fileID: 1508039772}
-  - {fileID: 871809831}
-  - {fileID: 1036750655}
   - {fileID: 267459866}

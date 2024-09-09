@@ -22,6 +22,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
 
     public MapNodeType type;
     public LockStatus currentLockStatus;
+    [SerializeField] List<Vector2> playerUnitsBossBattleStartingCoords;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -55,8 +56,15 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             GameManager.Instance.currentEnemySelection = bossBattleCurrentEnemySelection;
             GameManager.Instance.currentEnemySelectionCoords = bossBattleEnemySelectionCoords;
 
-            Debug.Log("Load Boss Battle Sequence with handpicked Enemy Selection");
+            List<Unit> playerPartyMembersInstances = GameManager.Instance.playerPartyMembersInstances;
+            for (int i = 0; i < playerPartyMembersInstances.Count; i++)
+            {
+                playerPartyMembersInstances[i].startingXCoordinate = (int)playerUnitsBossBattleStartingCoords[i].x;
+                playerPartyMembersInstances[i].startingYCoordinate = (int)playerUnitsBossBattleStartingCoords[i].y;
+            }
+            Debug.Log("Load Boss Battle Sequence with handpicked Enemy Selection and new Player Party initial coordinates");
             SceneManager.LoadScene("boss_battle_prototype");
+
             //GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
         }
     }

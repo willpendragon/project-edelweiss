@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6020739334212272628}
   - component: {fileID: 6536100746877825997}
   - component: {fileID: 6725159262031447176}
-  - component: {fileID: 6502810289176297488}
   - component: {fileID: 1445804849254652687}
+  - component: {fileID: 6502810289176297488}
   m_Layer: 0
   m_Name: BossLevelNode
   m_TagString: Untagged
@@ -87,6 +87,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1445804849254652687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4696665991169405478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d7751b60012534aa242f2909f2cd18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemySelection: {fileID: 7133075875655318301}
+  type: 1
+  currentLockStatus: 1
+  playerUnitsBossBattleStartingCoords:
+  - {x: 6, y: 2}
+  - {x: 8, y: 9}
+  - {x: 8, y: 6}
 --- !u!65 &6502810289176297488
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -108,21 +127,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5.103214, y: 38.35564, z: 19.060333}
   m_Center: {x: -0.061221857, y: -16.840467, z: 7.71841}
---- !u!114 &1445804849254652687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4696665991169405478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21d7751b60012534aa242f2909f2cd18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemySelection: {fileID: 7133075875655318301}
-  type: 1
-  currentLockStatus: 1
 --- !u!1 &5230791894488749131
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,6 +695,7 @@ MonoBehaviour:
   - {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
   - {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
   - {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+  - {fileID: 5009294011632168286, guid: 752728e7ed17fa8469e429573586aafc, type: 3}
   gridManager: {fileID: 0}
   EnemyTypeIds: 
   EnemyCoordinates:
@@ -698,6 +703,7 @@ MonoBehaviour:
   - {x: 8, y: 3}
   - {x: 7, y: 3}
   - {x: 6, y: 3}
+  - {x: 23, y: 8}
   levelData: {fileID: 0}
   levelNumber: 0
 --- !u!4 &1798486366764735998 stripped

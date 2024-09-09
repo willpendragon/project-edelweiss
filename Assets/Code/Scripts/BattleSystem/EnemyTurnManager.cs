@@ -60,14 +60,13 @@ public class EnemyTurnManager : MonoBehaviour
     }
     public void EnemyTurnSequence()
     {
-
         enemiesInQueue.Sort((a, b) => b.speed.CompareTo(a.speed));
         currentEnemyTurnIndex = 0;
         StartCoroutine(ExecuteTurns());
     }
     private IEnumerator ExecuteTurns()
     {
-        if (battleManager.currentBattleType == BattleType.regularBattle)
+        if (battleManager.currentBattleType == BattleType.regularBattle || battleManager.currentBattleType == BattleType.BossBattle)
         {
             while (currentEnemyTurnIndex < enemiesInQueue.Count)
             {
