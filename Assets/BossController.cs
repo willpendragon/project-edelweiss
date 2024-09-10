@@ -1,19 +1,25 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class BossController : MonoBehaviour
 {
     public Unit bossUnit;
+    [SerializeField] GameObject bossHealthBarGO;
+    public GameObject bossHealthBarInstance;
 
-    public void Start()
+    private void Start()
     {
         AssignBossUnit();
+        CreateBossHealthBar();
+        PopulateDeityHealthBar();
     }
     public void AssignBossUnit()
     {
         GameObject[] enemyUnitsOnBattlefield = BattleManager.Instance.gameObject.GetComponent<TurnController>().enemyUnitsOnBattlefield;
         foreach (var enemy in enemyUnitsOnBattlefield)
         {
-
             // Look up for the Unit flagged as boss in the Enemy Party and assign it
             // to the bossUnit variable.
 
@@ -22,7 +28,6 @@ public class BossController : MonoBehaviour
                 bossUnit = enemy.GetComponent<Unit>();
             }
         }
-
     }
     public void ApplyBuff(DeityPrayerBuff.AffectedStat buffingStat, float amount)
     {
@@ -40,6 +45,28 @@ public class BossController : MonoBehaviour
                     bossUnit.unitShieldPoints += amount;
                     break;
             }
+        }
+    }
+    void CreateBossHealthBar()
+    {
+        GameObject battleInterfaceCanvasGO = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
+        bossHealthBarInstance = Instantiate(bossHealthBarGO, battleInterfaceCanvasGO.transform);
+        Debug.Log("Spawned Boss Health Bar");
+    }
+
+    void PopulateDeityHealthBar()
+    {
+        Slider bossHPSlider = bossHealthBarInstance.GetComponentInChildren<Slider>();
+
+        bossHPSlider.maxValue = bossUnit.unitTemplate.unitMaxHealthPoints;
+        bossHPSlider.value = bossUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints;
+        bossHPSlider.GetComponentInChildren<TextMeshProUGUI>().text = bossUnit.unitTemplate.unitMaxHealthPoints.ToString();
+    }
+    public void UpdateBossHealthBar(float bossHealthPoints)
+    {
+        if (bossHealthBarInstance != null)
+        {
+            bossHealthBarInstance.GetComponentInChildren<Slider>().value = bossHealthPoints;
         }
     }
 }

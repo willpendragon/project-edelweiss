@@ -7942,7 +7942,7 @@ GameObject:
   - component: {fileID: 1508039771}
   m_Layer: 0
   m_Name: BossController
-  m_TagString: Untagged
+  m_TagString: BossController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7960,6 +7960,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bossUnit: {fileID: 0}
+  bossHealthBarGO: {fileID: 7395316366926420676, guid: f37458f84258c0145941a17c389a30a0, type: 3}
+  bossHealthBarInstance: {fileID: 0}
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1508039771}
+        m_TargetAssemblyTypeName: BossController, Assembly-CSharp
+        m_MethodName: UpdateBossHealthBar
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &1508039772
 Transform:
   m_ObjectHideFlags: 0
@@ -9120,7 +9137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1790485009
 MonoBehaviour:
   m_ObjectHideFlags: 0

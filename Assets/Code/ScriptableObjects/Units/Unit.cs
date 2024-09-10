@@ -131,6 +131,13 @@ public class Unit : MonoBehaviour
 
         // Log the received and effective damage.
         Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
+
+        if (bossFlag == true)
+        {
+            BossController currentBossController = GameObject.FindGameObjectWithTag("BossController")?.GetComponent<BossController>();
+            currentBossController.UpdateBossHealthBar(unitHealthPoints);
+            Debug.Log("Updated Boss Health Bar");
+        }
     }
 
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
@@ -210,7 +217,6 @@ public class Unit : MonoBehaviour
             Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
         }
     }
-
 
     public bool CheckTileAvailability(int targetX, int targetY)
     {
