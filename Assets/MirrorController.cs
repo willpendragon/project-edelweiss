@@ -12,6 +12,9 @@ public class MirrorController : MonoBehaviour
 
     private int activatedPlatformsCount;
 
+    public delegate void MirrorAttack(string mirrorAttackNotification);
+    public static event MirrorAttack OnMirrorAttack;
+
     public void OnEnable()
     {
         EnemyTurnManager.OnPlayerTurn += ActivateMirrors;
@@ -133,6 +136,7 @@ public class MirrorController : MonoBehaviour
         Unit mirrorTarget = bossController.bossUnit;
         int mirrorDamage = 200;
         mirrorTarget.HealthPoints -= mirrorDamage;
+        OnMirrorAttack("The Mirrors Hit the Boss");
         Debug.Log("Used Mirror Attack on Boss Unit");
     }
 }

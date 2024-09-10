@@ -2,20 +2,27 @@ using UnityEngine;
 
 public class MoonPhaseController : MonoBehaviour
 {
+    public delegate void MoonPhaseSwitch(string moonPhaseName);
+    public static event MoonPhaseSwitch OnMoonPhaseSwitch;
+
+    public delegate void MoonPhaseBuffActivation(string moonPhaseBuffName);
+    public static event MoonPhaseBuffActivation OnMoonPhaseBuffActivation;
+
+
     private void OnEnable()
     {
         //Subscribe to event from TurnTrackerCntroller
-        TurnTrackerController.OnIncreaseTurnCounter += IncreaseLunarPhasesTurnCounter;
+        TurnTrackerController.OnIncreaseTurnCounter += IncreaseMoonPhasesTurnCounter;
         TurnController.OnEnemyTurnSwap += ActivateLunarPhaseBuff;
 
     }
     private void OnDisable()
     {
         //Subscribe to event from TurnTrackerCntroller
-        TurnTrackerController.OnIncreaseTurnCounter -= IncreaseLunarPhasesTurnCounter;
+        TurnTrackerController.OnIncreaseTurnCounter -= IncreaseMoonPhasesTurnCounter;
         TurnController.OnEnemyTurnSwap -= ActivateLunarPhaseBuff;
     }
-    public enum LunarPhases
+    public enum MoonPhases
     {
         PhaseZero,
         PhaseOne,
@@ -23,7 +30,7 @@ public class MoonPhaseController : MonoBehaviour
         PhaseThree,
     }
 
-    private LunarPhases currentLunarPhase;
+    public MoonPhases currentMoonPhase;
     [SerializeField] BossController bossController;
     [SerializeField] TurnTrackerController turnTrackerController;
     [SerializeField] float phaseOnebuffAmount;
@@ -33,12 +40,12 @@ public class MoonPhaseController : MonoBehaviour
 
     private void Start()
     {
-        currentLunarPhase = LunarPhases.PhaseZero;
+        currentMoonPhase = MoonPhases.PhaseZero;
     }
 
     // The Turn Tracker Controller sends a message, this class listens and fires this method.
 
-    private void IncreaseLunarPhasesTurnCounter()
+    private void IncreaseMoonPhasesTurnCounter()
     {
         if (CheckLunarPhasesCycle())
         {
@@ -76,40 +83,46 @@ public class MoonPhaseController : MonoBehaviour
         switch (lunarPhasesTurnCounter)
         {
             case 2:
-                currentLunarPhase = LunarPhases.PhaseOne;
-                Debug.Log("Case " + 2 + "Switching to Lunar Phase One");
+                currentMoonPhase = MoonPhases.PhaseOne;
+                OnMoonPhaseSwitch("Switching to Moon Phase One");
+                Debug.Log("Case " + 2 + "Switching to Moon Phase One");
                 break;
             case 4:
-                currentLunarPhase = LunarPhases.PhaseTwo;
-                Debug.Log("Case " + 4 + "Switching to Lunar Phase Two");
+                currentMoonPhase = MoonPhases.PhaseTwo;
+                OnMoonPhaseSwitch("Switching to Lunar Phase Two");
+                Debug.Log("Case " + 4 + "Switching to Moon Phase Two");
                 break;
             case 6:
-                currentLunarPhase = LunarPhases.PhaseThree;
-                Debug.Log("Case " + 6 + "Switching to Lunar Phase Three");
+                currentMoonPhase = MoonPhases.PhaseThree;
+                OnMoonPhaseSwitch("Switching to Moon Phase Three");
+                Debug.Log("Case " + 6 + "Switching to Moon Phase Three");
                 break;
         }
     }
     private void ActivateLunarPhaseBuff()
     {
-        switch (currentLunarPhase)
+        switch (currentMoonPhase)
         {
             // OK to use DeityPrayerBuff but will eventually need to rename it in a way
             // conforming to its multi-purpose nature
 
-            case LunarPhases.PhaseZero:
-                Debug.Log(LunarPhases.PhaseZero);
+            case MoonPhases.PhaseZero:
+                Debug.Log(MoonPhases.PhaseZero);
                 break;
-            case LunarPhases.PhaseOne:
+            case MoonPhases.PhaseOne:
                 bossController.ApplyBuff(DeityPrayerBuff.AffectedStat.AttackPower, phaseOnebuffAmount);
-                Debug.Log(LunarPhases.PhaseOne);
+                OnMoonPhaseBuffActivation("Boss Received Attack Power Buff");
+                Debug.Log(MoonPhases.PhaseOne);
                 break;
-            case LunarPhases.PhaseTwo:
+            case MoonPhases.PhaseTwo:
                 bossController.ApplyBuff(DeityPrayerBuff.AffectedStat.MagicPower, phaseTwobuffAmount);
-                Debug.Log(LunarPhases.PhaseTwo);
+                OnMoonPhaseBuffActivation("Boss Received Magic Power Buff");
+                Debug.Log(MoonPhases.PhaseTwo);
                 break;
-            case LunarPhases.PhaseThree:
+            case MoonPhases.PhaseThree:
                 bossController.ApplyBuff(DeityPrayerBuff.AffectedStat.ShieldPower, phaseThreebuffAmount);
-                Debug.Log(LunarPhases.PhaseThree);
+                OnMoonPhaseBuffActivation("Boss Received Shield Power Buff");
+                Debug.Log(MoonPhases.PhaseThree);
                 break;
         }
     }

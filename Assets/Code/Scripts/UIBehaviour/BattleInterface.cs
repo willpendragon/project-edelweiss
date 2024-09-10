@@ -49,18 +49,23 @@ public class BattleInterface : MonoBehaviour
         MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack += SetMeleeAttackOnNotificationPanel;
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetMeleeAttackOnNotificationPanel;
+        MoonPhaseController.OnMoonPhaseSwitch += SetMoonNotification;
+        MoonPhaseController.OnMoonPhaseBuffActivation += SetMoonNotification;
+        MirrorController.OnMirrorAttack += SetMirrorNotification;
     }
     private void OnDisable()
     {
-        //Deity.OnDeityJudgmentCounterUpdate -= SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell -= SetSpellNameOnNotificationPanel;
         MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetMeleeAttackOnNotificationPanel;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetMeleeAttackOnNotificationPanel;
+        MoonPhaseController.OnMoonPhaseSwitch -= SetMoonNotification;
+        MoonPhaseController.OnMoonPhaseBuffActivation -= SetMoonNotification;
+        MirrorController.OnMirrorAttack -= SetMirrorNotification;
     }
 
-    public void Start()
+    private void Start()
     {
         FadeIn();
     }
@@ -95,6 +100,20 @@ public class BattleInterface : MonoBehaviour
         battlefieldTextNotifications.text = deityNotification;
         StartCoroutine("ResetBattleFieldTextNotification");
     }
+
+    public void SetMoonNotification(string moonNotification)
+    {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
+        battlefieldTextNotifications.text = moonNotification;
+        StartCoroutine("ResetBattleFieldTextNotification");
+    }
+    public void SetMirrorNotification(string mirrorNotification)
+    {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
+        battlefieldTextNotifications.text = mirrorNotification;
+        StartCoroutine("ResetBattleFieldTextNotification");
+    }
+
     IEnumerator ResetBattleFieldTextNotification()
     {
         yield return new WaitForSeconds(battlefieldNotificationsPanelDurationTime);
