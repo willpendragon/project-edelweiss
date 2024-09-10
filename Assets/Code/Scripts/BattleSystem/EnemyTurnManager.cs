@@ -21,26 +21,26 @@ public class EnemyTurnManager : MonoBehaviour
 
     public GameObject deity;
 
-    public void OnEnable()
+    private void OnEnable()
     {
         TurnController.OnEnemyTurnSwap += EnemyTurnSequence;
     }
 
-    public void OnDisable()
+    private void OnDisable()
     {
         TurnController.OnEnemyTurnSwap -= EnemyTurnSequence;
     }
 
-    public void Start()
+    private void Start()
     {
         AddEnemiesToQueue();
     }
-    public void Update()
+    private void Update()
     {
         //Fix this, doesn't make any sense to be on Update 07012024
         deity = GameObject.FindGameObjectWithTag("Deity");
     }
-    public void AddEnemiesToQueue()
+    private void AddEnemiesToQueue()
     {
         GameObject[] enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
         enemiesInQueue = new List<EnemyAgent>();
@@ -58,7 +58,7 @@ public class EnemyTurnManager : MonoBehaviour
             }
         }
     }
-    public void EnemyTurnSequence()
+    private void EnemyTurnSequence()
     {
         enemiesInQueue.Sort((a, b) => b.speed.CompareTo(a.speed));
         currentEnemyTurnIndex = 0;
@@ -107,7 +107,7 @@ public class EnemyTurnManager : MonoBehaviour
         }
     }
 
-    public void TrapBehaviour()
+    private void TrapBehaviour()
     {
         //Need to move this in another class or move in a class of its own, following the single responsibility principle
 

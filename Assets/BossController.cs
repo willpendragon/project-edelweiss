@@ -26,7 +26,7 @@ public class BossController : MonoBehaviour
     }
     public void ApplyBuff(DeityPrayerBuff.AffectedStat buffingStat, float amount)
     {
-        if (bossUnit == null)
+        if (bossUnit != null)
         {
             switch (buffingStat)
             {

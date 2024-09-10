@@ -5,6 +5,7 @@ public class TurnTrackerController : MonoBehaviour
 {
     public TextMeshProUGUI turnTrackerText;
     public int turnCounter;
+
     public void OnEnable()
     {
         TurnController.OnEnemyTurn += SetTurnTrackerText;

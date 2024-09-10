@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class MoonPhaseController : MonoBehaviour
@@ -7,11 +6,14 @@ public class MoonPhaseController : MonoBehaviour
     {
         //Subscribe to event from TurnTrackerCntroller
         TurnTrackerController.OnIncreaseTurnCounter += IncreaseLunarPhasesTurnCounter;
+        TurnController.OnEnemyTurnSwap += ActivateLunarPhaseBuff;
+
     }
     private void OnDisable()
     {
         //Subscribe to event from TurnTrackerCntroller
         TurnTrackerController.OnIncreaseTurnCounter -= IncreaseLunarPhasesTurnCounter;
+        TurnController.OnEnemyTurnSwap -= ActivateLunarPhaseBuff;
     }
     public enum LunarPhases
     {
@@ -29,12 +31,12 @@ public class MoonPhaseController : MonoBehaviour
     [SerializeField] float phaseThreebuffAmount;
     private int lunarPhasesTurnCounter;
 
-    void Start()
+    private void Start()
     {
         currentLunarPhase = LunarPhases.PhaseZero;
     }
 
-    // The Turn Tracker Controller sends a message with currentTurn as an argument and this class listens.
+    // The Turn Tracker Controller sends a message, this class listens and fires this method.
 
     private void IncreaseLunarPhasesTurnCounter()
     {
@@ -45,6 +47,9 @@ public class MoonPhaseController : MonoBehaviour
         else
         {
             lunarPhasesTurnCounter++;
+            // Lunar Phases counter increases. 
+            SwitchLunarPhases(lunarPhasesTurnCounter);
+            // Calling the method to Switch the Lunar Phases using the current Counter as a parameter.
         }
     }
 
@@ -72,20 +77,18 @@ public class MoonPhaseController : MonoBehaviour
         {
             case 2:
                 currentLunarPhase = LunarPhases.PhaseOne;
-                Debug.Log(2);
+                Debug.Log("Case " + 2 + "Switching to Lunar Phase One");
                 break;
             case 4:
                 currentLunarPhase = LunarPhases.PhaseTwo;
-                Debug.Log(4);
+                Debug.Log("Case " + 4 + "Switching to Lunar Phase Two");
                 break;
             case 6:
                 currentLunarPhase = LunarPhases.PhaseThree;
-                Debug.Log(6);
+                Debug.Log("Case " + 6 + "Switching to Lunar Phase Three");
                 break;
         }
     }
-
-    // The Enemy Turn Controller calls this method.
     private void ActivateLunarPhaseBuff()
     {
         switch (currentLunarPhase)
