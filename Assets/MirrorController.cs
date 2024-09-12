@@ -140,6 +140,8 @@ public class MirrorController : MonoBehaviour
         int mirrorDamage = 500;
         mirrorTarget.TakeDamage(mirrorDamage);
         OnMirrorAttack("The Mirrors Hit the Boss");
+        //Insert trigger for Mirror VFX here
+
         Debug.Log("Used Mirror Attack on Boss Unit");
     }
 }
