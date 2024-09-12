@@ -39,7 +39,9 @@ public class MirrorController : MonoBehaviour
                 ChangeTileColor(tile);
                 if (activationPlatformGO != null)
                 {
-                    Instantiate(activationPlatformGO, tile.gameObject.transform);
+                    float activationPlatformHeight = 1f;
+                    GameObject activationPlatformGOInstance = Instantiate(activationPlatformGO, tile.gameObject.transform.position, Quaternion.identity);
+                    activationPlatformGOInstance.transform.position = new Vector3(tile.transform.position.x, activationPlatformHeight, tile.transform.position.z);
                 }
                 Debug.Log(activationPlatforms);
             }
@@ -58,10 +60,11 @@ public class MirrorController : MonoBehaviour
             {
                 if (mirrorGO != null)
                 {
-                    Instantiate(mirrorGO, tile.gameObject.transform);
+                    float mirrorHeight = 1.45f;
+                    GameObject mirrorGOInstance = Instantiate(mirrorGO, tile.transform.position, Quaternion.identity);
+                    mirrorGOInstance.transform.position = new Vector3(tile.transform.position.x, mirrorHeight, tile.transform.position.z);
                 }
                 OccupyTile(tile);
-                Debug.Log(activationPlatforms);
             }
             else
             {
@@ -134,8 +137,8 @@ public class MirrorController : MonoBehaviour
         // Hard-coded for demo
 
         Unit mirrorTarget = bossController.bossUnit;
-        int mirrorDamage = 200;
-        mirrorTarget.HealthPoints -= mirrorDamage;
+        int mirrorDamage = 500;
+        mirrorTarget.TakeDamage(mirrorDamage);
         OnMirrorAttack("The Mirrors Hit the Boss");
         Debug.Log("Used Mirror Attack on Boss Unit");
     }
