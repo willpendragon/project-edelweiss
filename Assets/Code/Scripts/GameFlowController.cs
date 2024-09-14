@@ -17,7 +17,7 @@ public class GameFlowController : MonoBehaviour
     private void UnlockBossFight()
     {
         int currentSessionHighestUnlockedLevel = SaveStateManager.saveData.highestUnlockedLevel;
-        if (currentSessionHighestUnlockedLevel > bossLevelRequirement)
+        if (currentSessionHighestUnlockedLevel == bossLevelRequirement)
         {
             GameObject newBossLevelTower = Instantiate(bossLevelTowerPrefab, bossLevelTowerSpawnpoint);
             Debug.Log("Boss Jacob's Ladder appears");

@@ -27,7 +27,10 @@ public class TurnTrackerController : MonoBehaviour
         {
             turnTrackerText.text = turnText;
         }
-        OnIncreaseTurnCounter();
+        if (BattleManager.Instance.currentBattleType == BattleType.BossBattle)
+        {
+            OnIncreaseTurnCounter();
+        }
         turnCounter++;
         //Change the name of the method
     }

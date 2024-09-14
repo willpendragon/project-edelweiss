@@ -122,6 +122,7 @@ public class MirrorController : MonoBehaviour
 
     private bool CheckActivatedPlatformsRequisite()
     {
+        // Change approach
         int activatedPlatformsCountRequirement = 2;
         if (activatedPlatformsCount > activatedPlatformsCountRequirement)
         {
