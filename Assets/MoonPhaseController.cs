@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MoonPhaseController : MonoBehaviour
 {
@@ -8,13 +9,15 @@ public class MoonPhaseController : MonoBehaviour
     public delegate void MoonPhaseBuffActivation(string moonPhaseBuffName);
     public static event MoonPhaseBuffActivation OnMoonPhaseBuffActivation;
 
+    [SerializeField] Image attackPowerBuffIcon;
+    [SerializeField] Image magicPowerBuffIcon;
+    [SerializeField] Image shieldPowerBuffIcon;
 
     private void OnEnable()
     {
         //Subscribe to event from TurnTrackerCntroller
         TurnTrackerController.OnIncreaseTurnCounter += IncreaseMoonPhasesTurnCounter;
         TurnController.OnEnemyTurnSwap += ActivateLunarPhaseBuff;
-
     }
     private void OnDisable()
     {
@@ -41,6 +44,10 @@ public class MoonPhaseController : MonoBehaviour
     private void Start()
     {
         currentMoonPhase = MoonPhases.PhaseZero;
+
+        attackPowerBuffIcon.color = Color.black;
+        magicPowerBuffIcon.color = Color.black;
+        shieldPowerBuffIcon.color = Color.black;
     }
 
     // The Turn Tracker Controller sends a message, this class listens and fires this method.
@@ -103,6 +110,7 @@ public class MoonPhaseController : MonoBehaviour
     {
         switch (currentMoonPhase)
         {
+
             // OK to use DeityPrayerBuff but will eventually need to rename it in a way
             // conforming to its multi-purpose nature
 
@@ -111,16 +119,25 @@ public class MoonPhaseController : MonoBehaviour
                 break;
             case MoonPhases.PhaseOne:
                 bossController.ApplyBuff(DeityPrayerBuff.AffectedStat.AttackPower, phaseOnebuffAmount);
+                attackPowerBuffIcon.color = Color.white;
+                magicPowerBuffIcon.color = Color.black;
+                shieldPowerBuffIcon.color = Color.black;
                 OnMoonPhaseBuffActivation("Boss Received Attack Power Buff");
                 Debug.Log(MoonPhases.PhaseOne);
                 break;
             case MoonPhases.PhaseTwo:
                 bossController.ApplyBuff(DeityPrayerBuff.AffectedStat.MagicPower, phaseTwobuffAmount);
+                attackPowerBuffIcon.color = Color.black;
+                magicPowerBuffIcon.color = Color.white;
+                shieldPowerBuffIcon.color = Color.black;
                 OnMoonPhaseBuffActivation("Boss Received Magic Power Buff");
                 Debug.Log(MoonPhases.PhaseTwo);
                 break;
             case MoonPhases.PhaseThree:
                 bossController.ApplyBuff(DeityPrayerBuff.AffectedStat.ShieldPower, phaseThreebuffAmount);
+                attackPowerBuffIcon.color = Color.black;
+                magicPowerBuffIcon.color = Color.black;
+                shieldPowerBuffIcon.color = Color.white;
                 OnMoonPhaseBuffActivation("Boss Received Shield Power Buff");
                 Debug.Log(MoonPhases.PhaseThree);
                 break;

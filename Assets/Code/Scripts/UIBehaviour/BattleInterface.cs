@@ -52,6 +52,7 @@ public class BattleInterface : MonoBehaviour
         MoonPhaseController.OnMoonPhaseSwitch += SetMoonNotification;
         MoonPhaseController.OnMoonPhaseBuffActivation += SetMoonNotification;
         MirrorController.OnMirrorAttack += SetMirrorNotification;
+        BossSimildeBehaviour.OnBossEnemyAttack += SetMeleeAttackOnNotificationPanel;
     }
     private void OnDisable()
     {
@@ -63,8 +64,8 @@ public class BattleInterface : MonoBehaviour
         MoonPhaseController.OnMoonPhaseSwitch -= SetMoonNotification;
         MoonPhaseController.OnMoonPhaseBuffActivation -= SetMoonNotification;
         MirrorController.OnMirrorAttack -= SetMirrorNotification;
+        BossSimildeBehaviour.OnBossEnemyAttack -= SetMeleeAttackOnNotificationPanel;
     }
-
     private void Start()
     {
         FadeIn();

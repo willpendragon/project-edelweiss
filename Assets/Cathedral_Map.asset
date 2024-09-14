@@ -313,8 +313,6 @@ MonoBehaviour:
     tileType: 0
   - position: {x: 18, y: 4}
     tileType: 0
-  - position: {x: 18, y: 5}
-    tileType: 3
   - position: {x: 18, y: 6}
     tileType: 0
   - position: {x: 18, y: 7}
@@ -323,8 +321,6 @@ MonoBehaviour:
     tileType: 0
   - position: {x: 18, y: 9}
     tileType: 0
-  - position: {x: 18, y: 10}
-    tileType: 3
   - position: {x: 18, y: 11}
     tileType: 0
   - position: {x: 18, y: 12}
@@ -481,15 +477,11 @@ MonoBehaviour:
     tileType: 0
   - position: {x: 9, y: 15}
     tileType: 0
-  - position: {x: 18, y: 15}
-    tileType: 0
   - position: {x: 19, y: 15}
     tileType: 0
   - position: {x: 20, y: 15}
     tileType: 0
   - position: {x: 21, y: 15}
-    tileType: 0
-  - position: {x: 18, y: 0}
     tileType: 0
   - position: {x: 19, y: 0}
     tileType: 0
@@ -497,3 +489,11 @@ MonoBehaviour:
     tileType: 0
   - position: {x: 21, y: 0}
     tileType: 0
+  - position: {x: 18, y: 10}
+    tileType: 0
+  - position: {x: 18, y: 15}
+    tileType: 3
+  - position: {x: 18, y: 5}
+    tileType: 0
+  - position: {x: 18, y: 0}
+    tileType: 3

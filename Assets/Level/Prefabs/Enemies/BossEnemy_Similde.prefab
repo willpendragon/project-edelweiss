@@ -231,7 +231,7 @@ GameObject:
   - component: {fileID: 975513701372675069}
   - component: {fileID: 1254154078120300381}
   m_Layer: 0
-  m_Name: BossEnemy
+  m_Name: BossEnemy_Similde
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -286,7 +286,7 @@ MonoBehaviour:
   battleManager: {fileID: 0}
   minEnemyMoveRollRange: 1
   maxEnemyMoveRollRange: 20
-  enemyBehavior: {fileID: 11400000, guid: 942df072a2e990a4799e28f0faee4951, type: 2}
+  enemyBehavior: {fileID: 11400000, guid: dc0d70838683f8d4ca4a40b13815bfe5, type: 2}
   enemyMoveElapsingTime: 1
   enemyAnimator: {fileID: 0}
   attackVFXAnimator: {fileID: 2579693216120635807, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}

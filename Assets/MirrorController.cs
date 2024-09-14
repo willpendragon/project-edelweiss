@@ -98,6 +98,7 @@ public class MirrorController : MonoBehaviour
         if (CheckActivatedPlatformsRequisite())
         {
             UnleashMirrorAttack();
+
         }
     }
 
@@ -138,8 +139,8 @@ public class MirrorController : MonoBehaviour
 
         Unit mirrorTarget = bossController.bossUnit;
         int mirrorDamage = 500;
-        mirrorTarget.TakeDamage(mirrorDamage);
         OnMirrorAttack("The Mirrors Hit the Boss");
+        mirrorTarget.TakeDamage(mirrorDamage);
         //Insert trigger for Mirror VFX here
 
         Debug.Log("Used Mirror Attack on Boss Unit");

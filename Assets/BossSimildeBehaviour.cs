@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
-using static BumperEnemyBehavior;
+using static BossSimildeBehaviour;
 
-[CreateAssetMenu(fileName = "BumperEnemyBehavior", menuName = "EnemyBehavior/BumperEnemy")]
-public class BumperEnemyBehavior : EnemyBehavior
+[CreateAssetMenu(fileName = "BossSimildeBehaviour", menuName = "EnemyBehavior/BossEnemySimilde")]
+public class BossSimildeBehaviour : EnemyBehavior
 {
     [SerializeField] int minEnemyMoveRollRange;
     [SerializeField] int maxEnemyMoveRollRange;
@@ -14,15 +15,39 @@ public class BumperEnemyBehavior : EnemyBehavior
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
 
-    public delegate void BumperEnemyAttack(string attackName, string attackerName);
-    public static event BumperEnemyAttack OnBumperEnemyAttack;
+    public delegate void BossEnemyAttack(string attackName, string attackerName);
+    public static event BossEnemyAttack OnBossEnemyAttack;
 
     [SerializeField] GameObject attackVFXAnimator;
-    //public float attackPower = 1;
-    //Beware, magic number
-
 
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
+    {
+        // Do a Chance roll to determine the type of attack
+        int chanceRoll = UnityEngine.Random.Range(1, 20);
+
+        if (chanceRoll >= 10)
+        {
+            MeleeAttack(enemyAgent);
+        }
+        else
+        {
+            MagicAttack();
+        }
+
+    }
+
+    private void MagicAttack()
+    {
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+        foreach (var playerUnit in playerUnitsOnBattlefield)
+
+        {
+            int damage = 20;
+            playerUnit.GetComponent<Unit>().TakeDamage(damage);
+        }
+    }
+
+    private void MeleeAttack(EnemyAgent enemyAgent)
     {
         if (enemyAgent.gameObject.tag != "DeadEnemy" && enemyAgent.gameObject.GetComponentInParent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         //The Enemy Unit doesn't evaluate the next move if it's dead.
@@ -33,7 +58,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             MoveToPlayerTarget(targetPlayerUnit, enemyAgent);
             float reducedDamage = enemyUnit.unitMeleeAttackBaseDamage; //* damageReductionFactor//
             enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>().PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
-            OnBumperEnemyAttack("Bump", "Godling");
+            OnBossEnemyAttack("Claws", "Similde");
 
             if (GridManager.Instance.GetComponentInChildren<DistanceController>().CheckDistance(enemyUnit.ownedTile.GetComponent<TileController>(), targetPlayerUnit.ownedTile.GetComponent<TileController>()))
             {
@@ -49,21 +74,17 @@ public class BumperEnemyBehavior : EnemyBehavior
                 targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
             }
 
-            //const float targetUnitReductionFactor = 0.05f;
-            //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
-
             //27032024 Note: Reintroduce attack feedback here.
             OnCheckPlayer();
 
-            Debug.Log("Enemy Attacking");
-
-            //opportunity -= 1;
+            Debug.Log("Princess Similde used Melee Attack");
         }
         else
         {
-            Debug.Log("Enemy Unit is dead and can't attack anymore");
+            Debug.Log("Princess Similde is dead and can't attack anymore");
         }
     }
+
     public Unit SelectTargetPlayerUnit()
     {
         // This method selects the Target Unit choosing from the Player Unit with the Lowest HP among those that are not dead
