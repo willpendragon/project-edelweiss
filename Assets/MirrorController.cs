@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +11,9 @@ public class MirrorController : MonoBehaviour
 
     List<TileController> activationPlatforms = new List<TileController>();
 
-    private int activatedPlatformsCount;
+    public int activatedPlatformsCount;
+    public int activatedPlatformsCountRequirement = 2;
+
 
     public delegate void MirrorAttack(string mirrorAttackNotification);
     public static event MirrorAttack OnMirrorAttack;
@@ -95,36 +98,38 @@ public class MirrorController : MonoBehaviour
         // Player turn handover.
 
         CheckActivationPlatformsStatus();
+        Debug.Log("Checking if Activation Plaforms hold a Player Unit");
+
         if (CheckActivatedPlatformsRequisite())
         {
             UnleashMirrorAttack();
-
         }
     }
-
     private void CheckActivationPlatformsStatus()
     {
-        foreach (var activationPlaform in activationPlatforms)
+        activatedPlatformsCount = 0;
+
+        for (int i = 0; i < activationPlatforms.Count; i++)
         {
-            if (activationPlaform.detectedUnit != null)
+            if (activationPlatforms[i].detectedUnit != null)
             {
-                if (activationPlaform.detectedUnit.tag == "Player")
+                if (activationPlatforms[i].detectedUnit.tag == "Player")
                 {
                     activatedPlatformsCount++;
+                    Debug.Log("Increasing the number of activated platforms to" + activatedPlatformsCount);
                 }
-            }
-            else
-            {
-                Debug.Log("No Player Unit found on the Mirror Activation Platforms");
+                else
+                {
+                    Debug.Log("No Player Unit found on the Mirror Activation Platforms");
+                }
             }
         }
     }
-
     private bool CheckActivatedPlatformsRequisite()
     {
         // Change approach
-        int activatedPlatformsCountRequirement = 2;
-        if (activatedPlatformsCount > activatedPlatformsCountRequirement)
+
+        if (activatedPlatformsCount >= activatedPlatformsCountRequirement)
         {
             return true;
         }
@@ -135,15 +140,33 @@ public class MirrorController : MonoBehaviour
     }
     private void UnleashMirrorAttack()
     {
-        // Here goes the logic for damaging the Boss Unit
+        // Put here the logic for damaging the Boss Unit
         // Hard-coded for demo
 
         Unit mirrorTarget = bossController.bossUnit;
-        int mirrorDamage = 500;
+        float mirrorDamage = CalculateMirrorDamage();
         OnMirrorAttack("The Mirrors Hit the Boss");
         mirrorTarget.TakeDamage(mirrorDamage);
         //Insert trigger for Mirror VFX here
+        ResetActivatedPlaformsCount();
+        Debug.Log(mirrorDamage + "Used Mirror Attack on Boss Unit");
+    }
 
-        Debug.Log("Used Mirror Attack on Boss Unit");
+    private float CalculateMirrorDamage()
+    {
+        if (activatedPlatformsCount == activatedPlatformsCountRequirement)
+        {
+            return 500;
+        }
+        else if (activatedPlatformsCount > activatedPlatformsCountRequirement)
+        {
+            return 800;
+        }
+        throw new InvalidOperationException("Activated platforms count is less than the requirement, which should never happen.");
+    }
+
+    private void ResetActivatedPlaformsCount()
+    {
+        activatedPlatformsCount = 0;
     }
 }
