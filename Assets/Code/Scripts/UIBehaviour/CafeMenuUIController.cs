@@ -111,8 +111,12 @@ public class CafeMenuUIController : MonoBehaviour
                 characterTexts[0].text = partyMember.name;
                 characterTexts[1].text = "HP";
                 characterTexts[2].text = partyMember.unitHealthPoints.ToString();
-                characterTexts[3].text = "MP";
-                characterTexts[4].text = partyMember.unitManaPoints.ToString();
+                characterTexts[3].text = "/";
+                characterTexts[4].text = partyMember.unitMaxHealthPoints.ToString();
+                characterTexts[5].text = "MP";
+                characterTexts[6].text = partyMember.unitManaPoints.ToString();
+                characterTexts[7].text = "/";
+                characterTexts[8].text = partyMember.unitMaxManaPoints.ToString();
             }
 
             characterProfile.GetComponentInChildren<TextMeshProUGUI>().text = partyMember.GetComponent<Unit>().unitTemplate.unitName;
@@ -224,7 +228,7 @@ public class CafeMenuUIController : MonoBehaviour
         foreach (var button in feedPlayerCharactersButtons)
         {
             button.enabled = true;
-            button.GetComponent<Image>().color = Color.yellow;
+            //button.GetComponent<Image>().color = Color.yellow;
         }
     }
 
@@ -247,7 +251,7 @@ public class CafeMenuUIController : MonoBehaviour
                 if (characterTexts.Length >= 5)
                 {
                     characterTexts[2].text = fedUnit.unitHealthPoints.ToString();
-                    characterTexts[4].text = fedUnit.unitManaPoints.ToString();
+                    characterTexts[6].text = fedUnit.unitManaPoints.ToString();
                 }
             }
 
