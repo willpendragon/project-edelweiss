@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class BossController : MonoBehaviour
@@ -8,13 +7,24 @@ public class BossController : MonoBehaviour
     public Unit bossUnit;
     [SerializeField] GameObject bossHealthBarGO;
     public GameObject bossHealthBarInstance;
+    public GameObject bossModel;
 
     private void Start()
     {
         AssignBossUnit();
         CreateBossHealthBar();
         PopulateDeityHealthBar();
+        RotateBossUnitModel();
     }
+
+    private void RotateBossUnitModel()
+    {
+        bossModel = GameObject.FindGameObjectWithTag("BossSimildeModel");
+        bossModel.transform.rotation = Quaternion.Euler(0, 0, 0);
+        Quaternion bossUnitRotation = Quaternion.Euler(0, -65, 0);
+        bossModel.transform.rotation = bossUnitRotation;
+    }
+
     public void AssignBossUnit()
     {
         GameObject[] enemyUnitsOnBattlefield = BattleManager.Instance.gameObject.GetComponent<TurnController>().enemyUnitsOnBattlefield;
