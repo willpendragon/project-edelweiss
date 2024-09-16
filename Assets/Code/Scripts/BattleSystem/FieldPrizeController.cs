@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class FieldPrizeController : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class FieldPrizeController : MonoBehaviour
 
             // Instantiate the Field Prize GameObject at the new position
             GameObject newFieldPrizeGO = Instantiate(fieldPrizeVisuals, prizeSpawnPosition, Quaternion.identity);
+            newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrize = this.fieldPrize;
 
             // Set the local scale of the new GameObject
             newFieldPrizeGO.transform.localScale = new Vector3(1, 1, 1);

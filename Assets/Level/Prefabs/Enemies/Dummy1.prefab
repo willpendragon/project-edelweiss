@@ -346,6 +346,7 @@ MonoBehaviour:
   currentUnitLifeCondition: 0
   unitStatusController: {fileID: 361118017173477511}
   fieldPrizeController: {fileID: 1254154078120300381}
+  bossFlag: 0
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}
   LinkedDeityId: 
@@ -541,7 +542,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fieldPrizeVisuals: {fileID: 67632292693706767, guid: 6b2300afed068b24394e325c341abb48, type: 3}
   fieldPrize: {fileID: 11400000, guid: da9b3b277abd4464c878b543c8d9372d, type: 2}
-  weights: 1e0000001e000000
+  weights: 460000001e000000
 --- !u!1 &5109383955156892412
 GameObject:
   m_ObjectHideFlags: 0

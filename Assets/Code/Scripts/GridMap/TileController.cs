@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using static TileController;
 
 public enum SingleTileStatus
 {
@@ -32,7 +31,6 @@ public enum TileType
     Obstacle,
     Mirror
 }
-
 
 
 public class TileController : MonoBehaviour, IPointerClickHandler
@@ -122,10 +120,29 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         if (destinationTile != null && destinationTile.tileCurrentFieldPrize != null)
         {
             FieldPrizeController fieldPrizeController = destinationTile.tileCurrentFieldPrize.GetComponent<FieldPrizeController>();
-            activePlayerUnit.unitMagicPower += fieldPrizeController.fieldPrize.powerUpAmount;
-            //Need to Use Switch Case
+            if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.attackPowerUp)
+            {
+                activePlayerUnit.unitAttackPower += fieldPrizeController.fieldPrize.powerUpAmount;
+            }
+            else if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.magicPowerUp)
+            {
+                activePlayerUnit.unitMagicPower += fieldPrizeController.fieldPrize.powerUpAmount;
+
+            }
+            //Need to Use Switch Case (good enough for now)
+            //Update Selected Character Values on UI
+            UpdateCombatValues();
             Destroy(fieldPrizeController.gameObject);
             Debug.Log("Applied Power Up");
+        }
+    }
+    private void UpdateCombatValues()
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
+        if (activePlayerUnit != null)
+        {
+            activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().activeCharacterAttackPower.text = activePlayerUnit.unitAttackPower.ToString();
+            activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().activeCharacterMagicPower.text = activePlayerUnit.unitMagicPower.ToString();
         }
     }
 }
