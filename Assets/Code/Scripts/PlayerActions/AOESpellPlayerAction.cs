@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -128,9 +129,11 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                         }
                         Unit spellTarget = savedSelectedTile.detectedUnit.GetComponent<Unit>();
                         spellTarget.TakeDamage(damageToApply);
-                        if (spellTarget.unitStatusController != null)
+                        if (spellTarget.unitStatusController != null && spellTarget.unitStatusController.unitCurrentStatus != UnitStatus.stun)
                         {
                             spellTarget.unitStatusController.unitCurrentStatus = UnitStatus.stun;
+                            PlayFrozenFeedback(spellTarget);
+                            //Actually this is the Stun behaviour but with a different icon
                         }
                         Debug.Log("The Target is now Stun and unable to move");
                         activePlayerUnit.SpendManaPoints(currentSpell.manaPointsCost);
@@ -221,5 +224,25 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         {
             return false;
         }
+    }
+
+    private void PlayFrozenFeedback(Unit targetUnit)
+    {
+        // Define the Y offset for the VFX spawn position
+        float yOffset = 1.0f;
+
+        // Calculate the new spawn position with the Y offset
+        Vector3 stunVFXSpawnPosition = targetUnit.transform.position + new Vector3(0, yOffset, 0);
+
+        // Instantiate the VFX at the new position
+        GameObject stunVFX = Instantiate(Resources.Load<GameObject>("StunAttackVFX"), stunVFXSpawnPosition, Quaternion.identity);
+        float stunVFXDestroyCountdown = 1.5f;
+        Destroy(stunVFX, stunVFXDestroyCountdown);
+
+        if (targetUnit.GetComponentInChildren<SpriteRenderer>() != null)
+        {
+            targetUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
+        }
+
     }
 }

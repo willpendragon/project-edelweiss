@@ -252,6 +252,7 @@ public class Unit : MonoBehaviour
             {
                 // Play Fade Animation on Sprite.
                 spriteRenderer.material.color = Color.black;
+
                 if (battleFeedbackController != null)
                 {
                     battleFeedbackController.PlayUnitDeathAnimationVFX();
@@ -268,6 +269,7 @@ public class Unit : MonoBehaviour
 
             Destroy(unitProfilePanel);
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+
 
             if (this.gameObject.tag == "Enemy")
             {
@@ -287,7 +289,6 @@ public class Unit : MonoBehaviour
                 ownedTile.currentSingleTileCondition = SingleTileCondition.free;
                 ownedTile.detectedUnit = null;
                 ownedTile = null;
-
             }
             OnCheckGameOver();
         }

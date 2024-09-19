@@ -1,6 +1,4 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -78,6 +76,13 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
         targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
         targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
+        PlayStunFeedback(targetUnit);
+
+        Debug.Log("Stunner Enemy Behaviour");
+    }
+
+    private void PlayStunFeedback(Unit targetUnit)
+    {
         // Define the Y offset for the VFX spawn position
         float yOffset = 1.0f;
 
@@ -121,7 +126,5 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
         float stunVFXDestroyCountdown = 1.5f;
         Destroy(stunVFX, stunVFXDestroyCountdown);
-
-        Debug.Log("Stunner Enemy Behaviour");
     }
 }

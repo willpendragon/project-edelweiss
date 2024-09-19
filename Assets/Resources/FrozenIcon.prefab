@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3406946445924013398}
   - component: {fileID: 3406946445924013397}
   m_Layer: 8
-  m_Name: StunIcon
+  m_Name: FrozenIcon
   m_TagString: NegativeStatusIcon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1000
-  m_Sprite: {fileID: 21300000, guid: ac46fa8baceb46b4d931043696940063, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ecad69348ebfa184b90a577118fef09a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
