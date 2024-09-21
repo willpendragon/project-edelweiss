@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 
 public class FieldPrizeController : MonoBehaviour
 {
@@ -34,7 +33,7 @@ public class FieldPrizeController : MonoBehaviour
             newFieldPrizeGO.transform.localScale = new Vector3(1, 1, 1);
             // Connects it to the Tile
             fieldPrizeTile.tileCurrentFieldPrize = newFieldPrizeGO;
-            Debug.Log("Spawned Field Prize");
+            Debug.Log("Spawned Field Prize" + newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrize.itemFieldPrizeType);
         }
     }
 
