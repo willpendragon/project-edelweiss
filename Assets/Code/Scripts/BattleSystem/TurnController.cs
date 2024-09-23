@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 using static Unit;
 
@@ -115,7 +113,7 @@ public class TurnController : MonoBehaviour
                 playerUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
             }
 
-            //Removes all ailments from previous battles.
+            // Removes all ailments from previous battles.
             playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.basic;
         }
     }
@@ -125,16 +123,24 @@ public class TurnController : MonoBehaviour
         Debug.Log("Restoring Player Opportunity");
         foreach (var playerUnit in playerUnitsOnBattlefield)
         {
+            // Increases Turn Counter
             turnCounter++;
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
             playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+
+            // Hides Waiting Icons on Player Units
+            playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
+
+            // Enables End Turn Button
+            Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+            endTurnButton.interactable = true;
         }
     }
 
     public void CheckPlayerUnitsStatus()
     {
-        // Get all player units
+        // Get all Player Units
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
 
         // Check if all units are either dead or waiting (which means no unit is in a state that can take action)
@@ -316,5 +322,27 @@ public class TurnController : MonoBehaviour
         OnResetUnitUI();
         DeactivateActivePlayerUnitPanel();
         OnResetSummonBuffs();
+    }
+
+    public void EndTurnViaButton()
+    {
+        // Check if it's Player Turn and no Active Unit is in play
+
+        TurnController turnController = BattleManager.Instance?.GetComponent<TurnController>();
+
+        if (turnController.currentTurn == Turn.playerTurn)
+        {
+            playerUnitsOnBattlefield = turnController?.playerUnitsOnBattlefield;
+            foreach (var playerUnit in playerUnitsOnBattlefield)
+            {
+                playerUnit?.GetComponent<UnitSelectionController>()?.StopUnitAction();
+            }
+
+            Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+            endTurnButton.interactable = false;
+
+            OnEnemyTurn("Enemy Turn");
+            OnEnemyTurnSwap();
+        }
     }
 }

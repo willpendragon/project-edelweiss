@@ -70,6 +70,9 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
                     tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
                     Debug.Log("Switching Tiles back to Selection Mode");
                 }
+
+                Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+                endTurnButton.interactable = true;
             }
             else if (selectedUnit.tag == "Enemy")
             {
@@ -105,6 +108,9 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
                     BattleFeedbackController battleFeedbackController = selectedUnit.GetComponent<BattleFeedbackController>();
                     battleFeedbackController.PlaySelectionWaitingConfirmationSFX.Invoke();
                 }
+
+                Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+                endTurnButton.interactable = false;
             }
 
         }

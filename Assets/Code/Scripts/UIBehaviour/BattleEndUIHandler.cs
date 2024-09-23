@@ -68,6 +68,7 @@ public class BattleEndUIHandler : MonoBehaviour
         BattleInterface.Instance.movesContainer.SetActive(false);
         DeactivateUnitSelectionCursor();
         DeactivateStatusIcons();
+        DeactivateWaitIcons();
     }
     private void DeactivateUnitSelectionCursor()
     {
@@ -82,6 +83,17 @@ public class BattleEndUIHandler : MonoBehaviour
         foreach (var statusIcon in GridManager.Instance.statusIcons)
         {
             Destroy(statusIcon);
+        }
+    }
+
+    private void DeactivateWaitIcons()
+    {
+        TurnController turnController = BattleManager.Instance?.GetComponent<TurnController>();
+        GameObject[] playerUnitsOnBattlefield = turnController?.playerUnitsOnBattlefield;
+
+        foreach (var playerUnit in playerUnitsOnBattlefield)
+        {
+            playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
         }
     }
 }

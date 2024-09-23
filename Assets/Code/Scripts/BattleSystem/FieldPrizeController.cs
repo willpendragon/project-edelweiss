@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 
 public class FieldPrizeController : MonoBehaviour
 {
     public GameObject fieldPrizeVisuals;
     public ItemFieldPrize fieldPrize;
     private System.Random random;
+    public TextMeshProUGUI prizeTypeText;
 
     // Weights for different outcomes, exposed to the editor
     [SerializeField]
@@ -33,6 +35,21 @@ public class FieldPrizeController : MonoBehaviour
             newFieldPrizeGO.transform.localScale = new Vector3(1, 1, 1);
             // Connects it to the Tile
             fieldPrizeTile.tileCurrentFieldPrize = newFieldPrizeGO;
+
+            // Displays the type of bonus on the Field Prize
+
+            FieldPrizeController newFieldPrize = newFieldPrizeGO?.GetComponent<FieldPrizeController>();
+
+            if (newFieldPrize.fieldPrize?.itemFieldPrizeType == ItemFieldPrizeType.attackPowerUp)
+            {
+                newFieldPrize.prizeTypeText.text = "ATK+";
+            }
+            else if (newFieldPrize.fieldPrize?.itemFieldPrizeType == ItemFieldPrizeType.magicPowerUp)
+            {
+                newFieldPrize.prizeTypeText.text = "MAGI+";
+            }
+
+
             Debug.Log("Spawned Field Prize" + newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrize.itemFieldPrizeType);
         }
     }

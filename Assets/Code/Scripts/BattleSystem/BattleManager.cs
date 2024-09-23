@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public enum TurnOrder
 {
@@ -122,7 +123,11 @@ public class BattleManager : MonoBehaviour
         currentTurnOrder = TurnOrder.playerTurn;
         UpdateTurnCounter();
         Debug.Log("Turn Passed to Player");
+
+        Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+        endTurnButton.interactable = true;
         PlayerTurnStarts.Invoke();
+
     }
     public bool AllEnemiesOpportunityZero()
     {

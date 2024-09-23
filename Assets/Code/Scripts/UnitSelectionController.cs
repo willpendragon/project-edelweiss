@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 //using static GridTargetingController;
 
 public class UnitSelectionController : MonoBehaviour
@@ -24,6 +25,7 @@ public class UnitSelectionController : MonoBehaviour
     public UnitSelectionStatus currentUnitSelectionStatus;
     public SpellUIController unitSpellUIController;
     public SpriteRenderer unitSprite;
+    public UnitIconsController unitIconsController;
 
     public void Start()
     {
@@ -39,11 +41,6 @@ public class UnitSelectionController : MonoBehaviour
         currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
     }
 
-    //public void GenerateGameplayButtons()
-    //{
-    //    GenerateWaitButton();
-    //}
-
     public void GenerateWaitButton()
     {
         if (unitSpellUIController != null)
@@ -54,15 +51,22 @@ public class UnitSelectionController : MonoBehaviour
     public void StopUnitAction()
     {
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+        unitIconsController?.DisplayWaitingIcon();
+        Debug.Log("Display Waiting Icon on Unit");
+
         unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = "Player";
-        //unitSprite.material.color = Color.grey;
+
         GridManager.Instance.currentPlayerUnit = null;
         Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
         OnUnitWaiting();
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
         }
+
+        Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+        endTurnButton.interactable = true;
     }
 }
