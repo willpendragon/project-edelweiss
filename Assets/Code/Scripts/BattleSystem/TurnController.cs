@@ -336,13 +336,12 @@ public class TurnController : MonoBehaviour
             foreach (var playerUnit in playerUnitsOnBattlefield)
             {
                 playerUnit?.GetComponent<UnitSelectionController>()?.StopUnitAction();
+                playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             }
 
             Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
             endTurnButton.interactable = false;
-
-            OnEnemyTurn("Enemy Turn");
-            OnEnemyTurnSwap();
+            CheckPlayerUnitsStatus();
         }
     }
 }
