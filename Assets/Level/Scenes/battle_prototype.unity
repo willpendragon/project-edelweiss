@@ -6814,53 +6814,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1222918310
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1222918312}
-  - component: {fileID: 1222918311}
-  m_Layer: 0
-  m_Name: ReachableTilesVisualizer
-  m_TagString: ReachableTilesVisualizer
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1222918311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1222918310}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ebc00d23ab89bc49a1ddc7612575067, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reachableTiles: []
-  highlightColor: {r: 0, g: 1, b: 0, a: 1}
-  defaultTileColor: {r: 1, g: 1, b: 1, a: 1}
---- !u!4 &1222918312
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1222918310}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 230.33961, y: 947.8889, z: 1.6979249}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1248081780
 GameObject:
   m_ObjectHideFlags: 0
@@ -10498,6 +10451,63 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1001 &7444878605507934040
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6797921759918682935, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8395602267088148082, guid: f24b7241192251f46a676b39b4706955, type: 3}
+      propertyPath: m_Name
+      value: ReachableTilesVisualizer
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f24b7241192251f46a676b39b4706955, type: 3}
 --- !u!1001 &7580817272468375199
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10608,4 +10618,4 @@ SceneRoots:
   - {fileID: 1559636503}
   - {fileID: 1442184773}
   - {fileID: 215007509}
-  - {fileID: 1222918312}
+  - {fileID: 7444878605507934040}
