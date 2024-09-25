@@ -91,6 +91,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
         }
         selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+        GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2f, Color.white);
 
 
     }

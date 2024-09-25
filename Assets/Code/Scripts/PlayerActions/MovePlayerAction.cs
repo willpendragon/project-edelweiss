@@ -1,22 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static TileController;
-using UnityEngine.UI;
 using System.Linq;
-using Unity.VisualScripting;
-using System;
+
 
 public class MovePlayerAction : MonoBehaviour, IPlayerAction
 {
     public Unit currentTarget;
     public TileController savedSelectedTile;
-    //public int selectionLimiter = 1;
     private int destinationTileXCoordinate;
     private int destinationTileYCoordinate;
     public void Select(TileController selectedTile)
     {
-        //int currentSelectionLimiter = 1;
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
         if (selectedTile != null && GridManager.Instance.tileSelectionPermitted == true && selectedTile != GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().ownedTile
@@ -33,15 +27,11 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             else if (!activePlayerUnit.CheckTileAvailability(selectedTile.tileXCoordinate, selectedTile.tileYCoordinate))
             {
                 GridManager.Instance.tileSelectionPermitted = false;
-                //GridManager.Instance.moveSelectionLimiter--;
                 selectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.2f, Color.red);
                 Debug.Log("Tile is not within Character Movement Limit");
             }
 
-
             activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementSelectedSFX.Invoke();
-            //destinationTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
-
 
             destinationTileXCoordinate = destinationTile.tileXCoordinate;
             destinationTileYCoordinate = destinationTile.tileYCoordinate;
@@ -52,10 +42,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
             savedSelectedTile = selectedTile;
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-
-            //selectionLimiter--;
-
-            Debug.Log("Move Destination Selection Logic Execution");
         }
         else
         {
@@ -88,13 +74,12 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
     public void Deselect()
     {
-        //GridManager.Instance.moveSelectionLimiter++;
-
         //If a saved destination esists, by clicking on that tile, this will get back to selection mode
         if (savedSelectedTile != null)
         {
             savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-            savedSelectedTile.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
+            //savedSelectedTile.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
+            //GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(1f, 0.2f, Color.cyan);
 
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile = null;
@@ -121,7 +106,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             }
             RevertToSelectionUnitPlayerAction();
         }
-
     }
 
     // Use this method to check if the Enemy is surrounded. Currently not used.
@@ -144,15 +128,10 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
         if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
         {
-            //if (IsSurrounded(activePlayerUnit))
-            //{
-            //    Debug.Log("Unit is surrounded and cannot move.");
-            //    // Here to add any additional logic for when the unit is surrounded
-            //}
-
             if (activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate, false))
             {
                 GridManager.Instance.tileSelectionPermitted = true;
+
                 //Use Grid Logic to Move the Player to Destination
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementConfirmedSFX.Invoke();
                 savedSelectedTile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
@@ -169,7 +148,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
                 UpdateActivePlayerUnitProfile(activePlayerUnit);
 
                 activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
-
+                GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
 
                 Debug.Log("Moving Character Execution Logic");
             }

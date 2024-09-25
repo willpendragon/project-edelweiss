@@ -44,8 +44,11 @@ public class MoveUIController : MonoBehaviour
         {
             tile.currentPlayerAction = new MovePlayerAction();
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+
             Debug.Log("Switching Tiles to Move Mode");
         }
+
+        GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
         //After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode and switch to the Move Player Action
     }
 }
