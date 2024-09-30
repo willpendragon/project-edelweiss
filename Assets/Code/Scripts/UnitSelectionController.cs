@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-//using static GridTargetingController;
 
 public class UnitSelectionController : MonoBehaviour
 {
@@ -26,6 +22,8 @@ public class UnitSelectionController : MonoBehaviour
     public SpellUIController unitSpellUIController;
     public SpriteRenderer unitSprite;
     public UnitIconsController unitIconsController;
+
+    public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
 
     public void Start()
     {
@@ -68,5 +66,7 @@ public class UnitSelectionController : MonoBehaviour
 
         Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
         endTurnButton.interactable = true;
+
+        GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2F, Color.white);
     }
 }

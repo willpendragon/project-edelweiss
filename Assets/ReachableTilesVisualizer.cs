@@ -7,7 +7,7 @@ public class ReachableTilesVisualizer : MonoBehaviour
     public Color highlightColor = Color.green; // Color for highlighting tiles
     public Color defaultTileColor = Color.blue; // Default color for tiles
 
-    public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
+    public const string activePlayerUnitTag = "ActivePlayerUnit";
 
     private Unit activePlayerUnit;
 
@@ -25,7 +25,7 @@ public class ReachableTilesVisualizer : MonoBehaviour
     public void ShowReachableTiles()
     {
         // Get the active player unit
-        activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        activePlayerUnit = GameObject.FindGameObjectWithTag(activePlayerUnitTag).GetComponent<Unit>();
 
         if (activePlayerUnit == null)
         {

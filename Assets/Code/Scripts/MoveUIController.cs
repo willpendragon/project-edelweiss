@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,6 +16,9 @@ public class MoveUIController : MonoBehaviour
     public GameObject moveButtonPrefab;
     public Transform spellMenuContainer;
     private string buttonName;
+
+    public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
+
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
@@ -48,7 +49,7 @@ public class MoveUIController : MonoBehaviour
             Debug.Log("Switching Tiles to Move Mode");
         }
 
-        GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
+        GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
         //After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode and switch to the Move Player Action
     }
 }
