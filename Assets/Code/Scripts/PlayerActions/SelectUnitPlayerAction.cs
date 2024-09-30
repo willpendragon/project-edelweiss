@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static PlayerProfileController;
-using TMPro;
 
 public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -13,6 +10,9 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
     public delegate void ClickedTileWithUnit(GameObject detectedUnit);
     public static event ClickedTileWithUnit OnClickedTileWithUnit;
+
+    public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
+
     public void Select(TileController selectedTile)
     {
         if (selectedTile != null && selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting
@@ -91,7 +91,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
         }
         selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-        GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2f, Color.white);
+        GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2f, Color.white);
 
 
     }
