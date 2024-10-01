@@ -56,6 +56,8 @@ public class Unit : MonoBehaviour
     public UnitStatusController unitStatusController;
     public FieldPrizeController fieldPrizeController;
 
+    public bool hasHookshot;
+
     public bool bossFlag = false;
 
 
@@ -100,21 +102,7 @@ public class Unit : MonoBehaviour
     {
         if (unitTemplate != null)
         {
-            unitHealthPoints = unitTemplate.unitHealthPoints;
-            unitMaxHealthPoints = unitTemplate.unitMaxHealthPoints;
-            unitManaPoints = unitTemplate.unitManaPoints;
-            unitMaxManaPoints = unitTemplate.unitManaPoints;
-            unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
-            unitShieldPoints = unitTemplate.unitShieldPoints;
-            coinsRewardRange = unitTemplate.coinsRewardRange;
-            unitAttackPower = unitTemplate.meleeAttackPower;
-            unitMagicPower = unitTemplate.unitMagicPower;
-            unitMovementLimit = unitTemplate.unitMovemementLimit;
-            unitMeleeAttackBaseDamage = unitTemplate.unitMeleeAttackBaseDamage;
-
-            currentUnitLifeCondition = UnitLifeCondition.unitAlive;
-
-            experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
+            RetrieveTemplateValues();
         }
     }
 
@@ -331,5 +319,24 @@ public class Unit : MonoBehaviour
             newTile.detectedUnit = this.gameObject;
             newTile.currentSingleTileCondition = SingleTileCondition.occupied;
         }
+    }
+
+    public void RetrieveTemplateValues()
+    {
+        unitHealthPoints = unitTemplate.unitHealthPoints;
+        unitMaxHealthPoints = unitTemplate.unitMaxHealthPoints;
+        unitManaPoints = unitTemplate.unitManaPoints;
+        unitMaxManaPoints = unitTemplate.unitManaPoints;
+        unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
+        unitShieldPoints = unitTemplate.unitShieldPoints;
+        coinsRewardRange = unitTemplate.coinsRewardRange;
+        unitAttackPower = unitTemplate.meleeAttackPower;
+        unitMagicPower = unitTemplate.unitMagicPower;
+        unitMovementLimit = unitTemplate.unitMovemementLimit;
+        unitMeleeAttackBaseDamage = unitTemplate.unitMeleeAttackBaseDamage;
+
+        currentUnitLifeCondition = UnitLifeCondition.unitAlive;
+
+        experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
     }
 }

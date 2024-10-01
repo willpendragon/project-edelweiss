@@ -2,10 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.IO;
 
 public class StartGameController : MonoBehaviour
 {
     public SceneLoader sceneLoader;
+    public Button loadGameButton;
+    private string saveFilePath;
+
+    private void Start()
+    {
+        ActivateLoadGameButton();
+    }
+    private void ActivateLoadGameButton()
+    {
+        if (CheckSaveFile())
+        {
+            loadGameButton.interactable = true;
+        }
+        else
+        {
+            loadGameButton.interactable = false;
+        }
+    }
+
+    private bool CheckSaveFile()
+    {
+        saveFilePath = Application.persistentDataPath + "gameSaveData.json";
+        if (File.Exists(saveFilePath))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     public void NewGame()
     {

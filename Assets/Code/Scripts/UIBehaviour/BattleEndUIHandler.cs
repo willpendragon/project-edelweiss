@@ -1,9 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using static TileController;
+using UnityEngine.SceneManagement;
+using System.IO;
+
 
 public class BattleEndUIHandler : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class BattleEndUIHandler : MonoBehaviour
     [Header("UI Visuals")]
     public Image battleEndResultsScreen;
     public RectTransform battlefieldNotificationsContainer;
+    public Button returnButton;
 
     [Header("UI Texts")]
     public TextMeshProUGUI battleEndMessageText;
@@ -20,6 +22,9 @@ public class BattleEndUIHandler : MonoBehaviour
     public TextMeshProUGUI battleEndWarFundsGainedText;
     public TextMeshProUGUI battleEndEnemiesKilledText;
     public TextMeshProUGUI battleEndCrystalObtainedText;
+
+    private string saveFilePath;
+
 
     //public PlayableDirector battleCameraPlayableDirector;
     private void OnEnable()
@@ -36,6 +41,10 @@ public class BattleEndUIHandler : MonoBehaviour
     private void DisplayBattleEndScreen(string battleEndMessage)
     {
         battleEndMessageText.text = battleEndMessage;
+        if (battleEndMessageText.text == "Defeat")
+        {
+            ChangeReturnButton();
+        }
         DeactivateBattleUI();
         StartCoroutine("DisplayBattleEndResultsScreen");
     }
@@ -96,4 +105,27 @@ public class BattleEndUIHandler : MonoBehaviour
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
         }
     }
+
+    private void ChangeReturnButton()
+    {
+        returnButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Start New Run";
+        returnButton.onClick.RemoveAllListeners();
+        returnButton.onClick.AddListener(() => StartNewGameRun());
+    }
+
+    private void StartNewGameRun()
+    {
+        saveFilePath = Application.persistentDataPath + "/gameSaveData.json";
+        if (File.Exists(saveFilePath))
+        {
+            File.Delete(saveFilePath);
+            Debug.Log("Deleted Saved Game Data");
+        }
+        else
+        {
+            Debug.LogWarning("No Saved Game Data found.");
+        }
+        SceneManager.LoadScene("start_screen");
+    }
+
 }

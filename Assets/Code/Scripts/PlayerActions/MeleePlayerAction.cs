@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using static TileController;
 using UnityEngine.UI;
+
 public class MeleePlayerAction : IPlayerAction
 {
     public Unit currentTarget;
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
-    //public TileController savedPreviewDestinationTile;
 
     public delegate void UsedMeleeAction(string moveName, string attackerName);
     public static event UsedMeleeAction OnUsedMeleeAction;
@@ -26,19 +26,22 @@ public class MeleePlayerAction : IPlayerAction
                 selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 savedSelectedTile = selectedTile;
-                //Switch Selected tile to WaitingForConfirmationStatus
-                Debug.Log("Melee Select Logic");
-
-                activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-                //Warning: magic number
                 selectionLimiter--;
 
-                CheckKnockback(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
+                // Check if hookshot is equipped and handle selection logic
+                if (activePlayerUnit.hasHookshot)
+                {
+                    Debug.Log("Hookshot selected, waiting for confirmation...");
+                }
+                else
+                {
+                    // For normal melee attack, check knockback after selection
+                    CheckKnockback(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
+                }
             }
         }
         else
         {
-            // Play error SFX
             Debug.Log("Can't Select Unit");
         }
     }
@@ -49,20 +52,15 @@ public class MeleePlayerAction : IPlayerAction
         ResetTileColours();
     }
 
+    // Method for knockback logic (used for normal melee attacks)
     public void CheckKnockback(Unit attacker, Unit defender)
     {
         int knockbackStrength = 2;
 
         DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
 
-        if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
+        if (distanceController.CheckDistance(attacker.ownedTile, savedSelectedTile))
         {
-            Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-            float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
-            attackPower = attackPower * 2;
-            knockbackStrength = knockbackStrength * 2;
-            //Warning: remove magic numbers later
-
             Vector2Int attackerPos = attacker.GetGridPosition();
             Vector2Int defenderPos = defender.GetGridPosition();
 
@@ -81,26 +79,103 @@ public class MeleePlayerAction : IPlayerAction
                 knockbackDirection.y = -(int)Mathf.Sign(deltaY);
             }
 
-            // Check the immediate next tile in the knockback direction
-            Vector2Int immediateNextTile = defenderPos + knockbackDirection;
-
-            // If the immediate next tile is occupied, do not apply knockback
-
-            // Apply the knockback strength within the limit of 1, 2, or 3 tiles
+            // Apply the knockback within the limit of 1, 2, or 3 tiles
             knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
-
-            // Calculate the new grid position with the possibly adjusted knockback strength
             Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
             // Clamp the new position to the grid bounds
             newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
             newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
-            TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
+            TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
 
-            destinationTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
-            Debug.Log("Enemy knocked back");
+            if (destinationTile != null && destinationTile.currentSingleTileCondition != SingleTileCondition.occupied)
+            {
+                // Move the defender to the new tile
+                defender.ownedTile.detectedUnit = null;
+                defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y, true);
 
+                destinationTile.detectedUnit = defender.gameObject;
+                defender.ownedTile = destinationTile;
+                defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+
+                Debug.Log("Enemy knocked back");
+                destinationTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
+            }
+            else
+            {
+                Debug.Log("Can't knockback enemy, destination tile is occupied or invalid.");
+            }
+        }
+    }
+
+    // Hookshot attack logic (used when hookshot is equipped)
+    public void ExecuteHookshot(Unit attacker, Unit defender)
+    {
+        int hookshotRange = 3; // Maximum range of the hookshot
+
+        Vector2Int attackerPos = attacker.GetGridPosition();
+        Vector2Int defenderPos = defender.GetGridPosition();
+
+        // Calculate the Manhattan distance (abs(dx) + abs(dy))
+        int distance = Mathf.Abs(defenderPos.x - attackerPos.x) + Mathf.Abs(defenderPos.y - attackerPos.y);
+
+        // Check if the distance is within the hookshot range
+        if (distance > hookshotRange)
+        {
+            Debug.Log("Enemy is out of hookshot range.");
+            return;
+        }
+
+        // Calculate the difference in positions
+        int deltaX = defenderPos.x - attackerPos.x;
+        int deltaY = defenderPos.y - attackerPos.y;
+
+        // Determine the direction of the pull (opposite of knockback logic)
+        Vector2Int pullDirection = Vector2Int.zero;
+        if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
+        {
+            pullDirection.x = (int)Mathf.Sign(deltaX); // Pull in X-axis
+        }
+        else
+        {
+            pullDirection.y = (int)Mathf.Sign(deltaY); // Pull in Y-axis
+        }
+
+        // Calculate the target tile directly in front of the player based on direction
+        Vector2Int newGridPos = attackerPos + pullDirection;
+
+        // Clamp the position to the grid bounds
+        newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
+        newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
+
+        TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
+
+        // Ensure the destination tile is not occupied
+        if (destinationTile != null && destinationTile.currentSingleTileCondition != SingleTileCondition.occupied)
+        {
+            // Move the defender to the new tile in front of the player
+            defender.ownedTile.detectedUnit = null;
+            defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+
+            defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y, true);
+
+            destinationTile.detectedUnit = defender.gameObject;
+            defender.ownedTile = destinationTile;
+            defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+
+            Debug.Log("Enemy pulled in with hookshot");
+
+            // Optional: Apply visual or sound effects to show the hookshot pull
+            destinationTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.cyan);
+
+            // Trigger a feedback event for the hookshot usage
+            OnUsedMeleeAction?.Invoke("Hookshot", attacker.unitTemplate.unitName);
+        }
+        else
+        {
+            Debug.Log("No valid position for hookshot pull.");
         }
     }
 
@@ -110,33 +185,42 @@ public class MeleePlayerAction : IPlayerAction
 
         if (activePlayerUnit.unitOpportunityPoints > 0 && currentTarget.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
-            float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
-
-            //Warning: remove magic number later
-            int knockbackStrength = 2;
-
-            DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
-
-            if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
+            // Check if the player has a hookshot equipped
+            if (activePlayerUnit.hasHookshot)
             {
-                attackPower = attackPower * 2;
-                knockbackStrength = knockbackStrength * 2;
-                //Warning: remove magic numbers later
-                ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
-                Debug.Log($"Defending Unit receives" + attackPower + "damage points");
+                // Execute the hookshot attack instead of the melee attack
+                ExecuteHookshot(activePlayerUnit, currentTarget);
             }
             else
             {
-                currentTarget.TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
+                // Standard melee attack execution with knockback
+                float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
+
+                int knockbackStrength = 2;
+                DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
+
+                if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
+                {
+                    attackPower = attackPower * 2;
+                    knockbackStrength = knockbackStrength * 2;
+                    ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
+                    Debug.Log($"Defending Unit receives {attackPower} damage points");
+                }
+                else
+                {
+                    currentTarget.TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
+                }
+
+                // Reduce the opportunity points after the attack
+                activePlayerUnit.unitOpportunityPoints--;
+
+                UpdateActivePlayerUnitProfile(activePlayerUnit);
+
+                activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
+                OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
+
+                Debug.Log("Melee Execution Logic");
             }
-            activePlayerUnit.unitOpportunityPoints--;
-
-            UpdateActivePlayerUnitProfile(activePlayerUnit);
-
-            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
-            OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
-
-            Debug.Log("Melee Execution Logic");
         }
         else
         {
@@ -166,22 +250,8 @@ public class MeleePlayerAction : IPlayerAction
             knockbackDirection.y = -(int)Mathf.Sign(deltaY);
         }
 
-        // Check the immediate next tile in the knockback direction
-        Vector2Int immediateNextTile = defenderPos + knockbackDirection;
-
-        // If the immediate next tile is occupied, do not apply knockback
-        TileController immediateTileController = GridManager.Instance.GetTileControllerInstance(immediateNextTile.x, immediateNextTile.y);
-        if (immediateTileController == null || immediateTileController.currentSingleTileCondition == SingleTileCondition.occupied)
-        {
-            currentTarget.TakeDamage(attacker.unitTemplate.meleeAttackPower);
-            Debug.Log("Immediate tile in knockback path is occupied. Knockback canceled.");
-            return;
-        }
-
         // Apply the knockback strength within the limit of 1, 2, or 3 tiles
         knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
-
-        // Calculate the new grid position with the possibly adjusted knockback strength
         Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
         // Clamp the new position to the grid bounds
@@ -193,7 +263,6 @@ public class MeleePlayerAction : IPlayerAction
         {
             defender.ownedTile.detectedUnit = null;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-            //The Knockback will ignore the movement limit            
             defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y, true);
 
             TileController destinationTile = GridManager.Instance.GetTileControllerInstance((int)newGridPos.x, (int)newGridPos.y);
@@ -201,6 +270,7 @@ public class MeleePlayerAction : IPlayerAction
             destinationTile.detectedUnit = defender.gameObject;
             defender.ownedTile = destinationTile;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+
             Debug.Log("Enemy knocked back");
             destinationTile.tileShaderController.ResetTileFadeHeightAnimation(destinationTile);
         }
@@ -209,7 +279,6 @@ public class MeleePlayerAction : IPlayerAction
             Debug.Log("Can't knockback Enemy Unit");
         }
         ResetTileColours();
-
     }
 
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
