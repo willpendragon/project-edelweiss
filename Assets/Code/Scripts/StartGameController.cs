@@ -29,7 +29,7 @@ public class StartGameController : MonoBehaviour
 
     private bool CheckSaveFile()
     {
-        saveFilePath = Application.persistentDataPath + "gameSaveData.json";
+        saveFilePath = Path.Combine(Application.persistentDataPath, "gameSaveData.json");
         if (File.Exists(saveFilePath))
         {
             return true;
