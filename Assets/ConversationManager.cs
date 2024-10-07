@@ -1,6 +1,7 @@
 using PixelCrushers.DialogueSystem;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ConversationManager : MonoBehaviour
 {
@@ -11,10 +12,15 @@ public class ConversationManager : MonoBehaviour
 
     private void Awake()
     {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Ensures the manager persists across scenes
+            if (currentSceneName == "battle_prototype")
+            {
+                DontDestroyOnLoad(gameObject); // Ensures the manager persists across scenes
+            }
         }
         else
         {

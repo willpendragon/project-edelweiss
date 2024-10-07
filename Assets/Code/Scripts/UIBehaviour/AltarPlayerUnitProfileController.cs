@@ -26,10 +26,19 @@ public class AltarPlayerUnitProfileController : MonoBehaviour
     [SerializeField] Button selectPlayerButton;
 
     private Unit selectedPlayerUnit;
+    public string playerId;
 
     public void PopulatePlayerUnitProfile(Unit playerUnit)
     {
         playerUnitName.text = playerUnit.unitTemplate.unitName;
+
+
+
+        if (playerUnitHPTextValue.text != null) playerUnitHPTextValue.text = playerUnit.unitHealthPoints.ToString();
+        if (playerUnitAttackPowerTextValue.text != null) playerUnitAttackPowerTextValue.text = playerUnit.unitAttackPower.ToString();
+        if (playerUnitMagicPowerTextValue.text != null) playerUnitMagicPowerTextValue.text = playerUnit.unitMagicPower.ToString();
+
+        playerId = playerUnit.Id;
 
         playerUnitHPSlider.maxValue = playerUnit.unitTemplate.unitMaxHealthPoints;
         playerUnitAttackPowerSlider.maxValue = playerUnit.unitTemplate.meleeAttackPower;
@@ -38,7 +47,6 @@ public class AltarPlayerUnitProfileController : MonoBehaviour
         playerUnitHPSlider.value = playerUnit.unitTemplate.unitMaxHealthPoints;
         playerUnitAttackPowerSlider.value = playerUnit.unitTemplate.meleeAttackPower;
         playerUnitMagicPowerSlider.value = playerUnit.unitTemplate.unitMagicPower;
-
 
         playerUnitMiniPortrait.sprite = playerUnit.unitTemplate.unitMiniPortrait;
         if (playerUnit.linkedDeity != null)

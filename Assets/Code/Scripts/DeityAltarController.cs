@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 using TMPro;
 public class DeityAltarController : MonoBehaviour
 {
@@ -27,9 +26,9 @@ public class DeityAltarController : MonoBehaviour
     [SerializeField] Image fadePanel;
     [SerializeField] Transform deitySpot;
 
-    [Serialize]
-
     Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
+
+    List<GameObject> playerUnitsProfiles = new List<GameObject>();
     public void Start()
     {
         GameManager.Instance.ApplyDeityLinks();
@@ -37,6 +36,7 @@ public class DeityAltarController : MonoBehaviour
         {
             GameObject newPlayerUnitProfileInstance = Instantiate(playerUnitProfileGO, playerPartyMembembersContainer);
             newPlayerUnitProfileInstance.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(playerUnit);
+            playerUnitsProfiles.Add(newPlayerUnitProfileInstance);
         }
 
         Dictionary<string, string> unitsLinkedToDeities = SaveStateManager.saveData.unitsLinkedToDeities;
@@ -66,6 +66,7 @@ public class DeityAltarController : MonoBehaviour
     public void SetCurrentSelectedUnit(Unit unit, GameObject unitPanel)
     {
         selectedPlayerUnitProfileGO = unitPanel;
+        selectedPlayerUnitProfileGO.GetComponentInChildren<Image>().color = Color.cyan;
         selectedPlayerUnit = unit;
     }
 
@@ -108,10 +109,10 @@ public class DeityAltarController : MonoBehaviour
         // Remove existing link for the selected unit (if it exists).
         if (saveData.unitsLinkedToDeities.ContainsKey(selectedPlayerUnitId))
         {
-            RemoveDeityBuffsOnUnit(selectedPlayerUnit, deity);
+            //RemoveDeityBuffsOnUnit(selectedPlayerUnit, deity);
             saveData.unitsLinkedToDeities.Remove(selectedPlayerUnitId);
             selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = "No Link";
-
+            //RemoveDeityBuffsOnOtherUnits(deity);
         }
 
         // Add the new link.
@@ -122,14 +123,19 @@ public class DeityAltarController : MonoBehaviour
 
         GameManager.Instance.ApplyDeityLinks();
 
-        ApplyDeityBuffsOnUnit(selectedPlayerUnit, deity);
+        //ApplyDeityBuffsOnUnit(selectedPlayerUnit, deity);
 
         SaveStateManager.SaveGame(saveData);
 
-
         Debug.Log("Deity successfully assigned to unit.");
-    }
 
+        GameObject[] playerUnitContainers = GameObject.FindGameObjectsWithTag("PlayerUnitContainer");
+        foreach (var playerUnitContainer in playerUnitContainers)
+        {
+            Image buttonImage = playerUnitContainer.GetComponentInChildren<Image>();
+            buttonImage.color = Color.white;
+        }
+    }
     public void PlayLinkAnimation(Unit selectedPlayerUnit, Deity deity)
     {
         Sprite selectedPlayerUnitPortrait = selectedPlayerUnit.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
@@ -138,17 +144,25 @@ public class DeityAltarController : MonoBehaviour
         deityLinkCalloutController.PlayDeityLinkCalloutTransition(selectedPlayerUnitPortrait, linkedDeityUnitPortrait);
     }
 
-    public void ApplyDeityBuffsOnUnit(Unit unit, Deity deity)
-    {
-        if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
-        {
-            selectedPlayerUnit.unitMagicPower += deity.deityPrayerBuff.buffAmount;
-        }
-        else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
-        {
-            selectedPlayerUnit.unitAttackPower += deity.deityPrayerBuff.buffAmount;
-        }
-    }
+    //public void ApplyDeityBuffsOnUnit(Unit unit, Deity deity)
+    //{
+    //    if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
+    //    {
+    //        selectedPlayerUnit.unitMagicPower += deity.deityPrayerBuff.buffAmount;
+    //    }
+    //    else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
+    //    {
+    //        selectedPlayerUnit.unitAttackPower += deity.deityPrayerBuff.buffAmount;
+    //    }
+
+    //    foreach (var playerUnitProfile in playerUnitsProfiles)
+    //    {
+    //        if (unit.Id == playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId)
+    //        {
+    //            playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(unit);
+    //        }
+    //    }
+    //}
 
     public void RemoveDeityBuffsOnUnit(Unit unit, Deity deity)
     {
@@ -160,20 +174,47 @@ public class DeityAltarController : MonoBehaviour
         {
             selectedPlayerUnit.unitAttackPower -= deity.deityPrayerBuff.buffAmount;
         }
+
+        foreach (var playerUnitProfile in playerUnitsProfiles)
+        {
+            if (unit.Id == playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId)
+            {
+                playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(unit);
+            }
+        }
+        RemoveDeityBuffsOnOtherUnits(deity);
     }
 
-    //public void FadeEffect()
-    //{
-    //    float fadeDuration = 1.0f;
+    public void RemoveDeityBuffsOnOtherUnits(Deity deity)
+    {
+        List<Unit> playerUnitsInstances = GameManager.Instance.playerPartyMembersInstances;
+        foreach (Unit playerUnit in playerUnitsInstances)
+        {
+            if (playerUnit.LinkedDeityId != deity.Id)
+            {
+                if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
+                {
+                    selectedPlayerUnit.unitMagicPower -= deity.deityPrayerBuff.buffAmount;
+                    UpdatePlayerUnitProfile(playerUnit);
 
-    //    // Fade to black
-    //    if (fadePanel != null)
-    //    {
-    //        fadePanel.DOFade(1f, fadeDuration).OnComplete(() =>
-    //        {
-    //            fadePanel.DOFade(0f, fadeDuration);
-    //        });
-    //    }
-    //}
+                }
+                else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
+                {
+                    selectedPlayerUnit.unitAttackPower -= deity.deityPrayerBuff.buffAmount;
+                    UpdatePlayerUnitProfile(playerUnit);
+                }
+            }
+        }
+    }
 
+    public void UpdatePlayerUnitProfile(Unit unit)
+    {
+        foreach (var playerUnitProfile in playerUnitsProfiles)
+        {
+            if (playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId == unit.Id)
+            {
+                playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(unit);
+            }
+        }
+    }
 }

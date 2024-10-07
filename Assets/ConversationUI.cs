@@ -4,8 +4,8 @@ using TMPro;
 
 public class ConversationUI : MonoBehaviour
 {
-    public GameObject buttonPrefab; // Assign in the Inspector
-    public Transform buttonContainer; // Assign in the Inspector
+    public GameObject buttonPrefab;
+    public Transform buttonContainer;
 
     private void Start()
     {
@@ -19,7 +19,7 @@ public class ConversationUI : MonoBehaviour
             if (convo.isUnlocked)
             {
                 GameObject button = Instantiate(buttonPrefab, buttonContainer);
-                button.GetComponentInChildren<TextMeshProUGUI>().text = $"Conversation {convo.conversationID}";
+                button.GetComponentInChildren<TextMeshProUGUI>().text = $"{convo.conversationID}";
                 string convoID = convo.conversationID;
                 button.GetComponent<Button>().onClick.AddListener(() => StartConversation(convoID));
             }

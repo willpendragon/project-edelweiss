@@ -35,7 +35,8 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, 2))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-                deitySpawningZoneTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.yellow;
+                deitySpawningZoneTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(1f, 0.2f, Color.magenta);
+                //deitySpawningZoneTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.yellow;
             }
             int summoningCost = 50;
             currentActivePlayerUnit.SpendManaPoints(summoningCost);
@@ -75,6 +76,11 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             }
             Debug.Log("Deselecting Summon Spawn Area");
             deityLimiter++;
+        }
+
+        foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, 2))
+        {
+            deitySpawningZoneTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0f, 0.2f, Color.white);
         }
     }
 }
