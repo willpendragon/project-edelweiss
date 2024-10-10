@@ -21,6 +21,19 @@ public class TurnController : MonoBehaviour
         enemyTurn,
         deityTurn
     }
+
+    public static class Tags
+    {
+        public const string PLAYER = "Player";
+        public const string ENEMY = "Enemy";
+        public const string GAME_STATS_MANAGER = "GameStatsManager";
+        public const string BATTLE_MANAGER = "BattleManager";
+        public const string BOSS_CONTROLLER = "BossController";
+        public const string END_TURN_BUTTON = "EndTurnButton";
+        public const string PLAYER_PARTY_CONTROLLER = "PlayerPartyController";
+        public const string ACTIVE_CHARACTER_UNIT_PROFILE = "ActiveCharacterUnitProfile";
+    }
+
     public delegate void EnemyTurn(string enemyTurn);
     public static event EnemyTurn OnEnemyTurn;
 
@@ -42,12 +55,17 @@ public class TurnController : MonoBehaviour
     public delegate void ResetSummonBuffs();
     public static event ResetSummonBuffs OnResetSummonBuffs;
 
-    public float warFunds;
-    public int enemiesKilledInCurrentBattle;
+    [Header("Battle System Elements")]
+
     public BattleManager battleManager;
     public BattleEndUIHandler battleEndUIHandler;
-    public int timesSingleTargetSpellWasUsed;
     public AchievementsManager achievementsManager;
+
+    [Header("Gameplay Stats")]
+
+    public float warFunds;
+    public int enemiesKilledInCurrentBattle;
+    public int timesSingleTargetSpellWasUsed;
 
     public void OnEnable()
     {
@@ -74,8 +92,8 @@ public class TurnController : MonoBehaviour
     void Start()
     {
         currentTurn = Turn.playerTurn;
-        playerUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Player");
-        enemyUnitsOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
+        playerUnitsOnBattlefield = GameObject.FindGameObjectsWithTag(Tags.PLAYER);
+        enemyUnitsOnBattlefield = GameObject.FindGameObjectsWithTag(Tags.ENEMY);
         SetUnitsInitialPositionOnGrid();
         RestorePlayerUnitsOpportunityPoints();
     }
@@ -133,7 +151,7 @@ public class TurnController : MonoBehaviour
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
 
             // Enables End Turn Button
-            Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+            Button endTurnButton = GameObject.FindGameObjectWithTag(Tags.END_TURN_BUTTON).GetComponent<Button>();
             endTurnButton.interactable = true;
         }
     }
@@ -141,7 +159,7 @@ public class TurnController : MonoBehaviour
     public void CheckPlayerUnitsStatus()
     {
         // Get all Player Units
-        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag(Tags.PLAYER_PARTY_CONTROLLER).GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
 
         // Check if all units are either dead or waiting (which means no unit is in a state that can take action)
         bool allUnitsDeadOrWaiting = playerUnitsOnBattlefield.All(unitObject =>
@@ -182,116 +200,111 @@ public class TurnController : MonoBehaviour
     }
     public void GameOverCheck()
     {
-        if (battleManager.currentBattleType == BattleType.regularBattle)
+        Debug.Log("Performing Game Over Check");
+        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
+
+        switch (battleManager.currentBattleType)
         {
-            if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
-            {
-                Debug.Log("Enemy Party was defeated");
-                OnBattleEnd("Victory");
-                ResetBattleToInitialStatus();
+            case BattleType.regularBattle:
+                HandleRegularBattle(gameStatsManager);
+                break;
 
-                UnlockNextLevel();
+            case BattleType.battleWithDeity:
+                HandleBattleWithDeity(gameStatsManager);
+                break;
 
-                foreach (var player in playerUnitsOnBattlefield)
-                {
-                    player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
-                    warFunds += player.GetComponent<Unit>().unitCoins;
-                }
-                GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-                foreach (var enemy in GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().enemiesOnBattlefield)
-                {
-                    if (enemy.tag == "Enemy" && enemy.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead)
-                    {
-                        enemiesKilledInCurrentBattle++;
-                        gameStatsManager.enemiesKilled++;
-                        Debug.Log("Adding enemies to kill count");
-                    }
-                }
-                ApplyRewardsAndSave(gameStatsManager);
+            case BattleType.BossBattle:
+                HandleBossBattle();
+                break;
 
-                Debug.Log("Rolling Convo Unlock");
-                ConversationManager.Instance.UnlockRandomConversation();
-
-                //Activate Game Over UI Flow
-                UpdateBattleEndUIPanel();
-
-            }
-            else if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
-            {
-                Debug.Log("Enemy Party is still in game");
-            }
-            else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
-            {
-                Debug.Log("Player Party was defeated");
-                OnBattleEnd("Defeat");
-                ResetBattleToInitialStatus();
-            }
-            else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
-            {
-                Debug.Log("Player Party is still in game");
-            }
-        }
-        else if (battleManager.currentBattleType == BattleType.battleWithDeity)
-        {
-            if (GameObject.FindGameObjectWithTag("Enemy").GetComponent<Unit>().unitHealthPoints <= 0)
-            {
-                GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-
-                Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
-                OnBattleEnd("Victory");
-
-                ResetBattleToInitialStatus();
-                UnlockNextLevel();
-
-                foreach (var player in playerUnitsOnBattlefield)
-                {
-                    player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
-                    warFunds += player.GetComponent<Unit>().unitCoins;
-                }
-                gameStatsManager.SaveCharacterData();
-                gameStatsManager.SaveWarFunds(warFunds);
-                gameStatsManager.SaveCaptureCrystalsCount();
-                UpdateBattleEndUIPanel();
-            }
-            else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
-            {
-                Debug.Log("Player Party was defeated by the Deity");
-                OnBattleEnd("Defeat");
-                ResetBattleToInitialStatus();
-            }
+            default:
+                Debug.LogWarning("Unknown battle type encountered.");
+                break;
         }
     }
-    public void RunFromBattle()
-    {
-        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-        Debug.Log("Player Party ran away.");
-        OnBattleEnd("Fleed");
-        gameStatsManager.SaveCharacterData();
-        gameStatsManager.SaveWarFunds(warFunds);
-        gameStatsManager.SaveCaptureCrystalsCount();
-        UpdateBattleEndUIPanel();
-        ResetBattleToInitialStatus();
-    }
 
-    public void ApplyRewardsAndSave(GameStatsManager gameStatsManager)
+    private void HandleRegularBattle(GameStatsManager gameStatsManager)
     {
-        //Applying to each Player's their Health Points, Coins and Experience Rewards Pool
-        //Saving each Player's Health Points, Coins and Experience Rewards
-
-        gameStatsManager.captureCrystalsCount += BattleManager.Instance.captureCrystalsRewardPool;
-        gameStatsManager.SaveEnemiesKilled();
-        gameStatsManager.SaveCharacterData();
-        gameStatsManager.SaveWarFunds(warFunds);
-        gameStatsManager.SaveUsedSingleTargetSpells();
-        gameStatsManager.SaveCaptureCrystalsCount();
-        Debug.Log("Saving Character Stats Data");
-    }
-
-    public void ResetTags()
-    {
-        foreach (var player in GameManager.Instance.playerPartyMembersInstances)
+        if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
-            player.gameObject.tag = "Player";
+            Debug.Log("Enemy Party was defeated");
+            OnBattleEnd("Victory");
+            ResetBattleToInitialStatus();
+            UnlockNextLevel();
+
+            foreach (var player in playerUnitsOnBattlefield)
+            {
+                player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
+                warFunds += player.GetComponent<Unit>().unitCoins;
+            }
+
+            foreach (var enemy in GameObject.FindGameObjectWithTag(Tags.BATTLE_MANAGER).GetComponent<BattleManager>().enemiesOnBattlefield)
+            {
+                if (enemy.tag == Tags.ENEMY && enemy.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead)
+                {
+                    enemiesKilledInCurrentBattle++;
+                    gameStatsManager.enemiesKilled++;
+                    Debug.Log("Adding enemies to kill count");
+                }
+            }
+
+            ApplyRewardsAndSave(gameStatsManager);
+            Debug.Log("Rolling Convo Unlock");
+            ConversationManager.Instance.UnlockRandomConversation();
+            UpdateBattleEndUIPanel();
+        }
+        else if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Enemy Party is still in game");
+        }
+        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Player Party was defeated");
+            OnBattleEnd("Defeat");
+            ResetBattleToInitialStatus();
+        }
+        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Player Party is still in game");
+        }
+    }
+
+    private void HandleBattleWithDeity(GameStatsManager gameStatsManager)
+    {
+        if (GameObject.FindGameObjectWithTag(Tags.ENEMY).GetComponent<Unit>().unitHealthPoints <= 0)
+        {
+            Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
+            OnBattleEnd("Victory");
+            ResetBattleToInitialStatus();
+            UnlockNextLevel();
+
+            foreach (var player in playerUnitsOnBattlefield)
+            {
+                player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
+                warFunds += player.GetComponent<Unit>().unitCoins;
+            }
+
+            gameStatsManager.SaveCharacterData();
+            gameStatsManager.SaveWarFunds(warFunds);
+            gameStatsManager.SaveCaptureCrystalsCount();
+            UpdateBattleEndUIPanel();
+        }
+        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        {
+            Debug.Log("Player Party was defeated by the Deity");
+            OnBattleEnd("Defeat");
+            ResetBattleToInitialStatus();
+        }
+    }
+    private void HandleBossBattle()
+    {
+        BossController currentBossController = GameObject.FindGameObjectWithTag(Tags.BOSS_CONTROLLER).GetComponent<BossController>();
+        if (currentBossController.bossUnit != null && currentBossController.bossUnit.HealthPoints <= 0)
+        {
+            Debug.Log("Boss Defeated");
+            OnBattleEnd("Victory");
+            ResetBattleToInitialStatus();
+            // Logic to unlock last dialogue
         }
     }
 
@@ -302,26 +315,45 @@ public class TurnController : MonoBehaviour
         SaveStateManager.SaveGame(saveData);
         Debug.Log("Unlocking Next Level");
     }
-
-    public void DeactivateActivePlayerUnitPanel()
+    private void ApplyRewardsAndSave(GameStatsManager gameStatsManager)
     {
-        Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
+        // Applying to each Player's their Health Points, Coins and Experience Rewards Pool
+        // Saving each Player's Health Points, Coins and Experience Rewards
+
+        gameStatsManager.captureCrystalsCount += BattleManager.Instance.captureCrystalsRewardPool;
+        gameStatsManager.SaveEnemiesKilled();
+        gameStatsManager.SaveCharacterData();
+        gameStatsManager.SaveWarFunds(warFunds);
+        gameStatsManager.SaveUsedSingleTargetSpells();
+        gameStatsManager.SaveCaptureCrystalsCount();
+        Debug.Log("Saving Character Stats Data");
     }
-
-    public void UpdateBattleEndUIPanel()
-
-    {
-        battleEndUIHandler.battleEndEnemiesKilledText.text = enemiesKilledInCurrentBattle.ToString();
-        battleEndUIHandler.battleEndWarFundsGainedText.text = warFunds.ToString();
-        battleEndUIHandler.battleEndCrystalObtainedText.text = battleManager.captureCrystalsRewardPool.ToString();
-    }
-
-    public void ResetBattleToInitialStatus()
+    private void ResetBattleToInitialStatus()
     {
         ResetTags();
         OnResetUnitUI();
         DeactivateActivePlayerUnitPanel();
         OnResetSummonBuffs();
+    }
+    public void ResetTags()
+    {
+        foreach (var player in GameManager.Instance.playerPartyMembersInstances)
+        {
+            player.gameObject.tag = Tags.PLAYER;
+        }
+    }
+
+    private void DeactivateActivePlayerUnitPanel()
+    {
+        Destroy(GameObject.FindGameObjectWithTag(Tags.ACTIVE_CHARACTER_UNIT_PROFILE));
+    }
+
+    private void UpdateBattleEndUIPanel()
+
+    {
+        battleEndUIHandler.battleEndEnemiesKilledText.text = enemiesKilledInCurrentBattle.ToString();
+        battleEndUIHandler.battleEndWarFundsGainedText.text = warFunds.ToString();
+        battleEndUIHandler.battleEndCrystalObtainedText.text = battleManager.captureCrystalsRewardPool.ToString();
     }
 
     public void EndTurnViaButton()
@@ -339,9 +371,20 @@ public class TurnController : MonoBehaviour
                 playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             }
 
-            Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+            Button endTurnButton = GameObject.FindGameObjectWithTag(Tags.END_TURN_BUTTON).GetComponent<Button>();
             endTurnButton.interactable = false;
             CheckPlayerUnitsStatus();
         }
+    }
+    public void RunFromBattle()
+    {
+        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
+        Debug.Log("Player Party ran away.");
+        OnBattleEnd("Fleed");
+        gameStatsManager.SaveCharacterData();
+        gameStatsManager.SaveWarFunds(warFunds);
+        gameStatsManager.SaveCaptureCrystalsCount();
+        UpdateBattleEndUIPanel();
+        ResetBattleToInitialStatus();
     }
 }
