@@ -71,7 +71,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             int summoningRange = 2;
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, summoningRange))
             {
-                tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
+                //tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
                 tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             }
             Debug.Log("Deselecting Summon Spawn Area");
