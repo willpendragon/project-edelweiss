@@ -32,7 +32,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             {
                 foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile, aoeRange))
                 {
-                    tile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
                     tile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
                     selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 }

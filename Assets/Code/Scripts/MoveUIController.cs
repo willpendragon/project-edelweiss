@@ -50,6 +50,7 @@ public class MoveUIController : MonoBehaviour
         }
 
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
-        //After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode and switch to the Move Player Action
+        
+       
     }
 }
