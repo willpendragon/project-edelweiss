@@ -2932,7 +2932,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -51.2
+  near clip plane: -50
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -3497,7 +3497,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 0000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
@@ -3560,7 +3560,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -221.07153, w: 0}
+  m_margin: {x: 50.36548, y: 0, z: 0.8363037, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4383,6 +4383,7 @@ MonoBehaviour:
   battleEndResultsScreenDelay: 0.5
   battleEndResultsScreen: {fileID: 869859802}
   battlefieldNotificationsContainer: {fileID: 739119494}
+  returnButton: {fileID: 0}
   battleEndMessageText: {fileID: 1180730695}
   battleEndExperiencePointsText: {fileID: 1766102753}
   battleEndWarFundsGainedText: {fileID: 749872785}
@@ -5359,7 +5360,7 @@ RectTransform:
   m_GameObject: {fileID: 869859800}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 739257340}
@@ -6111,7 +6112,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -51.2
+  near clip plane: -50
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -6538,7 +6539,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -51.2
+  near clip plane: -50
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -8034,7 +8035,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -51.2
+  near clip plane: -50
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1

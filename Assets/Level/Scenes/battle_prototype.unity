@@ -2784,7 +2784,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6
+  near clip plane: -10
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -3349,7 +3349,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 0000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
   m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
@@ -3412,7 +3412,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -221.07153, w: 0}
+  m_margin: {x: 35.48816, y: 0, z: 1.3214111, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5728,7 +5728,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6
+  near clip plane: -10
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -6105,7 +6105,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6
+  near clip plane: -10
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
@@ -7361,7 +7361,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6
+  near clip plane: -10
   far clip plane: 5000
   field of view: 25.89
   orthographic: 1
