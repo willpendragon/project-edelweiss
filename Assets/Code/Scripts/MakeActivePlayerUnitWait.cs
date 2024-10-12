@@ -20,6 +20,7 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
         BattleInterface.Instance.movesContainer.transform.localScale = new Vector3(0, 0, 0);
 
         ResetTileControllersColours();
+        ResetTileControllersGlow();
         ClearPath();
 
         BattleManager.Instance.GetComponent<TurnController>().GameOverCheck();
@@ -34,6 +35,15 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
         }
 
 
+    }
+
+    public void ResetTileControllersGlow()
+    {
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            Debug.Log("Resetting Tile Glow");
+            tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+        }
     }
 
     public void ClearPath()

@@ -50,7 +50,16 @@ public class MoveUIController : MonoBehaviour
         }
 
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
-        
-       
+        ResetTileControllersGlow();
+
+    }
+
+    public void ResetTileControllersGlow()
+    {
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            Debug.Log("Resetting Tile Glow");
+            tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+        }
     }
 }

@@ -44,7 +44,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             {
                 savedSelectedTile = selectedTile;
 
-                savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+                //savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+                savedSelectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.blue);
                 if (selectedTile.detectedUnit != null && selectedTile.detectedUnit.tag != "Player" && selectedTile.detectedUnit.tag != "ActivePlayerUnit")
                 {
                     currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
@@ -84,8 +85,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
                     {
                         Debug.Log("Using AOE Spell on Multiple Targets");
-                        tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                        tile.tileShaderController.AnimateFadeHeight(0, 0.5f, Color.white);
+                        //tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                        //tile.tileShaderController.AnimateFadeHeight(0, 0.5f, Color.white);
 
                         if (tile.detectedUnit == null || tile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
                         {
@@ -161,7 +162,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
             {
                 tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-                tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                //tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
 
                 tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
                 Debug.Log("Deselecting AOE Range");
