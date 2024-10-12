@@ -12,7 +12,7 @@ public class GridMovementController : MonoBehaviour
 
         if (startTile == null || targetTile == null)
         {
-            Debug.LogError("Start or Target tile is null.");
+            Debug.LogError($"Start or Target tile is null. Start: ({startX}, {startY}), Target: ({targetX}, {targetY})");
             return null;
         }
 
