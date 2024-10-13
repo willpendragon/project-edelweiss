@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class CrystalHandler : MonoBehaviour
 {
+    public int crystalsAmount = 3;
     public void TurnUnitIntoCrystal()
     {
-        BattleManager.Instance.captureCrystalsRewardPool++;
+        BattleManager.Instance.captureCrystalsRewardPool += crystalsAmount;
     }
 }
