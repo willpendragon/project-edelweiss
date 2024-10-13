@@ -10,6 +10,9 @@ public class MeleePlayerAction : IPlayerAction
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
 
+    public Vector2Int knockbackDirection; // Stores knockback direction
+    public int knockbackStrength = 2; // Stores knockback strength
+
     public delegate void UsedMeleeAction(string moveName, string attackerName);
     public static event UsedMeleeAction OnUsedMeleeAction;
 
@@ -55,8 +58,6 @@ public class MeleePlayerAction : IPlayerAction
     // Method for knockback logic (used for normal melee attacks)
     public void CheckKnockback(Unit attacker, Unit defender)
     {
-        int knockbackStrength = 2;
-
         DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
 
         if (distanceController.CheckDistance(attacker.ownedTile, savedSelectedTile))
@@ -69,7 +70,7 @@ public class MeleePlayerAction : IPlayerAction
             int deltaY = attackerPos.y - defenderPos.y;
 
             // Determine the direction of the knockback
-            Vector2Int knockbackDirection = Vector2Int.zero;
+            knockbackDirection = Vector2Int.zero;
             if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
             {
                 knockbackDirection.x = -(int)Mathf.Sign(deltaX);
@@ -79,33 +80,26 @@ public class MeleePlayerAction : IPlayerAction
                 knockbackDirection.y = -(int)Mathf.Sign(deltaY);
             }
 
-            // Apply the knockback within the limit of 1, 2, or 3 tiles
+            // Clamp knockback strength between 1 and 3 tiles
             knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
-            Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
-            // Clamp the new position to the grid bounds
-            newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
-            newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
+            // Calculate preview knockback position
+            Vector2Int previewGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
-            TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
+            // Clamp the preview position to the grid bounds
+            previewGridPos.x = Mathf.Clamp(previewGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
+            previewGridPos.y = Mathf.Clamp(previewGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
-            if (destinationTile != null && destinationTile.currentSingleTileCondition != SingleTileCondition.occupied)
+            TileController previewTile = GridManager.Instance.GetTileControllerInstance(previewGridPos.x, previewGridPos.y);
+
+            if (previewTile != null && previewTile.currentSingleTileCondition != SingleTileCondition.occupied)
             {
-                // Move the defender to the new tile
-                defender.ownedTile.detectedUnit = null;
-                defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-                defender.GetComponent<Unit>().MoveUnit(newGridPos.x, newGridPos.y, true);
-
-                destinationTile.detectedUnit = defender.gameObject;
-                defender.ownedTile = destinationTile;
-                defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
-
-                Debug.Log("Enemy knocked back");
-                destinationTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
+                // Show the knockback preview (e.g., change tile color, animation)
+                previewTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
             }
             else
             {
-                Debug.Log("Can't knockback enemy, destination tile is occupied or invalid.");
+                Debug.Log("Can't preview knockback, invalid destination.");
             }
         }
     }
@@ -196,14 +190,12 @@ public class MeleePlayerAction : IPlayerAction
                 // Standard melee attack execution with knockback
                 float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
 
-                int knockbackStrength = 2;
                 DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
 
                 if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
                 {
                     attackPower = attackPower * 2;
-                    knockbackStrength = knockbackStrength * 2;
-                    ApplyKnockback(activePlayerUnit, currentTarget, knockbackStrength);
+                    ApplyKnockback(activePlayerUnit, currentTarget);
                     Debug.Log($"Defending Unit receives {attackPower} damage points");
                 }
                 else
@@ -228,30 +220,13 @@ public class MeleePlayerAction : IPlayerAction
         }
     }
 
-    public void ApplyKnockback(Unit attacker, Unit defender, int knockbackStrength)
+    public void ApplyKnockback(Unit attacker, Unit defender)
     {
         currentTarget.TakeDamage(attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage);
 
-        Vector2Int attackerPos = attacker.GetGridPosition();
         Vector2Int defenderPos = defender.GetGridPosition();
 
-        // Calculate the difference in positions
-        int deltaX = attackerPos.x - defenderPos.x;
-        int deltaY = attackerPos.y - defenderPos.y;
-
-        // Determine the direction of the knockback
-        Vector2Int knockbackDirection = Vector2Int.zero;
-        if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
-        {
-            knockbackDirection.x = -(int)Mathf.Sign(deltaX);
-        }
-        else
-        {
-            knockbackDirection.y = -(int)Mathf.Sign(deltaY);
-        }
-
-        // Apply the knockback strength within the limit of 1, 2, or 3 tiles
-        knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
+        // Reuse the knockbackDirection and knockbackStrength calculated during selection
         Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
         // Clamp the new position to the grid bounds
