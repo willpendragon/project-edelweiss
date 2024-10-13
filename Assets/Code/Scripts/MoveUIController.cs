@@ -48,10 +48,8 @@ public class MoveUIController : MonoBehaviour
 
             Debug.Log("Switching Tiles to Move Mode");
         }
-
-        GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
         ResetTileControllersGlow();
-
+        GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
     }
 
     public void ResetTileControllersGlow()
