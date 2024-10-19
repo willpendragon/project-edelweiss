@@ -274,6 +274,52 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &4680718183571350448
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7304765348622943948}
+  - component: {fileID: 813827823504174358}
+  m_Layer: 0
+  m_Name: MiniMagnet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7304765348622943948
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4680718183571350448}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.6109347, y: 0.2722809, z: 0.0077546956}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8642592451490499264}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &813827823504174358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4680718183571350448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87639c806a4e932448098881ceed0612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  miniMagnetPrefab: {fileID: 5417596867150616210, guid: 28c1e6ff3b9ebb74f8bc63e9e8830684, type: 3}
+  tileConveyorOverlayPrefab: {fileID: 3371528311032163851, guid: 4b4d438afaee876479bb7ac20083cb30, type: 3}
 --- !u!1 &8642592451490499134
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +379,7 @@ Transform:
   - {fileID: 561548677593423225}
   - {fileID: 8003639031656969881}
   - {fileID: 6722074646358834184}
+  - {fileID: 7304765348622943948}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5048801818827486388
@@ -372,7 +419,7 @@ MonoBehaviour:
   currentUnitLifeCondition: 1
   unitStatusController: {fileID: 7598564458177837309}
   fieldPrizeController: {fileID: 0}
-  hasHookshot: 0
+  hasHookshot: 1
   bossFlag: 0
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}

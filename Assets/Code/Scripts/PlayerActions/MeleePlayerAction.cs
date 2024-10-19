@@ -35,6 +35,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                 // Check if hookshot is equipped and handle selection logic
                 if (activePlayerUnit.hasHookshot)
                 {
+                    ActivateMagnet(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
                     Debug.Log("Hookshot selected, waiting for confirmation...");
                 }
                 else
@@ -123,7 +124,8 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             return;
         }
 
-        ActivateMagnet(attacker, defender);
+        //ActivateMagnet(attacker, defender);
+        //Change initial position of the magnet
 
         // Calculate the difference in positions
         int deltaX = defenderPos.x - attackerPos.x;
@@ -278,24 +280,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
     private void ActivateMagnet(Unit attacker, Unit defender)
     {
-        // Instantiate the magnet prefab at the attacker's position
-        GameObject activeMagnet = Instantiate(attacker.gameObject.GetComponentInChildren<MagnetHelper>().miniMagnetPrefab, attacker.transform);
-
-        // Position it slightly above the player (adjust the offset if needed)
-        Vector3 offset = new Vector3(0, 1.5f, 0);  // Adjust as needed for your game
-        activeMagnet.transform.position = attacker.transform.position + offset;
-
-        Vector2 direction = defender.transform.position - attacker.transform.position;
-
-        // Calculate the angle in degrees using Atan2
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        // Rotate the magnet to face the defender
-        activeMagnet.transform.rotation = Quaternion.Euler(0, 0, angle);
-
-        // Play the MagnetActivation animation
-        Debug.Log("Play MagnetActivation animation clip");
-        //activeMagnet.GetComponent<Animator>().Play("MagnetActivation");
+        attacker.gameObject.GetComponentInChildren<MagnetHelper>().OrientMagnet(attacker, defender);
     }
 
     private void AnimateConveyorTiles(Vector2Int attackerPos, Vector2Int defenderPos, Vector2Int pullDirection, Unit attacker)
@@ -317,12 +302,12 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             {
                 Vector3 tilePosition = currentTile.gameObject.GetComponentInChildren<SpriteRenderer>().transform.position;
                 Quaternion tileRotation = currentTile.gameObject.GetComponentInChildren<SpriteRenderer>().transform.rotation;
-                Vector3 tileScale = currentTile.gameObject.GetComponentInChildren<SpriteRenderer>().transform.localScale;
 
-                GameObject conveyorOverlay = Instantiate(attacker.gameObject.GetComponentInChildren<MagnetHelper>().tileConveyorOverlayPrefab, tilePosition, tileRotation, currentTile.transform);
-                conveyorOverlay.transform.localScale = new Vector3(tileScale.x, tileScale.y, tileScale.z);
-
-                //conveyorOverlay.GetComponent<Animator>().Play("ConveyorBeltAnimation");
+                ConveyorBeltHelper conveyorBeltHelper = currentTile.GetComponent<ConveyorBeltHelper>();
+                if (conveyorBeltHelper != null)
+                {
+                    conveyorBeltHelper.ManageConveyorBelt(1);
+                }
             }
         }
     }
