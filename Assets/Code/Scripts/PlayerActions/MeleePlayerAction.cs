@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static TileController;
-using UnityEngine.UI;
-using System;
 
 public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -300,13 +296,24 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
             if (currentTile != null)
             {
-                Vector3 tilePosition = currentTile.gameObject.GetComponentInChildren<SpriteRenderer>().transform.position;
-                Quaternion tileRotation = currentTile.gameObject.GetComponentInChildren<SpriteRenderer>().transform.rotation;
+                // Retrieve the conveyor belt plane or mesh
+                GameObject conveyorPlane = currentTile.GetComponentInChildren<ConveyorBeltHelper>().gameObject;
 
-                ConveyorBeltHelper conveyorBeltHelper = currentTile.GetComponent<ConveyorBeltHelper>();
-                if (conveyorBeltHelper != null)
+                if (conveyorPlane != null)
                 {
-                    conveyorBeltHelper.ManageConveyorBelt(1);
+                    // Calculate the direction vector based on the pull direction
+                    Vector3 direction = new Vector3(pullDirection.x, 0, pullDirection.y);
+
+                    // Set the rotation using Quaternion.LookRotation to face the direction
+                    Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
+                    conveyorPlane.transform.rotation = rotation;
+
+                    // Optional: Manage the conveyor belt behavior if needed
+                    ConveyorBeltHelper conveyorBeltHelper = conveyorPlane.GetComponent<ConveyorBeltHelper>();
+                    if (conveyorBeltHelper != null)
+                    {
+                        conveyorBeltHelper.ManageConveyorBelt(1);
+                    }
                 }
             }
         }
