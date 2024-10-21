@@ -15,13 +15,8 @@ public class TileShaderController : MonoBehaviour
         {
             Debug.LogError("Glowing Mesh not assigned.");
         }
-        //else
-        //{
-        //    AnimateFadeHeight();
-        //}
     }
 
-    //Add parameters
     public void AnimateFadeHeight(float targetFadeHeight, float animationDuration, Color glowColor)
     {
         if (glowingTileColumn != null)
@@ -31,6 +26,34 @@ public class TileShaderController : MonoBehaviour
                 .SetEase(animationEase); // Apply easing to the animation
         }
     }
+
+    public void AnimateFadeHeightError(float targetFadeHeight, float animationDuration, Color glowColor)
+    {
+        if (glowingTileColumn != null)
+        {
+            // Store the initial value to revert back to it later
+            float initialFadeHeight = glowingTileColumn.material.GetFloat("_FadeHeight");
+
+            // Set the glow color
+            glowingTileColumn.material.color = glowColor;
+
+            // Create the initial animation to the target fade height
+            DOTween.To(() => glowingTileColumn.material.GetFloat("_FadeHeight"),
+                       x => glowingTileColumn.material.SetFloat("_FadeHeight", x),
+                       targetFadeHeight,
+                       animationDuration)
+                .SetEase(animationEase) // Apply easing to the animation
+                .OnComplete(() => // When the first animation completes, revert to the initial value
+                {
+                    DOTween.To(() => glowingTileColumn.material.GetFloat("_FadeHeight"),
+                               x => glowingTileColumn.material.SetFloat("_FadeHeight", x),
+                               initialFadeHeight,
+                               animationDuration)
+                        .SetEase(animationEase); // Apply easing for the revert animation as well
+                });
+        }
+    }
+
 
     public void ResetTileFadeHeightAnimation(TileController tileToReset)
     {

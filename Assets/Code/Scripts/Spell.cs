@@ -30,6 +30,7 @@ public class Spell : ScriptableObject
     public int damage;
     public int manaPointsCost;
     public int opportunityPointsCost;
+    public int spellRange;
     public SpellAlignment alignment;
     public SpellType spellType;
     public SpellSecundaryEffect spellSecundaryEffect;

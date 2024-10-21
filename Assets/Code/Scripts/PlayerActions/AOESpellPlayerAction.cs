@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -28,37 +29,70 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
         if (selectedTile != null && selectionLimiter > 0)
         {
+            GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
+            Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
+            int distance = gridMovementController.GetDistance(activePlayerUnit.ownedTile, selectedTile);
+            Debug.Log($"Calculated distance: {distance}");
+
+            int spellRange = spellCastingController.currentSelectedSpell.spellRange;
+
             if (spellCastingController.currentSelectedSpell.spellType == SpellType.AOE)
             {
-                foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile, aoeRange))
+                if (distance > spellRange)
                 {
-                    tile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
-                    selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+                    // Play the error animation for the invalid selection
+                    selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
+                    Debug.Log("Unable to select tile - Out of range");
+                    return; // Exit the method early, preventing further execution
                 }
-                savedSelectedTile = selectedTile;
-                selectionLimiter--;
-                Debug.Log("Selected AOE Spell Range");
-            }
+                else
+                {
+                    // Valid selection: highlight and set the state
+                    foreach (var tile in gridMovementController.GetMultipleTiles(selectedTile, aoeRange))
+                    {
+                        tile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
+                    }
 
+                    selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+                    savedSelectedTile = selectedTile; // Save the valid tile
+                    selectionLimiter--;
+                    Debug.Log("Selected AOE Spell Range");
+                }
+            }
             else if (spellCastingController.currentSelectedSpell.spellType == SpellType.SingleTarget)
             {
-                savedSelectedTile = selectedTile;
-
-                //savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
-                savedSelectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.blue);
-                if (selectedTile.detectedUnit != null && selectedTile.detectedUnit.tag != "Player" && selectedTile.detectedUnit.tag != "ActivePlayerUnit")
+                // Check if the selected tile is within range for single-target spells
+                if (distance > spellRange)
                 {
-                    currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
-                    selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-                    Debug.Log("Selected Single Target Spell Range");
-                    selectionLimiter--;
+                    // Play the error animation for the invalid selection
+                    selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
+                    Debug.Log("Unable to select tile - Out of range");
+                    return; // Exit the method early, preventing further execution
                 }
+                else
+                {
+                    savedSelectedTile = selectedTile;
+                    savedSelectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.blue);
 
+                    if (selectedTile.detectedUnit != null && selectedTile.detectedUnit.tag != "Player" && selectedTile.detectedUnit.tag != "ActivePlayerUnit")
+                    {
+                        currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
+                        selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+                        Debug.Log("Selected Single Target Spell Range");
+                        selectionLimiter--;
+                    }
+                    else
+                    {
+                        // No valid unit found on the selected tile, play an error animation
+                        selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
+                        Debug.Log("No valid unit found for single-target spell selection");
+                    }
+                }
             }
-
         }
-
     }
+
 
     public void Execute()
     {
@@ -85,8 +119,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
                     {
                         Debug.Log("Using AOE Spell on Multiple Targets");
-                        //tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                        //tile.tileShaderController.AnimateFadeHeight(0, 0.5f, Color.white);
 
                         if (tile.detectedUnit == null || tile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
                         {
@@ -149,8 +181,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             {
                 Debug.Log("Active Player Unit has not enough Mana Points or enough Opportunity Points.");
             }
-
-
         }
 
     }
