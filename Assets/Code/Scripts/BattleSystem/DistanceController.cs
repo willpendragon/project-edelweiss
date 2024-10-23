@@ -8,7 +8,7 @@ public class DistanceController : MonoBehaviour
 
     public bool CheckDistance(TileController attackerTile, TileController defenderTile)
     {
-        int distanceThreshold = 10;
+        int distanceThreshold = 1;
         int distance = gridMovementController.GetDistance(attackerTile, defenderTile);
         if (distance <= distanceThreshold)
         {
