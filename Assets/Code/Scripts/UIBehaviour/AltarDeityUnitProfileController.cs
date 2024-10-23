@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,20 +20,27 @@ public class AltarDeityUnitProfileController : MonoBehaviour
 
     public void PopulateDeityUnitProfile(Unit deityUnit, Deity deity)
     {
+        AnguanaHealingBehavior healingBehavior = deity.summoningBehaviour as AnguanaHealingBehavior;
+
+
         deityName.text = deityUnit.unitTemplate.unitName;
-        buffAmountSlider.maxValue = deity.deityPrayerBuff.buffAmount;
-        buffAmountSlider.value = deity.deityPrayerBuff.buffAmount;
 
-        buffAmountCounter.text = deity.deityPrayerBuff.buffAmount.ToString();
+        // Sets the parameter of the Deity Prayer Buff on the menu
 
-        if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
-        {
-            buffType.text = "Attack Buff";
-        }
-        else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
-        {
-            buffType.text = "Magic Buff";
-        }
+        buffAmountSlider.maxValue = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
+        buffAmountSlider.value = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
+        buffType.text = healingBehavior.deityBuffName;
+
+        buffAmountCounter.text = healingBehavior.bubbleBuffShieldPointsIncreaseAmount.ToString();
+
+        //if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
+        //{
+        //    buffType.text = "Attack Buff";
+        //}
+        //else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
+        //{
+        //    buffType.text = "Magic Buff";
+        //}
 
         deityUnitPortrait.sprite = deityUnit.unitTemplate.unitPortrait;
         linkedUnitPortrait.sprite = RetrieveLinkedUnitSmallPortrait(deity);
