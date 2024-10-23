@@ -187,6 +187,6 @@ public class GridMovementController : MonoBehaviour
         int distX = Mathf.Abs(tileA.tileXCoordinate - tileB.tileXCoordinate);
         int distY = Mathf.Abs(tileA.tileYCoordinate - tileB.tileYCoordinate);
 
-        return 10 * (distX + distY);
+        return /*10 * */(distX + distY);
     }
 }
