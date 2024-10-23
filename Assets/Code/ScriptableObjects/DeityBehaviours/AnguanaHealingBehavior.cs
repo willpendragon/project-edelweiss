@@ -5,7 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AnguanaHealingBehavior", menuName = "DeityBehavior/AnguanaHealing")]
 public class AnguanaHealingBehavior : DeityBehavior
 {
-    float bubbleBuffShieldPointsIncreaseAmount = 9900f;
+    public float bubbleBuffShieldPointsIncreaseAmount = 9900f;
+    public string deityBuffName = "Motherly Embrace";
+    public string deityBuffDescription = "";
     public override void ExecuteBehavior(Deity deity)
     {
         GameObject currentPlayerUnitGO = GridManager.Instance.currentPlayerUnit;
