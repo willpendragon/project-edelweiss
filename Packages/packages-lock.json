@@ -1,19 +1,5 @@
 {
   "dependencies": {
-    "com.distantlands.cozy.core": {
-      "version": "file:com.distantlands.cozy.core",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
-    "com.distantlands.cozy.plume": {
-      "version": "file:com.distantlands.cozy.plume",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.distantlands.cozy.core": "3.1.0"
-      }
-    },
     "com.unity.2d.animation": {
       "version": "9.0.4",
       "depth": 0,
@@ -32,11 +18,11 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {
+        "com.unity.burst": "1.7.3",
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.mathematics": "1.1.0",
-        "com.unity.modules.uielements": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.burst": "1.7.3"
+        "com.unity.modules.uielements": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -60,9 +46,9 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.modules.tilemap": "1.0.0",
-        "com.unity.2d.tilemap": "1.0.0",
         "com.unity.ugui": "1.0.0",
+        "com.unity.2d.tilemap": "1.0.0",
+        "com.unity.modules.tilemap": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
@@ -281,9 +267,9 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.director": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://packages.unity.com"
