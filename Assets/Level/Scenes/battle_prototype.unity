@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0818157, g: 0.27723095, b: 0.74017024, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -657,12 +657,12 @@ MonoBehaviour:
   currentTurn: 0
   playerUnitsOnBattlefield: []
   enemyUnitsOnBattlefield: []
-  warFunds: 0
-  enemiesKilledInCurrentBattle: 0
   battleManager: {fileID: 90211749}
   battleEndUIHandler: {fileID: 767884336}
-  timesSingleTargetSpellWasUsed: 0
   achievementsManager: {fileID: 499339821}
+  warFunds: 0
+  enemiesKilledInCurrentBattle: 0
+  timesSingleTargetSpellWasUsed: 0
 --- !u!1 &99782221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,7 +1106,7 @@ PrefabInstance:
     - target: {fileID: 3140021689702203250, guid: da37b315ad519dc48b8afbb0ab410bfa, type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 8300000, guid: e0512cd61bc3d77478b2a9e9defc3546, type: 3}
+      objectReference: {fileID: 8300000, guid: 69ce6b2d35ebcb5439bba1370753525c, type: 3}
     - target: {fileID: 3140021689702203251, guid: da37b315ad519dc48b8afbb0ab410bfa, type: 3}
       propertyPath: m_RootOrder
       value: 32
