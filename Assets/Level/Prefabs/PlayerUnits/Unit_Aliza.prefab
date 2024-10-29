@@ -58,6 +58,7 @@ Transform:
   - {fileID: 2619908655849198041}
   - {fileID: 1195740929456767868}
   - {fileID: 1566837758977253625}
+  - {fileID: 444338023890041131}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4009798023604197780
@@ -97,6 +98,7 @@ MonoBehaviour:
   currentUnitLifeCondition: 1
   unitStatusController: {fileID: 6804547558390777160}
   fieldPrizeController: {fileID: 0}
+  hasHookshot: 1
   bossFlag: 0
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}
@@ -603,6 +605,52 @@ MonoBehaviour:
   animationDuration: 2
   glowingTileColumn: {fileID: 5538102220639273252}
   animationEase: 7
+--- !u!1 &4136294482554746070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 444338023890041131}
+  - component: {fileID: 1964576339061962687}
+  m_Layer: 0
+  m_Name: MiniMagnet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &444338023890041131
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4136294482554746070}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.6109347, y: 0.2722809, z: 0.0077546956}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 452031790448863200}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1964576339061962687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4136294482554746070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87639c806a4e932448098881ceed0612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  miniMagnetPrefab: {fileID: 5417596867150616210, guid: 28c1e6ff3b9ebb74f8bc63e9e8830684, type: 3}
+  tileConveyorOverlayPrefab: {fileID: 3371528311032163851, guid: 4b4d438afaee876479bb7ac20083cb30, type: 3}
 --- !u!1 &5959858009669788163
 GameObject:
   m_ObjectHideFlags: 0
