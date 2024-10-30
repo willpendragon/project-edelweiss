@@ -113,6 +113,7 @@ MonoBehaviour:
   targetIcon: {fileID: 4764740750085911474, guid: f7bbcd16cf4e68e4b867220eaf3631ce, type: 3}
   tileShaderController: {fileID: 4269068434396144711}
   tilePrefabSprite: {fileID: 6835469160240783423}
+  cursorPrefab: {fileID: 6300565905878205111, guid: 31bfa3f73cee40a4d9828c12434554d6, type: 3}
   gCost: 0
   hCost: 0
   parent: {fileID: 0}
@@ -164,6 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   conveyorBeltPrefab: {fileID: 6520922131242316414}
+  conveyorBeltMesh: {fileID: 0}
 --- !u!1 &5273139077293845496
 GameObject:
   m_ObjectHideFlags: 0
