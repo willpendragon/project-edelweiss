@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using PixelCrushers.DialogueSystem;
 
 public enum TurnOrder
 {
@@ -84,7 +85,6 @@ public class BattleManager : MonoBehaviour
 
     private void OnEnable()
     {
-
         TurnController.OnEnemyTurn += ActivateBattleMomentsScreen;
     }
 
@@ -109,12 +109,34 @@ public class BattleManager : MonoBehaviour
 
         SetTurnOrder();
     }
-
     public void SetTurnOrder()
     {
         currentTurnOrder = TurnOrder.playerTurn;
         turnDisplay.text = "Player Turn";
         turnCounter += 1;
+    }
+    private int frameCounter = 0;
+    void Update()
+    {
+        if (frameCounter % 10 == 0) // Run every 10 frames
+        {
+            ClearTilesWithMissingUnits();
+        }
+        frameCounter++;
+    }
+    void ClearTilesWithMissingUnits()
+    {
+        Debug.Log("Test Tiles Clearing Behaviour");
+        if (currentBattleType == BattleType.battleWithDeity)
+        {
+            foreach (TileController tile in gridManager.gridTileControllers)
+            {
+                if (tile.detectedUnit == null || !tile.detectedUnit) // This catches both null and missing references
+                {
+                    tile.currentSingleTileCondition = SingleTileCondition.free;
+                }
+            }
+        }
     }
 
     public void PassTurnToPlayer()
