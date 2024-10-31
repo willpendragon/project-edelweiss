@@ -133,7 +133,10 @@ public class Unit : MonoBehaviour
         float damageMitigationPercentage = shieldPoints / (shieldPoints + 100); // Arbitrary scaling factor for shield effectiveness.
         float effectiveDamage = receivedDamage * (1 - damageMitigationPercentage);
 
-        return effectiveDamage;
+        effectiveDamage = Mathf.Floor(effectiveDamage);
+
+        // Optional: Ensure there’s always at least 1 damage, to avoid zero-damage cases
+        return Mathf.Max(effectiveDamage, 1f);
     }
 
     public void SpendManaPoints(int spentManaAmount)
