@@ -21,7 +21,10 @@ public class EnemyPoolController : MonoBehaviour
 
     private void Start()
     {
-        SetEnemiesStartingCoordinatesInBossBattle();
+        if (battleManager.currentBattleType == BattleType.BossBattle)
+        {
+            SetEnemiesStartingCoordinatesInBossBattle();
+        }
     }
 
     void SpawnEnemies()
