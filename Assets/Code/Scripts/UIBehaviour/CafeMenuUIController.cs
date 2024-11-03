@@ -6,6 +6,16 @@ using UnityEngine.UI;
 
 public class CafeMenuUIController : MonoBehaviour
 {
+    public static CafeMenuUIController Instance { get; private set; }
+
+    public GameObject confirmPurchasePopup;          // Popup for purchase confirmation
+    public TextMeshProUGUI confirmationText;         // Text displaying the item name and price in the popup
+    public Transform foodShelfContainer;             // Container where items will be displayed after purchase
+    public GameObject foodShelfItemPrefab;           // Prefab for displaying each item on the Food Shelf
+
+    private ItemFood selectedItem;                   // Currently selected item for purchase
+    private float selectedItemPrice;                 // Price of the selected item
+
     public GameObject foodItemsContainer;
     public GameObject characterProfilesContainer;
 
@@ -26,12 +36,71 @@ public class CafeMenuUIController : MonoBehaviour
     [SerializeField] TextMeshProUGUI notificationTexts;
     [SerializeField] GameObject loveIconPrefab;
     [SerializeField] Transform loveIconPrefabTransform;
+
+    private FoodShelfItem selectedFoodItem;  // The currently selected food item
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("Multiple instances of CafeMenuUIController detected. Destroying duplicate.");
+            Destroy(gameObject);
+        }
+    }
     void Start()
     {
         gameStatsManager = GameObject.FindWithTag("GameStatsManager").GetComponent<GameStatsManager>();
         warFundsCounter.text = gameStatsManager.warFunds.ToString();
         GenerateFoodList();
         GenerateCharacterList();
+    }
+
+    public void OnItemClicked(ItemFood item, float price)
+    {
+        // Store the selected item and its price
+        selectedItem = item;
+        selectedItemPrice = price;
+
+        // Update the confirmation popup text and display the popup
+        confirmationText.text = $"Buy {item.itemFoodName} for {price} War Funds?";
+        confirmPurchasePopup.SetActive(true);
+    }
+
+    public void ConfirmPurchase()
+    {
+        if (gameStatsManager.warFunds >= selectedItemPrice)
+        {
+            // Deduct funds and update display
+            gameStatsManager.warFunds -= selectedItemPrice;
+            UpdateWarFundsCounter();
+
+            // Add the item to the Food Shelf
+            AddItemToFoodShelf(selectedItem);
+
+            // Show purchase notification
+            notificationTexts.text = $"{selectedItem.itemFoodName} purchased!";
+        }
+        else
+        {
+            notificationTexts.text = "Not enough War Funds!";
+        }
+
+        // Reset selected item and hide the popup
+        selectedItem = null;
+        selectedItemPrice = 0;
+        confirmPurchasePopup.SetActive(false);  // Hide the popup
+    }
+
+    public void CancelPurchase()
+    {
+        // Reset selected item and hide the popup
+        selectedItem = null;
+        selectedItemPrice = 0;
+        confirmPurchasePopup.SetActive(false);
     }
 
     void GenerateFoodList()
@@ -41,7 +110,9 @@ public class CafeMenuUIController : MonoBehaviour
             GameObject foodItem = Instantiate(itemFoodPrefab, foodItemsContainer.transform);
             foodItem.GetComponent<Image>().sprite = food.foodIcon;
             Button itemFoodButton = foodItem.GetComponentInChildren<Button>();
-            itemFoodButton.onClick.AddListener(() => PurchaseFood(food, food.itemFoodPrice));
+
+            // Update to open the confirmation popup instead of purchasing directly
+            itemFoodButton.onClick.AddListener(() => OnItemClicked(food, food.itemFoodPrice));
 
             // Get all TextMeshPro components in children
             TextMeshProUGUI[] texts = itemFoodButton.GetComponentsInChildren<TextMeshProUGUI>();
@@ -53,7 +124,6 @@ public class CafeMenuUIController : MonoBehaviour
                 texts[3].text = FoodTypeLabel(food);
                 texts[4].text = food.recoveryAmount.ToString();
                 texts[5].text = food.itemFoodDescription;
-
             }
         }
     }
@@ -96,19 +166,25 @@ public class CafeMenuUIController : MonoBehaviour
 
     public void GenerateCharacterList()
     {
+        // Clear the list to ensure it doesn’t contain outdated references
+        characterProfileSmallControllers.Clear();
+
         foreach (var partyMember in GameManager.Instance.playerPartyMembersInstances)
         {
             GameObject characterProfile = Instantiate(characterProfilesPrefab, characterProfilesContainer.transform);
+
+            // Set up the CharacterProfileSmallController reference and other details
             CharacterProfileSmallController profileController = characterProfile.GetComponent<CharacterProfileSmallController>();
             profileController.referenceUnit = partyMember;
 
+            // Assign the character portrait and stats to the UI
             characterProfile.GetComponentInChildren<Image>().sprite = partyMember.GetComponent<Unit>().unitTemplate.unitPortrait;
 
-            characterTexts = characterProfile.GetComponentsInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI[] characterTexts = characterProfile.GetComponentsInChildren<TextMeshProUGUI>();
 
             if (characterTexts.Length >= 5)
             {
-                characterTexts[0].text = partyMember.name;
+                characterTexts[0].text = partyMember.unitTemplate.unitName;
                 characterTexts[1].text = "HP";
                 characterTexts[2].text = partyMember.unitHealthPoints.ToString();
                 characterTexts[3].text = "/";
@@ -119,31 +195,21 @@ public class CafeMenuUIController : MonoBehaviour
                 characterTexts[8].text = partyMember.unitMaxManaPoints.ToString();
             }
 
-            characterProfile.GetComponentInChildren<TextMeshProUGUI>().text = partyMember.GetComponent<Unit>().unitTemplate.unitName;
+            // Add the profile to the list of small controllers
             characterProfileSmallControllers.Add(characterProfile);
 
-
-            // Create the button GameObject
+            // Create and configure the feed button for this character
             GameObject feedCharacterButtonGO = new GameObject("CharacterFeedButton");
-
-            // Add RectTransform and set its size
             RectTransform rectTransform = feedCharacterButtonGO.AddComponent<RectTransform>();
-            rectTransform.SetParent(characterProfile.transform, false); // Set parent with worldPositionStays = false to maintain proper UI scaling and positioning
-
-            // Set the size of the button
+            rectTransform.SetParent(characterProfile.transform, false);
             rectTransform.sizeDelta = new Vector2(128, 32);
 
             Image buttonImage = feedCharacterButtonGO.AddComponent<Image>();
-
-            // Add the button component
             Button feedCharacterButton = feedCharacterButtonGO.AddComponent<Button>();
 
-            // Create the text GameObject
             GameObject textGO = new GameObject("ButtonText");
             RectTransform textRectTransform = textGO.AddComponent<RectTransform>();
             textRectTransform.SetParent(feedCharacterButtonGO.transform, false);
-
-            // Set anchors and sizeDelta for the text to make it fit within the button
             textRectTransform.anchorMin = Vector2.zero;
             textRectTransform.anchorMax = Vector2.one;
             textRectTransform.sizeDelta = Vector2.zero;
@@ -154,73 +220,49 @@ public class CafeMenuUIController : MonoBehaviour
             textMeshPro.alignment = TextAlignmentOptions.Center;
             textMeshPro.color = Color.black;
 
-            // Customize button colors
             ColorBlock colors = feedCharacterButton.colors;
             colors.normalColor = Color.white;
             colors.highlightedColor = new Color(0.8f, 0.8f, 0.8f, 1);
             colors.pressedColor = new Color(0.6f, 0.6f, 0.6f, 1);
             feedCharacterButton.colors = colors;
 
-            // Add an onClick listener
-            feedCharacterButton.onClick.AddListener(() => FeedCharacter(ref currentPurchasedFood, profileController.referenceUnit));
-            feedCharacterButton.enabled = false;
+            // Add the onClick listener for feeding the character
+            Unit characterUnit = profileController.referenceUnit;  // Capture the reference to avoid closure issues
+            feedCharacterButton.onClick.AddListener(() => OnCharacterClicked(characterUnit));
+
+            feedCharacterButton.enabled = false;  // Disable initially; can be enabled when an item is selected
             feedPlayerCharactersButtons.Add(feedCharacterButton);
         }
     }
 
-    public void FeedCharacter(ref ItemFood currentPurchasedFood, Unit fedUnit)
+    public void OnCharacterClicked(Unit character)
     {
-        if (currentPurchasedFood != null && currentPurchasedFood.itemFoodType == ItemFoodType.HPRecovery)
+        if (selectedFoodItem == null)
         {
-            if (fedUnit.unitHealthPoints < fedUnit.unitMaxHealthPoints)
+            notificationTexts.text = "Please select a food item first.";
+            return;
+        }
+
+        // Feed the character with the selected food item
+        bool itemUsed = FeedCharacter(ref selectedFoodItem.item, character);
+
+        // If the item was used successfully, update the inventory
+        if (itemUsed)
+        {
+            if (!selectedFoodItem.UseItem())
             {
-                fedUnit.unitHealthPoints += currentPurchasedFood.recoveryAmount;
-                if (fedUnit.unitHealthPoints > fedUnit.unitMaxHealthPoints)
-                {
-                    fedUnit.unitHealthPoints = fedUnit.unitMaxHealthPoints;
-                }
-                UpdateCharacterStatsCounter(fedUnit);
-                SaveRestoredCharacterStats();
-                notificationTexts.text = fedUnit.unitTemplate.unitName + " recovered " + currentPurchasedFood.recoveryAmount.ToString() + " HP!";
-
-                GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
-
-                StartCoroutine(ClearNotificationText(loveIconPrefabInstance));
-
-            }
-            else if (fedUnit.unitHealthPoints == fedUnit.unitMaxHealthPoints)
-            {
-                notificationTexts.text = fedUnit.unitTemplate.unitName + " is already at full HP!";
-                StartCoroutine("ClearNotificationText");
+                selectedFoodItem = null;  // Clear selected item if no more are left
             }
         }
-        else if (currentPurchasedFood != null && currentPurchasedFood.itemFoodType == ItemFoodType.manaRecovery)
-        {
-            if (fedUnit.unitManaPoints < fedUnit.unitMaxManaPoints)
-            {
-                fedUnit.unitManaPoints += currentPurchasedFood.recoveryAmount;
-                if (fedUnit.unitManaPoints > fedUnit.unitMaxManaPoints)
-                {
-                    fedUnit.unitManaPoints = fedUnit.unitMaxManaPoints;
-                }
-                UpdateCharacterStatsCounter(fedUnit);
-                SaveRestoredCharacterStats();
-                notificationTexts.text = fedUnit.unitTemplate.unitName + " recovered " + currentPurchasedFood.recoveryAmount.ToString() + " MP!";
+    }
 
-                GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
+    public void SelectFoodItemForFeeding(FoodShelfItem foodItem)
+    {
+        selectedFoodItem = foodItem;
+        notificationTexts.text = $"Selected {foodItem.item.itemFoodName} for feeding. Choose a character.";
 
-                StartCoroutine(ClearNotificationText(loveIconPrefabInstance));
-
-            }
-            else if (fedUnit.unitManaPoints == fedUnit.unitMaxManaPoints)
-            {
-                notificationTexts.text = fedUnit.unitTemplate.unitName + " is already at full MP!";
-                StartCoroutine("ClearNotificationText");
-            }
-        }
-        currentPurchasedFood = null;
-
-        DisableFeedingCharactersButtons();
+        // Enable all feed buttons
+        EnableFeedingCharactersButtons();
     }
 
     void EnableFeedingCharactersButtons()
@@ -228,7 +270,6 @@ public class CafeMenuUIController : MonoBehaviour
         foreach (var button in feedPlayerCharactersButtons)
         {
             button.enabled = true;
-            //button.GetComponent<Image>().color = Color.yellow;
         }
     }
 
@@ -239,6 +280,50 @@ public class CafeMenuUIController : MonoBehaviour
             button.enabled = false;
         }
     }
+
+    public bool FeedCharacter(ref ItemFood foodItem, Unit fedUnit)
+    {
+        bool itemUsed = false;
+
+        if (foodItem.itemFoodType == ItemFoodType.HPRecovery)
+        {
+            if (fedUnit.unitHealthPoints < fedUnit.unitMaxHealthPoints)
+            {
+                fedUnit.unitHealthPoints += foodItem.recoveryAmount;
+                if (fedUnit.unitHealthPoints > fedUnit.unitMaxHealthPoints)
+                {
+                    fedUnit.unitHealthPoints = fedUnit.unitMaxHealthPoints;
+                }
+                itemUsed = true;
+            }
+        }
+        else if (foodItem.itemFoodType == ItemFoodType.ManaRecovery)
+        {
+            if (fedUnit.unitManaPoints < fedUnit.unitMaxManaPoints)
+            {
+                fedUnit.unitManaPoints += foodItem.recoveryAmount;
+                if (fedUnit.unitManaPoints > fedUnit.unitMaxManaPoints)
+                {
+                    fedUnit.unitManaPoints = fedUnit.unitMaxManaPoints;
+                }
+                itemUsed = true;
+            }
+        }
+
+        if (itemUsed)
+        {
+            notificationTexts.text = $"{fedUnit.unitTemplate.unitName} recovered {foodItem.recoveryAmount} {(foodItem.itemFoodType == ItemFoodType.HPRecovery ? "HP" : "MP")}!";
+            UpdateCharacterStatsCounter(fedUnit);
+            SaveRestoredCharacterStats();
+        }
+        else
+        {
+            notificationTexts.text = $"{fedUnit.unitTemplate.unitName} is already at full {(foodItem.itemFoodType == ItemFoodType.HPRecovery ? "HP" : "MP")}!";
+        }
+
+        return itemUsed; // Return whether the item was used successfully
+    }
+
 
     void UpdateCharacterStatsCounter(Unit fedUnit)
     {
@@ -257,7 +342,6 @@ public class CafeMenuUIController : MonoBehaviour
 
         }
     }
-
     IEnumerator ClearNotificationText(GameObject currentEmoticon)
     {
         float clearNotificationWaitingTime = 1.5f;
@@ -291,5 +375,27 @@ public class CafeMenuUIController : MonoBehaviour
             }
         }
         SaveStateManager.SaveGame(characterSaveData);
+    }
+
+    private void AddItemToFoodShelf(ItemFood item)
+    {
+        // Check if the item is already on the Food Shelf
+        foreach (Transform child in foodShelfContainer)
+        {
+            FoodShelfItem shelfItem = child.GetComponent<FoodShelfItem>();
+            if (shelfItem != null && shelfItem.item == item)
+            {
+                // If the item already exists, increase the quantity
+                shelfItem.IncreaseQuantity();
+                return;
+            }
+        }
+
+        // If item is not already on the shelf, create a new shelf item
+        GameObject foodShelfItem = Instantiate(foodShelfItemPrefab, foodShelfContainer);
+        FoodShelfItem shelfItemComponent = foodShelfItem.GetComponent<FoodShelfItem>();
+
+        // Set item details using ScriptableObject data
+        shelfItemComponent.SetItem(item);
     }
 }
