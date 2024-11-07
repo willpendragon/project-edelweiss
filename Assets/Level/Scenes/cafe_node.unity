@@ -181,16 +181,15 @@ RectTransform:
   m_GameObject: {fileID: 38717754}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.8648131, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 370704595}
+  m_Children: []
   m_Father: {fileID: 1053834646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1331, y: -472.4331}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -1317.2, y: -472.4331}
+  m_SizeDelta: {x: 256, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &38717756
 MonoBehaviour:
@@ -239,8 +238,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -275,7 +274,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 2.8055124, z: 15.91214, w: -1.8127309}
+  m_margin: {x: 0.56669617, y: -0.027968407, z: 0.0446167, w: -1.2460041}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1012,15 +1011,15 @@ RectTransform:
   m_GameObject: {fileID: 370704594}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.21966594, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 38717755}
+  m_Father: {fileID: 1053834646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 327, y: -34.309807}
-  m_SizeDelta: {x: 876, y: 784}
+  m_AnchoredPosition: {x: -1004, y: -119.62958}
+  m_SizeDelta: {x: 907.3, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &370704596
 MonoBehaviour:
@@ -1073,12 +1072,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: -108
+    m_Left: 0
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: -639.06
+  m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -3089,6 +3088,7 @@ RectTransform:
   - {fileID: 1415983039}
   - {fileID: 1331524897}
   - {fileID: 1602629018}
+  - {fileID: 370704595}
   - {fileID: 38717755}
   - {fileID: 946084853}
   m_Father: {fileID: 191846819}
