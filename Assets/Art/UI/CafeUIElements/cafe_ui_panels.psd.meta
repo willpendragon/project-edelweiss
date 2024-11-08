@@ -128,7 +128,7 @@ TextureImporter:
         serializedVersion: 2
         x: 331
         y: 770
-        width: 283
+        width: 262
         height: 52
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -168,6 +168,27 @@ TextureImporter:
       name: cafe_ui_panels_2
       rect:
         serializedVersion: 2
+        x: 56
+        y: 238
+        width: 101
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70fc7fe25f5144046a9888d2b5ea8d3a
+      internalID: -941138837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cafe_ui_panels_3
+      rect:
+        serializedVersion: 2
         x: 743
         y: 61
         width: 784
@@ -179,8 +200,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 70fc7fe25f5144046a9888d2b5ea8d3a
-      internalID: -941138837
+      spriteID: 1431d56801a2e494bb92c4969f19319f
+      internalID: 1098081507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cafe_ui_panels_4
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 91
+        width: 721
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 956616458bd1ca54b9fe323edc06b497
+      internalID: 1148616279
       vertices: []
       indices: 
       edges: []
@@ -199,6 +241,8 @@ TextureImporter:
       cafe_ui_panels_0: 115588964
       cafe_ui_panels_1: -1215398882
       cafe_ui_panels_2: -941138837
+      cafe_ui_panels_3: 1098081507
+      cafe_ui_panels_4: 1148616279
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
