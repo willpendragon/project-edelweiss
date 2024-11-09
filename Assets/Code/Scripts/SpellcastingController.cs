@@ -20,6 +20,9 @@ public class SpellcastingController : MonoBehaviour
     public delegate void CastedSpellTypeHatedbyDeity();
     public static event CastedSpellTypeHatedbyDeity OnCastedSpellTypeHatedbyDeity;
 
+    public delegate void ClickedOnSpellButton(Spell clickedSpell);
+    public static event ClickedOnSpellButton OnClickedOnSpellButton;
+
     public DistanceController distanceController;
     public void CastSpell(Spell castedSpell)
     {
@@ -48,5 +51,6 @@ public class SpellcastingController : MonoBehaviour
     public void SetCurrentSpell(Spell currentSpell)
     {
         currentSelectedSpell = currentSpell;
+        OnClickedOnSpellButton(currentSelectedSpell);
     }
 }
