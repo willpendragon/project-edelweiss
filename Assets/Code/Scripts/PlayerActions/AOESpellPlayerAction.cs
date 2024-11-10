@@ -13,6 +13,12 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
     private int aoeRange = 1;
 
+    public delegate void SelectedSpell();
+    public static event SelectedSpell OnSelectedSpell;
+
+    public delegate void DeselectedSpell();
+    public static event DeselectedSpell OnDeselectedSpell;
+
     public delegate void UsedSpell(string spellName, string casterName);
     public static event UsedSpell OnUsedSpell;
 
@@ -26,7 +32,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public void Select(TileController selectedTile)
     {
         spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
-
+        OnSelectedSpell();
         if (selectedTile != null && selectionLimiter > 0)
         {
             GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
@@ -197,6 +203,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
                 Debug.Log("Deselecting AOE Range");
             }
+            OnDeselectedSpell();
         }
     }
 

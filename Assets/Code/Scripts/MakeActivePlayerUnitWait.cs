@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MakeActivePlayerUnitWait : MonoBehaviour
 {
+    public delegate void PlayerWaiting();
+    public static event PlayerWaiting OnPlayerWaiting;
     public void SetActivePlayerUnitToWaitingMode()
     {
         GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
@@ -22,6 +24,7 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
         ResetTileControllersColours();
         ResetTileControllersGlow();
         ClearPath();
+        OnPlayerWaiting();
 
         BattleManager.Instance.GetComponent<TurnController>().GameOverCheck();
     }

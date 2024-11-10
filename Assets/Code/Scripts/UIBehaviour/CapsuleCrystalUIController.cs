@@ -39,11 +39,14 @@ public class CapsuleCrystalUIController : MonoBehaviour
 
     public void SwitchTilesToPlaceCaptureCrystal()
     {
-        //After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode and the Tile Controller current Action to Trap
+        MoveInfoController.Instance.HideMoveInfoPanel();
+
+        // After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode and the Tile Controller current Action to Trap
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new PlaceCrystalPlayerAction();
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             Debug.Log("Switching tiles to Place Crystal Mode");
         }
 

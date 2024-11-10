@@ -58,6 +58,8 @@ public class SummoningUIController : MonoBehaviour
     }
     public void SwitchTilesToSummonMode()
     {
+        MoveInfoController.Instance.HideMoveInfoPanel();
+
         //Creates a new instance of the Melee Player Action
         SummonPlayerAction summonPlayerActionInstance = new SummonPlayerAction();
 
@@ -65,14 +67,17 @@ public class SummoningUIController : MonoBehaviour
         {
             tile.currentPlayerAction = summonPlayerActionInstance;
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             Debug.Log("Switching tiles to Summon Mode");
         }
 
-        //After clicking the Summon Button, all of the Grid Map tiles switch to Selection Mode and switch to the Summon Player Action
+        // After clicking the Summon Button, all of the Grid Map tiles switch to Selection Mode and switch to the Summon Player Action
     }
 
     public void SwitchButtonToPrayMode()
     {
+        MoveInfoController.Instance.HideMoveInfoPanel();
+
         currentSummonPhase = SummonPhase.praying;
         currentButton.GetComponentInChildren<Text>().text = "Pray";
         currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
@@ -85,7 +90,10 @@ public class SummoningUIController : MonoBehaviour
 
     public void SwitchTilesToPrayMode()
     {
-        //Creates a new instance of the Pray Player Action
+        MoveInfoController.Instance.HideMoveInfoPanel();
+
+        // Creates a new instance of the Pray Player Action
+
         PrayPlayerAction prayPlayerActionInstance = new PrayPlayerAction();
         currentPlayerAction = prayPlayerActionInstance;
 
@@ -93,6 +101,7 @@ public class SummoningUIController : MonoBehaviour
         {
             tile.currentPlayerAction = prayPlayerActionInstance;
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             Debug.Log("Switching tiles to Pray Mode");
         }
     }

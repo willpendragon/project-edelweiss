@@ -39,8 +39,9 @@ public class MoveUIController : MonoBehaviour
 
     public void SwitchTilesToMoveMode()
     {
-        //MovePlayerAction movePlayerActionInstance = new MovePlayerAction();
-        //Creates a new instance of the Move Player Action
+        MoveInfoController.Instance.HideMoveInfoPanel();
+
+        // Creates a new instance of the Move Player Action on each Tile
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new MovePlayerAction();
