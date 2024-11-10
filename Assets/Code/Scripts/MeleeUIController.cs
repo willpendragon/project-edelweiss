@@ -41,6 +41,8 @@ public class MeleeUIController : MonoBehaviour
 
     public void SwitchTilesToSelectionMode()
     {
+        MoveInfoController.Instance.HideMoveInfoPanel();
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new MeleePlayerAction();
