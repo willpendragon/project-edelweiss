@@ -40,6 +40,7 @@ public class MoveUIController : MonoBehaviour
     public void SwitchTilesToMoveMode()
     {
         MoveInfoController.Instance.HideMoveInfoPanel();
+        DestroyMagnet();
 
         // Creates a new instance of the Move Player Action on each Tile
         foreach (var tile in GridManager.Instance.gridTileControllers)
@@ -52,7 +53,15 @@ public class MoveUIController : MonoBehaviour
         ResetTileControllersGlow();
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
     }
-
+    void DestroyMagnet()
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (activePlayerUnit != null && activePlayerUnit.hasHookshot == true)
+        {
+            MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
+            magnetHelper.DestroyMagnet();
+        }
+    }
     public void ResetTileControllersGlow()
     {
         foreach (var tile in GridManager.Instance.gridTileControllers)

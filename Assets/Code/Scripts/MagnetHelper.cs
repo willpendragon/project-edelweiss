@@ -4,15 +4,18 @@ public class MagnetHelper : MonoBehaviour
 {
     public GameObject miniMagnetPrefab;
     public GameObject tileConveyorOverlayPrefab;
+    private GameObject activeMagnet;
 
     public void OrientMagnet(Unit attacker, Unit defender)
     {
         // Instantiate the magnet prefab
-        GameObject activeMagnet = Instantiate(miniMagnetPrefab);
-
+        if (activeMagnet == null)
+        {
+            activeMagnet = Instantiate(miniMagnetPrefab);
+        }
         // Position it above the attacker
         Vector3 attackerPosition = attacker.transform.position;
-        Vector3 offset = new Vector3(0, 1.5f, 0);  // Raise the magnet above the attacker's head
+        Vector3 offset = new Vector3(0, 2f, 0);  // Raise the magnet above the attacker's head
         activeMagnet.transform.position = attackerPosition + offset;
 
         // Get the defender's position
@@ -27,11 +30,11 @@ public class MagnetHelper : MonoBehaviour
         {
             activeMagnet.transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
         }
-
-        float timeToDestroyMagnet = 3f;
-        Destroy(activeMagnet, timeToDestroyMagnet);
-
-        // Could also play instrad a MagnetActivation animation
-
+    }
+    public void DestroyMagnet()
+    {
+        //float timeToDestroyMagnet = 3f;
+        Destroy(activeMagnet);
+        activeMagnet = null;
     }
 }

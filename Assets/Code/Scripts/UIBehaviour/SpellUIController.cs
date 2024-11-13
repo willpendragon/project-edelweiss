@@ -49,7 +49,6 @@ public class SpellUIController : MonoBehaviour
                 currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
             }
         }
-
     }
     public void ResetCharacterSpellsMenu()
     {
@@ -69,6 +68,8 @@ public class SpellUIController : MonoBehaviour
 
     public void SwitchTilesToSpellMode()
     {
+        DestroyMagnet();
+
         //After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
@@ -76,6 +77,14 @@ public class SpellUIController : MonoBehaviour
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
         }
-
+    }
+    void DestroyMagnet()
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (activePlayerUnit != null && activePlayerUnit.hasHookshot == true)
+        {
+            MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
+            magnetHelper.DestroyMagnet();
+        }
     }
 }

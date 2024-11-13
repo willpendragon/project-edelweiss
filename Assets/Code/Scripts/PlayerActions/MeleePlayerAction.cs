@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using static TileController;
 
@@ -60,6 +61,13 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         selectionLimiter++;
         ResetTileColours();
         MoveInfoController.Instance.HideMoveInfoPanel();
+
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (activePlayerUnit != null && activePlayerUnit.hasHookshot == true)
+        {
+            MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
+            magnetHelper.DestroyMagnet();
+        }
     }
 
     // Method for knockback logic (used for normal melee attacks)

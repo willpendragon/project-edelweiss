@@ -11,15 +11,15 @@ public class ReachableTilesVisualizer : MonoBehaviour
 
     private Unit activePlayerUnit;
 
-    void Update()
-    {
-        // Detect if the E key is pressed
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Debug.Log("E key pressed, showing reachable tiles.");
-            ShowReachableTiles();
-        }
-    }
+    //void Update()
+    //{
+    //    // Detect if the E key is pressed
+    //    if (Input.GetKeyDown(KeyCode.E))
+    //    {
+    //        Debug.Log("E key pressed, showing reachable tiles.");
+    //        ShowReachableTiles();
+    //    }
+    //}
 
     // Function to find and highlight reachable tiles
     public void ShowReachableTiles()

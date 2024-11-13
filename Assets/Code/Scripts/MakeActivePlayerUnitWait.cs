@@ -8,6 +8,7 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
     public static event PlayerWaiting OnPlayerWaiting;
     public void SetActivePlayerUnitToWaitingMode()
     {
+        DestroyMagnet();
         GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
         GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
 
@@ -28,7 +29,15 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
 
         BattleManager.Instance.GetComponent<TurnController>().GameOverCheck();
     }
-
+    void DestroyMagnet()
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (activePlayerUnit != null && activePlayerUnit.hasHookshot == true)
+        {
+            MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
+            magnetHelper.DestroyMagnet();
+        }
+    }
     public void ResetTileControllersColours()
     {
         foreach (var tile in GridManager.Instance.gridTileControllers)
@@ -36,10 +45,7 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
             Debug.Log("Resetting Tile Colours");
             tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         }
-
-
     }
-
     public void ResetTileControllersGlow()
     {
         foreach (var tile in GridManager.Instance.gridTileControllers)
@@ -48,7 +54,6 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
             tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
         }
     }
-
     public void ClearPath()
     {
         LineRenderer lineRenderer = GridManager.Instance.GetLineRenderer();

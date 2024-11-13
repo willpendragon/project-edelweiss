@@ -29,7 +29,6 @@ public class SummoningUIController : MonoBehaviour
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
         }
     }
-
     public enum SummonPhase
     {
         summoning,
@@ -59,6 +58,7 @@ public class SummoningUIController : MonoBehaviour
     public void SwitchTilesToSummonMode()
     {
         MoveInfoController.Instance.HideMoveInfoPanel();
+        DestroyMagnet();
 
         //Creates a new instance of the Melee Player Action
         SummonPlayerAction summonPlayerActionInstance = new SummonPlayerAction();
@@ -77,6 +77,7 @@ public class SummoningUIController : MonoBehaviour
     public void SwitchButtonToPrayMode()
     {
         MoveInfoController.Instance.HideMoveInfoPanel();
+        DestroyMagnet();
 
         currentSummonPhase = SummonPhase.praying;
         currentButton.GetComponentInChildren<Text>().text = "Pray";
@@ -91,6 +92,7 @@ public class SummoningUIController : MonoBehaviour
     public void SwitchTilesToPrayMode()
     {
         MoveInfoController.Instance.HideMoveInfoPanel();
+        DestroyMagnet();
 
         // Creates a new instance of the Pray Player Action
 
@@ -103,6 +105,15 @@ public class SummoningUIController : MonoBehaviour
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             Debug.Log("Switching tiles to Pray Mode");
+        }
+    }
+    void DestroyMagnet()
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (activePlayerUnit != null && activePlayerUnit.hasHookshot == true)
+        {
+            MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
+            magnetHelper.DestroyMagnet();
         }
     }
 }
