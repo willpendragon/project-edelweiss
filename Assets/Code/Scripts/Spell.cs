@@ -4,11 +4,11 @@ using UnityEngine;
 
 public enum SpellAlignment
 {
-    fire,
-    water,
-    darkness,
-    electricity,
-    light
+    Fire,
+    Water,
+    Dark,
+    Spark,
+    Light
 }
 public enum SpellType
 {
