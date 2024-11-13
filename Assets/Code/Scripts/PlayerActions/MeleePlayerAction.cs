@@ -6,6 +6,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     public Unit currentTarget;
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
+    private int meleeRange = 3;
 
     public Vector2Int knockbackDirection; // Stores knockback direction
     public int knockbackStrength = 2; // Stores knockback strength
@@ -15,9 +16,20 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
     public void Select(TileController selectedTile)
     {
+        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (selectedTile != null && selectionLimiter == 1 && selectedTile.detectedUnit != null)
+        int distance = gridMovementController.GetDistance(activePlayerUnit.ownedTile, selectedTile);
+        Debug.Log($"Calculated distance: {distance}");
+
+        if (distance > meleeRange)
+        {
+            // Play the error animation for the invalid selection
+            selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
+            Debug.Log("Unable to select tile - Out of range");
+            return; // Exit the method early, preventing further execution
+        }
+        else
         {
             currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
 
@@ -41,16 +53,13 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                 }
             }
         }
-        else
-        {
-            Debug.Log("Can't Select Unit");
-        }
     }
 
     public void Deselect()
     {
         selectionLimiter++;
         ResetTileColours();
+        MoveInfoController.Instance.HideMoveInfoPanel();
     }
 
     // Method for knockback logic (used for normal melee attacks)

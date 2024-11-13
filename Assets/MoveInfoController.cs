@@ -8,7 +8,7 @@ public class MoveInfoController : MonoBehaviour
     public static MoveInfoController Instance { get; private set; }
 
     [SerializeField] TextMeshProUGUI moveRangeCounterText;
-    [SerializeField] TextMeshProUGUI moveBasedDamageCounterText;
+    [SerializeField] TextMeshProUGUI moveBaseDamageCounterText;
     [SerializeField] TextMeshProUGUI manaCostCounterText;
     [SerializeField] TextMeshProUGUI alignmentText;
     [SerializeField] Transform moveInfoPanel;
@@ -44,15 +44,41 @@ public class MoveInfoController : MonoBehaviour
         HideMoveInfoPanel();
     }
 
-    void UpdateMoveInfoPanelTexts(Spell clickedSpell)
+    public void UpdateMoveInfoPanelTexts(Spell clickedSpell)
     {
         // Retrieve Information from Spell and popoulate the Move Info Panel
         DisplayMoveInfoPanel();
+
         moveRangeCounterText.text = clickedSpell.spellRange.ToString();
-        moveBasedDamageCounterText.text = clickedSpell.damage.ToString();
+        moveBaseDamageCounterText.text = clickedSpell.damage.ToString();
         manaCostCounterText.text = clickedSpell.manaPointsCost.ToString();
         alignmentText.text = clickedSpell.alignment.ToString();
     }
+
+    public void UpdateMeleeMoveInfoPanelTexts()
+    {
+        // Retrieve Information from Spell and popoulate the Move Info Panel
+        DisplayMoveInfoPanel();
+
+        int meleeRange = 3;
+
+        // Hard-coded logic, I actually need to pass this value from the Melee Action itself.
+        moveRangeCounterText.text = meleeRange.ToString();
+        Unit currentActiveUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        manaCostCounterText.text = "-";
+        alignmentText.text = "-";
+
+        if (currentActiveUnit.hasHookshot == false)
+        {
+            moveBaseDamageCounterText.text = currentActiveUnit.unitMeleeAttackBaseDamage.ToString();
+        }
+        else if (currentActiveUnit.hasHookshot == true)
+        {
+            moveBaseDamageCounterText.text = "-";
+        }
+    }
+
+
     public void DisplayMoveInfoPanel()
     {
         moveInfoPanel.localScale = new Vector3(1, 1, 1);

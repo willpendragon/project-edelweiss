@@ -99,7 +99,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         }
     }
 
-
     public void Execute()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();

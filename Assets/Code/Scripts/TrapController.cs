@@ -7,7 +7,7 @@ public class TrapController : MonoBehaviour
 
     public delegate void TrapAction();
     public static event TrapAction OnTrapAction;
-    float spikeDamage = 6;
+    float spikeDamage = 300;
 
     public enum TrapActivationStatus
     {

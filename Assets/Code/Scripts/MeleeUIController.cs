@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -37,6 +35,14 @@ public class MeleeUIController : MonoBehaviour
         GameObject meleeButtonInstance = Instantiate(meleeButtonPrefab, spellMenuContainer);
         Button currentMeleeButton = meleeButtonInstance.GetComponent<Button>();
         currentMeleeButton.onClick.AddListener(() => SwitchTilesToSelectionMode());
+        currentMeleeButton.onClick.AddListener(() => MoveInfoController.Instance.DisplayMoveInfoPanel());
+        currentMeleeButton.onClick.AddListener(() => MoveInfoController.Instance.UpdateMeleeMoveInfoPanelTexts());
+
+        Unit currentActiveUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (currentActiveUnit.hasHookshot == true)
+        {
+            currentMeleeButton.GetComponentInChildren<Text>().text = "Magnet";
+        }
     }
 
     public void SwitchTilesToSelectionMode()
