@@ -11,7 +11,11 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] Transform deitySpawnPosition;
     [SerializeField] DeityAchievementsController deityAchievementsController;
     [SerializeField] BattleManager battleManager;
+    [SerializeField] GameObject deityObelisk;
+    [SerializeField] GameObject deityObeliskSpawningPoint;
+
     private GameObject deityHealthBarInstance;
+
 
     private System.Random localRandom = new System.Random(); // Local random number generator
 
@@ -105,17 +109,19 @@ public class DeitySpawner : MonoBehaviour
             int deityTilePositionX = 5;
             int deityTilePositionY = 9;
             unboundDeity.GetComponent<Unit>().MoveUnit(deityTilePositionX, deityTilePositionY, false);
-            TileController deitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityTilePositionX, deityTilePositionY);
+            TileController firstDeitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityTilePositionX, deityTilePositionY);
 
-            unboundDeity.GetComponent<Unit>().ownedTile = deitySpawningTile;
+            unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
+            GameObject deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
 
             //Deity occupies multiple tiles
             int summoningRange = 2;
             GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-            foreach (var deitySpawningZoneTile in gridMovementController.GetMultipleTiles(deitySpawningTile, summoningRange))
+            foreach (var deitySpawningZoneTile in gridMovementController.GetMultipleTiles(firstDeitySpawningTile, summoningRange))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-                deitySpawningZoneTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
+                //deitySpawningZoneTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
+                //deitySpawningZoneTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
                 deitySpawningZoneTile.detectedUnit = unboundDeity;
                 currentUnboundDeity = unboundDeity.GetComponent<Deity>();
                 Debug.Log("Deity occupies Tile");
