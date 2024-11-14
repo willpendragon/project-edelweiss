@@ -279,6 +279,7 @@ MonoBehaviour:
   trapTileController: {fileID: 0}
   trapButtonPrefab: {fileID: 6278539958340940975, guid: 04aff51fc7590564a83c6cbfb9a5ef71, type: 3}
   spellMenuContainer: {fileID: 0}
+  trapPlayerActionSelectionLimiter: 1
 --- !u!114 &140287813762198918
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -41,6 +41,7 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
             {
                 BattleInterface.Instance.SetSpellNameOnNotificationPanel(summonedLinkedDeity.name, "is fulfilling the Prayer from" + currentActivePlayerUnit.unitTemplate.name);
                 currentActivePlayerUnit.unitOpportunityPoints--;
+                UpdateActivePlayerUnitProfile(currentActivePlayerUnit);
                 //PerformDeityPowerUp(linkedDeity);
                 summonedLinkedDeity.summoningBehaviour.ExecuteBehavior(summonedLinkedDeity);
                 Debug.Log("The Deity is fulfilling the Current Active User's prayer.");
@@ -52,6 +53,7 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
             {
                 BattleInterface.Instance.SetSpellNameOnNotificationPanel(currentActivePlayerUnit.unitTemplate.name, "is praying" + summonedLinkedDeity.name);
                 currentActivePlayerUnit.unitOpportunityPoints--;
+                UpdateActivePlayerUnitProfile(currentActivePlayerUnit);
                 OnPlayerPrayer();
 
                 // Plays the Prayer's SFX
@@ -106,5 +108,10 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
 
         Destroy(buffIcon, duration);
         // Update Active Player Unit UI
+    }
+    public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
+    {
+        activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        Debug.Log("Updating OP points after using Prayer");
     }
 }

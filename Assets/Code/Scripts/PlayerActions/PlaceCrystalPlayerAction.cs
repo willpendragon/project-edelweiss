@@ -13,7 +13,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
     private System.Random localRandom = new System.Random(); // Local random number generator
 
-    private const int ManaCost = 20;
+    private const int ManaCost = 5;
 
     public delegate void BattleEndCapturedDeity(string battleEndMessage);
     public static event BattleEndCapturedDeity OnBattleEndCapturedDeity;

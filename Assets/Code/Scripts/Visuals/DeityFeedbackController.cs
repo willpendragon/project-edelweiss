@@ -29,32 +29,41 @@ public class DeityFeedbackController : MonoBehaviour
     public void PlayerUnitPrayingFeedback()
     {
 
-        Transform activePlayerUnitTransform = GameObject.FindGameObjectWithTag("ActivePlayerUnit").transform;
-        BattleInterface.Instance.SetSpellNameOnNotificationPanel("Prayer", activePlayerUnitTransform.gameObject.GetComponent<Unit>().unitTemplate.unitName);
+        GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        BattleInterface.Instance.SetSpellNameOnNotificationPanel("Prayer", activePlayerUnit.transform.gameObject.GetComponent<Unit>().unitTemplate.unitName);
+
+        float yOffset = 2.5f;
+
+        // Calculate the new spawn position with the Y offset
+        Vector3 unitPrayingVFXPosition = activePlayerUnit.transform.position + new Vector3(0, yOffset, 0);
+
+        GameObject unitPrayingVFX = Instantiate(Resources.Load<GameObject>("UnitPrayingVFX"), unitPrayingVFXPosition, Quaternion.identity);
+        //unitPrayingVFX.GetComponent<Animator>().SetTrigger("unitIsPraying");
+        float unitPrayingVFXDestroyCountdown = 1.03f;
+        Destroy(unitPrayingVFX, unitPrayingVFXDestroyCountdown);
+
+        //float playerUnitPrayerDuration = 1.5f;
+        //float postExposureReduction = -1.8f;
+
+        //if (!battleLevelVolume.profile.TryGet<ColorAdjustments>(out colorAdjustments))
+        //{
+        //    return;
+        //}
+        //ChangeLevelPostExposure(postExposureReduction, playerUnitPrayerDuration);
 
 
-        float playerUnitPrayerDuration = 1.5f;
-        float postExposureReduction = -1.8f;
+        //// Spawn Player Spotlight
+        //GameObject unitSpotLightInstance = Instantiate(unitSpotLight, activePlayerUnit.transform);
 
-        if (!battleLevelVolume.profile.TryGet<ColorAdjustments>(out colorAdjustments))
-        {
-            return;
-        }
-        ChangeLevelPostExposure(postExposureReduction, playerUnitPrayerDuration);
+        //// Activate Prayer VFX
+        //GameObject prayingVFXInstance = Instantiate(prayingVFX, activePlayerUnit.transform);
 
+        ////Destroy Player Spotlight and Prayer VFX Instances
 
-        // Spawn Player Spotlight
-        GameObject unitSpotLightInstance = Instantiate(unitSpotLight, activePlayerUnitTransform);
+        //Destroy(unitSpotLightInstance, playerUnitPrayerDuration);
+        //Destroy(prayingVFXInstance, playerUnitPrayerDuration);
 
-        // Activate Prayer VFX
-        GameObject prayingVFXInstance = Instantiate(prayingVFX, activePlayerUnitTransform);
-
-        //Destroy Player Spotlight and Prayer VFX Instances
-
-        Destroy(unitSpotLightInstance, playerUnitPrayerDuration);
-        Destroy(prayingVFXInstance, playerUnitPrayerDuration);
-
-        StartCoroutine(RestoreLighting(playerUnitPrayerDuration));
+        //StartCoroutine(RestoreLighting(playerUnitPrayerDuration));
     }
 
     private void ChangeLevelPostExposure(float postExposureReduction, float playerUnitPrayerDuration)

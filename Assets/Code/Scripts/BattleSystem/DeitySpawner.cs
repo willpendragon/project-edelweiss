@@ -120,7 +120,7 @@ public class DeitySpawner : MonoBehaviour
             foreach (var deitySpawningZoneTile in gridMovementController.GetMultipleTiles(firstDeitySpawningTile, summoningRange))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-                //deitySpawningZoneTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
+                deitySpawningZoneTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
                 //deitySpawningZoneTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
                 deitySpawningZoneTile.detectedUnit = unboundDeity;
                 currentUnboundDeity = unboundDeity.GetComponent<Deity>();
