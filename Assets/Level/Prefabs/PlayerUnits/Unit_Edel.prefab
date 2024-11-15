@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &561548677593423225
 Transform:
   m_ObjectHideFlags: 0
@@ -606,6 +606,7 @@ MonoBehaviour:
   trapTileController: {fileID: 0}
   trapButtonPrefab: {fileID: 6278539958340940975, guid: 04aff51fc7590564a83c6cbfb9a5ef71, type: 3}
   spellMenuContainer: {fileID: 0}
+  trapPlayerActionSelectionLimiter: 1
 --- !u!114 &8281543060498671791
 MonoBehaviour:
   m_ObjectHideFlags: 0
