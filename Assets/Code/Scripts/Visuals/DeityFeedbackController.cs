@@ -32,7 +32,7 @@ public class DeityFeedbackController : MonoBehaviour
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         BattleInterface.Instance.SetSpellNameOnNotificationPanel("Prayer", activePlayerUnit.transform.gameObject.GetComponent<Unit>().unitTemplate.unitName);
 
-        float yOffset = 2.5f;
+        float yOffset = 3.5f;
 
         // Calculate the new spawn position with the Y offset
         Vector3 unitPrayingVFXPosition = activePlayerUnit.transform.position + new Vector3(0, yOffset, 0);
