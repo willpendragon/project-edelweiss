@@ -6,20 +6,24 @@ using UnityEngine.UI;
 public class TrapPlayerAction : MonoBehaviour, IPlayerAction
 {
     public TileController savedSelectedTile;
-    public int selectionLimiter = 1;
     public float trapCreationCost = 5;
 
     public void Select(TileController selectedTile)
     {
+
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
         TrapController selectedTiletrapController = selectedTile.GetComponentInChildren<TrapController>();
+        TrapTileUIController trapTileUIController = activePlayerUnit.GetComponent<TrapTileUIController>();
+
         if (selectedTile != null && selectedTile.currentSingleTileCondition == SingleTileCondition.free)
         {
-            if (selectedTiletrapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active)
+            if (selectedTiletrapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active && trapTileUIController.trapTileSelectionIsActive == true)
             {
                 selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 savedSelectedTile = selectedTile;
-                selectionLimiter--;
+                trapTileUIController.trapTileSelectionIsActive = false;
             }
         }
         else
@@ -30,10 +34,13 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
 
     public void Deselect()
     {
-        selectionLimiter++;
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        TrapTileUIController trapTileUIController = activePlayerUnit.GetComponent<TrapTileUIController>();
+        trapTileUIController.trapTileSelectionIsActive = true;
+
         if (savedSelectedTile != null)
         {
-            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
+            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             Debug.Log("Deselecting Currently Selected Tile");
         }
@@ -59,17 +66,26 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
             // Instantiate 3D Model
 
             activePlayerUnit.unitOpportunityPoints--;
+            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
+
             if (activePlayerUnit.unitManaPoints - trapCreationCost >= 0)
             {
                 activePlayerUnit.unitManaPoints -= trapCreationCost;
                 activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+                ResetTrapSelectionLimiter();
             }
             else
             {
                 Debug.Log("Can't place Trap: Not enough mana points");
-                // Optionally, you might want to revert the opportunity points deduction if the trap placement fails.
                 activePlayerUnit.unitOpportunityPoints++;
+                ResetTrapSelectionLimiter();
             }
         }
+    }
+    public void ResetTrapSelectionLimiter()
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        TrapTileUIController trapTileUIController = activePlayerUnit.GetComponent<TrapTileUIController>();
+        trapTileUIController.trapTileSelectionIsActive = true;
     }
 }
