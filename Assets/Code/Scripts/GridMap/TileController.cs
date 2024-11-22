@@ -106,15 +106,43 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     public void HandleTileSelection()
     {
-        if (currentSingleTileStatus == SingleTileStatus.selectionMode)
+        switch (currentSingleTileStatus)
         {
-            Debug.Log("Selecting Tiles");
+            case SingleTileStatus.selectionMode:
+                HandleSelectionMode();
+                break;
+
+            case SingleTileStatus.waitingForConfirmationMode:
+                HandleConfirmationMode();
+                break;
+
+            default:
+                Debug.Log("Unhandled tile status");
+                break;
+        }
+    }
+
+    private void HandleSelectionMode()
+    {
+        if (currentPlayerAction is SelectUnitPlayerAction)
+        {
+            ExecutePlayerAction();
+        }
+        else
+        {
             currentPlayerAction.Select(this);
         }
-        else if (currentSingleTileStatus == SingleTileStatus.waitingForConfirmationMode)
-        {
-            currentPlayerAction.Execute();
-        }
+    }
+
+    private void HandleConfirmationMode()
+    {
+        ExecutePlayerAction();
+    }
+
+    private void ExecutePlayerAction()
+    {
+        currentPlayerAction.Select(this);
+        currentPlayerAction.Execute();
     }
 
     public void HandleTileDeselection()
