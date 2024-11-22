@@ -41,6 +41,7 @@ public class MoveUIController : MonoBehaviour
     {
         MoveInfoController.Instance.HideMoveInfoPanel();
         DestroyMagnet();
+        DeactivateTrapSelection();
 
         // Creates a new instance of the Move Player Action on each Tile
         foreach (var tile in GridManager.Instance.gridTileControllers)
@@ -69,5 +70,9 @@ public class MoveUIController : MonoBehaviour
             Debug.Log("Resetting Tile Glow");
             tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
         }
+    }
+    public void DeactivateTrapSelection()
+    {
+        GridManager.Instance.RemoveTrapSelection();
     }
 }

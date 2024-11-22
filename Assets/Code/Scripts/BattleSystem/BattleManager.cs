@@ -126,7 +126,6 @@ public class BattleManager : MonoBehaviour
     }
     void ClearTilesWithMissingUnits()
     {
-        Debug.Log("Test Tiles Clearing Behaviour");
         if (currentBattleType == BattleType.battleWithDeity)
         {
             foreach (TileController tile in gridManager.gridTileControllers)

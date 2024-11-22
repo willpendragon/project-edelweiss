@@ -9,6 +9,8 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
     public void SetActivePlayerUnitToWaitingMode()
     {
         DestroyMagnet();
+        DeactivateTrapSelection();
+
         GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
         GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
 
@@ -38,6 +40,12 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
             magnetHelper.DestroyMagnet();
         }
     }
+
+    void DeactivateTrapSelection()
+    {
+        GridManager.Instance.RemoveTrapSelection();
+    }
+
     public void ResetTileControllersColours()
     {
         foreach (var tile in GridManager.Instance.gridTileControllers)

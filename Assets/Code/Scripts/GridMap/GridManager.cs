@@ -186,7 +186,6 @@ public class GridManager : MonoBehaviour
             Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
         }
     }
-
     public Vector3 GetWorldPositionFromGridCoordinates(int x, int y)
     {
         float worldX = x * (1 + inBetweenTilesXOffset);
@@ -199,5 +198,18 @@ public class GridManager : MonoBehaviour
         int x = Mathf.RoundToInt(worldPosition.x / (1 + inBetweenTilesXOffset));
         int y = Mathf.RoundToInt(worldPosition.z / (1 + inBetweenTilesYOffset));
         return new Vector2Int(x, y);
+    }
+
+    public void RemoveTrapSelection()
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        TrapTileUIController trapTileUIController = activePlayerUnit.GetComponent<TrapTileUIController>();
+        trapTileUIController.trapTileSelectionIsActive = true;
+
+        foreach (var tile in gridTileControllers)
+        {
+            tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
+        }
     }
 }

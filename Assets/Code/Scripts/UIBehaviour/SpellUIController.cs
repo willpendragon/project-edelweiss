@@ -69,6 +69,7 @@ public class SpellUIController : MonoBehaviour
     public void SwitchTilesToSpellMode()
     {
         DestroyMagnet();
+        DeactivateTrapSelection();
 
         //After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode
         foreach (var tile in GridManager.Instance.gridTileControllers)
@@ -86,5 +87,9 @@ public class SpellUIController : MonoBehaviour
             MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
             magnetHelper.DestroyMagnet();
         }
+    }
+    public void DeactivateTrapSelection()
+    {
+        GridManager.Instance.RemoveTrapSelection();
     }
 }

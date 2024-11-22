@@ -62,10 +62,8 @@ public class Deity : MonoBehaviour
     {
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
         OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
-        //GameObject newDeityEnmityTracker = GameObject.FindGameObjectWithTag("TurnTrackerDetailsContainer");
 
         //Finds the Turn Tracker Details Panel where to instance the Deity Enmity Tracker
-        //newDeityEnmityTracker = Instantiate(deityEnmityTracker, newDeityEnmityTracker.transform);
         GameObject currentDeityEnmityTracker = GameObject.FindGameObjectWithTag("DeityEnmityCounter");
         currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().SetDeity(this.gameObject);
         currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();

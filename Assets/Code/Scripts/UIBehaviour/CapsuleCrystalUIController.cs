@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,6 +39,7 @@ public class CapsuleCrystalUIController : MonoBehaviour
     {
         MoveInfoController.Instance.HideMoveInfoPanel();
         DestroyMagnet();
+        DeactivateTrapSelection();
 
         // After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode and the Tile Controller current Action to Trap
         foreach (var tile in GridManager.Instance.gridTileControllers)
@@ -48,6 +50,12 @@ public class CapsuleCrystalUIController : MonoBehaviour
             Debug.Log("Switching tiles to Place Crystal Mode");
         }
     }
+
+    private void DeactivateTrapSelection()
+    {
+        GridManager.Instance.RemoveTrapSelection();
+    }
+
     void DestroyMagnet()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();

@@ -59,6 +59,7 @@ public class SummoningUIController : MonoBehaviour
     {
         MoveInfoController.Instance.HideMoveInfoPanel();
         DestroyMagnet();
+        DeactivateTrapSelection();
 
         //Creates a new instance of the Melee Player Action
         SummonPlayerAction summonPlayerActionInstance = new SummonPlayerAction();
@@ -93,6 +94,7 @@ public class SummoningUIController : MonoBehaviour
     {
         MoveInfoController.Instance.HideMoveInfoPanel();
         DestroyMagnet();
+        DeactivateTrapSelection();
 
         // Creates a new instance of the Pray Player Action
 
@@ -115,5 +117,9 @@ public class SummoningUIController : MonoBehaviour
             MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
             magnetHelper.DestroyMagnet();
         }
+    }
+    void DeactivateTrapSelection()
+    {
+        GridManager.Instance.RemoveTrapSelection();
     }
 }
