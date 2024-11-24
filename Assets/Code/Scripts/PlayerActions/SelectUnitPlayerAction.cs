@@ -47,6 +47,10 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         {
             Debug.Log("Deselecting Unit");
 
+            selectedUnit.GetComponentInChildren<MouseUISelectionHelper>().HideMouseIconRightClick();
+            selectedUnit.GetComponentInChildren<MouseUISelectionHelper>().ShowMouseIconLeftClick();
+
+
             if (selectedUnit.tag != "Enemy")
             {
                 selectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
@@ -112,6 +116,8 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
                 Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
                 endTurnButton.interactable = false;
+                selectedUnit.GetComponentInChildren<MouseUISelectionHelper>().HideMouseIconLeftClick();
+                selectedUnit.GetComponentInChildren<MouseUISelectionHelper>().ShowMouseIconRightClick();
             }
 
         }

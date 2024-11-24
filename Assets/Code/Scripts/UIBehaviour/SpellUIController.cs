@@ -27,7 +27,6 @@ public class SpellUIController : MonoBehaviour
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
         }
     }
-
     public void PopulateCharacterSpellsMenu(GameObject detectedUnit)
     {
         List<Spell> spells = GetCharacterSpells(detectedUnit);
