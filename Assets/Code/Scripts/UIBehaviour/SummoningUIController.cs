@@ -57,7 +57,7 @@ public class SummoningUIController : MonoBehaviour
     }
     public void SwitchTilesToSummonMode()
     {
-        MoveInfoController.Instance.HideMoveInfoPanel();
+        MoveInfoController.Instance.HideActionInfoPanel();
         DestroyMagnet();
         DeactivateTrapSelection();
 
@@ -77,7 +77,7 @@ public class SummoningUIController : MonoBehaviour
 
     public void SwitchButtonToPrayMode()
     {
-        MoveInfoController.Instance.HideMoveInfoPanel();
+        MoveInfoController.Instance.HideActionInfoPanel();
         DestroyMagnet();
 
         currentSummonPhase = SummonPhase.praying;
@@ -92,7 +92,7 @@ public class SummoningUIController : MonoBehaviour
 
     public void SwitchTilesToPrayMode()
     {
-        MoveInfoController.Instance.HideMoveInfoPanel();
+        MoveInfoController.Instance.HideActionInfoPanel();
         DestroyMagnet();
         DeactivateTrapSelection();
 

@@ -44,7 +44,7 @@ public class TrapTileUIController : MonoBehaviour
     }
     public void SwitchTilesToTrapMode()
     {
-        MoveInfoController.Instance.HideMoveInfoPanel();
+        MoveInfoController.Instance.HideActionInfoPanel();
         DestroyMagnet();
 
         // After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode and the Tile Controller current Action to Trap

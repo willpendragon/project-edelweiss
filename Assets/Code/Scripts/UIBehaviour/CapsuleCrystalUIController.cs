@@ -37,7 +37,7 @@ public class CapsuleCrystalUIController : MonoBehaviour
     }
     public void SwitchTilesToPlaceCaptureCrystal()
     {
-        MoveInfoController.Instance.HideMoveInfoPanel();
+        MoveInfoController.Instance.HideActionInfoPanel();
         DestroyMagnet();
         DeactivateTrapSelection();
 

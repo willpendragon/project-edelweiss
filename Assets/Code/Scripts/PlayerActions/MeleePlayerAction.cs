@@ -60,7 +60,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     {
         selectionLimiter++;
         ResetTileColours();
-        MoveInfoController.Instance.HideMoveInfoPanel();
+        MoveInfoController.Instance.HideActionInfoPanel();
 
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         if (activePlayerUnit != null && activePlayerUnit.hasHookshot == true)

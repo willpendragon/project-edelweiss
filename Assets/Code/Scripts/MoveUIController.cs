@@ -39,7 +39,7 @@ public class MoveUIController : MonoBehaviour
 
     public void SwitchTilesToMoveMode()
     {
-        MoveInfoController.Instance.HideMoveInfoPanel();
+        MoveInfoController.Instance.HideActionInfoPanel();
         DestroyMagnet();
         DeactivateTrapSelection();
 

@@ -35,7 +35,7 @@ public class MeleeUIController : MonoBehaviour
         GameObject meleeButtonInstance = Instantiate(meleeButtonPrefab, spellMenuContainer);
         Button currentMeleeButton = meleeButtonInstance.GetComponent<Button>();
         currentMeleeButton.onClick.AddListener(() => SwitchTilesToSelectionMode());
-        currentMeleeButton.onClick.AddListener(() => MoveInfoController.Instance.DisplayMoveInfoPanel());
+        currentMeleeButton.onClick.AddListener(() => MoveInfoController.Instance.DisplayActionInfoPanel());
         currentMeleeButton.onClick.AddListener(() => MoveInfoController.Instance.UpdateMeleeMoveInfoPanelTexts());
 
         Unit currentActiveUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -47,7 +47,7 @@ public class MeleeUIController : MonoBehaviour
 
     public void SwitchTilesToSelectionMode()
     {
-        MoveInfoController.Instance.HideMoveInfoPanel();
+        MoveInfoController.Instance.HideActionInfoPanel();
         DeactivateTrapSelection();
 
         foreach (var tile in GridManager.Instance.gridTileControllers)
