@@ -136,10 +136,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             Debug.Log("Enemy is out of hookshot range.");
             return;
         }
-
-        //ActivateMagnet(attacker, defender);
-        //Change initial position of the magnet
-
         // Calculate the difference in positions
         int deltaX = defenderPos.x - attackerPos.x;
         int deltaY = defenderPos.y - attackerPos.y;
@@ -203,6 +199,11 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             {
                 // Execute the hookshot attack instead of the melee attack
                 ExecuteHookshot(activePlayerUnit, currentTarget);
+
+                // Reduce the opportunity points after the attack
+                activePlayerUnit.unitOpportunityPoints--;
+
+                UpdateActivePlayerUnitProfile(activePlayerUnit);
             }
             else
             {
@@ -226,7 +227,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                 activePlayerUnit.unitOpportunityPoints--;
 
                 UpdateActivePlayerUnitProfile(activePlayerUnit);
-
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
                 OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
 
