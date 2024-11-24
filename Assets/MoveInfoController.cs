@@ -54,10 +54,9 @@ public class MoveInfoController : MonoBehaviour
         manaCostCounterText.text = clickedSpell.manaPointsCost.ToString();
         alignmentText.text = clickedSpell.alignment.ToString();
     }
-
     public void UpdateMeleeMoveInfoPanelTexts()
     {
-        // Retrieve Information from Spell and popoulate the Move Info Panel
+        // Retrieve Information from Melee Move and popoulate the Move Info Panel
         DisplayMoveInfoPanel();
 
         int meleeRange = 3;
@@ -78,6 +77,19 @@ public class MoveInfoController : MonoBehaviour
         }
     }
 
+    public void UpdateTrapMoveInfoPanelTexts()
+    {
+        // Retrieve Information from Trap and popoulate the Move Info Panel
+        DisplayMoveInfoPanel();
+        int trapCreationRange = 1;
+
+        // Hard-coded logic, I actually need to pass this value from the Trap Action itself.
+        moveRangeCounterText.text = trapCreationRange.ToString();
+        Unit currentActiveUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        manaCostCounterText.text = "-";
+        alignmentText.text = "-";
+        moveBaseDamageCounterText.text = "-";
+    }
 
     public void DisplayMoveInfoPanel()
     {
