@@ -40,8 +40,8 @@ public class TrapTileUIController : MonoBehaviour
         GameObject trapTileButtonInstance = Instantiate(trapButtonPrefab, spellMenuContainer);
         Button currentTrapTileButton = trapTileButtonInstance.GetComponent<Button>();
         currentTrapTileButton.onClick.AddListener(() => SwitchTilesToTrapMode());
+        currentTrapTileButton.onClick.AddListener(() => MoveInfoController.Instance.UpdateTrapMoveInfoPanelTexts());
     }
-
     public void SwitchTilesToTrapMode()
     {
         MoveInfoController.Instance.HideMoveInfoPanel();

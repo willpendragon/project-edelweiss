@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,16 +8,26 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
 {
     public TileController savedSelectedTile;
     public float trapCreationCost = 5;
+    public int trapCreationRange = 1;
 
     public void Select(TileController selectedTile)
     {
-
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
         TrapController selectedTiletrapController = selectedTile.GetComponentInChildren<TrapController>();
         TrapTileUIController trapTileUIController = activePlayerUnit.GetComponent<TrapTileUIController>();
 
-        if (selectedTile != null && selectedTile.currentSingleTileCondition == SingleTileCondition.free)
+        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
+
+        int distanceFromSelectedTile = gridMovementController.GetDistance(activePlayerUnit.ownedTile, selectedTile);
+
+        if (distanceFromSelectedTile > trapCreationRange)
+        {
+            selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
+            Debug.Log("This tile is not available to set a trap");
+            return;
+        }
+        else if (selectedTile != null && selectedTile.currentSingleTileCondition == SingleTileCondition.free)
         {
             if (selectedTiletrapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active && trapTileUIController.trapTileSelectionIsActive == true)
             {
@@ -26,12 +37,7 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
                 trapTileUIController.trapTileSelectionIsActive = false;
             }
         }
-        else
-        {
-            Debug.Log("This tile is not available to set a trap");
-        }
     }
-
     public void Deselect()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -45,7 +51,6 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
             Debug.Log("Deselecting Currently Selected Tile");
         }
     }
-
     public void Execute()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
