@@ -14,7 +14,9 @@ public class ConversationUI : MonoBehaviour
 
     private void GenerateConversationButtons()
     {
-        foreach (var convo in ConversationManager.Instance.conversations)
+        GameSaveData conversationData = SaveStateManager.saveData;
+
+        foreach (var convo in conversationData.unlockedConversations)
         {
             if (convo.isUnlocked)
             {

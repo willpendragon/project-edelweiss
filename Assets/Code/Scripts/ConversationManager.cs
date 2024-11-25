@@ -84,10 +84,11 @@ public class ConversationManager : MonoBehaviour
 
     public void StartConversationByID(string conversationID)
     {
-        var conversation = conversations.Find(c => c.conversationID == conversationID && c.isUnlocked);
+        GameSaveData conversationData = SaveStateManager.saveData;
+
+        var conversation = conversationData.unlockedConversations.Find(c => c.conversationID == conversationID && c.isUnlocked);
         if (conversation != null)
         {
-
             // Start the conversation using the numeric ID.
             DialogueManager.StartConversation(conversationID);
         }
@@ -96,22 +97,25 @@ public class ConversationManager : MonoBehaviour
             Debug.LogWarning($"Conversation with ID {conversationID} is either not found or not unlocked.");
         }
     }
-
     // Method to mark a dialogue as read
-    public void MarkDialogueAsRead(int id)
+    public void MarkDialogueAsRead(string conversationTitle)
     {
-        List<ConversationData> unreadConvos = conversations.FindAll(convo => !convo.isRead);
-        if (unreadConvos.Count > 0)
+        foreach (var conversation in conversations)
         {
-            unreadConvos[id].isRead = true;
-            Debug.Log($"Read convo {unreadConvos[id]}");
-            SaveUnlockedConversation();
+            if (conversation.conversationID == conversationTitle)
+            {
+                conversation.isRead = true;
+            }
         }
-        else
+        GameSaveData conversationData = SaveStateManager.saveData;
+        foreach (var conversation in conversationData.unlockedConversations)
         {
-            Debug.Log("All conversations are already read.");
+            if (conversation.conversationID == conversationTitle && conversation.isRead == false)
+            {
+                conversation.isRead = true;
+                Debug.Log(conversationTitle + "marked as Read");
+            }
         }
-        //conversations[id].isRead = true;
-        Debug.Log(id);
+        SaveStateManager.SaveGame(conversationData);
     }
 }

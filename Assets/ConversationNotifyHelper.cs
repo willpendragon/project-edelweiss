@@ -7,6 +7,11 @@ public class ConversationNotifyHelper : MonoBehaviour
 {
     public ConversationManager conversationManager; // Link in Inspector
 
+    private void Start()
+    {
+        conversationManager = ConversationManager.Instance;
+    }
+
     // Called when a conversation ends (via Dialogue System Events)
     public void OnConversationEnd()
     {
@@ -15,10 +20,11 @@ public class ConversationNotifyHelper : MonoBehaviour
         {
             // Retrieve the current dialogue ID
             int currentConversationID = DialogueManager.lastConversationID;
-
+            var conversation = DialogueManager.masterDatabase.GetConversation(currentConversationID);
+            string conversationTitle = conversation.Title;
             // Mark the dialogue as read in the ConversationManager
-            conversationManager.MarkDialogueAsRead(currentConversationID);
-            Debug.Log("Retrieved" + currentConversationID);
+            conversationManager.MarkDialogueAsRead(conversationTitle);
+            Debug.Log("Retrieved" + conversationTitle);
         }
     }
 }
