@@ -68,7 +68,10 @@ public class SummoningUIController : MonoBehaviour
         {
             tile.currentPlayerAction = summonPlayerActionInstance;
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
+            if (tile.currentSingleTileCondition != SingleTileCondition.occupiedByDeity)
+            {
+                tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
+            }
             Debug.Log("Switching tiles to Summon Mode");
         }
 
@@ -105,7 +108,10 @@ public class SummoningUIController : MonoBehaviour
         {
             tile.currentPlayerAction = prayPlayerActionInstance;
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
+            if (tile.currentSingleTileCondition != SingleTileCondition.occupiedByDeity)
+            {
+                tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
+            }
             Debug.Log("Switching tiles to Pray Mode");
         }
     }

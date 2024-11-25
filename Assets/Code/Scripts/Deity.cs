@@ -82,6 +82,7 @@ public class Deity : MonoBehaviour
     {
         Unit deityUnitComponent = GetComponentInChildren<Unit>();
         deityHealthBar.GetComponentInChildren<Slider>().value = deityUnitComponent.unitHealthPoints;
+        deityHealthBar.GetComponentInChildren<TextMeshProUGUI>().text = deityUnitComponent.unitHealthPoints.ToString();
     }
     IEnumerator EndDeityTurn()
     {

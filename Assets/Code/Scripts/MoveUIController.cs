@@ -67,8 +67,11 @@ public class MoveUIController : MonoBehaviour
     {
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
-            Debug.Log("Resetting Tile Glow");
-            tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+            if (tile.currentSingleTileCondition != SingleTileCondition.occupiedByDeity)
+            {
+                Debug.Log("Resetting Tile Glow");
+                tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+            }
         }
     }
     public void DeactivateTrapSelection()

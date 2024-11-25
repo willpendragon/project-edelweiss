@@ -38,25 +38,25 @@ public class NewMaterialChange : MonoBehaviour
 
     void LateUpdate()
     {
-        m_time += Time.deltaTime;
-        if (m_time > m_timeToReduce)
-        {
-            m_cutOutFactor -= m_submitReduceFactor;
-            m_submitReduceFactor = Mathf.Lerp(m_submitReduceFactor, m_reduceFactor, Time.deltaTime / 50);
-        }
+        //m_time += Time.deltaTime;
+        //if (m_time > m_timeToReduce)
+        //{
+        //    m_cutOutFactor -= m_submitReduceFactor;
+        //    m_submitReduceFactor = Mathf.Lerp(m_submitReduceFactor, m_reduceFactor, Time.deltaTime / 50);
+        //}
 
-        m_cutOutFactor = Mathf.Clamp01(m_cutOutFactor);
-        if (m_cutOutFactor <= 0 && m_time > m_timeToReduce)
-            Destroy(gameObject);
-        m_objectMaterial.SetFloat("_MaskCutOut", m_cutOutFactor);
+        //m_cutOutFactor = Mathf.Clamp01(m_cutOutFactor);
+        //if (m_cutOutFactor <= 0 && m_time > m_timeToReduce)
+        //    Destroy(gameObject);
+        //m_objectMaterial.SetFloat("_MaskCutOut", m_cutOutFactor);
 
-        if (m_upFactor != 0 && isupfactor != false)
-        {
-            upFactor += m_upFactor * Time.deltaTime;
-            upFactor = Mathf.Clamp01(upFactor);
-            m_objectMaterial.SetFloat("_MaskCutOut", upFactor);
-            if (upFactor >= 1)
-                isupfactor = false;
-        }
+        //if (m_upFactor != 0 && isupfactor != false)
+        //{
+        //    upFactor += m_upFactor * Time.deltaTime;
+        //    upFactor = Mathf.Clamp01(upFactor);
+        //    m_objectMaterial.SetFloat("_MaskCutOut", upFactor);
+        //    if (upFactor >= 1)
+        //        isupfactor = false;
+        //}
     }
 }

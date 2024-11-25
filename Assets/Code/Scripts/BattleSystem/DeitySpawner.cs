@@ -115,13 +115,14 @@ public class DeitySpawner : MonoBehaviour
             GameObject deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
 
             //Deity occupies multiple tiles
-            int summoningRange = 2;
+            int summoningRange = 1;
             GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
             foreach (var deitySpawningZoneTile in gridMovementController.GetMultipleTiles(firstDeitySpawningTile, summoningRange))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-                deitySpawningZoneTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
                 //deitySpawningZoneTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
+                GameObject deityEnergyVFXPrefab = Resources.Load<GameObject>("DeityEnergy");
+                GameObject deityEnergyVFXPrefabInstance = Instantiate(deityEnergyVFXPrefab, deitySpawningZoneTile.transform.position, Quaternion.identity);
                 deitySpawningZoneTile.detectedUnit = unboundDeity;
                 currentUnboundDeity = unboundDeity.GetComponent<Deity>();
                 Debug.Log("Deity occupies Tile");

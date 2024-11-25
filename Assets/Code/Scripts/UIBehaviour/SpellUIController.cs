@@ -75,7 +75,10 @@ public class SpellUIController : MonoBehaviour
         {
             tile.currentPlayerAction = new AOESpellPlayerAction();
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
+            if (tile.currentSingleTileCondition != SingleTileCondition.occupiedByDeity)
+            {
+                tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
+            }
         }
     }
     void DestroyMagnet()
