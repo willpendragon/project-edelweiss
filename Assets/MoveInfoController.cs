@@ -75,7 +75,7 @@ public class MoveInfoController : MonoBehaviour
         // Retrieve Information from Melee Move and popoulate the Move Info Panel
         DisplayActionInfoPanel();
 
-        int meleeRange = 3;
+        int meleeRange = 2;
 
         // Hard-coded logic, I actually need to pass this value from the Melee Action itself.
         moveRangeCounterText.text = meleeRange.ToString();
