@@ -7,7 +7,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     public Unit currentTarget;
     public TileController savedSelectedTile;
     public int selectionLimiter = 1;
-    private int meleeRange = 3;
+    private int meleeRange = 2;
 
     public Vector2Int knockbackDirection; // Stores knockback direction
     public int knockbackStrength = 2; // Stores knockback strength
