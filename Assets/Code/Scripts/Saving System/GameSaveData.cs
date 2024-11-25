@@ -47,12 +47,14 @@ public class ConversationData
 {
     public string conversationID;
     public bool isUnlocked;
+    public bool isRead;
 
     // Constructor with ID and unlocked status
-    public ConversationData(string id, bool unlocked)
+    public ConversationData(string id, bool unlocked, bool read)
     {
         conversationID = id;
         isUnlocked = unlocked;
+        isRead = read;
     }
 }
 

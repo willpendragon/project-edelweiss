@@ -3136,6 +3136,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946084852}
   m_CullTransparentMesh: 1
+--- !u!1 &952255290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 952255292}
+  - component: {fileID: 952255291}
+  m_Layer: 0
+  m_Name: ConversationNotifyHelper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &952255291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952255290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b0c6e2ded1b22d478cff9efba2dbfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conversationManager: {fileID: 858207349}
+--- !u!4 &952255292
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952255290}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &962010253
 GameObject:
   m_ObjectHideFlags: 0
@@ -7748,6 +7793,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 952255291}
+          m_TargetAssemblyTypeName: ConversationNotifyHelper, Assembly-CSharp
+          m_MethodName: OnConversationEnd
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     onConversationEnd:
       m_PersistentCalls:
         m_Calls:
@@ -8097,7 +8154,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4547121018970588880, guid: 108f5bd35c2eaf24d91474ff72ca8c0f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -8.4
+      value: -8.400024
       objectReference: {fileID: 0}
     - target: {fileID: 4801808864474734552, guid: 108f5bd35c2eaf24d91474ff72ca8c0f, type: 3}
       propertyPath: m_IsActive
@@ -8338,6 +8395,7 @@ SceneRoots:
   - {fileID: 2071948412}
   - {fileID: 890678253}
   - {fileID: 1572097713}
+  - {fileID: 952255292}
   - {fileID: 141169355}
   - {fileID: 341514024}
   - {fileID: 194213430}

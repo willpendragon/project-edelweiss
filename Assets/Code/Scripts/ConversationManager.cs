@@ -1,5 +1,6 @@
 using PixelCrushers.DialogueSystem;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -76,7 +77,7 @@ public class ConversationManager : MonoBehaviour
 
         foreach (var conversation in ConversationManager.Instance.conversations)
         {
-            gameSaveData.unlockedConversations.Add(new ConversationData(conversation.conversationID, conversation.isUnlocked));
+            gameSaveData.unlockedConversations.Add(new ConversationData(conversation.conversationID, conversation.isUnlocked, conversation.isRead));
         }
         SaveStateManager.SaveGame(gameSaveData);
     }
@@ -94,5 +95,23 @@ public class ConversationManager : MonoBehaviour
         {
             Debug.LogWarning($"Conversation with ID {conversationID} is either not found or not unlocked.");
         }
+    }
+
+    // Method to mark a dialogue as read
+    public void MarkDialogueAsRead(int id)
+    {
+        List<ConversationData> unreadConvos = conversations.FindAll(convo => !convo.isRead);
+        if (unreadConvos.Count > 0)
+        {
+            unreadConvos[id].isRead = true;
+            Debug.Log($"Read convo {unreadConvos[id]}");
+            SaveUnlockedConversation();
+        }
+        else
+        {
+            Debug.Log("All conversations are already read.");
+        }
+        //conversations[id].isRead = true;
+        Debug.Log(id);
     }
 }
