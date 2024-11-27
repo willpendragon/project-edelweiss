@@ -123,16 +123,16 @@ public class MoveInfoController : MonoBehaviour
         switch (currentPlayerAction)
         {
             case PlayerAction.Melee:
-                helpPanelText.text = "This is an example of tutorial text for the Melee Player Action";
+                helpPanelText.text = "A physical blow. May attack the enemy even from a distance.";
                 break;
             case PlayerAction.Magnet:
-                helpPanelText.text = "This is an example of tutorial text for the Magnet Player Action";
+                helpPanelText.text = "A Magitechnica artifact. Allows to attract an enemy on a tile adjacent to the user.";
                 break;
             case PlayerAction.Spell:
-                helpPanelText.text = "This is an example of tutorial text for the Spell Player Action";
+                helpPanelText.text = "An ethereal blow. May have different ranges. Its alignment could upset the Deity.";
                 break;
             case PlayerAction.Trap:
-                helpPanelText.text = "This is an example of tutorial text for the Trap Player Action";
+                helpPanelText.text = "Send an Enemy over a trap to eliminate it instantly during its turn and gain Capture Crystals.";
                 break;
 
         }
