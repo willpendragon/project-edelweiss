@@ -57,9 +57,9 @@ MonoBehaviour:
   rayMaterial: {fileID: 2100000, guid: e349799befeba9948a28f3e1a260fa29, type: 2}
   globalRotation: {x: 0, y: 0, z: 0}
   globalBrightness: 0.368
-  variationSpeed: 1
+  variationSpeed: 10
   variationScale: 10
-  variationColor: {r: 1, g: 1, b: 1, a: 1}
+  variationColor: {r: 0.8415094, g: 0, b: 0.3983305, a: 1}
   showLayerSettings: 0
   showMainSettings: 1
   showVariationSettings: 0
@@ -77,5 +77,5 @@ MonoBehaviour:
   useAngleFade: 0
   angleFadeStart: 0
   angleFadeEnd: 0
-  useVariation: 0
+  useVariation: 1
   useLightColor: 0
