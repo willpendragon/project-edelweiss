@@ -62,11 +62,25 @@ public class DeityAltarController : MonoBehaviour
             newDeityUnitProfileInstance.GetComponent<AltarDeityUnitProfileController>().PopulateDeityUnitProfile(deity.GetComponent<Unit>(), deity);
         }
     }
-
     public void SetCurrentSelectedUnit(Unit unit, GameObject unitPanel)
     {
+        // Reset the color of all unit profiles
+        foreach (var profile in playerUnitsProfiles)
+        {
+            Image profileImage = profile.GetComponentInChildren<Image>();
+            if (profileImage != null)
+            {
+                profileImage.color = Color.white; // Reset to default color
+            }
+        }
+
+        // Set the selected unit and highlight its profile
         selectedPlayerUnitProfileGO = unitPanel;
-        selectedPlayerUnitProfileGO.GetComponentInChildren<Image>().color = Color.cyan;
+        Image selectedImage = selectedPlayerUnitProfileGO.GetComponentInChildren<Image>();
+        if (selectedImage != null)
+        {
+            selectedImage.color = Color.cyan; // Highlight the selected tab
+        }
         selectedPlayerUnit = unit;
     }
 
@@ -143,26 +157,6 @@ public class DeityAltarController : MonoBehaviour
 
         deityLinkCalloutController.PlayDeityLinkCalloutTransition(selectedPlayerUnitPortrait, linkedDeityUnitPortrait);
     }
-
-    //public void ApplyDeityBuffsOnUnit(Unit unit, Deity deity)
-    //{
-    //    if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
-    //    {
-    //        selectedPlayerUnit.unitMagicPower += deity.deityPrayerBuff.buffAmount;
-    //    }
-    //    else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
-    //    {
-    //        selectedPlayerUnit.unitAttackPower += deity.deityPrayerBuff.buffAmount;
-    //    }
-
-    //    foreach (var playerUnitProfile in playerUnitsProfiles)
-    //    {
-    //        if (unit.Id == playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId)
-    //        {
-    //            playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(unit);
-    //        }
-    //    }
-    //}
 
     public void RemoveDeityBuffsOnUnit(Unit unit, Deity deity)
     {
