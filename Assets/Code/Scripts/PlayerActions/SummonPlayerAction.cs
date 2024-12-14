@@ -14,7 +14,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
     {
         if (selectionLimiter > 0)
         {
-            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile, 2))
+            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile, 1))
             {
                 tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
@@ -32,15 +32,13 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         if (linkedDeity != null && currentActivePlayerUnit.unitOpportunityPoints > 0 && deityLimiter > 0)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
-            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, 2))
+            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, 1))
             {
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
                 deitySpawningZoneTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(1f, 0.2f, Color.magenta);
-                //deitySpawningZoneTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.yellow;
             }
             int summoningCost = 50;
             currentActivePlayerUnit.SpendManaPoints(summoningCost);
-            //Beware, Magic Number
             Debug.Log("Summon Deity on Battlefield");
 
             var summonPosition = savedSelectedTile.transform.position + new Vector3(0, 3, 0);
@@ -49,7 +47,6 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             deityInstance.transform.localScale = new Vector3(2, 2, 2);
 
             currentActivePlayerUnit.GetComponent<SummoningUIController>().SwitchButtonToPrayMode();
-            //22022024 This switches the Summon Button to Pray Mode only for the Active Player.
             currentActivePlayerUnit.unitOpportunityPoints--;
             deityLimiter--;
             Debug.Log("Summoning Deity");

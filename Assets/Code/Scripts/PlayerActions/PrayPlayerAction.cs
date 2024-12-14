@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
@@ -57,6 +55,9 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
                 OnPlayerPrayer();
 
                 // Plays the Prayer's SFX
+                StageMoodController.Instance.ActivateDarkness();
+                float darknessResetWaitTime = 1.5f;
+                StageMoodController.Instance.StartResetDarkness(darknessResetWaitTime);
                 currentActivePlayerUnit.battleFeedbackController.PlayPrayerSFX.Invoke();
                 Debug.Log("The Current Active Unit is praying to the Linked Deity");
             }
@@ -65,6 +66,13 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
         {
             Debug.Log("Active Player Unit is unable to pray");
         }
+    }
+
+    IEnumerator ResetDarkness()
+    {
+        float resetDarknessDelay = 1.5f;
+        yield return new WaitForSeconds(resetDarknessDelay);
+        StageMoodController.Instance.DeactivateDarkness();
     }
 
     private bool CheckLinkedDeityPrayerPower()
