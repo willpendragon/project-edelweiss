@@ -6,6 +6,7 @@ using static Unit;
 public class TurnController : MonoBehaviour
 {
     private static TurnController instance;
+    [SerializeField] SummonResetHelper summonResetHelper;
     public static TurnController Instance
     {
         get
@@ -48,6 +49,8 @@ public class TurnController : MonoBehaviour
 
     public delegate void BattleEnd(string battleEndMessage);
     public static event BattleEnd OnBattleEnd;
+
+    // Add Delegate to manage battle end's buffs behaviour
 
     public delegate void ResetUnitUI();
     public static event ResetUnitUI OnResetUnitUI;
@@ -100,25 +103,6 @@ public class TurnController : MonoBehaviour
 
     public void SetUnitsInitialPositionOnGrid()
     {
-        Debug.Log("Moving Player Units at Initial Position");
-
-        //foreach (var playerUnitGO in playerUnitsOnBattlefield)
-        //{
-        //    Unit playerUnit = playerUnitGO.GetComponent<Unit>();
-        //    playerUnit.GetComponent<Unit>().MoveUnit(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate, false);
-        //    playerUnit.GetComponent<Unit>().SetPosition(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate);
-        //    Debug.Log("Moving Player Units at Initial Position");
-        //}
-        //foreach (var enemyUnitGO in enemyUnitsOnBattlefield)
-        //{
-        //    Unit enemyUnit = enemyUnitGO.GetComponent<Unit>();
-        //    enemyUnit.GetComponent<Unit>().MoveUnit(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate, false);
-        //    enemyUnit.GetComponent<Unit>().SetPosition(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate);
-        //    Debug.Log("Moving Player Units at Initial Position");
-        //}
-
-        Debug.Log("Setting Units at their Initial Positions on the Grid");
-
         foreach (var playerUnitGO in playerUnitsOnBattlefield)
         {
             Unit playerUnit = playerUnitGO.GetComponent<Unit>();
@@ -179,7 +163,6 @@ public class TurnController : MonoBehaviour
 
         RestorePlayerUnitsStatus();
     }
-
     private bool IsWithinGridBounds(int x, int y)
     {
         return x >= 0 && x < GridManager.Instance.gridHorizontalSize && y >= 0 && y < GridManager.Instance.gridVerticalSize;
@@ -200,7 +183,6 @@ public class TurnController : MonoBehaviour
             playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.basic;
         }
     }
-
     public void RestorePlayerUnitsOpportunityPoints()
     {
         Debug.Log("Restoring Player Opportunity");
@@ -220,7 +202,6 @@ public class TurnController : MonoBehaviour
             endTurnButton.interactable = true;
         }
     }
-
     public void CheckPlayerUnitsStatus()
     {
         // Get all Player Units
@@ -257,6 +238,7 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party was defeated");
             OnBattleEnd("Defeat");
             ResetBattleToInitialStatus();
+            summonResetHelper.ResetSummonBuffs();
         }
         else
         {
@@ -294,6 +276,7 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Victory");
+            summonResetHelper.ResetSummonBuffs();
             ResetBattleToInitialStatus();
             UnlockNextLevel();
 
@@ -327,19 +310,20 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party was defeated");
             OnBattleEnd("Defeat");
             ResetBattleToInitialStatus();
+            summonResetHelper.ResetSummonBuffs();
         }
         else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Player Party is still in game");
         }
     }
-
     private void HandleBattleWithDeity(GameStatsManager gameStatsManager)
     {
         if (GameObject.FindGameObjectWithTag(Tags.ENEMY).GetComponent<Unit>().unitHealthPoints <= 0)
         {
             Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
             OnBattleEnd("Victory");
+            summonResetHelper.ResetSummonBuffs();
             ResetBattleToInitialStatus();
             UnlockNextLevel();
 
@@ -359,6 +343,7 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party was defeated by the Deity");
             OnBattleEnd("Defeat");
             ResetBattleToInitialStatus();
+            summonResetHelper.ResetSummonBuffs();
         }
     }
     private void HandleBossBattle()
@@ -368,8 +353,9 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Boss Defeated");
             OnBattleEnd("Victory");
+            summonResetHelper.ResetSummonBuffs();
             ResetBattleToInitialStatus();
-            // Logic to unlock last dialogue
+            // Inserrt logic here to unlock last dialogue
         }
     }
 
@@ -451,5 +437,6 @@ public class TurnController : MonoBehaviour
         gameStatsManager.SaveCaptureCrystalsCount();
         UpdateBattleEndUIPanel();
         ResetBattleToInitialStatus();
+        summonResetHelper.ResetSummonBuffs();
     }
 }

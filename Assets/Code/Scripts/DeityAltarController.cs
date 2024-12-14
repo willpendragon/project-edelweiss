@@ -123,10 +123,8 @@ public class DeityAltarController : MonoBehaviour
         // Remove existing link for the selected unit (if it exists).
         if (saveData.unitsLinkedToDeities.ContainsKey(selectedPlayerUnitId))
         {
-            //RemoveDeityBuffsOnUnit(selectedPlayerUnit, deity);
             saveData.unitsLinkedToDeities.Remove(selectedPlayerUnitId);
             selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = "No Link";
-            //RemoveDeityBuffsOnOtherUnits(deity);
         }
 
         // Add the new link.
@@ -134,13 +132,9 @@ public class DeityAltarController : MonoBehaviour
         saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deityId);
 
         selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = deity.GetComponent<Unit>().unitTemplate.unitName;
-
         GameManager.Instance.ApplyDeityLinks();
 
-        //ApplyDeityBuffsOnUnit(selectedPlayerUnit, deity);
-
         SaveStateManager.SaveGame(saveData);
-
         Debug.Log("Deity successfully assigned to unit.");
 
         GameObject[] playerUnitContainers = GameObject.FindGameObjectsWithTag("PlayerUnitContainer");
@@ -178,7 +172,6 @@ public class DeityAltarController : MonoBehaviour
         }
         RemoveDeityBuffsOnOtherUnits(deity);
     }
-
     public void RemoveDeityBuffsOnOtherUnits(Deity deity)
     {
         List<Unit> playerUnitsInstances = GameManager.Instance.playerPartyMembersInstances;
@@ -190,7 +183,6 @@ public class DeityAltarController : MonoBehaviour
                 {
                     selectedPlayerUnit.unitMagicPower -= deity.deityPrayerBuff.buffAmount;
                     UpdatePlayerUnitProfile(playerUnit);
-
                 }
                 else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
                 {
