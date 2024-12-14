@@ -238,7 +238,6 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party was defeated");
             OnBattleEnd("Defeat");
             ResetBattleToInitialStatus();
-            summonResetHelper.ResetSummonBuffs();
         }
         else
         {
@@ -276,7 +275,6 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Victory");
-            summonResetHelper.ResetSummonBuffs();
             ResetBattleToInitialStatus();
             UnlockNextLevel();
 
@@ -295,7 +293,6 @@ public class TurnController : MonoBehaviour
                     Debug.Log("Adding enemies to kill count");
                 }
             }
-
             ApplyRewardsAndSave(gameStatsManager);
             Debug.Log("Rolling Convo Unlock");
             ConversationManager.Instance.UnlockRandomConversation();
@@ -310,7 +307,6 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party was defeated");
             OnBattleEnd("Defeat");
             ResetBattleToInitialStatus();
-            summonResetHelper.ResetSummonBuffs();
         }
         else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
         {
@@ -323,7 +319,6 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
             OnBattleEnd("Victory");
-            summonResetHelper.ResetSummonBuffs();
             ResetBattleToInitialStatus();
             UnlockNextLevel();
 
@@ -343,7 +338,6 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party was defeated by the Deity");
             OnBattleEnd("Defeat");
             ResetBattleToInitialStatus();
-            summonResetHelper.ResetSummonBuffs();
         }
     }
     private void HandleBossBattle()
@@ -353,7 +347,6 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Boss Defeated");
             OnBattleEnd("Victory");
-            summonResetHelper.ResetSummonBuffs();
             ResetBattleToInitialStatus();
             // Inserrt logic here to unlock last dialogue
         }
@@ -384,7 +377,7 @@ public class TurnController : MonoBehaviour
         ResetTags();
         OnResetUnitUI();
         DeactivateActivePlayerUnitPanel();
-        OnResetSummonBuffs();
+        TurnController.Instance.summonResetHelper.ResetSummonBuffs();
     }
     public void ResetTags()
     {
@@ -432,11 +425,10 @@ public class TurnController : MonoBehaviour
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
         Debug.Log("Player Party ran away.");
         OnBattleEnd("Fleed");
+        ResetBattleToInitialStatus();
         gameStatsManager.SaveCharacterData();
         gameStatsManager.SaveWarFunds(warFunds);
         gameStatsManager.SaveCaptureCrystalsCount();
         UpdateBattleEndUIPanel();
-        ResetBattleToInitialStatus();
-        summonResetHelper.ResetSummonBuffs();
     }
 }

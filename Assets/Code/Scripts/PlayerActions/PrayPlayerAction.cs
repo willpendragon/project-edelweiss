@@ -40,7 +40,6 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
                 BattleInterface.Instance.SetSpellNameOnNotificationPanel(summonedLinkedDeity.name, "is fulfilling the Prayer from" + currentActivePlayerUnit.unitTemplate.name);
                 currentActivePlayerUnit.unitOpportunityPoints--;
                 UpdateActivePlayerUnitProfile(currentActivePlayerUnit);
-                //PerformDeityPowerUp(linkedDeity);
                 summonedLinkedDeity.summoningBehaviour.ExecuteBehavior(summonedLinkedDeity);
                 Debug.Log("The Deity is fulfilling the Current Active User's prayer.");
                 ResetSummonBehaviour(currentActivePlayerUnit);

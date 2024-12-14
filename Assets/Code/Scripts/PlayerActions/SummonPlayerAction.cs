@@ -37,7 +37,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
                 deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
                 deitySpawningZoneTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(1f, 0.2f, Color.magenta);
             }
-            int summoningCost = 50;
+            int summoningCost = 10;
             currentActivePlayerUnit.SpendManaPoints(summoningCost);
             Debug.Log("Summon Deity on Battlefield");
 
