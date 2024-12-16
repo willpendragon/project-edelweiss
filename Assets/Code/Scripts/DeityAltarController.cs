@@ -16,10 +16,10 @@ public class DeityAltarController : MonoBehaviour
     public TextMeshProUGUI nameLabelPrefab;
 
     [SerializeField] DeityLinkCalloutController deityLinkCalloutController;
+    [SerializeField] SummoningBuffController summoningBuffController;
 
     [SerializeField] GameObject playerUnitProfileGO;
     [SerializeField] GameObject deityProfileGO;
-
 
     private GameObject selectedPlayerUnitProfileGO;
 
@@ -127,28 +127,37 @@ public class DeityAltarController : MonoBehaviour
             selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = "No Link";
         }
 
-        // Add the new link.
-        PlayLinkAnimation(selectedPlayerUnit, deity);
-        saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deityId);
-
-        selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = deity.GetComponent<Unit>().unitTemplate.unitName;
-        GameManager.Instance.ApplyDeityLinks();
-
-        SaveStateManager.SaveGame(saveData);
-        Debug.Log("Deity successfully assigned to unit.");
-
-        GameObject[] playerUnitContainers = GameObject.FindGameObjectsWithTag("PlayerUnitContainer");
-        foreach (var playerUnitContainer in playerUnitContainers)
+        if (selectedPlayerUnit.LinkedDeityId != deity.Id)
         {
-            Image buttonImage = playerUnitContainer.GetComponentInChildren<Image>();
-            buttonImage.color = Color.white;
+            // Add the new link.
+            PlayLinkAnimation(selectedPlayerUnit, deity);
+            saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deityId);
+
+            selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = deity.GetComponent<Unit>().unitTemplate.unitName;
+            GameManager.Instance.ApplyDeityLinks();
+            summoningBuffController.ApplyLinkedDeityPermanentBuff();
+            UpdatePlayerUnitProfile(selectedPlayerUnit);
+
+            SaveStateManager.SaveGame(saveData);
+            Debug.Log("Deity successfully assigned to Unit.");
+
+            GameObject[] playerUnitContainers = GameObject.FindGameObjectsWithTag("PlayerUnitContainer");
+            foreach (var playerUnitContainer in playerUnitContainers)
+            {
+                Image buttonImage = playerUnitContainer.GetComponentInChildren<Image>();
+                buttonImage.color = Color.white;
+            }
+        }
+        else
+        {
+            // Add error feedback.
+            Debug.Log("Unable to connect Unit to the Deity. This Unit is already connected to this Deity");
         }
     }
     public void PlayLinkAnimation(Unit selectedPlayerUnit, Deity deity)
     {
         Sprite selectedPlayerUnitPortrait = selectedPlayerUnit.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
         Sprite linkedDeityUnitPortrait = deity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
-
         deityLinkCalloutController.PlayDeityLinkCalloutTransition(selectedPlayerUnitPortrait, linkedDeityUnitPortrait);
     }
 
@@ -192,14 +201,13 @@ public class DeityAltarController : MonoBehaviour
             }
         }
     }
-
     public void UpdatePlayerUnitProfile(Unit unit)
     {
         foreach (var playerUnitProfile in playerUnitsProfiles)
         {
             if (playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId == unit.Id)
             {
-                playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(unit);
+                playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().UpdatePlayerUnitProfile(unit);
             }
         }
     }

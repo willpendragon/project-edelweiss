@@ -16,11 +16,11 @@ public class SummoningBuffController : MonoBehaviour
     {
         TurnController.OnResetSummonBuffs -= ResetSummonBuffs;
     }
-    public void Start()
-    {
-        ApplyLinkedDeityBuff();
-    }
-    public void ApplyLinkedDeityBuff()
+    //public void Start()
+    //{
+    //    ApplyLinkedDeityPermanentBuff();
+    //}
+    public void ApplyLinkedDeityPermanentBuff()
     {
         foreach (Unit playerUnit in GameManager.Instance.playerPartyMembersInstances)
 

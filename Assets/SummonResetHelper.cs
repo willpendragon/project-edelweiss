@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SummonResetHelper : MonoBehaviour
 {
-    public void ResetSummonBuffs()
+    public void ResetSummonTemporaryBuffs()
     {
         GameObject[] playerUnitsOnBattlefield = TurnController.Instance.playerUnitsOnBattlefield;
 

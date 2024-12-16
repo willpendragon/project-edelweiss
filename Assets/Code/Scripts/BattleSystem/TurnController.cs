@@ -22,7 +22,6 @@ public class TurnController : MonoBehaviour
         enemyTurn,
         deityTurn
     }
-
     public static class Tags
     {
         public const string PLAYER = "Player";
@@ -268,7 +267,6 @@ public class TurnController : MonoBehaviour
                 break;
         }
     }
-
     private void HandleRegularBattle(GameStatsManager gameStatsManager)
     {
         if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
@@ -348,7 +346,7 @@ public class TurnController : MonoBehaviour
             Debug.Log("Boss Defeated");
             OnBattleEnd("Victory");
             ResetBattleToInitialStatus();
-            // Inserrt logic here to unlock last dialogue
+            // Insert logic here to unlock last dialogue
         }
     }
 
@@ -377,7 +375,7 @@ public class TurnController : MonoBehaviour
         ResetTags();
         OnResetUnitUI();
         DeactivateActivePlayerUnitPanel();
-        TurnController.Instance.summonResetHelper.ResetSummonBuffs();
+        TurnController.Instance.summonResetHelper.ResetSummonTemporaryBuffs();
     }
     public void ResetTags()
     {
@@ -399,7 +397,6 @@ public class TurnController : MonoBehaviour
         battleEndUIHandler.battleEndWarFundsGainedText.text = warFunds.ToString();
         battleEndUIHandler.battleEndCrystalObtainedText.text = battleManager.captureCrystalsRewardPool.ToString();
     }
-
     public void EndTurnViaButton()
     {
         // Check if it's Player Turn and no Active Unit is in play
