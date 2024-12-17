@@ -8,47 +8,53 @@ public class SummoningBuffController : MonoBehaviour
     public delegate void AppliedDeityBuffMessage(string deityBuff);
     public static event AppliedDeityBuffMessage OnAppliedDeityBuffMessage;
 
-    public void OnEnable()
+    public void ApplyLinkedDeityPermanentBuff(Unit selectedPlayerUnit)
     {
-        TurnController.OnResetSummonBuffs += ResetSummonBuffs;
-    }
-    public void OnDisable()
-    {
-        TurnController.OnResetSummonBuffs -= ResetSummonBuffs;
-    }
-    //public void Start()
-    //{
-    //    ApplyLinkedDeityPermanentBuff();
-    //}
-    public void ApplyLinkedDeityPermanentBuff()
-    {
-        foreach (Unit playerUnit in GameManager.Instance.playerPartyMembersInstances)
+        if (selectedPlayerUnit.linkedDeity != null)
+        {
 
-
-            if (playerUnit.linkedDeity != null)
+            switch (selectedPlayerUnit.linkedDeity.deityPrayerBuff.currentAffectedStat)
             {
-
-                switch (playerUnit.linkedDeity.deityPrayerBuff.currentAffectedStat)
-                {
-                    case DeityPrayerBuff.AffectedStat.MaxHP:
-                        playerUnit.unitMaxHealthPoints += playerUnit.linkedDeity.deityPrayerBuff.buffAmount;
-                        Debug.Log("Applying" + DeityPrayerBuff.AffectedStat.MaxHP + "from" + playerUnit.linkedDeity + "on" + playerUnit.unitTemplate.unitName);
-                        OnAppliedDeityBuffMessage("+" + DeityPrayerBuff.AffectedStat.MaxHP + "MAX HP");
-
-                        //PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
-                        break;
-                    case DeityPrayerBuff.AffectedStat.MagicPower:
-                        Debug.Log("Applying" + DeityPrayerBuff.AffectedStat.MagicPower + "from" + playerUnit.linkedDeity + "on" + playerUnit.unitTemplate.unitName);
-                        playerUnit.unitMagicPower += playerUnit.linkedDeity.deityPrayerBuff.buffAmount;
-                        OnAppliedDeityBuffMessage("+" + DeityPrayerBuff.AffectedStat.MagicPower + "MAGIC");
-
-                        //PlayBuffFeedback(currentActivePlayerUnit, linkedDeity);
-                        break;
-                    default:
-                        Debug.LogError("Unsupported stat type");
-                        break;
-                }
+                case DeityPrayerBuff.AffectedStat.MaxHP:
+                    selectedPlayerUnit.unitMaxHealthPoints += selectedPlayerUnit.linkedDeity.deityPrayerBuff.buffAmount;
+                    Debug.Log("Applying" + DeityPrayerBuff.AffectedStat.MaxHP + "from" + selectedPlayerUnit.linkedDeity + "on" + selectedPlayerUnit.unitTemplate.unitName);
+                    OnAppliedDeityBuffMessage("+" + DeityPrayerBuff.AffectedStat.MaxHP + "MAX HP");
+                    break;
+                case DeityPrayerBuff.AffectedStat.MagicPower:
+                    Debug.Log("Applying" + DeityPrayerBuff.AffectedStat.MagicPower + "from" + selectedPlayerUnit.linkedDeity + "on" + selectedPlayerUnit.unitTemplate.unitName);
+                    selectedPlayerUnit.unitMagicPower += selectedPlayerUnit.linkedDeity.deityPrayerBuff.buffAmount;
+                    OnAppliedDeityBuffMessage("+" + DeityPrayerBuff.AffectedStat.MagicPower + "MAGIC");
+                    break;
+                default:
+                    Debug.LogError("Unsupported stat type");
+                    break;
             }
+        }
+    }
+
+    public void RemoveLinkedDeityPermanentBuff(Unit selectedPlayerUnit)
+    {
+
+        if (selectedPlayerUnit.linkedDeity != null)
+        {
+
+            switch (selectedPlayerUnit.linkedDeity.deityPrayerBuff.currentAffectedStat)
+            {
+                case DeityPrayerBuff.AffectedStat.MaxHP:
+                    selectedPlayerUnit.unitMaxHealthPoints -= selectedPlayerUnit.linkedDeity.deityPrayerBuff.buffAmount;
+                    Debug.Log("Applying" + DeityPrayerBuff.AffectedStat.MaxHP + "from" + selectedPlayerUnit.linkedDeity + "on" + selectedPlayerUnit.unitTemplate.unitName);
+                    OnAppliedDeityBuffMessage("+" + DeityPrayerBuff.AffectedStat.MaxHP + "MAX HP");
+                    break;
+                case DeityPrayerBuff.AffectedStat.MagicPower:
+                    Debug.Log("Applying" + DeityPrayerBuff.AffectedStat.MagicPower + "from" + selectedPlayerUnit.linkedDeity + "on" + selectedPlayerUnit.unitTemplate.unitName);
+                    selectedPlayerUnit.unitMagicPower -= selectedPlayerUnit.linkedDeity.deityPrayerBuff.buffAmount;
+                    OnAppliedDeityBuffMessage("+" + DeityPrayerBuff.AffectedStat.MagicPower + "MAGIC");
+                    break;
+                default:
+                    Debug.LogError("Unsupported stat type");
+                    break;
+            }
+        }
     }
 
     public void ResetSummonBuffs()

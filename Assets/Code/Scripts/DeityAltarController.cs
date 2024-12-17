@@ -101,6 +101,7 @@ public class DeityAltarController : MonoBehaviour
         GameSaveData saveData = SaveStateManager.saveData;
 
         string selectedPlayerUnitId = selectedPlayerUnit.Id;
+
         string deityId = deity.Id;
 
         // Find if the deity is already linked to another Unit.
@@ -114,13 +115,23 @@ public class DeityAltarController : MonoBehaviour
             }
         }
 
+        // Remove Deity link buffs from previously linked Unit
+        foreach (Unit playerUnit in GameManager.Instance.playerPartyMembersInstances)
+        {
+            if (playerUnit.linkedDeity == deity && playerUnit != selectedPlayerUnit)
+            {
+                summoningBuffController.RemoveLinkedDeityPermanentBuff(playerUnit);
+                UpdatePlayerUnitProfile(playerUnit);
+            }
+        }
+
         // If the deity is already linked, remove the old link.
         if (oldLinkedUnitId != null)
         {
             saveData.unitsLinkedToDeities.Remove(oldLinkedUnitId);
         }
 
-        // Remove existing link for the selected unit (if it exists).
+        // Remove existing Deity link for the selected unit (if it exists).
         if (saveData.unitsLinkedToDeities.ContainsKey(selectedPlayerUnitId))
         {
             saveData.unitsLinkedToDeities.Remove(selectedPlayerUnitId);
@@ -135,7 +146,7 @@ public class DeityAltarController : MonoBehaviour
 
             selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = deity.GetComponent<Unit>().unitTemplate.unitName;
             GameManager.Instance.ApplyDeityLinks();
-            summoningBuffController.ApplyLinkedDeityPermanentBuff();
+            summoningBuffController.ApplyLinkedDeityPermanentBuff(selectedPlayerUnit);
             UpdatePlayerUnitProfile(selectedPlayerUnit);
 
             SaveStateManager.SaveGame(saveData);
@@ -160,47 +171,46 @@ public class DeityAltarController : MonoBehaviour
         Sprite linkedDeityUnitPortrait = deity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
         deityLinkCalloutController.PlayDeityLinkCalloutTransition(selectedPlayerUnitPortrait, linkedDeityUnitPortrait);
     }
+    //public void RemoveDeityBuffsOnUnit(Unit unit, Deity deity)
+    //{
+    //    if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
+    //    {
+    //        selectedPlayerUnit.unitMagicPower -= deity.deityPrayerBuff.buffAmount;
+    //    }
+    //    else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
+    //    {
+    //        selectedPlayerUnit.unitAttackPower -= deity.deityPrayerBuff.buffAmount;
+    //    }
 
-    public void RemoveDeityBuffsOnUnit(Unit unit, Deity deity)
-    {
-        if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
-        {
-            selectedPlayerUnit.unitMagicPower -= deity.deityPrayerBuff.buffAmount;
-        }
-        else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
-        {
-            selectedPlayerUnit.unitAttackPower -= deity.deityPrayerBuff.buffAmount;
-        }
-
-        foreach (var playerUnitProfile in playerUnitsProfiles)
-        {
-            if (unit.Id == playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId)
-            {
-                playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(unit);
-            }
-        }
-        RemoveDeityBuffsOnOtherUnits(deity);
-    }
-    public void RemoveDeityBuffsOnOtherUnits(Deity deity)
-    {
-        List<Unit> playerUnitsInstances = GameManager.Instance.playerPartyMembersInstances;
-        foreach (Unit playerUnit in playerUnitsInstances)
-        {
-            if (playerUnit.LinkedDeityId != deity.Id)
-            {
-                if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
-                {
-                    selectedPlayerUnit.unitMagicPower -= deity.deityPrayerBuff.buffAmount;
-                    UpdatePlayerUnitProfile(playerUnit);
-                }
-                else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
-                {
-                    selectedPlayerUnit.unitAttackPower -= deity.deityPrayerBuff.buffAmount;
-                    UpdatePlayerUnitProfile(playerUnit);
-                }
-            }
-        }
-    }
+    //    foreach (var playerUnitProfile in playerUnitsProfiles)
+    //    {
+    //        if (unit.Id == playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId)
+    //        {
+    //            playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(unit);
+    //        }
+    //    }
+    //    RemoveDeityBuffsOnOtherUnits(deity);
+    //}
+    //public void RemoveDeityBuffsOnOtherUnits(Deity deity)
+    //{
+    //    List<Unit> playerUnitsInstances = GameManager.Instance.playerPartyMembersInstances;
+    //    foreach (Unit playerUnit in playerUnitsInstances)
+    //    {
+    //        if (playerUnit.LinkedDeityId != deity.Id)
+    //        {
+    //            if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
+    //            {
+    //                selectedPlayerUnit.unitMagicPower -= deity.deityPrayerBuff.buffAmount;
+    //                UpdatePlayerUnitProfile(playerUnit);
+    //            }
+    //            else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
+    //            {
+    //                selectedPlayerUnit.unitAttackPower -= deity.deityPrayerBuff.buffAmount;
+    //                UpdatePlayerUnitProfile(playerUnit);
+    //            }
+    //        }
+    //    }
+    //}
     public void UpdatePlayerUnitProfile(Unit unit)
     {
         foreach (var playerUnitProfile in playerUnitsProfiles)

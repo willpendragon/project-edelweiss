@@ -195,12 +195,24 @@ public class TurnController : MonoBehaviour
 
             // Hides Waiting Icons on Player Units
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
+        }
 
-            // Enables End Turn Button
-            Button endTurnButton = GameObject.FindGameObjectWithTag(Tags.END_TURN_BUTTON).GetComponent<Button>();
-            endTurnButton.interactable = true;
+        // Try to find the End Turn button and enable it, if it exists
+        GameObject endTurnButtonObject = GameObject.FindGameObjectWithTag(Tags.END_TURN_BUTTON);
+        if (endTurnButtonObject != null)
+        {
+            Button endTurnButton = endTurnButtonObject.GetComponent<Button>();
+            if (endTurnButton != null)
+            {
+                endTurnButton.interactable = true;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("End Turn button not found in the current scene.");
         }
     }
+
     public void CheckPlayerUnitsStatus()
     {
         // Get all Player Units
