@@ -14,11 +14,8 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
     {
         if (selectionLimiter > 0)
         {
-            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(selectedTile, 1))
-            {
-                tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
-                selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-            }
+            selectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
+            selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
             savedSelectedTile = selectedTile;
             selectionLimiter--;
         }
@@ -32,11 +29,8 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         if (linkedDeity != null && currentActivePlayerUnit.unitOpportunityPoints > 0 && deityLimiter > 0)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
-            foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, 1))
-            {
-                deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-                deitySpawningZoneTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(1f, 0.2f, Color.magenta);
-            }
+            savedSelectedTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
+            savedSelectedTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(1f, 0.2f, Color.magenta);
             int summoningCost = 10;
             currentActivePlayerUnit.SpendManaPoints(summoningCost);
             Debug.Log("Summon Deity on Battlefield");
