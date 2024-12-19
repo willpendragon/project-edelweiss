@@ -23,10 +23,11 @@ public class StunnerEnemyBehavior : EnemyBehavior
     {
         if (enemyAgent.gameObject.tag != "DeadEnemy" && enemyAgent.gameObject.GetComponentInParent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
+            Unit enemyUnit = enemyAgent.gameObject.GetComponentInParent<Unit>();
             Unit targetUnit = SelectTargetUnit();
             if (targetUnit != null)
             {
-                if (EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
+                if (CheckDistanceFromTarget(targetUnit, enemyUnit) && EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
                 {
                     StunAbility(targetUnit);
                     Debug.Log("Stun Ability Chance Roll Successful");
@@ -47,6 +48,20 @@ public class StunnerEnemyBehavior : EnemyBehavior
         else
         {
             Debug.Log("Enemy Unit is dead and can't attack anymore");
+        }
+    }
+
+    bool CheckDistanceFromTarget(Unit targetUnit, Unit enemyUnit)
+    {
+        int distance = (GridManager.Instance.gridMovementController.GetDistance(targetUnit.ownedTile, enemyUnit.ownedTile));
+        int range = 3;
+        if (distance <= range)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
