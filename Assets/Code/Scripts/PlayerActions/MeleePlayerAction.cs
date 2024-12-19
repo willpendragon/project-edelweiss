@@ -41,6 +41,8 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                 savedSelectedTile = selectedTile;
                 selectionLimiter--;
 
+                UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
+
                 // Check if hookshot is equipped and handle selection logic
                 if (activePlayerUnit.hasHookshot)
                 {
@@ -222,7 +224,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                 {
                     currentTarget.TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
                 }
-
+                UnitProfilesController.Instance.UpdateEnemyUnitPanel(currentTarget.gameObject);
                 // Reduce the opportunity points after the attack
                 activePlayerUnit.unitOpportunityPoints--;
 

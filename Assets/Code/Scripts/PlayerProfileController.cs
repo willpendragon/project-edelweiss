@@ -91,7 +91,7 @@ public class PlayerProfileController : MonoBehaviour
         }
     }
 
-    void ApplyProfileChanges(GameObject detectedUnit, ProfileOwner profileOwner)
+    public void ApplyProfileChanges(GameObject detectedUnit, ProfileOwner profileOwner)
     {
         // Update Unit Profile Portrait and Name.
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = detectedUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
