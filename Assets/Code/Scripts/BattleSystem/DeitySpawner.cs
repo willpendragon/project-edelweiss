@@ -107,7 +107,7 @@ public class DeitySpawner : MonoBehaviour
         {
             Debug.Log("Start of Summon Deity on Battlefield");
             int deityTilePositionX = 5;
-            int deityTilePositionY = 9;
+            int deityTilePositionY = 5;
             unboundDeity.GetComponent<Unit>().MoveUnit(deityTilePositionX, deityTilePositionY, false);
             TileController firstDeitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityTilePositionX, deityTilePositionY);
 
@@ -115,26 +115,22 @@ public class DeitySpawner : MonoBehaviour
             GameObject deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
 
             //Deity occupies multiple tiles
-            int summoningRange = 1;
+            //int summoningRange = 1;
             GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-            foreach (var deitySpawningZoneTile in gridMovementController.GetMultipleTiles(firstDeitySpawningTile, summoningRange))
-            {
-                deitySpawningZoneTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-                //deitySpawningZoneTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
-                GameObject deityEnergyVFXPrefab = Resources.Load<GameObject>("DeityEnergy");
-                GameObject deityEnergyVFXPrefabInstance = Instantiate(deityEnergyVFXPrefab, deitySpawningZoneTile.transform.position, Quaternion.identity);
-                deitySpawningZoneTile.detectedUnit = unboundDeity;
-                currentUnboundDeity = unboundDeity.GetComponent<Deity>();
-                Debug.Log("Deity occupies Tile");
-            }
-
-            foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
-            {
-                Destroy(enemy);
-            }
-            unboundDeity.gameObject.tag = "Enemy";
-            CreateDeityHealthBar(unboundDeity);
+            firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
+            GameObject deityEnergyVFXPrefab = Resources.Load<GameObject>("DeityEnergy");
+            GameObject deityEnergyVFXPrefabInstance = Instantiate(deityEnergyVFXPrefab, firstDeitySpawningTile.transform.position, Quaternion.identity);
+            firstDeitySpawningTile.detectedUnit = unboundDeity;
+            currentUnboundDeity = unboundDeity.GetComponent<Deity>();
+            Debug.Log("Deity occupies Tile");
         }
+
+        foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            Destroy(enemy);
+        }
+        unboundDeity.gameObject.tag = "Enemy";
+        CreateDeityHealthBar(unboundDeity);
     }
 
     void CreateDeityHealthBar(GameObject spawnedUnboundDeity)
