@@ -1,5 +1,3 @@
-using DG.Tweening;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -84,6 +82,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     if (selectedTile.detectedUnit != null && selectedTile.detectedUnit.tag != "Player" && selectedTile.detectedUnit.tag != "ActivePlayerUnit")
                     {
                         currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
+                        UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
                         selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                         Debug.Log("Selected Single Target Spell Range");
                         selectionLimiter--;
@@ -165,6 +164,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                         }
                         Unit spellTarget = savedSelectedTile.detectedUnit.GetComponent<Unit>();
                         spellTarget.TakeDamage(damageToApply);
+                        UnitProfilesController.Instance.UpdateEnemyUnitPanel(currentTarget.gameObject);
                         if (spellTarget.unitStatusController != null && spellTarget.unitStatusController.unitCurrentStatus != UnitStatus.stun)
                         {
                             spellTarget.unitStatusController.unitCurrentStatus = UnitStatus.stun;
@@ -196,13 +196,12 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
             {
                 tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-                //tile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-
                 tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
                 Debug.Log("Deselecting AOE Range");
             }
             OnDeselectedSpell();
         }
+        UnitProfilesController.Instance.DestroyEnemyUnitPanel();
     }
 
     public void DeityEnmityCheck()

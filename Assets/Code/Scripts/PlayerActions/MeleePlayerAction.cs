@@ -70,6 +70,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
             magnetHelper.DestroyMagnet();
         }
+        UnitProfilesController.Instance.DestroyEnemyUnitPanel();
     }
 
     // Method for knockback logic (used for normal melee attacks)

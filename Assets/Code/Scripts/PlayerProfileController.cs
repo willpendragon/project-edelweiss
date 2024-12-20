@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -54,7 +51,6 @@ public class PlayerProfileController : MonoBehaviour
     {
         SelectUnitPlayerAction.OnClickedTileWithUnit -= UpdateUnitProfile;
     }
-
     public void UpdateUnitProfile(GameObject detectedUnit)
     {
         switch (detectedUnit.tag)
@@ -90,7 +86,6 @@ public class PlayerProfileController : MonoBehaviour
                 break;
         }
     }
-
     public void ApplyProfileChanges(GameObject detectedUnit, ProfileOwner profileOwner)
     {
         // Update Unit Profile Portrait and Name.
