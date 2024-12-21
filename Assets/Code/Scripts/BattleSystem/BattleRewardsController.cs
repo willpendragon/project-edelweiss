@@ -1,22 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleRewardsController : MonoBehaviour
 {
     public float coinsRewardPool;
     public float experienceRewardPool;
-
-    public void OnEnable()
-    {
-        //EnemyAgent.OnCoinsReward += AddCoinsRewardToCoinsRewardPool;
-        //EnemyAgent.OnExperienceReward += AddExperienceRewardToExperienceRewardPool;
-    }
-    public void OnDisable()
-    {
-        //EnemyAgent.OnCoinsReward -= AddCoinsRewardToCoinsRewardPool;
-        //EnemyAgent.OnExperienceReward -= AddExperienceRewardToExperienceRewardPool;
-    }
     public void AddCoinsRewardToCoinsRewardPool(float coinsRewardToAdd)
     {
         coinsRewardPool += coinsRewardToAdd;

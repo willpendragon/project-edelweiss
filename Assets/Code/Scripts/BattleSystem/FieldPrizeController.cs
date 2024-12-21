@@ -9,6 +9,7 @@ public class FieldPrizeController : MonoBehaviour
     public ItemFieldPrize fieldPrize;
     private System.Random random;
     public TextMeshProUGUI prizeTypeText;
+    [SerializeField] int keyPrizeThreshold = 3; // Magic number, adjust later
 
     // Weights for different outcomes, exposed to the editor
     [SerializeField]
@@ -21,7 +22,11 @@ public class FieldPrizeController : MonoBehaviour
 
     public void SpawnFieldPrize(TileController fieldPrizeTile)
     {
-        if (RollFieldPrizeChance())
+        if (ComboController.Instance.comboCounter >= keyPrizeThreshold)
+        {
+            Debug.Log("Chance to win a Key");
+        }
+        else if (RollFieldPrizeChance())
         {
             // Spawns the Field Prize GameObject
             // Calculate the new spawn position
@@ -48,7 +53,6 @@ public class FieldPrizeController : MonoBehaviour
             {
                 newFieldPrize.prizeTypeText.text = "MAGI+";
             }
-
 
             Debug.Log("Spawned Field Prize" + newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrize.itemFieldPrizeType);
         }

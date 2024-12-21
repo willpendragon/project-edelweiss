@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -261,7 +262,6 @@ public class Unit : MonoBehaviour
             UnitProfilesController.Instance.DestroyEnemyUnitPanel();
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
 
-
             if (this.gameObject.tag == "Enemy")
             {
                 var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
@@ -270,6 +270,7 @@ public class Unit : MonoBehaviour
                     activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(CalculateCoinsReward());
                     activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
                     Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
+                    ComboController.Instance.IncreaseComboCounter(this);
 
                     // Spawn Prize on Battlefield.
                     if (fieldPrizeController != null)
@@ -284,7 +285,6 @@ public class Unit : MonoBehaviour
             OnCheckGameOver();
         }
     }
-
     public float CalculateCoinsReward()
     {
         int coinsRewardMinRange = (int)coinsRewardRange.x;
