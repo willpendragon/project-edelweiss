@@ -73,6 +73,7 @@ public class Unit : MonoBehaviour
 
     public BattleFeedbackController battleFeedbackController;
     public GameObject unitProfilePanel;
+    public SpriteRenderer unitSprite;
 
 
     public delegate void CheckGameOver();
@@ -237,13 +238,13 @@ public class Unit : MonoBehaviour
         }
         else if (unitHealthPoints <= 0)
         {
-            var spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            ComboController.Instance.IncreaseComboCounter(this);
             var meshRenderer = GetComponentInChildren<MeshRenderer>();
 
-            if (spriteRenderer != null)
+            if (unitSprite != null)
             {
                 // Play Fade Animation on Sprite.
-                spriteRenderer.material.color = Color.black;
+                unitSprite.color = Color.black;
 
                 if (battleFeedbackController != null)
                 {
@@ -270,9 +271,8 @@ public class Unit : MonoBehaviour
                     activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(CalculateCoinsReward());
                     activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
                     Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
-                    ComboController.Instance.IncreaseComboCounter(this);
 
-                    // Spawn Prize on Battlefield.
+                    // Spawn Prize on Battlefield
                     if (fieldPrizeController != null)
                     {
                         fieldPrizeController.SpawnFieldPrize(ownedTile);

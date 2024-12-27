@@ -55,6 +55,10 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                     CheckKnockback(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
                 }
             }
+            else
+            {
+                Debug.Log("No Enemy Found");
+            }
         }
     }
     public void Deselect()

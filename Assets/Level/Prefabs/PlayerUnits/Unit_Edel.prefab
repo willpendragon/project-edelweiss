@@ -426,6 +426,7 @@ MonoBehaviour:
   LinkedDeityId: 
   battleFeedbackController: {fileID: 4718937785285233454}
   unitProfilePanel: {fileID: 0}
+  unitSprite: {fileID: 8374982091355949035}
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -606,7 +607,7 @@ MonoBehaviour:
   trapTileController: {fileID: 0}
   trapButtonPrefab: {fileID: 6278539958340940975, guid: 04aff51fc7590564a83c6cbfb9a5ef71, type: 3}
   spellMenuContainer: {fileID: 0}
-  trapPlayerActionSelectionLimiter: 1
+  trapTileSelectionIsActive: 0
 --- !u!114 &8281543060498671791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -790,6 +791,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   deathDisappearAnimationVFX: {fileID: 1874694411823686601, guid: 455892cabea2a6c4e9135d46170a809f, type: 3}
+  comboIncreaseVFXAnimator: {fileID: 0}
   unitAnimator: {fileID: 467171502271026413}
   buffIcon: {fileID: 7203561652851106972, guid: 434c3c0a511b02c4aa92c6efa6dd915b, type: 3}
 --- !u!114 &7201058756695911675

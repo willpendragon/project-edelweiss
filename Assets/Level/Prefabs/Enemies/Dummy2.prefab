@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5596889259312912661}
   - component: {fileID: 2589683984642565530}
   m_Layer: 8
-  m_Name: stunner_enemy
+  m_Name: StunnerEnemySprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118,10 +118,18 @@ PrefabInstance:
       propertyPath: fieldPrize
       value: 
       objectReference: {fileID: 11400000, guid: 27cb5a7026d37d84692fa4ea27970834, type: 2}
+    - target: {fileID: 1254154078120300381, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: keyPrizeThreshold
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: unitSprite
+      value: 
+      objectReference: {fileID: 5596889259312912661}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitTemplate
       value: 

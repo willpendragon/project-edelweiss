@@ -21,7 +21,7 @@ public class UnitProfilesController : MonoBehaviour
     }
     public void CreateEnemyUnitPanel(GameObject detectedUnit)
     {
-        if (!newUnitPanelExists)
+        if (detectedUnit != null && !newUnitPanelExists)
         {
             //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
             newUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);

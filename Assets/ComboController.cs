@@ -11,15 +11,35 @@ public class ComboController : MonoBehaviour
     private string wantedEnemy;
     // Start is called before the first frame update
 
+    public void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
     private void Start()
     {
         wantedEnemy = "Stunner Godling";
     }
     public void IncreaseComboCounter(Unit defeatedEnemy)
     {
+        Debug.Log("Check Defeated Enemy name");
         if (CheckEnemy(defeatedEnemy))
         {
             comboCounter++;
+            defeatedEnemy.gameObject.GetComponentInChildren<BattleFeedbackController>().PlayComboIncreaseVFX();
+        }
+        else
+        {
+            if (comboCounter > 0)
+            {
+                comboCounter--;
+            }
         }
     }
 

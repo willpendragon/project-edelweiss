@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5090446047043621278}
   - component: {fileID: 369530382422409763}
   m_Layer: 8
-  m_Name: sprite_godling
+  m_Name: GodlingSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -257,6 +257,7 @@ Transform:
   - {fileID: 7098631775829537441}
   - {fileID: 1983363406324134480}
   - {fileID: 3664886708510239878}
+  - {fileID: 3556952942755628221}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5009294011632168285
@@ -346,12 +347,14 @@ MonoBehaviour:
   currentUnitLifeCondition: 0
   unitStatusController: {fileID: 361118017173477511}
   fieldPrizeController: {fileID: 1254154078120300381}
+  hasHookshot: 0
   bossFlag: 0
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 7127888063209652432}
   unitProfilePanel: {fileID: 0}
+  unitSprite: {fileID: 0}
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -415,7 +418,8 @@ MonoBehaviour:
   waitButton: {fileID: 0}
   currentUnitSelectionStatus: 1
   unitSpellUIController: {fileID: 0}
-  unitSprite: {fileID: 0}
+  unitSprite: {fileID: 5090446047043621278}
+  unitIconsController: {fileID: 0}
 --- !u!114 &5410876119120275068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -514,6 +518,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   deathDisappearAnimationVFX: {fileID: 1874694411823686601, guid: 455892cabea2a6c4e9135d46170a809f, type: 3}
+  comboIncreaseVFXAnimator: {fileID: 45147626664482888}
   unitAnimator: {fileID: 369530382422409763}
   buffIcon: {fileID: 0}
 --- !u!114 &975513701372675069
@@ -528,6 +533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 598c7b7f31d57d24e90c949b320fd3aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  crystalsAmount: 3
 --- !u!114 &1254154078120300381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,6 +548,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fieldPrizeVisuals: {fileID: 67632292693706767, guid: 6b2300afed068b24394e325c341abb48, type: 3}
   fieldPrize: {fileID: 11400000, guid: da9b3b277abd4464c878b543c8d9372d, type: 2}
+  prizeTypeText: {fileID: 0}
+  keyPrizeThreshold: 3
   weights: 460000001e000000
 --- !u!1 &5109383955156892412
 GameObject:
@@ -5864,6 +5872,112 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &8329828572469625298
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3556952942755628221}
+  - component: {fileID: 2552546893607505742}
+  - component: {fileID: 45147626664482888}
+  m_Layer: 10
+  m_Name: ComboIconSprite
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3556952942755628221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8329828572469625298}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.82, z: 0}
+  m_LocalScale: {x: 6.8407, y: 6.8407, z: 6.8407}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5009294011632168282}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &2552546893607505742
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8329828572469625298}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: -1491154198, guid: 17bd25f25de4ce44e88800c54da8da2e, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.12, y: 0.12}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!95 &45147626664482888
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8329828572469625298}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 02d764857bbdfd2469833e83e5356abb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8980370335338686289
 GameObject:
   m_ObjectHideFlags: 0

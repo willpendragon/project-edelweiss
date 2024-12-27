@@ -212,6 +212,7 @@ MonoBehaviour:
   LinkedDeityId: 
   battleFeedbackController: {fileID: 6278929137907918091}
   unitProfilePanel: {fileID: 0}
+  unitSprite: {fileID: 2803219925591249153}
   onHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -576,6 +577,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   deathDisappearAnimationVFX: {fileID: 1874694411823686601, guid: 455892cabea2a6c4e9135d46170a809f, type: 3}
+  comboIncreaseVFXAnimator: {fileID: 0}
   unitAnimator: {fileID: 6180686884810482089}
   buffIcon: {fileID: 7203561652851106972, guid: 434c3c0a511b02c4aa92c6efa6dd915b, type: 3}
 --- !u!114 &8130161269669623750

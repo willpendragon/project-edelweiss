@@ -9,7 +9,7 @@ public class FieldPrizeController : MonoBehaviour
     public ItemFieldPrize fieldPrize;
     private System.Random random;
     public TextMeshProUGUI prizeTypeText;
-    [SerializeField] int keyPrizeThreshold = 3; // Magic number, adjust later
+    [SerializeField] int keyPrizeThreshold;
 
     // Weights for different outcomes, exposed to the editor
     [SerializeField]

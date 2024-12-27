@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6743042462806359849}
   - component: {fileID: 3385465322218298873}
   m_Layer: 8
-  m_Name: sprite_superior_bumper
+  m_Name: SuperiorBumperSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118,10 +118,18 @@ PrefabInstance:
       propertyPath: fieldPrize
       value: 
       objectReference: {fileID: 11400000, guid: 27cb5a7026d37d84692fa4ea27970834, type: 2}
+    - target: {fileID: 2788514426886983777, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: unitSprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: unitSprite
+      value: 
+      objectReference: {fileID: 6743042462806359849}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitTemplate
       value: 
@@ -295,10 +303,11 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4166987097090433852, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5009294011632168282, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
-      insertIndex: 3
+      insertIndex: 2
       addedObject: {fileID: 2277539358464900196}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}

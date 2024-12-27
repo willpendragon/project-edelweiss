@@ -28,7 +28,7 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
         ResetTileControllersGlow();
         ClearPath();
         OnPlayerWaiting();
-
+        UnitProfilesController.Instance.DestroyEnemyUnitPanel();
         BattleManager.Instance.GetComponent<TurnController>().GameOverCheck();
     }
     void DestroyMagnet()

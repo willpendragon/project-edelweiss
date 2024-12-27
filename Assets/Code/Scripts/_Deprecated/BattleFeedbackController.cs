@@ -26,6 +26,7 @@ public class BattleFeedbackController : MonoBehaviour
 
     public UnityEvent PlayDeathVFX;
     public GameObject deathDisappearAnimationVFX;
+    public Animator comboIncreaseVFXAnimator;
     public Animator unitAnimator;
     public GameObject buffIcon;
 
@@ -75,6 +76,14 @@ public class BattleFeedbackController : MonoBehaviour
         {
             deathDisappearAnimationVFX = Instantiate(deathDisappearAnimationVFX, gameObject.transform);
             deathDisappearAnimationVFX.GetComponent<Animator>().SetTrigger("TriggerDeathVFX");
+        }
+    }
+
+    public void PlayComboIncreaseVFX()
+    {
+        if (comboIncreaseVFXAnimator != null)
+        {
+            comboIncreaseVFXAnimator.SetTrigger("ComboCounterIncrease");
         }
     }
 }
