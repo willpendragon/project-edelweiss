@@ -9,7 +9,7 @@ public class DeityAnguanaBehavior : DeityBehavior
     {
         BattleManager battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
 
-        if (battleManager.currentBattleType == BattleType.regularBattle)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
             if (deity.PerformDeityEnmityCheck())
             {
@@ -20,7 +20,7 @@ public class DeityAnguanaBehavior : DeityBehavior
                 Debug.Log("Deity Anguana doesn't do anything");
             }
         }
-        else if (battleManager.currentBattleType == BattleType.battleWithDeity)
+        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             Attack(deity);
         }

@@ -27,7 +27,7 @@ public class TurnTrackerController : MonoBehaviour
         {
             turnTrackerText.text = turnText;
         }
-        if (BattleManager.Instance.currentBattleType == BattleType.BossBattle)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BossBattle)
         {
             OnIncreaseTurnCounter();
         }

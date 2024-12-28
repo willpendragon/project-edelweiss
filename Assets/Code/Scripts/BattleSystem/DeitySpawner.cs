@@ -24,7 +24,7 @@ public class DeitySpawner : MonoBehaviour
 
     void Start()
     {
-        if (battleManager.currentBattleType == BattleType.regularBattle)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
             int deityRollMinRange = 0;
             int deityRollMaxRange = 7;
@@ -38,7 +38,7 @@ public class DeitySpawner : MonoBehaviour
                 Debug.Log("Rolled Deity arrival on battlefield");
             }
         }
-        else if (battleManager.currentBattleType == BattleType.battleWithDeity)
+        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             if (deityHealthBarInstance != null)
             {

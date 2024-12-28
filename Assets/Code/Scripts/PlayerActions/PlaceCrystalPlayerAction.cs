@@ -20,7 +20,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
     public void Select(TileController selectedTile)
     {
-        if (BattleManager.Instance.currentBattleType == BattleType.battleWithDeity)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 

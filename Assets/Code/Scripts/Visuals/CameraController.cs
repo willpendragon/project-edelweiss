@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] Animator cameraAnimator;
     void Start()
     {
-        if (battleManager.currentBattleType == BattleType.battleWithDeity)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             cameraAnimator.SetTrigger("DeityEntryCamera");
         }

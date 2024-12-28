@@ -17,13 +17,6 @@ public enum FieldEffectStatus
     inactive
 }
 
-public enum BattleType
-{
-    regularBattle,
-    battleWithDeity,
-    BossBattle
-}
-
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
@@ -49,8 +42,6 @@ public class BattleManager : MonoBehaviour
     private GameManager gameManager;
 
     public EnemyTurnManager enemyTurnManager;
-
-    public BattleType currentBattleType;
 
     public delegate void SavePlayerHealth(float finalPlayerHealth);
     public static event SavePlayerHealth OnSavePlayerHealth;
@@ -95,11 +86,6 @@ public class BattleManager : MonoBehaviour
         TurnController.OnEnemyTurn -= ActivateBattleMomentsScreen;
 
     }
-
-    public void SetBattleType(BattleType battleType)
-    {
-        currentBattleType = battleType;
-    }
     void Start()
     {
         //Looks for the Game Manager at the start of the battle.
@@ -126,7 +112,7 @@ public class BattleManager : MonoBehaviour
     }
     void ClearTilesWithMissingUnits()
     {
-        if (currentBattleType == BattleType.battleWithDeity)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             foreach (TileController tile in gridManager.gridTileControllers)
             {

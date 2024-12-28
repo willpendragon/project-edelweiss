@@ -66,7 +66,7 @@ public class EnemyTurnManager : MonoBehaviour
     }
     private IEnumerator ExecuteTurns()
     {
-        if (battleManager.currentBattleType == BattleType.regularBattle || battleManager.currentBattleType == BattleType.BossBattle)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle || BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BossBattle)
         {
             while (currentEnemyTurnIndex < enemiesInQueue.Count)
             {
@@ -100,7 +100,7 @@ public class EnemyTurnManager : MonoBehaviour
                 //Reenable Player UI. Replenish Player Opportunity Points.
             }
         }
-        else if (battleManager.currentBattleType == BattleType.battleWithDeity)
+        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             Debug.Log("This is a battle with a Deity");
             OnDeityTurn("Deity Turn");

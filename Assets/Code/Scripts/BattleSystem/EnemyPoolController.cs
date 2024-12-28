@@ -7,13 +7,24 @@ public class EnemyPoolController : MonoBehaviour
 {
     public GameObject[] EnemyPoolGameObjects;
     [SerializeField] BattleManager battleManager;
-    void OnEnable()
+    private void OnEnable()
     {
-        if (battleManager.currentBattleType == BattleType.regularBattle)
+        BattleTypeController.OnBattleTypeInitialized += HandleBattleTypeInitialized;
+    }
+
+    private void OnDisable()
+    {
+        BattleTypeController.OnBattleTypeInitialized -= HandleBattleTypeInitialized;
+    }
+
+    private void HandleBattleTypeInitialized()
+    {
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
             SpawnEnemies();
+            Debug.Log("Spawned Regular Battle Enemies");
         }
-        else if (battleManager.currentBattleType == BattleType.BossBattle)
+        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BossBattle)
         {
             SpawnBossBattleEnemies();
         }
@@ -21,7 +32,7 @@ public class EnemyPoolController : MonoBehaviour
 
     private void Start()
     {
-        if (battleManager.currentBattleType == BattleType.BossBattle)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BossBattle)
         {
             SetEnemiesStartingCoordinatesInBossBattle();
         }

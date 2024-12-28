@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class AchievementsManager : MonoBehaviour
 {
@@ -12,54 +9,47 @@ public class AchievementsManager : MonoBehaviour
 
     public Achievement currentAchievement;
 
-    private void Awake()
+    private Achievement SelectAchievementUnlocked()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
+        var completedAchievements = allAchievements.Where(a => a.AchievementIsUnlocked()).ToList();
 
-    private void OnDestroy()
-    {
-        // Always unsubscribe from events when the object is destroyed
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Debug.Log("Scene Loaded: " + scene.name);
-        if (scene.name == "battle_prototype")
+        if (completedAchievements.Count > 0)
         {
-            var completedAchievements = allAchievements.Where(a => a.AchievementIsUnlocked()).ToList();
-
-            if (completedAchievements.Count > 0)
-            {
-                // Tie-breaker: Random selection using localRandom
-                Achievement achievementToTrigger = completedAchievements[localRandom.Next(completedAchievements.Count)];
-                TriggerAchievementLogic(achievementToTrigger);
-            }
+            // Tie-breaker: Random selection using localRandom
+            Achievement achievementToTrigger = completedAchievements[localRandom.Next(completedAchievements.Count)];
+            return achievementToTrigger;
+        }
+        else
+        {
+            return null;
         }
     }
 
-    private void TriggerAchievementLogic(Achievement achievement)
+    private bool CanTriggerDeityBattle(Achievement achievement, double deitySpawnChance)
     {
+        return achievement != null
+            && achievement.spawnableDeity != null
+            && localRandom.NextDouble() <= deitySpawnChance;
+    }
+    public BattleTypeController.BattleType TriggerDeityAchievementLogic()
+    {
+        Achievement achievement = SelectAchievementUnlocked();
         // Define the chance of spawning the deity (e.g., 10% chance)
         // Beware, Magic Number
         double spawnChance = 0.5;
 
         // Check if there is a deity to spawn and make a probability roll
-        if (achievement.spawnableDeity != null && localRandom.NextDouble() <= spawnChance)
+        if (CanTriggerDeityBattle(achievement, spawnChance))
         {
-            Debug.Log("Spawning corresponding Deity");
             //Trigger the actual Deity Encounter logic here
-            GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>().SetBattleType(BattleType.battleWithDeity);
             GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().InitiateBattleWithDeity(achievement.spawnableDeity);
-
-            Debug.Log("Setting battle with Deity");
-            //Instantiate(achievement.spawnableDeity, Vector3.zero, Quaternion.identity); // Example spawn position and rotation
+            Debug.Log("Started Battle with Deity");
+            return BattleTypeController.BattleType.BattleWithDeity;
         }
         else
         {
-            Debug.Log("Deity spawn chance not met or achievement already met.");
+            Debug.Log("Deity spawn chance not met or Achievement already met.");
+            return BattleTypeController.BattleType.RegularBattle;
         }
     }
 }
-

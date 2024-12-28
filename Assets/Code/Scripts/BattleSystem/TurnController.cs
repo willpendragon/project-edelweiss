@@ -260,17 +260,17 @@ public class TurnController : MonoBehaviour
         Debug.Log("Performing Game Over Check");
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
 
-        switch (battleManager.currentBattleType)
+        switch (BattleTypeController.Instance.currentBattleType)
         {
-            case BattleType.regularBattle:
+            case BattleTypeController.BattleType.RegularBattle:
                 HandleRegularBattle(gameStatsManager);
                 break;
 
-            case BattleType.battleWithDeity:
+            case BattleTypeController.BattleType.BattleWithDeity:
                 HandleBattleWithDeity(gameStatsManager);
                 break;
 
-            case BattleType.BossBattle:
+            case BattleTypeController.BattleType.BossBattle:
                 HandleBossBattle();
                 break;
 
