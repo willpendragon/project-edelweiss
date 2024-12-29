@@ -18,7 +18,6 @@ public class KeyController : MonoBehaviour
             return true;
         }
     }
-
     public BattleTypeController.BattleType UnlockLevelLogic()
     {
         if (ValidateKey())
@@ -27,7 +26,7 @@ public class KeyController : MonoBehaviour
         }
         else
         {
-            return BattleTypeController.BattleType.BattleWithDeity;
+            return BattleTypeController.BattleType.RegularBattle;
         }
     }
 }

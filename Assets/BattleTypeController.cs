@@ -8,8 +8,6 @@ public class BattleTypeController : MonoBehaviour
 {
     public static BattleTypeController Instance { get; private set; }
     public static event Action OnBattleTypeInitialized;
-
-    private const string REGULARBATTLE = "battle_protoype";
     public enum BattleType
     {
         RegularBattle,
@@ -52,7 +50,7 @@ public class BattleTypeController : MonoBehaviour
         //    currentBattleType = keyController.UnlockLevelLogic();
         //}
         /*else*/
-        if (achievementsManager != null)
+        if (currentBattleType == BattleType.RegularBattle && achievementsManager != null)
         {
             currentBattleType = achievementsManager.TriggerDeityAchievementLogic();
         }
