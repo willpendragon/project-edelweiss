@@ -25,7 +25,7 @@ public class FieldPrizeController : MonoBehaviour
     {
         random = new System.Random();
     }
-    public void SpawnFieldPrize(TileController fieldPrizeTile)
+    public void UnlockFieldPrize(TileController fieldPrizeTile)
     {
         if (!RollFieldPrizeChance())
             return;

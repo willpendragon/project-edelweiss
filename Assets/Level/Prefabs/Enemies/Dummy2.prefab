@@ -119,6 +119,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 27cb5a7026d37d84692fa4ea27970834, type: 2}
     - target: {fileID: 1254154078120300381, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: keyVisuals
+      value: 
+      objectReference: {fileID: 5251994201314759952, guid: 99670e8a7b7d1b849b0e561afa2846a1, type: 3}
+    - target: {fileID: 1254154078120300381, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: keyPrizeThreshold
       value: 3
       objectReference: {fileID: 0}

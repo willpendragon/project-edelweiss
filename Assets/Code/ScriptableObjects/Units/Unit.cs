@@ -274,7 +274,7 @@ public class Unit : MonoBehaviour
                     // Spawn Prize on Battlefield
                     if (fieldPrizeController != null)
                     {
-                        fieldPrizeController.SpawnFieldPrize(ownedTile);
+                        fieldPrizeController.UnlockFieldPrize(ownedTile);
                     }
                 }
                 ownedTile.currentSingleTileCondition = SingleTileCondition.free;
