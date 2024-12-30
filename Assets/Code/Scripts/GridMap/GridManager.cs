@@ -40,6 +40,7 @@ public class GridManager : MonoBehaviour
 
     // Add a reference to the MapData
     public MapData currentMapData;
+    public MapData puzzleMapData;
 
     private void Awake()
     {
@@ -51,16 +52,14 @@ public class GridManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        GenerateGridMapFromData();
+        GenerateGridMapFromData(puzzleMapData);
     }
-
     private void Start()
     {
         gridTileControllers = GameObject.FindObjectsOfType<TileController>();
     }
-
     // Update GenerateGridMap to use MapData
-    public void GenerateGridMapFromData()
+    public void GenerateGridMapFromData(MapData currentMapData)
     {
         ClearGridMap();
 

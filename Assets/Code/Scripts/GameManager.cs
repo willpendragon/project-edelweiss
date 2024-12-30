@@ -67,21 +67,6 @@ public class GameManager : MonoBehaviour
         //currentEnemySelection = enemySelection;
     }
 
-    //public void UpdateEnemyData(Level level)
-    //{
-    //    if (BattleManager.Instance.currentBattleType == BattleType.regularBattle)
-    //    {
-    //        GenerateLevelData(level); // Generate random enemy data
-    //        Debug.Log("This is a regular battle");
-
-    //    }
-    //    else if (BattleManager.Instance.currentBattleType == BattleType.BossBattle)
-    //    {
-    //        // Retrieve Enemyies from hand-picked selection
-    //        Debug.Log("This is a boss battle");
-    //    }
-    //}
-
     public void InstantiateUnits()
     {
         // Clear the existing instances list
@@ -127,26 +112,29 @@ public class GameManager : MonoBehaviour
 
     public void GenerateLevelData(Level level)
     {
-        // Generate a random number of enemies within the specified range
-        int enemyPoolSize = RandomRange(level.minEnemyPoolSize, level.maxEnemyPoolSize + 1);
+        if (GridManager.Instance != null)
+        {
+            // Generate a random number of enemies within the specified range
+            int enemyPoolSize = RandomRange(level.minEnemyPoolSize, level.maxEnemyPoolSize + 1);
 
-        // Generate the enemy pool based on the weights
-        List<EnemyType> generatedEnemies = GenerateEnemyPool(level.enemyWeights, enemyPoolSize);
+            // Generate the enemy pool based on the weights
+            List<EnemyType> generatedEnemies = GenerateEnemyPool(level.enemyWeights, enemyPoolSize);
 
-        // Get player starting coordinates from the GameManager
-        List<Vector2Int> playerStartingCoordinates = GetPlayerStartingCoordinates();
+            // Get player starting coordinates from the GameManager
+            List<Vector2Int> playerStartingCoordinates = GetPlayerStartingCoordinates();
 
-        // Get existing tile coordinates from GridManager
-        List<Vector2Int> existingTiles = GridManager.Instance.GetExistingTileCoordinates();
+            // Get existing tile coordinates from GridManager
+            List<Vector2Int> existingTiles = GridManager.Instance.GetExistingTileCoordinates();
 
-        // Generate random positions for the enemies on the grid without overlapping player starting positions and only on existing tiles
-        List<Vector2> enemyPositions = GenerateEnemyPositions(enemyPoolSize, existingTiles, playerStartingCoordinates);
+            // Generate random positions for the enemies on the grid without overlapping player starting positions and only on existing tiles
+            List<Vector2> enemyPositions = GenerateEnemyPositions(enemyPoolSize, existingTiles, playerStartingCoordinates);
 
-        // Update current enemy selection data
-        currentEnemySelectionIds.Clear();
-        currentEnemySelectionCoords.Clear();
-        currentEnemySelectionIds.AddRange(generatedEnemies);
-        currentEnemySelectionCoords.AddRange(enemyPositions);
+            // Update current enemy selection data
+            currentEnemySelectionIds.Clear();
+            currentEnemySelectionCoords.Clear();
+            currentEnemySelectionIds.AddRange(generatedEnemies);
+            currentEnemySelectionCoords.AddRange(enemyPositions);
+        }
     }
 
     private List<EnemyType> GenerateEnemyPool(List<EnemyWeight> weights, int poolSize)

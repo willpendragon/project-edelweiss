@@ -24,6 +24,11 @@ public class EnemyPoolController : MonoBehaviour
             SpawnEnemies();
             Debug.Log("Spawned Regular Battle Enemies");
         }
+        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.PuzzleBattle)
+        {
+            SpawnEnemies();
+            Debug.Log("Spawned Regular Battle Enemies");
+        }
         else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BossBattle)
         {
             SpawnBossBattleEnemies();
