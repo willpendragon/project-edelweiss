@@ -21,16 +21,20 @@ public class MirrorController : MonoBehaviour
     public void OnEnable()
     {
         EnemyTurnManager.OnPlayerTurn += ActivateMirrors;
+        GridManager.OnSpawnActivationPlatforms += PopulateActivationPlatformList;
+        GridManager.OnSpawnActivationPlatforms += SpawnMirrors;
     }
     public void OnDisable()
     {
         EnemyTurnManager.OnPlayerTurn -= ActivateMirrors;
+        GridManager.OnSpawnActivationPlatforms -= PopulateActivationPlatformList;
+        GridManager.OnSpawnActivationPlatforms -= SpawnMirrors;
     }
 
     public void Start()
     {
-        PopulateActivationPlatformList();
-        SpawnMirrors();
+        //PopulateActivationPlatformList();
+        //SpawnMirrors();
     }
     private void PopulateActivationPlatformList()
     {
@@ -143,13 +147,16 @@ public class MirrorController : MonoBehaviour
         // Put here the logic for damaging the Boss Unit
         // Hard-coded for demo
 
-        Unit mirrorTarget = bossController.bossUnit;
-        float mirrorDamage = CalculateMirrorDamage();
-        OnMirrorAttack("The Mirrors Hit the Boss");
-        mirrorTarget.TakeDamage(mirrorDamage);
-        //Insert trigger for Mirror VFX here
-        ResetActivatedPlaformsCount();
-        Debug.Log(mirrorDamage + "Used Mirror Attack on Boss Unit");
+        if (bossController != null)
+        {
+            Unit mirrorTarget = bossController.bossUnit;
+            float mirrorDamage = CalculateMirrorDamage();
+            OnMirrorAttack("The Mirrors Hit the Boss");
+            mirrorTarget.TakeDamage(mirrorDamage);
+            //Insert trigger for Mirror VFX here
+            ResetActivatedPlaformsCount();
+            Debug.Log(mirrorDamage + "Used Mirror Attack on Boss Unit");
+        }
     }
 
     private float CalculateMirrorDamage()

@@ -3786,7 +3786,6 @@ GameObject:
   m_Component:
   - component: {fileID: 579048937}
   - component: {fileID: 579048936}
-  - component: {fileID: 579048938}
   m_Layer: 0
   m_Name: MeleeController
   m_TagString: Untagged
@@ -3822,18 +3821,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &579048938
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 579048935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63ffa50b58721a0409eb370d6580ae9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &588608016
 GameObject:
   m_ObjectHideFlags: 0
@@ -6849,6 +6836,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &891098018
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185918585284771629, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_Name
+      value: MirrorController
+      objectReference: {fileID: 0}
+    - target: {fileID: 6678309159168497059, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: gridManager
+      value: 
+      objectReference: {fileID: 810722614}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
 --- !u!1 &916921245
 GameObject:
   m_ObjectHideFlags: 0
@@ -13605,7 +13653,7 @@ PrefabInstance:
     - target: {fileID: 6110140968250516965, guid: 921b258e64d81d24ba38bd044f1fdead, type: 3}
       propertyPath: puzzleMapData
       value: 
-      objectReference: {fileID: 11400000, guid: b5868fbdab7a12e49be0a18a8e2c683b, type: 2}
+      objectReference: {fileID: 11400000, guid: 1ecedb37add75854eabf8de716032de6, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13937,6 +13985,7 @@ SceneRoots:
   - {fileID: 7580817272468375199}
   - {fileID: 579048937}
   - {fileID: 1878745759217115309}
+  - {fileID: 891098018}
   - {fileID: 635427251}
   - {fileID: 499339820}
   - {fileID: 1790485010}

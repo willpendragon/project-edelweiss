@@ -48,7 +48,6 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         }
         else if (type == MapNodeType.BossBattleNode && currentLockStatus == LockStatus.levelUnlocked)
         {
-            //enemySelection.SelectMapNode();
             Debug.Log("Player chose to enter in a Boss Battle");
             GameObject[] bossBattleCurrentEnemySelection = GetComponentInParent<EnemySelection>().enemySelection;
             List<Vector2> bossBattleEnemySelectionCoords = GetComponentInParent<EnemySelection>().EnemyCoordinates;

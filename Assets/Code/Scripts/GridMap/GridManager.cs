@@ -38,6 +38,9 @@ public class GridManager : MonoBehaviour
     public delegate void SetUnitInitialPositionOnGrid();
     public static event SetUnitInitialPositionOnGrid OnSetUnitInitialPositionOnGrid;
 
+    public delegate void SpawnActivationPlatforms();
+    public static event SpawnActivationPlatforms OnSpawnActivationPlatforms;
+
     // Add a reference to the MapData
     public MapData currentMapData;
     public MapData puzzleMapData;
@@ -52,13 +55,25 @@ public class GridManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        GenerateGridMapFromData(currentMapData);
+
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            int unlockedPuzzleKeys = gameSaveData.resourceData.puzzleLevelKeys;
+            if (unlockedPuzzleKeys >= 1)
+            {
+                GenerateGridMapFromData(puzzleMapData);
+            }
+        }
     }
     private void Start()
     {
         gridTileControllers = GameObject.FindObjectsOfType<TileController>();
+        if (OnSpawnActivationPlatforms != null)
+        {
+            OnSpawnActivationPlatforms.Invoke();
+        }
     }
-    // Update GenerateGridMap to use MapData
     public void GenerateGridMapFromData(MapData currentMapData)
     {
         ClearGridMap();

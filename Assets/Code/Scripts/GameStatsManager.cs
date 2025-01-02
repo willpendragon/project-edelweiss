@@ -41,9 +41,7 @@ public class GameStatsManager : MonoBehaviour
                 existingCharacterData.unitHealthPoints = unitComponent.unitHealthPoints;
                 existingCharacterData.unitSavedManaPoints = unitComponent.unitManaPoints;
                 existingCharacterData.unitShieldPoints = unitComponent.unitShieldPoints;
-
                 existingCharacterData.unitLifeCondition = unitComponent.currentUnitLifeCondition;
-
                 existingCharacterData.unitAttackPower = unitComponent.unitAttackPower;
                 existingCharacterData.unitMagicPower = unitComponent.unitMagicPower;
 
@@ -58,18 +56,13 @@ public class GameStatsManager : MonoBehaviour
                     unitHealthPoints = unitComponent.unitHealthPoints,
                     unitSavedManaPoints = unitComponent.unitManaPoints,
                     unitShieldPoints = unitComponent.unitShieldPoints,
-
                     unitLifeCondition = unitComponent.currentUnitLifeCondition,
-
                     unitAttackPower = unitComponent.unitAttackPower,
                     unitMagicPower = unitComponent.unitMagicPower,
-
-
                 };
                 characterSaveData.characterData.Add(newCharacterData);
             }
         }
-
         SaveStateManager.SaveGame(characterSaveData);
     }
     public void LoadCharacterData()
@@ -92,13 +85,9 @@ public class GameStatsManager : MonoBehaviour
                     unitComponent.unitHealthPoints = loadedCharacterData.unitHealthPoints;
                     unitComponent.unitManaPoints = loadedCharacterData.unitSavedManaPoints;
                     unitComponent.unitShieldPoints = loadedCharacterData.unitShieldPoints;
-
                     unitComponent.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
-
                     unitComponent.unitAttackPower = loadedCharacterData.unitAttackPower;
                     unitComponent.unitMagicPower = loadedCharacterData.unitMagicPower;
-
-                    // Set other stats as necessary
                     Debug.Log("Restoring Player Units HP and Mana");
                 }
             }
@@ -123,7 +112,6 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Saved War Funds: {newWarFunds}");
         }
     }
-
     public void SaveSpentWarFunds(float spentWarFunds)
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -143,7 +131,6 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log("Loading the number of unlocked Keys");
         }
     }
-
     public void SaveUnlockedKeys(int unlockedKeys)
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -163,7 +150,6 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log("Loading the number of killed Enemies");
         }
     }
-
     public void LoadCaptureCrystalsCount()
     {
         GameSaveData resourceSaveData = SaveStateManager.saveData;
@@ -173,7 +159,6 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Loaded Capture Crystals: {captureCrystalsCount}");
         }
     }
-
     public void SaveCaptureCrystalsCount()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -184,7 +169,6 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Saved Capture Crystals: {captureCrystalsCount}");
         }
     }
-
     public void SaveEnemiesKilled()
     {
         Debug.Log("Increasing Enemies Killed");
@@ -195,7 +179,6 @@ public class GameStatsManager : MonoBehaviour
 
         SaveStateManager.SaveGame(saveData);
     }
-
     public void LoadUsedSingleTargetSpells()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -205,7 +188,6 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log("Loading the number of killed Enemies");
         }
     }
-
     public void SaveUsedSingleTargetSpells()
     {
         Debug.Log("Increasing Used Single Target Spells statistics");

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0818157, g: 0.27723095, b: 0.74017024, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -563,7 +563,6 @@ MonoBehaviour:
   captureCrystalsRewardPool: 0
   fieldEffectStatus: 1
   enemyTurnManager: {fileID: 90211751}
-  currentBattleType: 2
   PlayerTurnStarts:
     m_PersistentCalls:
       m_Calls:
@@ -665,16 +664,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e921692f94d8d04a9e6d8b834e6065c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  summonResetHelper: {fileID: 0}
   turnCounter: 0
   currentTurn: 0
   playerUnitsOnBattlefield: []
   enemyUnitsOnBattlefield: []
-  warFunds: 0
-  enemiesKilledInCurrentBattle: 0
   battleManager: {fileID: 90211749}
   battleEndUIHandler: {fileID: 767884336}
-  timesSingleTargetSpellWasUsed: 0
   achievementsManager: {fileID: 499339821}
+  warFunds: 0
+  enemiesKilledInCurrentBattle: 0
+  timesSingleTargetSpellWasUsed: 0
 --- !u!1 &99782221
 GameObject:
   m_ObjectHideFlags: 0
@@ -3606,10 +3606,13 @@ MonoBehaviour:
   conversations:
   - conversationID: Test_Conversation
     isUnlocked: 0
+    isRead: 0
   - conversationID: After the Battle
     isUnlocked: 0
+    isRead: 0
   - conversationID: Intro Dialogue
     isUnlocked: 0
+    isRead: 0
 --- !u!4 &709194842
 Transform:
   m_ObjectHideFlags: 0
@@ -4981,6 +4984,7 @@ MonoBehaviour:
   gridTileControllers: []
   gridMovementController: {fileID: 1717157114}
   currentMapData: {fileID: 11400000, guid: b5868fbdab7a12e49be0a18a8e2c683b, type: 2}
+  puzzleMapData: {fileID: 0}
 --- !u!4 &810722615
 Transform:
   m_ObjectHideFlags: 0
@@ -6235,56 +6239,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!1 &1036750653
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1036750655}
-  - component: {fileID: 1036750656}
-  m_Layer: 0
-  m_Name: MirrorController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1036750655
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1036750653}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1036750656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1036750653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64ff2a35297d32a429ea37383a603b4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridManager: {fileID: 810722614}
-  bossController: {fileID: 1508039771}
-  mirrorGO: {fileID: 8423353141563557332, guid: f48f6a2e602294c49a16a18693db2840, type: 3}
-  activationPlatformGO: {fileID: 8182234101745996692, guid: 1a0bb5c61af8a0643a6e0bfdab867171, type: 3}
-  activatedPlatformsCount: 0
-  activatedPlatformsCountRequirement: 2
 --- !u!1 &1114723494
 GameObject:
   m_ObjectHideFlags: 0
@@ -7215,6 +7169,7 @@ MonoBehaviour:
   warFunds: 0
   timesSingleTargetSpellWasUsed: 0
   captureCrystalsCount: 0
+  unlockedPuzzleKeys: 0
 --- !u!4 &1195676640
 Transform:
   m_ObjectHideFlags: 0
@@ -10089,6 +10044,8 @@ MonoBehaviour:
   deitySpawnPosition: {fileID: 1790485010}
   deityAchievementsController: {fileID: 0}
   battleManager: {fileID: 90211749}
+  deityObelisk: {fileID: 0}
+  deityObeliskSpawningPoint: {fileID: 0}
   currentUnboundDeity: {fileID: 0}
   deityHealthBar: {fileID: 7395316366926420676, guid: 2f84651896d321549ad1a81364cdcca6, type: 3}
 --- !u!4 &1790485010
@@ -11268,6 +11225,71 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1baaf201a5ca847468f7ab66f4b72852, type: 3}
+--- !u!1001 &3167751047823257950
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500766314150400780, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185918585284771629, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: m_Name
+      value: MirrorController
+      objectReference: {fileID: 0}
+    - target: {fileID: 6678309159168497059, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: gridManager
+      value: 
+      objectReference: {fileID: 810722614}
+    - target: {fileID: 6678309159168497059, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
+      propertyPath: bossController
+      value: 
+      objectReference: {fileID: 1508039771}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f1762254768606f4d83ea1e541fb09b1, type: 3}
 --- !u!1 &5538587751843420897
 GameObject:
   m_ObjectHideFlags: 0
@@ -11465,7 +11487,7 @@ SceneRoots:
   - {fileID: 1850559077}
   - {fileID: 1508039772}
   - {fileID: 871809831}
-  - {fileID: 1036750655}
+  - {fileID: 3167751047823257950}
   - {fileID: 363277734}
   - {fileID: 810722615}
   - {fileID: 1720886331}
