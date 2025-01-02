@@ -6,14 +6,6 @@ using UnityEngine;
 
 public static class SaveStateManager
 {
-    //private static string saveFilePath
-    //{
-    //    get
-    //    {
-    //        return Path.Combine(Application.persistentDataPath, "achievements.json");
-    //    }
-    //}
-
     private static string saveFilePathTest
     {
 
@@ -26,7 +18,6 @@ public static class SaveStateManager
 
     private static GameSaveData gameSaveData = null;
     public static GameSaveData saveData
-
     {
         get
         {
@@ -43,7 +34,6 @@ public static class SaveStateManager
         File.WriteAllText(saveFilePathTest, json);
         Debug.Log("Saving Game Data");
     }
-
     public static GameSaveData LoadGame()
     {
         // Check if the file exists

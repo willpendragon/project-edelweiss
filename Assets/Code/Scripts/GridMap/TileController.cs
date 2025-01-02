@@ -31,7 +31,6 @@ public enum TileType
     Obstacle,
     Mirror
 }
-
 public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Gameplay Logic")]
@@ -71,7 +70,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     public delegate void UpdateEnemyTargetUnitProfile(GameObject detectedUnit);
     public static event UpdateEnemyTargetUnitProfile OnUpdateEnemyTargetUnitProfile;
-
     void Start()
     {
         currentTileCurseStatus = TileCurseStatus.notCursed;
@@ -89,7 +87,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             cursorInstance.SetActive(false);
         }
     }
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left && Time.time - lastClickTime > clickCooldown)
@@ -103,7 +100,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             HandleTileDeselection();
         }
     }
-
     public void HandleTileSelection()
     {
         switch (currentSingleTileStatus)
@@ -121,7 +117,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 break;
         }
     }
-
     private void HandleSelectionMode()
     {
         if (currentPlayerAction is SelectUnitPlayerAction)
@@ -133,23 +128,19 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             currentPlayerAction.Select(this);
         }
     }
-
     private void HandleConfirmationMode()
     {
         ExecutePlayerAction();
     }
-
     private void ExecutePlayerAction()
     {
         currentPlayerAction.Select(this);
         currentPlayerAction.Execute();
     }
-
     public void HandleTileDeselection()
     {
         currentPlayerAction.Deselect();
     }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         Debug.Log("Mouse entered tile: " + gameObject.name);
@@ -161,7 +152,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             cursorInstance.SetActive(true);
         }
     }
-
     public void OnPointerExit(PointerEventData eventData)
     {
         Debug.Log("Mouse exited tile: " + gameObject.name);
@@ -172,7 +162,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             cursorInstance.SetActive(false);
         }
     }
-
     public void CheckFieldPrizes(TileController destinationTile, Unit activePlayerUnit)
     {
         if (destinationTile != null && destinationTile.tileCurrentFieldPrize != null)
@@ -186,12 +175,18 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             {
                 activePlayerUnit.unitMagicPower += fieldPrizeController.fieldPrize.powerUpAmount;
             }
+            else if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.PuzzleLevelKey)
+            {
+                GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+                gameStatsManager.unlockedPuzzleKeys += 1;
+                gameStatsManager.SaveUnlockedKeys(gameStatsManager.unlockedPuzzleKeys);
+                Debug.Log("Added Key to Game Stats Manager and saved to game state");
+            }
             UpdateCombatValues();
             Destroy(fieldPrizeController.gameObject);
             Debug.Log("Applied Power Up");
         }
     }
-
     private void UpdateCombatValues()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();

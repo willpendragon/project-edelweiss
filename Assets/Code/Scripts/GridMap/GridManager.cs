@@ -52,7 +52,7 @@ public class GridManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        GenerateGridMapFromData(puzzleMapData);
+        GenerateGridMapFromData(currentMapData);
     }
     private void Start()
     {

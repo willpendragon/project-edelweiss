@@ -45,12 +45,11 @@ public class BattleTypeController : MonoBehaviour
     {
         Debug.Log("BattleSelection started.");
 
-        //if (keyController != null && keyController.ValidateKey())
-        //{
-        //    currentBattleType = keyController.UnlockLevelLogic();
-        //}
-        /*else*/
-        if (currentBattleType == BattleType.RegularBattle && achievementsManager != null)
+        if (keyController != null && keyController.ValidateKey())
+        {
+            currentBattleType = keyController.UnlockLevelLogic();
+        }
+        else if (currentBattleType == BattleType.RegularBattle && achievementsManager != null)
         {
             currentBattleType = achievementsManager.TriggerDeityAchievementLogic();
         }

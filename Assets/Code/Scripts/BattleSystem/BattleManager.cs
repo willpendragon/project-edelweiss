@@ -123,7 +123,6 @@ public class BattleManager : MonoBehaviour
             }
         }
     }
-
     public void PassTurnToPlayer()
     {
         //Hands the turn to the Player.
@@ -134,7 +133,6 @@ public class BattleManager : MonoBehaviour
         Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
         endTurnButton.interactable = true;
         PlayerTurnStarts.Invoke();
-
     }
     public bool AllEnemiesOpportunityZero()
     {
@@ -155,7 +153,6 @@ public class BattleManager : MonoBehaviour
         turnCounter += 1;
         turnTracker.text = turnCounter.ToString();
     }
-
     public void RestoreOpportunityEnemies()
     {
         foreach (GameObject enemy in enemiesOnBattlefield)
@@ -164,7 +161,6 @@ public class BattleManager : MonoBehaviour
             enemyScript.opportunity = 1;
         }
     }
-
     public void ActivateBattleMomentsScreen(string battleMomentText)
     {
         battleMomentsScreen.SetActive(true);

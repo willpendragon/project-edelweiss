@@ -5,7 +5,8 @@ using UnityEngine;
 public enum ItemFieldPrizeType
 {
     attackPowerUp,
-    magicPowerUp
+    magicPowerUp,
+    PuzzleLevelKey
 }
 [CreateAssetMenu(fileName = "ItemFieldPrize", menuName = "Items/FieldPrize", order = 1)]
 

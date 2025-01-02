@@ -8,13 +8,11 @@ public class GameSaveData
     public int highestUnlockedLevel;
     public int timesSingleTargetSpellWasUsed;
 
-
     public List<CharacterData> characterData = new List<CharacterData>();
     public ResourceData resourceData = new ResourceData();
 
     public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
     public List<ConversationData> unlockedConversations = new List<ConversationData>();
-
 }
 
 [System.Serializable]
@@ -40,6 +38,7 @@ public class ResourceData
     public float warFunds;
     public float experiencePointsReward;
     public int captureCrystalsCount;
+    public int puzzleLevelKeys;
 }
 
 [System.Serializable]

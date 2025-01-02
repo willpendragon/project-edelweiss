@@ -5,19 +5,6 @@ using UnityEngine;
 
 public class KeyController : MonoBehaviour
 {
-    [SerializeField] GameObject key = null;
-
-    public bool ValidateKey()
-    {
-        if (key == null)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
     public BattleTypeController.BattleType UnlockLevelLogic()
     {
         if (ValidateKey())
@@ -27,6 +14,18 @@ public class KeyController : MonoBehaviour
         else
         {
             return BattleTypeController.BattleType.RegularBattle;
+        }
+    }
+    public bool ValidateKey()
+    {
+        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+        if (gameStatsManager.unlockedPuzzleKeys >= 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }

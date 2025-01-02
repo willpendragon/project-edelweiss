@@ -7,6 +7,7 @@ public class GameStatsManager : MonoBehaviour
     public float warFunds;
     public int timesSingleTargetSpellWasUsed;
     public int captureCrystalsCount;
+    public int unlockedPuzzleKeys;
 
     private CharacterData characterData;
 
@@ -16,6 +17,7 @@ public class GameStatsManager : MonoBehaviour
         LoadEnemiesKilled();
         LoadUsedSingleTargetSpells();
         LoadCaptureCrystalsCount();
+        LoadUnlockedKeys();
     }
 
     public void Start()
@@ -102,7 +104,6 @@ public class GameStatsManager : MonoBehaviour
             }
         }
     }
-
     public void LoadWarFunds()
     {
         GameSaveData resourceSaveData = SaveStateManager.saveData;
@@ -112,7 +113,6 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Loaded War Funds: {warFunds}");
         }
     }
-
     public void SaveWarFunds(float newWarFunds)
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -134,7 +134,26 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Spent War Funds: {spentWarFunds}");
         }
     }
+    public void LoadUnlockedKeys()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            unlockedPuzzleKeys = gameSaveData.resourceData.puzzleLevelKeys;
+            Debug.Log("Loading the number of unlocked Keys");
+        }
+    }
 
+    public void SaveUnlockedKeys(int unlockedKeys)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.puzzleLevelKeys += unlockedKeys;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Keys: {unlockedKeys}");
+        }
+    }
     public void LoadEnemiesKilled()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -144,7 +163,6 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log("Loading the number of killed Enemies");
         }
     }
-
 
     public void LoadCaptureCrystalsCount()
     {

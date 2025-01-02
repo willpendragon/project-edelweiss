@@ -8578,7 +8578,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00f673038700169449c751c03b4b042c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: {fileID: 0}
 --- !u!1 &1180730693
 GameObject:
   m_ObjectHideFlags: 0
@@ -8746,6 +8745,7 @@ MonoBehaviour:
   warFunds: 0
   timesSingleTargetSpellWasUsed: 0
   captureCrystalsCount: 0
+  unlockedPuzzleKeys: 0
 --- !u!4 &1195676640
 Transform:
   m_ObjectHideFlags: 0
@@ -13602,6 +13602,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6110140968250516965, guid: 921b258e64d81d24ba38bd044f1fdead, type: 3}
+      propertyPath: puzzleMapData
+      value: 
+      objectReference: {fileID: 11400000, guid: b5868fbdab7a12e49be0a18a8e2c683b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
