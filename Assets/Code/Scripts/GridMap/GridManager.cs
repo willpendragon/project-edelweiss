@@ -64,6 +64,10 @@ public class GridManager : MonoBehaviour
             {
                 GenerateGridMapFromData(puzzleMapData);
             }
+            else
+            {
+                GenerateGridMapFromData(currentMapData);
+            }
         }
     }
     private void Start()

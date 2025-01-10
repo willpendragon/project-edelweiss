@@ -12,6 +12,7 @@ public class MapNodeInfoPanelController : MonoBehaviour
     [SerializeField] Sprite enemyIcon1;
     [SerializeField] Sprite enemyIcon2;
     [SerializeField] Sprite enemyIcon3;
+    [SerializeField] Sprite defaultIcon;
 
     private void Start()
     {
@@ -33,7 +34,7 @@ public class MapNodeInfoPanelController : MonoBehaviour
             else
             {
                 // Set empty or placeholder text for unused slots
-                enemyPoolPredictionsGameObject[i].GetComponentInChildren<TextMeshProUGUI>().text = "Empty Slot";
+                enemyPoolPredictionsGameObject[i].GetComponentInChildren<TextMeshProUGUI>().text = "-";
             }
         }
     }
@@ -50,7 +51,7 @@ public class MapNodeInfoPanelController : MonoBehaviour
             case "dummy3":
                 return enemyIcon3;
             default:
-                return null;
+                return defaultIcon;
         }
     }
 }

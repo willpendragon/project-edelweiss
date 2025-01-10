@@ -26,7 +26,8 @@ public class UnitProfilesController : MonoBehaviour
             //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
             newUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
             newUnitPanel.tag = "Enemy";
-            newUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleLeft;
+            newUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleRight;
+            newUnitPanel.GetComponent<HorizontalLayoutGroup>().padding.top = -376;
             detectedUnit.GetComponent<Unit>().unitProfilePanel = newUnitPanel;
             newUnitPanel.GetComponent<PlayerProfileController>().ApplyProfileChanges(detectedUnit, PlayerProfileController.ProfileOwner.enemyUnit);
             newUnitPanelExists = true;
