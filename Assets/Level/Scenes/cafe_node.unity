@@ -1424,6 +1424,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6470602292017178861, guid: 5d272442cb4d8bf42a57885bd7f2aaec, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 107907b4c23f3c142bec5526757cf5d2, type: 2}
     - target: {fileID: -4925890095203842434, guid: 5d272442cb4d8bf42a57885bd7f2aaec, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1440,6 +1444,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 4.97
       objectReference: {fileID: 0}
+    - target: {fileID: -2949382093482028402, guid: 5d272442cb4d8bf42a57885bd7f2aaec, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 107907b4c23f3c142bec5526757cf5d2, type: 2}
     - target: {fileID: -1613616854513681479, guid: 5d272442cb4d8bf42a57885bd7f2aaec, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.14
@@ -1464,6 +1472,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4078335489949471231, guid: 5d272442cb4d8bf42a57885bd7f2aaec, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 107907b4c23f3c142bec5526757cf5d2, type: 2}
+    - target: {fileID: 9004173512886778990, guid: 5d272442cb4d8bf42a57885bd7f2aaec, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 107907b4c23f3c142bec5526757cf5d2, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3656,6 +3672,7 @@ MonoBehaviour:
   warFunds: 0
   timesSingleTargetSpellWasUsed: 0
   captureCrystalsCount: 0
+  unlockedPuzzleKeys: 0
 --- !u!4 &1060191525
 Transform:
   m_ObjectHideFlags: 0
@@ -4107,7 +4124,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2579693216120635488, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.56
+      value: 2.77
       objectReference: {fileID: 0}
     - target: {fileID: 2579693216120635488, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4115,7 +4132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2579693216120635488, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.47
+      value: -5.55
       objectReference: {fileID: 0}
     - target: {fileID: 2579693216120635488, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7233,7 +7250,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6.69
+  near clip plane: -8.46
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -7782,7 +7799,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -6.69
+  near clip plane: -8.46
   far clip plane: 1000
   field of view: 60
   orthographic: 1
