@@ -78,7 +78,6 @@ public class GameManager : MonoBehaviour
             Unit newUnitInstance = Instantiate(unitPrefab, this.gameObject.transform);
             playerPartyMembersInstances.Add(newUnitInstance); // Add the new instance to the list
         }
-        Debug.Log("Instantiated Player Units");
         ApplyDeityLinks();
     }
 

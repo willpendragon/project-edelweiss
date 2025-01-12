@@ -80,7 +80,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             tilePrefabSprite.GetComponent<SpriteRenderer>().enabled = false;
         }
 
-        // Instantiate the cursor prefab but keep it inactive initially
+        // Instantiate the cursor prefab but keep it inactive initially.
         if (cursorPrefab != null)
         {
             cursorInstance = Instantiate(cursorPrefab);
@@ -143,9 +143,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Mouse entered tile: " + gameObject.name);
-
-        // Show and position the cursor over the tile at Y = 0.57
+        // Show and position the cursor over the tile at Y = 0.57.
         if (cursorInstance != null)
         {
             cursorInstance.transform.position = new Vector3(transform.position.x, 0.57f, transform.position.z);
@@ -154,9 +152,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("Mouse exited tile: " + gameObject.name);
-
-        // Hide the cursor when exiting the tile
+        // Hide the cursor when exiting the Tile.
         if (cursorInstance != null)
         {
             cursorInstance.SetActive(false);

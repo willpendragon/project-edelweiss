@@ -147,7 +147,6 @@ public class GameStatsManager : MonoBehaviour
         if (gameSaveData != null)
         {
             enemiesKilled = gameSaveData.enemiesKilled;
-            Debug.Log("Loading the number of killed Enemies");
         }
     }
     public void LoadCaptureCrystalsCount()
@@ -173,7 +172,7 @@ public class GameStatsManager : MonoBehaviour
     {
         Debug.Log("Increasing Enemies Killed");
 
-        // Prepare the save data
+        // Prepare the Save Data
         GameSaveData saveData = SaveStateManager.saveData;
         saveData.enemiesKilled = enemiesKilled;
 
@@ -185,7 +184,6 @@ public class GameStatsManager : MonoBehaviour
         if (gameSaveData != null)
         {
             timesSingleTargetSpellWasUsed = gameSaveData.timesSingleTargetSpellWasUsed;
-            Debug.Log("Loading the number of killed Enemies");
         }
     }
     public void SaveUsedSingleTargetSpells()

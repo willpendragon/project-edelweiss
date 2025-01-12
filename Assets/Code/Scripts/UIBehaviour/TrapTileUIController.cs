@@ -26,8 +26,6 @@ public class TrapTileUIController : MonoBehaviour
     }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("OnSceneLoaded: " + scene.name);
-        Debug.Log(mode);
         if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype")
         {
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;

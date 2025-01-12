@@ -13,7 +13,6 @@ public class MeleeUIController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    //public MeleeController meleeController;
     public GameObject meleeButtonPrefab;
     public Transform spellMenuContainer;
     private string buttonName;
@@ -21,7 +20,6 @@ public class MeleeUIController : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
-        Debug.Log(mode);
         if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype")
         {
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
@@ -31,7 +29,8 @@ public class MeleeUIController : MonoBehaviour
 
     public void AddMeleeButton()
     {
-        //Instantiates the Melee Button.
+        // Instantiate the Melee Button.
+
         GameObject meleeButtonInstance = Instantiate(meleeButtonPrefab, spellMenuContainer);
         Button currentMeleeButton = meleeButtonInstance.GetComponent<Button>();
         currentMeleeButton.onClick.AddListener(() => SwitchTilesToSelectionMode());
@@ -60,7 +59,7 @@ public class MeleeUIController : MonoBehaviour
                 tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             }
         }
-        // After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode and switch to the Melee Player Action
+        // After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode and switch to the Melee Player Action.
     }
 
     public void DeactivateTrapSelection()

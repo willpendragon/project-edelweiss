@@ -8,19 +8,17 @@ public class EnemyAgent : MonoBehaviour
 {
 
     [Header("Unit Statistics")]
-    //To be reworked. Should uniform and make the Enemy take the statistics from its own Scriptable Object template.
+    // To be reworked. Should uniform and make the Enemy take the statistics from its own Scriptable Object template.
     public int speed;
     public float attackPower = 60;
 
     [Header("Gameplay Logic")]
-    //To be reworked. Player is a Unit now.
-    //public Player player;
+    // To be reworked. Player is a Unit now.
     public int opportunity;
     [SerializeField] BattleManager battleManager;
     [SerializeField] int minEnemyMoveRollRange;
     [SerializeField] int maxEnemyMoveRollRange;
     public EnemyBehavior enemyBehavior;
-
 
     [Header("Presentation")]
     [SerializeField] float enemyMoveElapsingTime;
@@ -33,23 +31,11 @@ public class EnemyAgent : MonoBehaviour
     [SerializeField] TextMeshProUGUI opportunityCounter;
     [SerializeField] TextMeshProUGUI receivedDamageCounter;
 
-    public int unitMovementLimit;
-    public int currentXCoordinate;
-    public int currentYCoordinate;
-
-    //public delegate void ExperienceRewardDelegate(float applicableExperienceReward);
-    //public static event ExperienceRewardDelegate OnExperienceReward;
-
-    //public delegate void CoinsRewardDelegate(float applicableCoinReward);
-    //public static event CoinsRewardDelegate OnCoinsReward;
-
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
 
     public delegate void CheckEnemiesOnBattlefield();
     public static event CheckEnemiesOnBattlefield OnCheckEnemiesOnBattlefield;
-
-    //public UnityEvent<Transform> EnemyMeleeAttack;
 
     public GameObject unitStunStatusIcon;
 
@@ -58,7 +44,7 @@ public class EnemyAgent : MonoBehaviour
         opportunityCounter.text = opportunity.ToString();
     }
 
-    //Enemy Turn Sequence
+    // Starts the Enemy Turn Sequence contained in the Scriptable Object.
     public void EnemyTurnEvents()
     {
         enemyBehavior.ExecuteBehavior(this);

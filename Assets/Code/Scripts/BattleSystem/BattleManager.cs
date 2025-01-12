@@ -125,7 +125,7 @@ public class BattleManager : MonoBehaviour
     }
     public void PassTurnToPlayer()
     {
-        //Hands the turn to the Player.
+        // Hands the turn to the Player.
         currentTurnOrder = TurnOrder.playerTurn;
         UpdateTurnCounter();
         Debug.Log("Turn Passed to Player");
@@ -166,7 +166,6 @@ public class BattleManager : MonoBehaviour
         battleMomentsScreen.SetActive(true);
         battleMomentsScreen.GetComponentInChildren<TextMeshProUGUI>().text = battleMomentText;
         StartCoroutine("DeactivateBattleMomentsScreen");
-
     }
     IEnumerator DeactivateBattleMomentsScreen()
     {
