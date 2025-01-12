@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static BumperEnemyBehavior;
 
 [CreateAssetMenu(fileName = "BumperEnemyBehavior", menuName = "EnemyBehavior/BumperEnemy")]
 public class BumperEnemyBehavior : EnemyBehavior
 {
-    [SerializeField] int minEnemyMoveRollRange;
-    [SerializeField] int maxEnemyMoveRollRange;
+    [SerializeField] int meleeRange = 2; // Attack range
+    [SerializeField] int movementLimit = 4; // Movement limit
+    [SerializeField] GameObject attackVFXAnimator;
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
@@ -17,159 +15,253 @@ public class BumperEnemyBehavior : EnemyBehavior
     public delegate void BumperEnemyAttack(string attackName, string attackerName);
     public static event BumperEnemyAttack OnBumperEnemyAttack;
 
-    [SerializeField] GameObject attackVFXAnimator;
-    //public float attackPower = 1;
-    //Beware, magic number
-
-
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
-        if (enemyAgent.gameObject.tag != "DeadEnemy" && enemyAgent.gameObject.GetComponentInParent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-        //The Enemy Unit doesn't evaluate the next move if it's dead.
+        // Skip execution if the enemy is dead
+        if (enemyAgent.gameObject.tag == "DeadEnemy" ||
+            enemyAgent.GetComponentInParent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
-            //Enemy Unit selects the Target
-            Unit enemyUnit = enemyAgent.gameObject.GetComponent<Unit>();
-            Unit targetPlayerUnit = SelectTargetPlayerUnit();
-            MoveToPlayerTarget(targetPlayerUnit, enemyAgent);
-            float reducedDamage = enemyUnit.unitMeleeAttackBaseDamage; //* damageReductionFactor//
-            enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>().PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
-            OnBumperEnemyAttack("Bump", "Godling");
+            Debug.Log("Enemy is dead and cannot act.");
+            return;
+        }
 
-            if (GridManager.Instance.GetComponentInChildren<DistanceController>().CheckDistance(enemyUnit.ownedTile.GetComponent<TileController>(), targetPlayerUnit.ownedTile.GetComponent<TileController>()))
-            {
-                float attackProximityModifier = 1.5f;
-                reducedDamage = reducedDamage * attackProximityModifier;
-                targetPlayerUnit.TakeDamage(reducedDamage);
-                targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
-                Debug.Log("If Enemy is near the Player Unit, the Attack Proximity Modifier applies");
-            }
-            else
-            {
-                targetPlayerUnit.TakeDamage(reducedDamage);
-                targetPlayerUnit.OnTakenDamage.Invoke(reducedDamage);
-            }
+        Unit enemyUnit = enemyAgent.GetComponent<Unit>();
+        Unit targetPlayerUnit = SelectTargetPlayerUnit();
 
-            //const float targetUnitReductionFactor = 0.05f;
-            //float damageReductionFactor = (1.0f - (targetUnit.unitAmorRating * targetUnitReductionFactor) / (1.0f + targetUnitReductionFactor * targetUnitReductionFactor));
+        if (targetPlayerUnit == null)
+        {
+            Debug.Log("No valid target found for the enemy.");
+            return;
+        }
 
-            //27032024 Note: Reintroduce attack feedback here.
-            OnCheckPlayer();
-
-            Debug.Log("Enemy Attacking");
-
-            //opportunity -= 1;
+        if (CheckAttackRange(enemyUnit.ownedTile, targetPlayerUnit.ownedTile))
+        {
+            PerformAttack(enemyUnit, enemyAgent, targetPlayerUnit);
         }
         else
         {
-            Debug.Log("Enemy Unit is dead and can't attack anymore");
+            MoveEnemyToPlayerTarget(targetPlayerUnit, enemyAgent);
         }
     }
+
     public Unit SelectTargetPlayerUnit()
     {
-        // This method selects the Target Unit choosing from the Player Unit with the Lowest HP among those that are not dead
-        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+        // Select the player unit with the lowest HP
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
+            .GetComponent<PlayerPartyController>()
+            .playerUnitsOnBattlefield;
 
-        Unit targetUnit = playerUnitsOnBattlefield
+        return playerUnitsOnBattlefield
             .Select(go => go.GetComponent<Unit>())
-            .Where(unit => unit != null && unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead) // Filter out null and dead units
-            .OrderBy(unit => unit.unitHealthPoints) // Order by HP ascending to find the lowest
-            .FirstOrDefault(); // Take the first, which is the one with the lowest HP among alive units
-
-        // If an alive unit is found, return it, otherwise null (indicating no valid target)
-        return targetUnit; // No need to check for dead here, as we've already filtered them out
+            .Where(unit => unit != null && unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+            .OrderBy(unit => unit.unitHealthPoints)
+            .FirstOrDefault();
     }
-    public void MoveToPlayerTarget(Unit defenderPlayerUnit, EnemyAgent enemyAttacker)
+
+    public bool CheckAttackRange(TileController attackerTile, TileController defenderTile)
     {
-        Unit enemyUnit = enemyAttacker.gameObject.GetComponent<Unit>();
+        int distance = GetDistance(attackerTile, defenderTile);
+        bool inRange = distance <= meleeRange;
 
-        if (enemyUnit.unitStatusController.unitCurrentStatus == UnitStatus.stun)
+        Debug.Log(inRange
+            ? "Enemy is within attack range."
+            : "Enemy is out of attack range.");
+        return inRange;
+    }
+
+    private void PerformAttack(Unit enemyUnit, EnemyAgent enemyAgent, Unit targetPlayerUnit)
+    {
+        float baseDamage = enemyUnit.unitMeleeAttackBaseDamage;
+        float proximityModifier = 1.5f;
+        float finalDamage = baseDamage;
+
+        if (CheckAttackRange(enemyUnit.ownedTile, targetPlayerUnit.ownedTile))
         {
-            Debug.Log("Enemy Unit is stunned and can't move");
-            return; // Early exit if the unit is stunned
+            finalDamage *= proximityModifier;
         }
 
-        if (CheckDistanceBetweenUnits(defenderPlayerUnit.ownedTile, enemyAttacker.gameObject.GetComponent<Unit>().ownedTile))
+        targetPlayerUnit.TakeDamage(finalDamage);
+        targetPlayerUnit.OnTakenDamage.Invoke(finalDamage);
+
+        enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>()
+            .PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
+
+        OnBumperEnemyAttack?.Invoke("Bump", enemyUnit.unitTemplate.unitName);
+        OnCheckPlayer?.Invoke();
+
+        Debug.Log($"Enemy attacked {targetPlayerUnit.unitTemplate.unitName} for {finalDamage} damage.");
+    }
+
+    public void MoveEnemyToPlayerTarget(Unit defenderPlayerUnit, EnemyAgent enemyAttacker)
+    {
+        Unit enemyUnit = enemyAttacker.GetComponent<Unit>();
+        TileController startTile = enemyUnit.ownedTile;
+        TileController targetTile = defenderPlayerUnit.ownedTile;
+
+        if (startTile == null || targetTile == null)
         {
-            Debug.Log("Enemy Unit is near Player Target. Enemy Unit stays still");
+            Debug.LogError("Start or target tile is null. Cannot move enemy.");
+            return;
         }
-        else
+
+        List<TileController> fullPath = RetracePathToTarget(startTile, targetTile);
+
+        if (fullPath == null || fullPath.Count == 0)
         {
-            List<TileController> destinationNeighborTilesList = GridManager.Instance.GetComponentInChildren<GridMovementController>().GetNeighbours(defenderPlayerUnit.ownedTile);
+            Debug.Log("No valid path to the target.");
+            return;
+        }
 
-            // Filter for free tiles only
-            List<TileController> freeTiles = destinationNeighborTilesList.Where(tile => tile.currentSingleTileCondition == SingleTileCondition.free).ToList();
+        List<TileController> limitedPath = LimitPath(fullPath, movementLimit);
 
-            // Strategy change: Choose the tile that minimizes the distance to the target
-            TileController closestTile = null;
-            float closestDistance = float.MaxValue;
-            foreach (var tile in freeTiles)
+        if (limitedPath.Count == 0)
+        {
+            Debug.Log("No tiles within movement limit.");
+            return;
+        }
+
+        // Get the next destination tile within the limit
+        TileController destinationTile = limitedPath.Last();
+
+        // Prevent stepping onto the target's tile
+        if (destinationTile == targetTile)
+        {
+            Debug.Log("Attempted to move to the target's tile. Adjusting movement.");
+            if (limitedPath.Count > 1)
             {
-                float distance = GridManager.Instance.gridMovementController.GetDistance(tile, defenderPlayerUnit.ownedTile);
-                if (distance < closestDistance)
-                {
-                    closestTile = tile;
-                    closestDistance = distance;
-                }
-            }
-
-            if (closestTile != null)
-            {
-                // Move the unit to the closest tile
-                MoveUnitToTile(enemyAttacker.GetComponent<Unit>(), closestTile);
-                Debug.Log("Enemy Unit moves closer to Player Unit.");
+                destinationTile = limitedPath[limitedPath.Count - 2]; // Move to the second-last tile in the path
             }
             else
             {
-                Debug.Log("No free tiles available to move closer.");
+                Debug.Log("No valid tile to move to within the limit.");
+                return;
             }
         }
+
+        if (destinationTile == null || destinationTile.currentSingleTileCondition != SingleTileCondition.free)
+        {
+            Debug.Log("Destination tile is invalid or occupied.");
+            return;
+        }
+
+        MoveUnitToTile(enemyUnit, destinationTile);
+
+        Debug.Log($"Enemy moved closer to Player. Position: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
     }
+    private List<TileController> RetracePathToTarget(TileController startTile, TileController targetTile)
+    {
+        List<TileController> openSet = new List<TileController> { startTile };
+        HashSet<TileController> closedSet = new HashSet<TileController>();
+
+        startTile.gCost = 0;
+        startTile.hCost = GetDistance(startTile, targetTile);
+        startTile.parent = null;
+
+        while (openSet.Count > 0)
+        {
+            TileController currentTile = openSet.OrderBy(tile => tile.FCost).First();
+            openSet.Remove(currentTile);
+            closedSet.Add(currentTile);
+
+            if (currentTile == targetTile)
+            {
+                return RetracePath(startTile, targetTile);
+            }
+
+            foreach (TileController neighbor in GetNeighbours(currentTile))
+            {
+                // Skip occupied tiles or already visited tiles
+                if (neighbor.currentSingleTileCondition == SingleTileCondition.occupied || closedSet.Contains(neighbor))
+                {
+                    continue;
+                }
+
+                int newCostToNeighbor = currentTile.gCost + GetDistance(currentTile, neighbor);
+                if (newCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
+                {
+                    neighbor.gCost = newCostToNeighbor;
+                    neighbor.hCost = GetDistance(neighbor, targetTile);
+                    neighbor.parent = currentTile;
+
+                    if (!openSet.Contains(neighbor))
+                    {
+                        openSet.Add(neighbor);
+                    }
+                }
+            }
+        }
+
+        Debug.LogWarning("No valid path found to the target.");
+        return null;
+    }
+
+
+    private List<TileController> LimitPath(List<TileController> fullPath, int movementLimit)
+    {
+        return fullPath.Take(movementLimit).ToList();
+    }
+
+    private List<TileController> RetracePath(TileController startTile, TileController endTile)
+    {
+        List<TileController> path = new List<TileController>();
+        TileController currentTile = endTile;
+
+        while (currentTile != startTile)
+        {
+            path.Add(currentTile);
+            currentTile = currentTile.parent;
+        }
+
+        path.Add(startTile);
+        path.Reverse();
+        return path;
+    }
+
+    private List<TileController> GetNeighbours(TileController tile)
+    {
+        List<TileController> neighbors = new List<TileController>();
+
+        // Define offsets for adjacent tiles (up, down, left, right)
+        int[,] offsets = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+
+        for (int i = 0; i < offsets.GetLength(0); i++)
+        {
+            int neighborX = tile.tileXCoordinate + offsets[i, 0];
+            int neighborY = tile.tileYCoordinate + offsets[i, 1];
+
+            TileController neighbor = GridManager.Instance.GetTileControllerInstance(neighborX, neighborY);
+
+            if (neighbor != null)
+            {
+                neighbors.Add(neighbor);
+            }
+        }
+
+        return neighbors;
+    }
+
 
     private void MoveUnitToTile(Unit unit, TileController destinationTile)
     {
-        // Check if the unit is stunned before moving
-        if (unit.unitStatusController.unitCurrentStatus == UnitStatus.stun)
-        {
-            Debug.Log("This Bumper Enemy Unit is stunned and can't move");
-            return; // Early exit if the unit is stunned
-        }
+        TileController startTile = unit.ownedTile;
 
-        // Move and update the unit's tile
-        if (unit.MoveUnit(destinationTile.tileXCoordinate, destinationTile.tileYCoordinate, false))
-        {
-            if (destinationTile.currentSingleTileCondition == SingleTileCondition.free)
-            {
-                unit.ownedTile.detectedUnit = null;
-                unit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-                //160720240901 Correct
-                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
-                unit.ownedTile = destinationTile;
-                destinationTile.detectedUnit = unit.gameObject;
-                destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
-                Debug.Log("Bumper Enemy Moved");
-                // Potentially update visuals or other game elements here as needed
-            }
-        }
-        else
-        {
-            Debug.Log("This Bumper Enemy Unit can't move");
-        }
+        startTile.detectedUnit = null;
+        startTile.currentSingleTileCondition = SingleTileCondition.free;
+
+        unit.ownedTile = destinationTile;
+        destinationTile.detectedUnit = unit.gameObject;
+        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+
+        unit.transform.position = GridManager.Instance.GetWorldPositionFromGridCoordinates(
+            destinationTile.tileXCoordinate, destinationTile.tileYCoordinate);
+        unit.transform.position += new Vector3(0, 0.5f, 0);
+
+        Debug.Log($"Unit moved to tile: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
     }
 
-    public bool CheckDistanceBetweenUnits(TileController attackerTile, TileController defenderTile)
+    private int GetDistance(TileController tileA, TileController tileB)
     {
-        GridMovementController gridMovementController = GridManager.Instance.gridMovementController;
-        int distance = gridMovementController.GetDistance(attackerTile, defenderTile);
-
-        if (distance < 2) // If the distance is less than 2, they are close.
-        {
-            Debug.Log("Distance Check: Enemy Attacker is close to Defender. Enemy will stay in place.");
-            return true;
-        }
-        else // If the distance is 2 or more, they are not close.
-        {
-            Debug.Log("Distance Check: Enemy Attacker is distant from Defender. Enemy Attack will move towards Defender");
-            return false;
-        }
+        return Mathf.Abs(tileA.tileXCoordinate - tileB.tileXCoordinate) +
+               Mathf.Abs(tileA.tileYCoordinate - tileB.tileYCoordinate);
     }
 }
