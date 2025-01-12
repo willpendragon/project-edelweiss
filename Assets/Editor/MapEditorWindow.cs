@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
-
 public class MapEditorWindow : EditorWindow
 {
     private int gridWidth = 10;
@@ -37,7 +36,6 @@ public class MapEditorWindow : EditorWindow
 
     private Vector2Int lastGridPosition = Vector2Int.one * int.MinValue;
 
-
     private void OnGUI()
     {
         GUILayout.Label("Map Settings", EditorStyles.boldLabel);
@@ -48,7 +46,6 @@ public class MapEditorWindow : EditorWindow
         tileOffsetY = EditorGUILayout.FloatField("Tile Offset Y", tileOffsetY);
         tilePrefab = (GameObject)EditorGUILayout.ObjectField("Tile Prefab", tilePrefab, typeof(GameObject), false);
 
-        // Tile type selection
         selectedTileType = (TileType)EditorGUILayout.EnumPopup("Tile Type", selectedTileType);
 
         if (GUILayout.Button("Generate Map"))
@@ -83,66 +80,50 @@ public class MapEditorWindow : EditorWindow
 
     private void OnSceneGUI(SceneView sceneView)
     {
+        Handles.color = Color.green;
+
+        foreach (var tile in tiles.Keys)
         {
-            Handles.color = Color.green;
-
-            foreach (var tile in tiles.Keys)
-            {
-                Vector3 tilePosition = new Vector3(tile.x * tileOffsetX, 0, tile.y * tileOffsetY);
-                Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
-            }
-
-            Event currentEvent = Event.current;
-            Ray ray = HandleUtility.GUIPointToWorldRay(currentEvent.mousePosition);
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-
-            if (groundPlane.Raycast(ray, out float enter))
-            {
-                Vector3 hitPoint = ray.GetPoint(enter);
-                Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
-
-                if (currentEvent.type == EventType.MouseDown || currentEvent.type == EventType.MouseDrag)
-                {
-                    if (gridPos != lastGridPosition)
-                    {
-                        if (currentEvent.button == 0 && isPlacingTile)
-                        {
-                            PlaceTile(gridPos, selectedTileType);
-                        }
-                        else if (currentEvent.button == 1 && isDeletingTile)
-                        {
-                            DeleteTile(gridPos);
-                        }
-                        lastGridPosition = gridPos;
-                    }
-                    currentEvent.Use(); // Consume the event
-                }
-
-                if (currentEvent.type == EventType.MouseUp)
-                {
-                    lastGridPosition = Vector2Int.one * int.MinValue; // Reset to an invalid position
-                }
-            }
-
-            // Add a visual guide for the grid
-            Handles.color = Color.cyan;
-            for (int x = 0; x < gridWidth; x++)
-            {
-                for (int y = 0; y <= gridHeight; y++)
-                {
-                    Vector3 tilePosition = new Vector3(x * tileOffsetX, 0, y * tileOffsetY);
-                    Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
-                }
-            }
-
-            SceneView.RepaintAll();
+            Vector3 tilePosition = new Vector3(tile.x * tileOffsetX, 0, tile.y * tileOffsetY);
+            Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
         }
 
-        // Add a visual guide for the grid
+        Event currentEvent = Event.current;
+        Ray ray = HandleUtility.GUIPointToWorldRay(currentEvent.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+
+        if (groundPlane.Raycast(ray, out float enter))
+        {
+            Vector3 hitPoint = ray.GetPoint(enter);
+            Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
+
+            if (currentEvent.type == EventType.MouseDown || currentEvent.type == EventType.MouseDrag)
+            {
+                if (gridPos != lastGridPosition)
+                {
+                    if (currentEvent.button == 0 && isPlacingTile)
+                    {
+                        PlaceTile(gridPos, selectedTileType);
+                    }
+                    else if (currentEvent.button == 1 && isDeletingTile)
+                    {
+                        DeleteTile(gridPos);
+                    }
+                    lastGridPosition = gridPos;
+                }
+                currentEvent.Use(); // Consume the event
+            }
+
+            if (currentEvent.type == EventType.MouseUp)
+            {
+                lastGridPosition = Vector2Int.one * int.MinValue; // Reset to an invalid position
+            }
+        }
+
         Handles.color = Color.cyan;
         for (int x = 0; x < gridWidth; x++)
         {
-            for (int y = 0; y <= gridHeight; y++)
+            for (int y = 0; y < gridHeight; y++) // Use < instead of <=
             {
                 Vector3 tilePosition = new Vector3(x * tileOffsetX, 0, y * tileOffsetY);
                 Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
@@ -152,11 +133,10 @@ public class MapEditorWindow : EditorWindow
         SceneView.RepaintAll();
     }
 
-
     private Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPosition)
     {
-        int x = Mathf.FloorToInt((worldPosition.x + tileOffsetX / 2f) / tileOffsetX);
-        int y = Mathf.FloorToInt((worldPosition.z + tileOffsetY / 2f) / tileOffsetY);
+        int x = Mathf.RoundToInt(worldPosition.x / tileOffsetX);
+        int y = Mathf.RoundToInt(worldPosition.z / tileOffsetY);
         return new Vector2Int(x, y);
     }
 
@@ -173,7 +153,6 @@ public class MapEditorWindow : EditorWindow
         tile.name = $"Tile_{position.x}_{position.y}";
         tiles[position] = tile;
 
-        // Set the tile type
         TileController tileController = tile.GetComponent<TileController>();
         if (tileController != null)
         {
@@ -215,6 +194,11 @@ public class MapEditorWindow : EditorWindow
     {
         ClearMap();
 
+        if (currentMap != null)
+        {
+            currentMap.tilePositions.Clear();
+        }
+
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
@@ -224,7 +208,6 @@ public class MapEditorWindow : EditorWindow
                 tile.name = $"Tile_{x}_{y}";
                 tiles[new Vector2Int(x, y)] = tile;
 
-                // Set the tile type
                 TileController tileController = tile.GetComponent<TileController>();
                 if (tileController != null)
                 {
@@ -297,7 +280,6 @@ public class MapEditorWindow : EditorWindow
                 tile.name = $"Tile_{tileData.position.x}_{tileData.position.y}";
                 tiles[tileData.position] = tile;
 
-                // Load the tile type
                 TileController tileController = tile.GetComponent<TileController>();
                 if (tileController != null)
                 {
