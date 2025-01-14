@@ -17,7 +17,6 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
-        // Skip execution if the enemy is dead
         if (enemyAgent.gameObject.tag == "DeadEnemy" ||
             enemyAgent.GetComponentInParent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
@@ -46,7 +45,6 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     public Unit SelectTargetPlayerUnit()
     {
-        // Select the player unit with the lowest HP
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
             .GetComponent<PlayerPartyController>()
             .playerUnitsOnBattlefield;
@@ -112,7 +110,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             return;
         }
 
-        List<TileController> limitedPath = LimitPath(fullPath, movementLimit);
+        List<TileController> limitedPath = LimitPath(fullPath, movementLimit, targetTile);
 
         if (limitedPath.Count == 0)
         {
@@ -120,25 +118,16 @@ public class BumperEnemyBehavior : EnemyBehavior
             return;
         }
 
-        // Get the next destination tile within the limit
         TileController destinationTile = limitedPath.Last();
 
-        // Prevent stepping onto the target's tile
-        if (destinationTile == targetTile)
-        {
-            Debug.Log("Attempted to move to the target's tile. Adjusting movement.");
-            if (limitedPath.Count > 1)
-            {
-                destinationTile = limitedPath[limitedPath.Count - 2]; // Move to the second-last tile in the path
-            }
-            else
-            {
-                Debug.Log("No valid tile to move to within the limit.");
-                return;
-            }
-        }
+        // Commenting out the destination tile abort check temporarily for testing purposes.
+        // if (destinationTile == targetTile)
+        // {
+        //     Debug.LogError("Final destination is still the target player's tile. Aborting movement.");
+        //     return;
+        // }
 
-        if (destinationTile == null || destinationTile.currentSingleTileCondition != SingleTileCondition.free)
+        if (destinationTile == null || destinationTile.currentSingleTileCondition != SingleTileCondition.free || destinationTile.detectedUnit != null)
         {
             Debug.Log("Destination tile is invalid or occupied.");
             return;
@@ -148,6 +137,7 @@ public class BumperEnemyBehavior : EnemyBehavior
 
         Debug.Log($"Enemy moved closer to Player. Position: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
     }
+
     private List<TileController> RetracePathToTarget(TileController startTile, TileController targetTile)
     {
         List<TileController> openSet = new List<TileController> { startTile };
@@ -170,7 +160,6 @@ public class BumperEnemyBehavior : EnemyBehavior
 
             foreach (TileController neighbor in GetNeighbours(currentTile))
             {
-                // Skip occupied tiles or already visited tiles
                 if (neighbor.currentSingleTileCondition == SingleTileCondition.occupied || closedSet.Contains(neighbor))
                 {
                     continue;
@@ -195,10 +184,9 @@ public class BumperEnemyBehavior : EnemyBehavior
         return null;
     }
 
-
-    private List<TileController> LimitPath(List<TileController> fullPath, int movementLimit)
+    private List<TileController> LimitPath(List<TileController> fullPath, int movementLimit, TileController targetTile)
     {
-        return fullPath.Take(movementLimit).ToList();
+        return fullPath.Take(movementLimit).ToList(); // Temporarily allow paths that include the target
     }
 
     private List<TileController> RetracePath(TileController startTile, TileController endTile)
@@ -221,7 +209,6 @@ public class BumperEnemyBehavior : EnemyBehavior
     {
         List<TileController> neighbors = new List<TileController>();
 
-        // Define offsets for adjacent tiles (up, down, left, right)
         int[,] offsets = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
         for (int i = 0; i < offsets.GetLength(0); i++)
@@ -240,7 +227,6 @@ public class BumperEnemyBehavior : EnemyBehavior
         return neighbors;
     }
 
-
     private void MoveUnitToTile(Unit unit, TileController destinationTile)
     {
         TileController startTile = unit.ownedTile;
@@ -255,6 +241,8 @@ public class BumperEnemyBehavior : EnemyBehavior
         unit.transform.position = GridManager.Instance.GetWorldPositionFromGridCoordinates(
             destinationTile.tileXCoordinate, destinationTile.tileYCoordinate);
         unit.transform.position += new Vector3(0, 0.5f, 0);
+        unit.currentXCoordinate = destinationTile.tileXCoordinate;
+        unit.currentYCoordinate = destinationTile.tileYCoordinate;
 
         Debug.Log($"Unit moved to tile: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
     }
