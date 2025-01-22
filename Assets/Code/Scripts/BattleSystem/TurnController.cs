@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using static Unit;
-
+using UnityEngine.Playables;
 public class TurnController : MonoBehaviour
 {
     private static TurnController instance;
@@ -69,6 +69,10 @@ public class TurnController : MonoBehaviour
     public int enemiesKilledInCurrentBattle;
     public int timesSingleTargetSpellWasUsed;
 
+    [Header("Camera Work")]
+
+    [SerializeField] PlayableDirector mainCameraPlayableDirector;
+
     public void OnEnable()
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatus;
@@ -134,6 +138,7 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Player Party was defeated");
             OnBattleEnd("Defeat");
+            PlayCameraBattleEndAnimation();
             ResetBattleToInitialStatus();
         }
         else
@@ -171,6 +176,7 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Enemy Party was defeated");
             OnBattleEnd("Victory");
+            PlayCameraBattleEndAnimation();
             ResetBattleToInitialStatus();
             UnlockNextLevel();
 
@@ -215,6 +221,7 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
             OnBattleEnd("Victory");
+            PlayCameraBattleEndAnimation();
             ResetBattleToInitialStatus();
             UnlockNextLevel();
 
@@ -243,11 +250,10 @@ public class TurnController : MonoBehaviour
         {
             Debug.Log("Boss Defeated");
             OnBattleEnd("Victory");
+            PlayCameraBattleEndAnimation();
             ResetBattleToInitialStatus();
-            // Insert logic here to unlock last dialogue
         }
     }
-
     public void UnlockNextLevel()
     {
         GameSaveData saveData = SaveStateManager.saveData;
@@ -351,10 +357,19 @@ public class TurnController : MonoBehaviour
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
         Debug.Log("Player Party ran away.");
         OnBattleEnd("Fleed");
+        PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
         gameStatsManager.SaveCharacterData();
         gameStatsManager.SaveWarFunds(warFunds);
         gameStatsManager.SaveCaptureCrystalsCount();
         UpdateBattleEndUIPanel();
+    }
+
+    private void PlayCameraBattleEndAnimation()
+    {
+        if (mainCameraPlayableDirector != null)
+        {
+            mainCameraPlayableDirector.Play();
+        }
     }
 }
