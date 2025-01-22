@@ -34,7 +34,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         {
             currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
 
-            if (currentTarget.gameObject.tag == "Enemy")
+            if (currentTarget != null && currentTarget.gameObject.tag == "Enemy")
             {
                 selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
