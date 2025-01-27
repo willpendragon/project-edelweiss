@@ -73,6 +73,7 @@ public class Unit : MonoBehaviour
     public BattleFeedbackController battleFeedbackController;
     public GameObject unitProfilePanel;
     public SpriteRenderer unitSprite;
+    public Animator characterAnimator;
 
 
     public delegate void CheckGameOver();
@@ -243,7 +244,11 @@ public class Unit : MonoBehaviour
             if (unitSprite != null)
             {
                 // Play Fade Animation on Sprite.
-                unitSprite.color = Color.black;
+                //unitSprite.color = Color.black;
+                if (characterAnimator != null)
+                {
+                    characterAnimator.SetTrigger("Die");
+                }
 
                 if (battleFeedbackController != null)
                 {

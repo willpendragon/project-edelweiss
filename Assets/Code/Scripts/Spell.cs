@@ -37,6 +37,5 @@ public class Spell : ScriptableObject
     public GameObject spellVFX;
     public Vector3 spellVFXOffset;
 
-
     public float criticalHitChance;
 }

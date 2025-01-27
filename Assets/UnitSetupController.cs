@@ -85,7 +85,8 @@ public class UnitSetupController : MonoBehaviour
             playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
             if (playerUnit.currentUnitLifeCondition == UnitLifeCondition.unitDead)
             {
-                playerUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
+                //playerUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.black;
+                playerUnitGO.GetComponent<Unit>().characterAnimator.SetTrigger("Die");
             }
 
             // Removes all ailments from previous battles.
