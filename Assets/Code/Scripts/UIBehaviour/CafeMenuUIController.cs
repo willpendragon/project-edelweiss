@@ -102,7 +102,6 @@ public class CafeMenuUIController : MonoBehaviour
         selectedItemPrice = 0;
         confirmPurchasePopup.SetActive(false);
     }
-
     void GenerateFoodList()
     {
         foreach (var food in itemFoodList)
@@ -127,7 +126,6 @@ public class CafeMenuUIController : MonoBehaviour
             }
         }
     }
-
     public string FoodTypeLabel(ItemFood food)
     {
         string foodTypeLabel;
@@ -142,7 +140,6 @@ public class CafeMenuUIController : MonoBehaviour
             return foodTypeLabel;
         }
     }
-
     public void PurchaseFood(ItemFood purchasedFood, float foodPrice)
     {
         if (foodPrice <= gameStatsManager.warFunds)
@@ -158,12 +155,10 @@ public class CafeMenuUIController : MonoBehaviour
             notificationTexts.text = "There are not enough War Funds to purchase this Food Item";
         }
     }
-
     public void UpdateWarFundsCounter()
     {
         warFundsCounter.text = gameStatsManager.warFunds.ToString();
     }
-
     public void GenerateCharacterList()
     {
         // Clear the list to ensure it doesn’t contain outdated references
@@ -234,7 +229,6 @@ public class CafeMenuUIController : MonoBehaviour
             feedPlayerCharactersButtons.Add(feedCharacterButton);
         }
     }
-
     public void OnCharacterClicked(Unit character)
     {
         if (selectedFoodItem == null)
@@ -255,7 +249,6 @@ public class CafeMenuUIController : MonoBehaviour
             }
         }
     }
-
     public void SelectFoodItemForFeeding(FoodShelfItem foodItem)
     {
         selectedFoodItem = foodItem;
@@ -264,7 +257,6 @@ public class CafeMenuUIController : MonoBehaviour
         // Enable all feed buttons
         EnableFeedingCharactersButtons();
     }
-
     void EnableFeedingCharactersButtons()
     {
         foreach (var button in feedPlayerCharactersButtons)
@@ -272,7 +264,6 @@ public class CafeMenuUIController : MonoBehaviour
             button.enabled = true;
         }
     }
-
     void DisableFeedingCharactersButtons()
     {
         foreach (var button in feedPlayerCharactersButtons)
@@ -280,7 +271,6 @@ public class CafeMenuUIController : MonoBehaviour
             button.enabled = false;
         }
     }
-
     public bool FeedCharacter(ref ItemFood foodItem, Unit fedUnit)
     {
         bool itemUsed = false;
@@ -309,12 +299,13 @@ public class CafeMenuUIController : MonoBehaviour
                 itemUsed = true;
             }
         }
-
         if (itemUsed)
         {
             notificationTexts.text = $"{fedUnit.unitTemplate.unitName} recovered {foodItem.recoveryAmount} {(foodItem.itemFoodType == ItemFoodType.HPRecovery ? "HP" : "MP")}!";
             UpdateCharacterStatsCounter(fedUnit);
             SaveRestoredCharacterStats();
+            GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
+            Destroy(loveIconPrefabInstance, 1);
         }
         else
         {
@@ -323,8 +314,6 @@ public class CafeMenuUIController : MonoBehaviour
 
         return itemUsed; // Return whether the item was used successfully
     }
-
-
     void UpdateCharacterStatsCounter(Unit fedUnit)
     {
         foreach (var smallProfileController in characterProfileSmallControllers)
@@ -348,7 +337,6 @@ public class CafeMenuUIController : MonoBehaviour
         yield return new WaitForSeconds(clearNotificationWaitingTime);
         notificationTexts.text = "";
     }
-
     public void SaveRestoredCharacterStats()
     {
         //Saves the stats after feeding.
@@ -376,7 +364,6 @@ public class CafeMenuUIController : MonoBehaviour
         }
         SaveStateManager.SaveGame(characterSaveData);
     }
-
     private void AddItemToFoodShelf(ItemFood item)
     {
         // Check if the item is already on the Food Shelf
@@ -390,7 +377,6 @@ public class CafeMenuUIController : MonoBehaviour
                 return;
             }
         }
-
         // If item is not already on the shelf, create a new shelf item
         GameObject foodShelfItem = Instantiate(foodShelfItemPrefab, foodShelfContainer);
         FoodShelfItem shelfItemComponent = foodShelfItem.GetComponent<FoodShelfItem>();
