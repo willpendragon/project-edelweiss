@@ -151,7 +151,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 }
                 else if (currentSpell.spellType == SpellType.SingleTarget)
                 {
-                    if (savedSelectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+                    if (savedSelectedTile.detectedUnit != null && savedSelectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
                     {
                         PlayVFX(currentSpell.spellVFX, savedSelectedTile, currentSpell.spellVFXOffset);
                         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
@@ -241,11 +241,14 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
     public void PlayVFX(GameObject spellVFX, TileController enemyOccupiedTile, Vector3 spellVFXOffset)
     {
-        GameObject spellVFXInstance = Instantiate(spellVFX, enemyOccupiedTile.detectedUnit.transform.position, Quaternion.identity);
-        spellVFXInstance.transform.localPosition += spellVFXOffset;
-        //Beware: Magic numbers
-        Debug.Log("Instantiating VFX");
-        Destroy(spellVFXInstance, 0.5f);
+        if (enemyOccupiedTile.detectedUnit != null)
+        {
+            GameObject spellVFXInstance = Instantiate(spellVFX, enemyOccupiedTile.detectedUnit.transform.position, Quaternion.identity);
+            spellVFXInstance.transform.localPosition += spellVFXOffset;
+            //Beware: Magic numbers
+            Debug.Log("Instantiating VFX");
+            Destroy(spellVFXInstance, 0.5f);
+        }
     }
 
     public bool unitManaDoesNotGoBelowZeroAfterUsage(float unitManaPoints, float spellPrice)

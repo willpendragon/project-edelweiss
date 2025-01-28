@@ -41,7 +41,7 @@ public class EnemyAgent : MonoBehaviour
 
     public void Start()
     {
-        opportunityCounter.text = opportunity.ToString();
+        //opportunityCounter.text = opportunity.ToString();
     }
 
     // Starts the Enemy Turn Sequence contained in the Scriptable Object.

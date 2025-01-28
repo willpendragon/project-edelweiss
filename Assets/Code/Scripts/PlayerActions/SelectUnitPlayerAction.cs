@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
-using static PlayerProfileController;
 
 public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 {
     public GameObject newCurrentlySelectedUnitPanel;
     public GameObject selectedUnit;
-    private GameObject playerSelectorIconInstance;
 
     public delegate void ClickedTileWithUnit(GameObject detectedUnit);
     public static event ClickedTileWithUnit OnClickedTileWithUnit;
@@ -16,7 +14,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
     public void Select(TileController selectedTile)
     {
         if (selectedTile != null && selectedTile.detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus != UnitSelectionController.UnitSelectionStatus.unitWaiting
-            && selectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitAlive)
+            && selectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitAlive && selectedTile.detectedUnit.tag != "Enemy")
         {
             foreach (var tile in GridManager.Instance.gridTileControllers)
             {
@@ -38,16 +36,11 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             }
         }
     }
-
     public void Deselect()
     {
         if (this.selectedUnit != null)
         {
             Debug.Log("Deselecting Unit");
-
-            //selectedUnit.GetComponentInChildren<MouseUISelectionHelper>().HideMouseIconRightClick();
-            //selectedUnit.GetComponentInChildren<MouseUISelectionHelper>().ShowMouseIconLeftClick();
-
 
             if (selectedUnit.tag != "Enemy")
             {
@@ -90,12 +83,9 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
                 }
                 Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
             }
-
         }
         selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2f, Color.white);
-
-
     }
     public void Execute()
     {
@@ -114,39 +104,35 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
                 Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
                 endTurnButton.interactable = false;
-                //selectedUnit.GetComponentInChildren<MouseUISelectionHelper>().HideMouseIconLeftClick();
-                //selectedUnit.GetComponentInChildren<MouseUISelectionHelper>().ShowMouseIconRightClick();
             }
-
         }
         else
         {
             Debug.Log("No selectable Unit found");
         }
     }
-
     public void CreateActivePlayerUnitProfile(GameObject detectedUnit)
     {
-        //Spawns an information panel with Active Character Unit details on the Lower Left of the Screen
+        // Spawns an information panel with Active Character Unit details on the Lower Left of the Screen.
         newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
         newCurrentlySelectedUnitPanel.tag = "ActiveCharacterUnitProfile";
         newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
         detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
 
-        //The newly spawned Unit Profile Panel becomes the Detected Unit Profile Panel
+        // The newly spawned Unit Profile Panel becomes the Detected Unit Profile Panel.
         OnClickedTileWithUnit(detectedUnit);
         Debug.Log("Clicked on a Tile with Unit standing on it");
 
-        //If the Unit is a Player becomes the Active Player Unit in the GridManager
+        // If the Unit is a Player Unit, it becomes the Active Player Unit in the GridManager.
         if (detectedUnit.tag == "Player")
         {
             GridManager.Instance.currentPlayerUnit = detectedUnit;
             GridManager.Instance.tileSelectionPermitted = true;
-            //The Unit tag becomes ActivePlayerUnit
+            // The Unit GameObject tag becomes "ActivePlayerUnit".
             detectedUnit.tag = "ActivePlayerUnit";
             detectedUnit.GetComponent<Unit>().ownedTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
 
-            //Gameplay and Spells Buttons generation
+            // Gameplay and Spells Buttons generation.
             GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
             movesContainer.transform.localScale = new Vector3(0.9521077f, 0.9521077f, 0.9521077f);
 

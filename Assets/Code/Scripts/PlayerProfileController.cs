@@ -43,13 +43,15 @@ public class PlayerProfileController : MonoBehaviour
     public delegate void ClickedTileWithUnit(GameObject detectedUnit);
     public static event ClickedTileWithUnit OnClickedTileWithUnit;
 
-    public void OnEnable()
+    private void OnEnable()
     {
         SelectUnitPlayerAction.OnClickedTileWithUnit += UpdateUnitProfile;
+        EnemyInfoPanelController.OnHoverMouseOnEnemy += UpdateUnitProfile;
     }
-    public void OnDisable()
+    private void OnDisable()
     {
         SelectUnitPlayerAction.OnClickedTileWithUnit -= UpdateUnitProfile;
+        EnemyInfoPanelController.OnHoverMouseOnEnemy -= UpdateUnitProfile;
     }
     public void UpdateUnitProfile(GameObject detectedUnit)
     {
