@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f68580a3635debc4babb3b203fb18469, type: 3}
-  m_Name: King Laurinus Unlock Achievement
+  m_Name: King Laurinus Unlock Task
   m_EditorClassIdentifier: 
   achievementName: Use Single Target Spells
-  description: Use Single Target Spells to have a chance at encounter and capture
-    it.
+  achievementDescription: Execute the required amount of Spells to upset the Deity
+    and gain the chance of an encounter.
   spawnableDeity: {fileID: 3348349630364506734, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
   requiredUsedMoves: 15

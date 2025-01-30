@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5000baba027836f4fb08a0c8254fcd43, type: 3}
-  m_Name: Kill Based Achievement
+  m_Name: Deity Anguana Kill BasDeity Anguana Unlock Task
   m_EditorClassIdentifier: 
-  achievementName: deity_anguana_unlock_threshold
-  description: Kill a number of Anguana's minions to have a chance at encounter and
-    capture it.
+  achievementName: KIll Anguana's Minions
+  achievementDescription: KIll the required number of Enemies to upset the Deity
+    and gain the chance of an encounter.
   spawnableDeity: {fileID: 3348349630364506734, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
   requiredKills: 15
