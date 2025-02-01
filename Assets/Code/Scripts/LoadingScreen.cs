@@ -9,6 +9,7 @@ public class LoadingScreen : MonoBehaviour
     public Image loadingScreenPanel;
     public Canvas loadingScreenCanvas;
     public TextMeshProUGUI nowLoadingText;
+    public Image loadingScreenIcon;
 
     private void OnEnable()
     {
@@ -18,10 +19,16 @@ public class LoadingScreen : MonoBehaviour
     {
         SceneLoader.OnLoadingScene -= ShowLoadingScreenUI;
     }
+
+    private void Start()
+    {
+        loadingScreenIcon.color = new Color(0, 0, 0, 0);
+    }
     void ShowLoadingScreenUI()
     {
-        loadingScreenPanel.color = new Color(1,1,1,1);
-        nowLoadingText.fontSize = 60;
         loadingScreenCanvas.enabled = true;
+        loadingScreenPanel.color = new Color(1, 1, 1, 1);
+        nowLoadingText.fontSize = 60;
+        loadingScreenIcon.color = new Color(1, 1, 1, 1);
     }
 }
