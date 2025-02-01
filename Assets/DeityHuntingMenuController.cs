@@ -1,15 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEditor.Tilemaps;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
+using TMPro;
 
 public class DeityHuntingMenuController : MonoBehaviour
 {
     [SerializeField] Achievement[] achievements;
     [SerializeField] GameObject achievementBlock;
     [SerializeField] Transform deityHuntingMenu;
+    [SerializeField] GameStatsManager gameStatsManager;
     private void Start()
     {
         if (achievements.Length > 0)
@@ -28,9 +25,10 @@ public class DeityHuntingMenuController : MonoBehaviour
         string achievementDescription = achievement.achievementDescription;
         string spawnableDeityName = achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName;
         string achievementRequirement = RetrieveRequirement(achievement);
+        string achievementProgress = RetrieveAchievementProgress(achievement);
 
         AchievementBlockHelper currentAchievementBlockHelper = newAchievementBlock.GetComponent<AchievementBlockHelper>();
-        currentAchievementBlockHelper.PopulateTexts(achievementName, achievementDescription, spawnableDeityName, achievementRequirement);
+        currentAchievementBlockHelper.PopulateTexts(achievementName, achievementDescription, spawnableDeityName, achievementRequirement, achievementProgress);
     }
     private string RetrieveRequirement(Achievement achievement)
     {
@@ -43,6 +41,23 @@ public class DeityHuntingMenuController : MonoBehaviour
         {
             string achievementRequirement = moveBasedAchievement.requiredUsedMoves.ToString();
             return achievementRequirement;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    private string RetrieveAchievementProgress(Achievement achievement)
+    {
+        if (achievement is KillBasedAchievement killBasedAchievement)
+        {
+            string achievementProgress = gameStatsManager.enemiesKilled.ToString();
+            return achievementProgress;
+        }
+        else if (achievement is MoveBasedAchievement moveBasedAchievement)
+        {
+            string achievementProgress = gameStatsManager.timesSingleTargetSpellWasUsed.ToString();
+            return achievementProgress;
         }
         else
         {

@@ -8,13 +8,15 @@ public class AchievementBlockHelper : MonoBehaviour
     [SerializeField] TextMeshProUGUI achievementNameText;
     [SerializeField] TextMeshProUGUI achievementDescriptionText;
     [SerializeField] TextMeshProUGUI spawnableDeityNameText;
-    [SerializeField] TextMeshProUGUI requiredKillsNumberText;
+    [SerializeField] TextMeshProUGUI requirementNumberText;
+    [SerializeField] TextMeshProUGUI achievementProgressText;
 
-    public void PopulateTexts(string achievementName, string achievementDescription, string spawnableDeityName, string achievementRequirement)
+    public void PopulateTexts(string achievementName, string achievementDescription, string spawnableDeityName, string achievementRequirement, string achievementProgress)
     {
         achievementNameText.text = achievementName;
         achievementDescriptionText.text = achievementDescription;
         spawnableDeityNameText.text = spawnableDeityName;
-        requiredKillsNumberText.text = achievementRequirement;
+        requirementNumberText.text = achievementRequirement;
+        achievementProgressText.text = achievementProgress;
     }
 }
