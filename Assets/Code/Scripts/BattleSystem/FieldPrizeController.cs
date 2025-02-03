@@ -40,21 +40,33 @@ public class FieldPrizeController : MonoBehaviour
     }
     public bool RollFieldPrizeChance()
     {
+        if (weights == null || weights.Count < 2)
+        {
+            Debug.LogError("Invalid weights list! Ensure you set it in the Inspector.");
+            return false;
+        }
+
         int totalWeight = weights.Sum();
-        int roll = random.Next(totalWeight);
+        int roll = Random.Range(0, totalWeight);  // Use Unity's random
         int cumulativeWeight = 0;
+
+        Debug.Log($"Total Weight: {totalWeight}, Rolled: {roll}");
 
         for (int i = 0; i < weights.Count; i++)
         {
             cumulativeWeight += weights[i];
+            Debug.Log($"Checking Weight Index {i}, Cumulative: {cumulativeWeight}");
+
             if (roll < cumulativeWeight)
             {
-                return i == 1; // Assuming index 1 is the winning outcome
+                Debug.Log($"Selected Index: {i}, Win: {i != 0}");
+                return i != 0; // Only index 0 is a loss, all others are wins
             }
         }
 
         return false;
     }
+
     public FieldPrizeType SelectPrizeType()
     {
         if (ComboController.Instance.comboCounter >= keyPrizeThreshold)
