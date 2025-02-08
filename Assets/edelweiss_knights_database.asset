@@ -8112,8 +8112,9 @@ MonoBehaviour:
         typeString: 
       - title: Dialogue Text
         value: "Click on the desired tile to temporarily select it. A feedback path
-          will display:\r Green Column: Destination is reachable by the Active Player
-          Unit.\r\nRed Column: Destination is not reachable.\r"
+          will display:\r when the light column is green, the destination is reachable
+          by the Active Player Unit.\r When the column is red, the destination is
+          unreachable\r."
         type: 0
         typeString: 
       - title: Sequence
@@ -12230,7 +12231,7 @@ MonoBehaviour:
         width: 160
         height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 0, y: 122.94765}
+    canvasScrollPosition: {x: 38.12082, y: 98.04708}
     canvasZoom: 0.46000004
   syncInfo:
     syncActors: 0
