@@ -25,40 +25,47 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
         if (distance > meleeRange)
         {
-            // Play the error animation for the invalid selection
+            // Play the error animation for the invalid selection.
             selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
-            Debug.Log("Unable to select tile - Out of range");
-            return; // Exit the method early, preventing further execution
         }
-        else
+        else if (distance <= meleeRange)
+
         {
-            currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
-
-            if (currentTarget != null && currentTarget.gameObject.tag == "Enemy")
+            if (selectedTile.detectedUnit == null)
             {
-                selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
-                selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-                savedSelectedTile = selectedTile;
-                selectionLimiter--;
-
-                UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
-
-                // Check if hookshot is equipped and handle selection logic
-                if (activePlayerUnit.hasHookshot)
-                {
-                    ActivateMagnet(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
-                    Debug.Log("Hookshot selected, waiting for confirmation...");
-                }
-                else
-                {
-                    // For normal melee attack, check knockback after selection
-                    CheckKnockback(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
-                }
+                // No Enemy Unit is sitting on the Selected Tile.
+                selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
             }
             else
             {
-                Debug.Log("No Enemy Found");
+                currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
             }
+        }
+
+        if (currentTarget != null && currentTarget.gameObject.tag == "Enemy")
+        {
+            selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
+            selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+            savedSelectedTile = selectedTile;
+            selectionLimiter--;
+
+            UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
+
+            // Check if hookshot is equipped and handle selection logic
+            if (activePlayerUnit.hasHookshot)
+            {
+                ActivateMagnet(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
+                Debug.Log("Hookshot selected, waiting for confirmation...");
+            }
+            else
+            {
+                // For normal melee attack, check knockback after selection
+                CheckKnockback(activePlayerUnit, selectedTile.detectedUnit.GetComponent<Unit>());
+            }
+        }
+        else
+        {
+            Debug.Log("No Enemy Found");
         }
     }
     public void Deselect()
