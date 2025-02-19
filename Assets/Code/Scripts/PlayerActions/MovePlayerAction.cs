@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-
 public class MovePlayerAction : MonoBehaviour, IPlayerAction
 {
     public Unit currentTarget;
@@ -38,8 +37,8 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
             List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(activePlayerUnit.currentXCoordinate, activePlayerUnit.currentYCoordinate, destinationTileXCoordinate, destinationTileYCoordinate);
 
-            UpdatePathVisual(path); // Update the LineRenderer with the new path
-
+            // Update the LineRenderer with the new path.
+            UpdatePathVisual(path);
             savedSelectedTile = selectedTile;
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
         }
@@ -57,8 +56,8 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             Vector3[] pathPoints = path.Select(tile => GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate) + new Vector3(0, 0.7f, 0)).ToArray(); // Adjust Y if necessary to prevent z-fighting
             lineRenderer.positionCount = pathPoints.Length;
             lineRenderer.SetPositions(pathPoints);
-            lineRenderer.startWidth = 0.25f; // Smaller width for a finer line
-            lineRenderer.endWidth = 0.25f;   // Keep consistent width along the line
+            lineRenderer.startWidth = 0.25f;
+            lineRenderer.endWidth = 0.25f;
         }
         else
         {
@@ -74,21 +73,20 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
     public void Deselect()
     {
-        //If a saved destination esists, by clicking on that tile, this will get back to selection mode
+        // If a saved destination esists, by clicking on that tile, this will get back to selection mode.
         if (savedSelectedTile != null)
         {
-            savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-            //savedSelectedTile.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
-            //GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(1f, 0.2f, Color.cyan);
-
+            savedSelectedTile.tileShaderController.AnimateFadeHeight(1f, 0.2f, Color.cyan);
+            // Restores the Tile to the usual Move Selection Phase visuals.
+            Debug.Log("Deselecting Destination");
+            //savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile = null;
             GridManager.Instance.tileSelectionPermitted = true;
             ClearPath();
         }
 
-        //If a saved destination doesn't exist, by clicking on that tile, it will call the RevertToSelectionUnitPlayerAction method
-
+        // If a saved destination doesn't exist, by clicking on that tile, it will call the RevertToSelectionUnitPlayerAction method.
         else if (GridManager.Instance.currentPlayerUnit != null & savedSelectedTile == null)
         {
             foreach (var tile in GridManager.Instance.gridTileControllers)
@@ -116,23 +114,22 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         {
             if (neighbour.currentSingleTileCondition == SingleTileCondition.free)
             {
-                return false; // There's at least one free tile, so the unit is not surrounded
+                return false; // There's at least one free tile, so the Unit is not surrounded.
             }
         }
-        return true; // All neighbouring tiles are occupied, unit is surrounded
+        return true; // All neighbouring tiles are occupied, Unit is surrounded.
     }
     public void Execute()
     {
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        //Retrieve Active Current Player
 
         if (activePlayerUnit.unitOpportunityPoints > 0 && activePlayerUnit.GetComponent<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
         {
+            // Move the current Active Player Unit to the Destination Tile. 
             if (activePlayerUnit.MoveUnit(destinationTileXCoordinate, destinationTileYCoordinate, false))
             {
                 GridManager.Instance.tileSelectionPermitted = true;
 
-                //Use Grid Logic to Move the Player to Destination
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementConfirmedSFX.Invoke();
                 savedSelectedTile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
                 ClearPath();
@@ -149,8 +146,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
                 activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
                 GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
-
-                Debug.Log("Moving Character Execution Logic");
             }
             else
             {

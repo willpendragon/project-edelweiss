@@ -54,7 +54,6 @@ public class TileShaderController : MonoBehaviour
         }
     }
 
-
     public void ResetTileFadeHeightAnimation(TileController tileToReset)
     {
         tileToReset.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
