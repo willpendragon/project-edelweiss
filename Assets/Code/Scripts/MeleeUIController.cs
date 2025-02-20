@@ -46,8 +46,11 @@ public class MeleeUIController : MonoBehaviour
 
     public void SwitchTilesToSelectionMode()
     {
+        ClearPath();
         MoveInfoController.Instance.HideActionInfoPanel();
         DeactivateTrapSelection();
+
+        // After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode and switch to the Melee Player Action.
 
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
@@ -59,11 +62,18 @@ public class MeleeUIController : MonoBehaviour
                 tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             }
         }
-        // After clicking the Melee Button, all of the Grid Map tiles switch to Selection Mode and switch to the Melee Player Action.
+
+        GridManager.Instance.tileSelectionPermitted = true;
     }
 
     public void DeactivateTrapSelection()
     {
         GridManager.Instance.RemoveTrapSelection();
+    }
+
+    void ClearPath()
+    {
+        LineRenderer lineRenderer = GridManager.Instance.GetLineRenderer();
+        lineRenderer.positionCount = 0;
     }
 }
