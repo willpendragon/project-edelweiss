@@ -16,6 +16,10 @@ public class PauseMenuController : MonoBehaviour
         // Ensure the canvas starts completely hidden
         canvasTransform.localScale = Vector3.zero;
     }
+    private void OnDisable()
+    {
+        Time.timeScale = 1f;
+    }
 
     private void Update()
     {

@@ -28,7 +28,7 @@ public class LoadingScreen : MonoBehaviour
     {
         loadingScreenCanvas.enabled = true;
         loadingScreenPanel.color = new Color(1, 1, 1, 1);
-        nowLoadingText.fontSize = 60;
+        nowLoadingText.fontSize = 90;
         loadingScreenIcon.color = new Color(1, 1, 1, 1);
     }
 }
