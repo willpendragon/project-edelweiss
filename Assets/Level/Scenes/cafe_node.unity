@@ -705,8 +705,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: War Funds
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -730,10 +730,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 25.25
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -839,8 +839,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Discussions
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -864,10 +864,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 43.85
+  m_fontSizeBase: 45
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -948,7 +948,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 254}
+  m_AnchoredPosition: {x: 0, y: 247.7}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &335682939
@@ -973,8 +973,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Deity Hunting Requirements
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -998,10 +998,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 46.45
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -1277,8 +1277,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Return to Battlefield
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1302,10 +1302,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
+  m_fontSize: 32
   m_fontSizeBase: 25
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -3905,10 +3905,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Deity Hunting Board
+  m_text: Deity Hunting
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3932,10 +3932,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
+  m_fontSize: 40.3
   m_fontSizeBase: 32
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -4200,8 +4200,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4225,10 +4225,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
+  m_fontSize: 25.25
   m_fontSizeBase: 22
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -5602,8 +5602,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Memories from the Battlefield
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5627,10 +5627,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.66
+  m_fontSize: 50
   m_fontSizeBase: 44.66
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -6443,8 +6443,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Caf\xE9 Menu"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 318f56a982bf4884184103ca86661dff, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 318f56a982bf4884184103ca86661dff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6468,8 +6468,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
