@@ -29,74 +29,65 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public UnityEvent playSpellVFX;
     public void Select(TileController selectedTile)
     {
-        spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController").GetComponent<SpellcastingController>();
-        OnSelectedSpell();
-        if (selectedTile != null && selectionLimiter > 0)
+        spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController")?.GetComponent<SpellcastingController>();
+        if (spellCastingController == null) return;
+
+        OnSelectedSpell?.Invoke();
+        if (selectedTile == null || selectionLimiter <= 0) return;
+
+        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController")?.GetComponent<GridMovementController>();
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
+
+        if (gridMovementController == null || activePlayerUnit == null) return;
+
+        int distance = gridMovementController.GetDistance(activePlayerUnit.ownedTile, selectedTile);
+        int spellRange = spellCastingController.currentSelectedSpell.spellRange;
+
+        if (distance > spellRange)
         {
-            GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-            Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+            selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
+            Debug.Log("Unable to select tile - Out of range");
+            return;
+        }
 
-            int distance = gridMovementController.GetDistance(activePlayerUnit.ownedTile, selectedTile);
-            Debug.Log($"Calculated distance: {distance}");
-
-            int spellRange = spellCastingController.currentSelectedSpell.spellRange;
-
-            if (spellCastingController.currentSelectedSpell.spellType == SpellType.AOE)
+        if (spellCastingController.currentSelectedSpell.spellType == SpellType.AOE)
+        {
+            // Directly handle AOE selection inline
+            foreach (var tile in gridMovementController.GetMultipleTiles(selectedTile, aoeRange))
             {
-                if (distance > spellRange)
-                {
-                    // Play the error animation for the invalid selection
-                    selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
-                    Debug.Log("Unable to select tile - Out of range");
-                    return; // Exit the method early, preventing further execution
-                }
-                else
-                {
-                    // Valid selection: highlight and set the state
-                    foreach (var tile in gridMovementController.GetMultipleTiles(selectedTile, aoeRange))
-                    {
-                        tile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
-                    }
-
-                    selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-                    savedSelectedTile = selectedTile; // Save the valid tile
-                    selectionLimiter--;
-                    Debug.Log("Selected AOE Spell Range");
-                }
+                tile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
             }
-            else if (spellCastingController.currentSelectedSpell.spellType == SpellType.SingleTarget)
-            {
-                // Check if the selected tile is within range for single-target spells
-                if (distance > spellRange)
-                {
-                    // Play the error animation for the invalid selection
-                    selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
-                    Debug.Log("Unable to select tile - Out of range");
-                    return; // Exit the method early, preventing further execution
-                }
-                else
-                {
-                    savedSelectedTile = selectedTile;
-                    savedSelectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.blue);
 
-                    if (selectedTile.detectedUnit != null && selectedTile.detectedUnit.tag != "Player" && selectedTile.detectedUnit.tag != "ActivePlayerUnit")
-                    {
-                        currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
-                        UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
-                        selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-                        Debug.Log("Selected Single Target Spell Range");
-                        selectionLimiter--;
-                    }
-                    else
-                    {
-                        // No valid unit found on the selected tile, play an error animation
-                        selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
-                        Debug.Log("No valid unit found for single-target spell selection");
-                    }
-                }
+            selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+            savedSelectedTile = selectedTile;
+            selectionLimiter--;
+            Debug.Log("Selected AOE Spell Range");
+        }
+        else if (spellCastingController.currentSelectedSpell.spellType == SpellType.SingleTarget)
+        {
+            savedSelectedTile = selectedTile;
+            savedSelectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.blue);
+
+            if (selectedTile.detectedUnit != null && !selectedTile.detectedUnit.CompareTag("Player") && !selectedTile.detectedUnit.CompareTag("ActivePlayerUnit"))
+            {
+                currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
+
+                // **Fix: Ensure previous panel is destroyed before creating a new one**
+                UnitProfilesController.Instance.DestroyEnemyUnitPanel();
+                UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
+
+                selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+                selectionLimiter--;
+                Debug.Log("Selected Single Target Spell Range");
+            }
+            else
+            {
+                selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
+                Debug.Log("No valid unit found for single-target spell selection");
             }
         }
     }
+
     public void Execute()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
