@@ -66,7 +66,7 @@ public class PlayerProfileController : MonoBehaviour
                 }
                 break;
             case "Player":
-                if (currentProfileOwner != ProfileOwner.enemyUnit)
+                if (currentProfileOwner != ProfileOwner.enemyUnit && GridManager.Instance.currentPlayerUnit == null)
                 {
                     ApplyProfileChanges(detectedUnit, ProfileOwner.playerUnit);
                     UpdateLinkedDeityIcon(detectedUnit);
