@@ -25,8 +25,6 @@ public class BattleEndUIHandler : MonoBehaviour
 
     private string saveFilePath;
 
-
-    //public PlayableDirector battleCameraPlayableDirector;
     private void OnEnable()
     {
         TurnController.OnBattleEnd += DisplayBattleEndScreen;
@@ -37,7 +35,8 @@ public class BattleEndUIHandler : MonoBehaviour
         TurnController.OnBattleEnd -= DisplayBattleEndScreen;
         PlaceCrystalPlayerAction.OnBattleEndCapturedDeity -= DisplayBattleEndScreen;
     }
-    //At the end of the Battle UI overlay appears (using Size scaling) with the results of the Battle.
+
+    // At the end of the Battle UI overlay appears (using Size scaling) with the results of the Battle.
     private void DisplayBattleEndScreen(string battleEndMessage)
     {
         battleEndMessageText.text = battleEndMessage;
@@ -94,7 +93,6 @@ public class BattleEndUIHandler : MonoBehaviour
             Destroy(statusIcon);
         }
     }
-
     private void DeactivateWaitIcons()
     {
         TurnController turnController = BattleManager.Instance?.GetComponent<TurnController>();
@@ -105,14 +103,12 @@ public class BattleEndUIHandler : MonoBehaviour
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
         }
     }
-
     private void ChangeReturnButton()
     {
         returnButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Start New Run";
         returnButton.onClick.RemoveAllListeners();
         returnButton.onClick.AddListener(() => StartNewGameRun());
     }
-
     private void StartNewGameRun()
     {
         saveFilePath = Application.persistentDataPath + "/gameSaveData.json";
@@ -127,5 +123,4 @@ public class BattleEndUIHandler : MonoBehaviour
         }
         SceneManager.LoadScene("start_screen");
     }
-
 }
