@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 3788625643801974174}
   - component: {fileID: 1862898424302907948}
   m_Layer: 5
-  m_Name: DeityUnitName
+  m_Name: DeityUnitNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -276,8 +276,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Test Deity
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -591,8 +591,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Buff Type
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1108,8 +1108,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
-  m_sharedMaterial: {fileID: -7795255130667733803, guid: 91e9708ae11ccd248a97f2ce4d1903d2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+  m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2316,7 +2316,7 @@ GameObject:
   - component: {fileID: 6215816288184119488}
   - component: {fileID: 7099938866294030330}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: DeityButtonContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

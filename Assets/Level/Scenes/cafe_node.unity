@@ -1174,7 +1174,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1148616279, guid: e000b8167e16c6142a14c9488a85a432, type: 3}
+  m_Sprite: {fileID: 561076602, guid: d847d88b2886dc04f97e2f208c46e820, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2825,7 +2825,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5079095157101055813, guid: 32c0f31dfd635bd4bb3a14154ef9bc5a, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5339,7 +5339,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1215398882, guid: e000b8167e16c6142a14c9488a85a432, type: 3}
+  m_Sprite: {fileID: 2030268365, guid: d847d88b2886dc04f97e2f208c46e820, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5975,7 +5975,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1098081507, guid: e000b8167e16c6142a14c9488a85a432, type: 3}
+  m_Sprite: {fileID: -1011941800, guid: d847d88b2886dc04f97e2f208c46e820, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8062,7 +8062,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5757136211554381409, guid: 70461140050eb20429879a0bf8686320, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8425841738001952889, guid: 70461140050eb20429879a0bf8686320, type: 3}
       propertyPath: m_RootOrder
@@ -8988,6 +8988,10 @@ PrefabInstance:
     - target: {fileID: 206116485120872592, guid: 166c0ab59b8c39a4a8694a5a17fc9051, type: 3}
       propertyPath: m_Name
       value: Violet_Map_Icon
+      objectReference: {fileID: 0}
+    - target: {fileID: 206116485120872592, guid: 166c0ab59b8c39a4a8694a5a17fc9051, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1490085628844507128, guid: 166c0ab59b8c39a4a8694a5a17fc9051, type: 3}
       propertyPath: m_LocalPosition.x
