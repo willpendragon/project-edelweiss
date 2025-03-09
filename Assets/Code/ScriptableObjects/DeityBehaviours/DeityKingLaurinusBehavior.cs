@@ -19,6 +19,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         {
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
             Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
+            BattleInterface.Instance.SetDeityNotification("King Laurinus's Curse spreads");
         }
 
         TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
@@ -41,18 +42,6 @@ public class DeityKingLaurinusBehavior : DeityBehavior
                     Debug.Log("King Laurinus executes its Special Attack.");
                 }
             }
-        }
-    }
-
-    void Start()
-    {
-        try
-        {
-            TileController[] randomTiles = ExtractRandomTiles();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"An error occurred: {ex.Message}");
         }
     }
 

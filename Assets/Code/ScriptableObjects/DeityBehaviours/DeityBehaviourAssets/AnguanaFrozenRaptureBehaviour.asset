@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3b636f431073ba4d96baaa4ea108ee4, type: 3}
-  m_Name: AnguanaSpitefulWaveBehaviour
+  m_Name: AnguanaFrozenRaptureBehaviour
   m_EditorClassIdentifier: 
-  deityPrayerPowerMinimumRequirement: 5
+  vfxDurationDelay: 3
+  attackName: Frozen Rapture

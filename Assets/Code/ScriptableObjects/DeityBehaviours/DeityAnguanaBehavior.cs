@@ -3,8 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AnguanaBehavior", menuName = "DeityBehavior/Anguana")]
 public class DeityAnguanaBehavior : DeityBehavior
 {
-    //public int deityPrayerPowerMinimumRequirement = 3;
-    public int vfxDurationDelay = 3;
+    public float vfxDurationDelay = 1f;
+    private string deityName = "Anguana";
+    public string attackName;
     public override void ExecuteBehavior(Deity deity)
     {
         BattleManager battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
@@ -17,6 +18,7 @@ public class DeityAnguanaBehavior : DeityBehavior
             }
             else
             {
+                BattleInterface.Instance.SetDeityNotification("Deity Anguana placidly looks around");
                 Debug.Log("Deity Anguana doesn't do anything");
             }
         }
@@ -25,18 +27,17 @@ public class DeityAnguanaBehavior : DeityBehavior
             Attack(deity);
         }
     }
-
     public void Attack(Deity deity)
     {
         deity.deityCry.Play();
-
-        GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX, deity.transform);
-        Destroy(newDeityAttackVFX, vfxDurationDelay);
-
+        BattleInterface.Instance.SetSpellNameOnNotificationPanel(attackName, deityName);
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
         foreach (var playerUnit in playerUnitsOnBattlefield)
-
         {
+            GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX, playerUnit.GetComponent<Unit>().ownedTile.transform.position, Quaternion.identity);
+            Vector3 attackVFXOffset = new Vector3(0, 1, 0);
+            newDeityAttackVFX.transform.localPosition += attackVFXOffset;
+            Destroy(newDeityAttackVFX, vfxDurationDelay);
             playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
         }
         deity.enmity = 0;

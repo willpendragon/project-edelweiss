@@ -243,7 +243,7 @@ MonoBehaviour:
   deityPrayerPower: 0
   deityAttackNotification: {fileID: 0}
   battleInterface: {fileID: 0}
-  deityAttackVFX: {fileID: 7005278960792100175, guid: a718b9300d9d5e645918850cfa72fec1, type: 3}
+  deityAttackVFX: {fileID: 6007220448518202060, guid: 2d47f96f93eed514e9334836fe933381, type: 3}
   deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
   deityPortrait: {fileID: 21300000, guid: 8f298345a85fe8d40a479ea7bd37db74, type: 3}
   deityHealthBar: {fileID: 0}
@@ -285,11 +285,15 @@ MonoBehaviour:
   currentUnitLifeCondition: 1
   unitStatusController: {fileID: 0}
   fieldPrizeController: {fileID: 0}
+  hasHookshot: 0
+  bossFlag: 0
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 0}
   unitProfilePanel: {fileID: 0}
+  unitSprite: {fileID: 0}
+  characterAnimator: {fileID: 0}
   onHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -326,6 +330,7 @@ MonoBehaviour:
   currentUnitSelectionStatus: 0
   unitSpellUIController: {fileID: 0}
   unitSprite: {fileID: 0}
+  unitIconsController: {fileID: 0}
 --- !u!114 &3098965702385623563
 MonoBehaviour:
   m_ObjectHideFlags: 0
