@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,6 +31,7 @@ public class PlayerProfileController : MonoBehaviour
     [Header("Text Mesh Pro Elements - Character Stats")]
     public TextMeshProUGUI activeCharacterAttackPower;
     public TextMeshProUGUI activeCharacterMagicPower;
+    public TextMeshProUGUI activeCharacterFaithPower;
 
     [Header("Slider UI Elements")]
 
@@ -103,6 +105,11 @@ public class PlayerProfileController : MonoBehaviour
         //Update numeric Unit stats.
         activeCharacterAttackPower.text = detectedUnit.GetComponent<Unit>().unitAttackPower.ToString();
         activeCharacterMagicPower.text = detectedUnit.GetComponent<Unit>().unitMagicPower.ToString();
+
+        if (detectedUnit.tag != "Enemy")
+        {
+            activeCharacterFaithPower.text = detectedUnit.GetComponent<Unit>().unitFaithPoints.ToString();
+        }
 
         // Update Stats Slider's Max Value.
         activeCharacterHealthPointsSlider.maxValue = detectedUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints;

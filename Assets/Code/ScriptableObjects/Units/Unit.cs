@@ -35,6 +35,7 @@ public class Unit : MonoBehaviour
     public float unitHealthPoints;
     public float unitMaxHealthPoints;
     public int unitOpportunityPoints;
+    public int unitFaithPoints;
     public float unitManaPoints;
     public float unitMaxManaPoints;
     public float unitShieldPoints;
@@ -335,6 +336,7 @@ public class Unit : MonoBehaviour
         unitManaPoints = unitTemplate.unitManaPoints;
         unitMaxManaPoints = unitTemplate.unitManaPoints;
         unitOpportunityPoints = unitTemplate.unitOpportunityPoints;
+        unitFaithPoints = unitTemplate.unitFaithPoints;
         unitShieldPoints = unitTemplate.unitShieldPoints;
         coinsRewardRange = unitTemplate.coinsRewardRange;
         unitAttackPower = unitTemplate.meleeAttackPower;
