@@ -6,6 +6,7 @@ using static Unit;
 
 public class UnitSetupController : MonoBehaviour
 {
+    [SerializeField] FaithController faithController;
     private void Start()
     {
         SetUnitsInitialPositionOnGrid();
@@ -91,6 +92,10 @@ public class UnitSetupController : MonoBehaviour
 
             // Removes all ailments from previous battles.
             playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.basic;
+            if (faithController != null)
+            {
+                faithController.CheckFaithPoints();
+            }
         }
     }
 

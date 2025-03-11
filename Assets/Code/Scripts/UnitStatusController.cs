@@ -6,7 +6,8 @@ using UnityEngine.Events;
 public enum UnitStatus
 {
     stun,
-    basic
+    basic,
+    Faithless
 }
 
 public class UnitStatusController : MonoBehaviour

@@ -45,6 +45,12 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         if (unitSelection == null || unit == null) return false;
         if (unitSelection.currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting) return false;
         if (unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitAlive) return false;
+        if (unit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless)
+        {
+            // Display negative feedback for invalid Selection.
+            Debug.Log("Can't select Faithless Unit");
+            return false;
+        }
         if (selectedTile.detectedUnit.CompareTag("Enemy")) return false;
         if (GridManager.Instance.currentPlayerUnit != null) return false;
 
