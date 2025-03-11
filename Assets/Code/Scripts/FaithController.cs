@@ -5,7 +5,7 @@ public class FaithController : MonoBehaviour
     [SerializeField] PlayerPartyController playerPartyController;
     [SerializeField] int faithPointReductionRate = 10;
     private System.Random localRandom = new System.Random();
-    private void Start()
+    public void DecreaseFaithPoints()
     {
         if (playerPartyController != null)
         {

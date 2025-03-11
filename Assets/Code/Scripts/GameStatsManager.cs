@@ -8,6 +8,7 @@ public class GameStatsManager : MonoBehaviour
     public int timesSingleTargetSpellWasUsed;
     public int captureCrystalsCount;
     public int unlockedPuzzleKeys;
+    [SerializeField] FaithController faithController;
 
     private CharacterData characterData;
 
@@ -19,12 +20,14 @@ public class GameStatsManager : MonoBehaviour
         LoadCaptureCrystalsCount();
         LoadUnlockedKeys();
     }
-
     public void Start()
     {
         LoadCharacterData();
+        if (faithController != null)
+        {
+            faithController.DecreaseFaithPoints();
+        }
     }
-
     public void SaveCharacterData()
     {
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
@@ -44,6 +47,7 @@ public class GameStatsManager : MonoBehaviour
                 existingCharacterData.unitLifeCondition = unitComponent.currentUnitLifeCondition;
                 existingCharacterData.unitAttackPower = unitComponent.unitAttackPower;
                 existingCharacterData.unitMagicPower = unitComponent.unitMagicPower;
+                existingCharacterData.unitFaithPoints = unitComponent.unitFaithPoints;
 
                 // Update other stats as necessary
             }
@@ -59,6 +63,7 @@ public class GameStatsManager : MonoBehaviour
                     unitLifeCondition = unitComponent.currentUnitLifeCondition,
                     unitAttackPower = unitComponent.unitAttackPower,
                     unitMagicPower = unitComponent.unitMagicPower,
+                    unitFaithPoints = unitComponent.unitFaithPoints
                 };
                 characterSaveData.characterData.Add(newCharacterData);
             }
@@ -88,6 +93,7 @@ public class GameStatsManager : MonoBehaviour
                     unitComponent.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
                     unitComponent.unitAttackPower = loadedCharacterData.unitAttackPower;
                     unitComponent.unitMagicPower = loadedCharacterData.unitMagicPower;
+                    unitComponent.unitFaithPoints = loadedCharacterData.unitFaithPoints;
                     Debug.Log("Restoring Player Units HP and Mana");
                 }
             }
