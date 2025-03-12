@@ -4126,6 +4126,7 @@ MonoBehaviour:
   timesSingleTargetSpellWasUsed: 0
   captureCrystalsCount: 0
   unlockedPuzzleKeys: 0
+  faithController: {fileID: 0}
 --- !u!4 &1060191525
 Transform:
   m_ObjectHideFlags: 0
@@ -5525,7 +5526,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -311375939, guid: bd1811f305c87414c856a1010f28063b, type: 3}
+  m_Sprite: {fileID: -524591342, guid: 6aaf572e8e1400a44b267a3cbf5f07d4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
