@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameFlowController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class GameFlowController : MonoBehaviour
     [SerializeField] GameObject bossLevelTowerPrefab;
     [SerializeField] int bossLevelRequirement;
     [SerializeField] RectTransform endOfDemoPanel;
+    [SerializeField] GraphicRaycaster overWorldMapCanvas;
 
     void Start()
     {
@@ -22,6 +24,7 @@ public class GameFlowController : MonoBehaviour
         {
             //GameObject newBossLevelTower = Instantiate(bossLevelTowerPrefab, bossLevelTowerSpawnpoint);
             //Debug.Log("Boss Jacob's Ladder appears");
+            overWorldMapCanvas.enabled = true;
             endOfDemoPanel.localScale = Vector3.one;
         }
     }
