@@ -96,7 +96,7 @@ public class DeitySpawner : MonoBehaviour
         Debug.Log("Unbound Deity Unlocked");
 
         int unlockedDeityStartingTileXCoordinate = 5;
-        int unlockedDeityStartingTileYCoordinate = 9;
+        int unlockedDeityStartingTileYCoordinate = 5;
 
         unlockedDeity.GetComponent<Unit>().startingXCoordinate = unlockedDeityStartingTileXCoordinate;
         unlockedDeity.GetComponent<Unit>().startingYCoordinate = unlockedDeityStartingTileYCoordinate;
@@ -118,8 +118,8 @@ public class DeitySpawner : MonoBehaviour
             //int summoningRange = 1;
             GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
             firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-            GameObject deityEnergyVFXPrefab = Resources.Load<GameObject>("DeityEnergy");
-            GameObject deityEnergyVFXPrefabInstance = Instantiate(deityEnergyVFXPrefab, firstDeitySpawningTile.transform.position, Quaternion.identity);
+            //GameObject deityEnergyVFXPrefab = Resources.Load<GameObject>("DeityEnergy");
+            //GameObject deityEnergyVFXPrefabInstance = Instantiate(deityEnergyVFXPrefab, firstDeitySpawningTile.transform.position, Quaternion.identity);
             firstDeitySpawningTile.detectedUnit = unboundDeity;
             currentUnboundDeity = unboundDeity.GetComponent<Deity>();
             Debug.Log("Deity occupies Tile");
@@ -152,5 +152,10 @@ public class DeitySpawner : MonoBehaviour
         deityHPSlider.maxValue = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints;
         deityHPSlider.value = currentUnboundDeityUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints; ;
         deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints.ToString();
+    }
+
+    public void MoveObeliskOnGridMap()
+    {
+        deityObeliskSpawningPoint.transform.position = currentUnboundDeity.gameObject.GetComponent<Unit>().ownedTile.gameObject.transform.position;
     }
 }
