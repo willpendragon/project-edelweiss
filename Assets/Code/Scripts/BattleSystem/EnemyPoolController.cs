@@ -19,7 +19,8 @@ public class EnemyPoolController : MonoBehaviour
 
     private void HandleBattleTypeInitialized()
     {
-        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle ||
+            BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             SpawnEnemies();
             Debug.Log("Spawned Regular Battle Enemies");

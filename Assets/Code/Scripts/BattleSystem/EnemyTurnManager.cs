@@ -66,8 +66,7 @@ public class EnemyTurnManager : MonoBehaviour
     }
     private IEnumerator ExecuteTurns()
     {
-        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle ||
-            BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BossBattle)
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
             while (currentEnemyTurnIndex < enemiesInQueue.Count)
             {
@@ -112,9 +111,25 @@ public class EnemyTurnManager : MonoBehaviour
         }
         else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
-            Debug.Log("This is a battle with a Deity");
-            OnDeityTurn?.Invoke("Deity Turn");
+            while (currentEnemyTurnIndex < enemiesInQueue.Count)
+            {
+                EnemyAgent currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
+                Debug.Log("Current Turn: " + currentEnemy.name);
 
+                if (currentEnemy.gameObject.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+                {
+                    currentEnemy.EnemyTurnEvents();
+                    yield return new WaitForSeconds(singleEnemyturnDuration);
+                }
+                else
+                {
+                    float deadEnemyTurnWaitingTime = 0.1f;
+                    yield return new WaitForSeconds(deadEnemyTurnWaitingTime);
+                }
+
+                currentEnemyTurnIndex++;
+            }
+            OnDeityTurn?.Invoke("Deity Turn");
             // Ensure deity turn ends before switching to the player.
             yield return new WaitForSeconds(singleEnemyturnDuration);
 
