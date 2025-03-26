@@ -12,6 +12,8 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
         Deselected
     }
 
+    [SerializeField] string mapItemName;
+
     public Camera mainCamera;
     public float selectDistance = 10f; // Maximum distance within which the item can be selected/deselected
     public float proximityDistance = 5f; // Distance within which the item will be automatically deselected
@@ -19,6 +21,8 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     public Canvas overworldMapCanvas;
     public SceneLoader selectedNodeSceneLoader;
     public TextMeshProUGUI footerMarqueeText;
+
+    [SerializeField] string footerMarqueeTutorialText = $"Drag the Mouse to explore the Map. Click on Buildings to access a location";
 
     private SelectionStatus currentStatus = SelectionStatus.Deselected;
 
@@ -72,16 +76,14 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     private void SelectItem()
     {
         currentStatus = SelectionStatus.Selected;
-        footerMarqueeText.text = $"{gameObject.name} selected";
+        footerMarqueeText.text = $"{mapItemName} selected. Click on the YES button to access the Building.";
         // Implement logic for when the item is selected
         Debug.Log($"{gameObject.name} selected");
     }
-
-    private void DeselectItem()
+    public void DeselectItem()
     {
         currentStatus = SelectionStatus.Deselected;
-        // Implement logic for when the item is deselected
-        // Implement logic for when the item is deselected
+        footerMarqueeText.text = footerMarqueeTutorialText;
         Debug.Log($"{gameObject.name} deselected");
     }
 
