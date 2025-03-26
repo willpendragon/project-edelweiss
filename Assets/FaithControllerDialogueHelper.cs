@@ -51,11 +51,42 @@ public class FaithControllerDialogueHelper : MonoBehaviour
     }
     public void ManageEdelweissFaith(int faithValue)
     {
+        if (faithValue == 0) return;
+
         unitEdel.unitFaithPoints += faithValue;
-        string textNotification = $"Edel's Faith Value updated to" + faithValue;
+
+        string textNotification;
+
+        if (faithValue > 0)
+        {
+            textNotification = $"Edel's Faith increased by {faithValue}";
+        }
+        else // faithValue < 0
+        {
+            textNotification = $"Edel's Faith suffered a {Mathf.Abs(faithValue)} point reduction";
+        }
+
         if (faithControllerDialogueUIHelper != null)
         {
             faithControllerDialogueUIHelper.DisplayTextNotification(textNotification);
         }
+        SaveFaithStat();
+    }
+    private void SaveFaithStat()
+    {
+        GameSaveData characterSaveData = SaveStateManager.saveData;
+
+        foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
+        {
+            CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
+            if (existingCharacterData != null)
+            {
+                // Update existing character data
+                existingCharacterData.unitFaithPoints = playerUnit.unitFaithPoints;
+
+                // Update other stats as necessary
+            }
+        }
+        SaveStateManager.SaveGame(characterSaveData);
     }
 }

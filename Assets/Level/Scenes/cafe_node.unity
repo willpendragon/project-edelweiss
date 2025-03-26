@@ -496,7 +496,6 @@ RectTransform:
   - {fileID: 1481215874}
   - {fileID: 786807063}
   - {fileID: 1175073416}
-  - {fileID: 761167269}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2475,17 +2474,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 761167268}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 191846819}
+  m_Father: {fileID: 2071948414}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -58.74}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: -32.633297}
+  m_SizeDelta: {x: 512, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &761167270
 MonoBehaviour:
@@ -2534,10 +2533,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 49.75
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -2570,7 +2569,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1.061142, y: 0.35301593, z: -1.2835388, w: -0.12316128}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5665,6 +5664,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   notificationsText: {fileID: 761167270}
+  fadeDuration: 0.4
+  displayDuration: 2
+  popScale: 1.2
+  popUpDuration: 0.15
+  popDownDuration: 0.1
 --- !u!1 &1481215873
 GameObject:
   m_ObjectHideFlags: 0
@@ -6102,6 +6106,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueEntrySceneEvents:
   - guid: f09f57ff-51bc-4b25-b48f-e76bf4019333
+    onExecute:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1447833233}
+          m_TargetAssemblyTypeName: FaithControllerDialogueHelper, Assembly-CSharp
+          m_MethodName: ManageEdelweissFaith
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: -20
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - guid: ac213798-9c3a-4d09-8bac-e5d80777100d
     onExecute:
       m_PersistentCalls:
         m_Calls:
@@ -8975,6 +8995,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 22425850, guid: 58ac37417e60e534f91138088a3e6f70, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1252736450}
+    - targetCorrespondingSourceObject: {fileID: 22425850, guid: 58ac37417e60e534f91138088a3e6f70, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 761167269}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 125852, guid: 58ac37417e60e534f91138088a3e6f70, type: 3}
       insertIndex: -1
