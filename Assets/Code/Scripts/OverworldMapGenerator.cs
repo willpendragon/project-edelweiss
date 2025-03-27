@@ -11,6 +11,8 @@ public class OverworldMapGenerator : MonoBehaviour
     public float minDistanceApart = 3f; // Minimum distance between nodes
     public int randomSeed = 12345; // Seed for the random number generator
 
+    public Transform currentMapNodeTransform;
+
     private LineRenderer lineRenderer;
     private List<Vector3> nodePositions = new List<Vector3>();
 
@@ -78,10 +80,11 @@ public class OverworldMapGenerator : MonoBehaviour
                 // Update the material color and lock status based on level progression
                 if (i == highestUnlockedLevel)
                 {
+                    currentMapNodeTransform = newNode.transform;
                     newNode.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
                     newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
                     Vector3 partyMemberIconPosition = newNode.transform.position + new Vector3(0, 0, iconZOffset);
-                    float horizontalOffset = 1.0f; // The horizontal offset distance between icons
+                    float horizontalOffset = 2; // The horizontal offset distance between icons
                     float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f; // Center the icons
 
                     for (int j = 0; j < partyMemberIcons.Length; j++)
