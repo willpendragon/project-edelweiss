@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -134,10 +135,19 @@ public class CafeMenuUIController : MonoBehaviour
             foodTypeLabel = "HP Recovery";
             return foodTypeLabel;
         }
-        else
+        else if (food.itemFoodType == ItemFoodType.ManaRecovery)
         {
             foodTypeLabel = "Mana Recovery";
             return foodTypeLabel;
+        }
+        else if (food.itemFoodType == ItemFoodType.FaithRecovery)
+        {
+            foodTypeLabel = "Faith Recovery";
+            return foodTypeLabel;
+        }
+        else
+        {
+            return null;
         }
     }
     public void PurchaseFood(ItemFood purchasedFood, float foodPrice)
@@ -296,6 +306,15 @@ public class CafeMenuUIController : MonoBehaviour
                 {
                     fedUnit.unitManaPoints = fedUnit.unitMaxManaPoints;
                 }
+                itemUsed = true;
+            }
+        }
+
+        else if (foodItem.itemFoodType == ItemFoodType.FaithRecovery)
+        {
+            if (fedUnit.unitFaithPoints >= 0)
+            {
+                fedUnit.unitFaithPoints += (int)foodItem.recoveryAmount;
                 itemUsed = true;
             }
         }

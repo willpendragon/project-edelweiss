@@ -5,7 +5,8 @@ using UnityEngine;
 public enum ItemFoodType
 {
     HPRecovery,
-    ManaRecovery
+    ManaRecovery,
+    FaithRecovery
 }
 [CreateAssetMenu(fileName = "ItemFood", menuName = "Items/Food", order = 1)]
 
