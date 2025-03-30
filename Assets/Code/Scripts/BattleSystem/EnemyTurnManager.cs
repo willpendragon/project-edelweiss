@@ -66,29 +66,31 @@ public class EnemyTurnManager : MonoBehaviour
     }
     private IEnumerator ExecuteTurns()
     {
+
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
             while (currentEnemyTurnIndex < enemiesInQueue.Count)
             {
                 EnemyAgent currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
                 Debug.Log("Current Turn: " + currentEnemy.name);
+                IconDisplayHelper iconDisplayHelper = currentEnemy.gameObject.GetComponentInChildren<IconDisplayHelper>();
 
                 if (currentEnemy.gameObject.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
                 {
+                    iconDisplayHelper.ShowIcon();
                     currentEnemy.EnemyTurnEvents();
                     yield return new WaitForSeconds(singleEnemyturnDuration);
+                    iconDisplayHelper.HideIcon();
                 }
                 else
                 {
                     float deadEnemyTurnWaitingTime = 0.1f;
                     yield return new WaitForSeconds(deadEnemyTurnWaitingTime);
                 }
-
                 currentEnemyTurnIndex++;
             }
 
             TrapBehaviour();
-
             if (deity != null)
             {
                 OnDeityTurn?.Invoke("Deity Turn");
@@ -138,8 +140,6 @@ public class EnemyTurnManager : MonoBehaviour
             Debug.Log("Deity turn is over. Passing turn to Player.");
         }
     }
-
-
     private void TrapBehaviour()
     {
         //Need to move this in another class or move in a class of its own, following the single responsibility principle
