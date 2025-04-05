@@ -10,6 +10,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     public static event UsedSpecialAttack OnUsedSpecialAttack;
 
     public int attackExecutionThreshold = 2;
+    private int lastAttackTurn = -1;
     public override void ExecuteBehavior(Deity deity)
     {
         TileController[] gridTiles = ExtractRandomTiles();
@@ -23,27 +24,20 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         }
 
         TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
-        if (turnController.turnCounter >= attackExecutionThreshold)
+
+        if ((turnController.turnCounter - lastAttackTurn) >= attackExecutionThreshold)
         {
+            lastAttackTurn = turnController.turnCounter;
+
             Debug.Log("Reached Attack Execution Turn. King Laurinus attacks the Player Units on the cursed tiles");
-
             deity.deityCry.Play();
-
-            foreach (var playerUnit in GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield)
-            {
-                if (playerUnit.GetComponent<Unit>().ownedTile.currentTileCurseStatus == TileCurseStatus.cursed)
-                {
-                    playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
-
-                    playerUnit.GetComponent<Unit>().OnTakenDamage.Invoke(deity.deitySpecialAttackPower);
-
-                    BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
-
-                    Debug.Log("King Laurinus executes its Special Attack.");
-                }
-            }
+            AttackPlayerUnits(deity);
+            AttackEnemyUnits(deity);
+            BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
+            OnUsedSpecialAttack?.Invoke("Cursed Garden", "King Laurinus");
         }
     }
+
 
     // Extracts a number of random tiles. Laurinus will curse these random tiles.
     private TileController[] ExtractRandomTiles()
@@ -70,5 +64,57 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             .OrderBy(t => Guid.NewGuid())
             .Take(cursedTileNumber)
             .ToArray();
+    }
+    private void AttackPlayerUnits(Deity deity)
+    {
+        float enmity = BattleManager.Instance.deity.enmity;
+        float scaledDamage = deity.deitySpecialAttackPower + (enmity * 0.5f);
+
+        GameObject[] playerUnits = GameObject.FindGameObjectWithTag("PlayerPartyController")
+            .GetComponent<PlayerPartyController>()
+            .playerUnitsOnBattlefield;
+
+        foreach (var playerUnit in playerUnits)
+        {
+            if (playerUnit == null) continue;
+
+            Unit unit = playerUnit.GetComponent<Unit>();
+            if (unit == null || unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead) continue;
+
+            TileController tile = unit.ownedTile;
+            if (tile == null) continue;
+
+            if (tile.currentTileCurseStatus == TileCurseStatus.cursed)
+            {
+                unit.TakeDamage(scaledDamage);
+                unit.OnTakenDamage.Invoke(scaledDamage);
+            }
+        }
+    }
+    private void AttackEnemyUnits(Deity deity)
+    {
+        float enmity = BattleManager.Instance.deity.enmity;
+        float scaledDamage = deity.deitySpecialAttackPower + (enmity * 0.5f);
+
+        GameObject[] enemyUnits = BattleManager.Instance.enemiesOnBattlefield;
+
+        foreach (var enemyUnit in enemyUnits)
+        {
+            if (enemyUnit == null) continue;
+
+            Unit unit = enemyUnit.GetComponent<Unit>();
+            if (unit == null || unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead) continue;
+
+            TileController tile = unit.ownedTile;
+            if (tile == null) continue;
+
+            if (tile.currentTileCurseStatus == TileCurseStatus.cursed)
+            {
+                unit.TakeDamage(scaledDamage);
+                unit.OnTakenDamage.Invoke(scaledDamage);
+            }
+        }
+
+        Debug.Log("King Laurinus used its special attack on Enemies");
     }
 }
