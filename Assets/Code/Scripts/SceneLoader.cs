@@ -39,6 +39,6 @@ public class SceneLoader : MonoBehaviour
     IEnumerator LoadScene()
     {
         yield return new WaitForSeconds(loadingSceneWaitTime);
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadSceneAsync(sceneName);
     }
 }
