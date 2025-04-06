@@ -15,7 +15,6 @@ public class GameFlowController : MonoBehaviour
     void Start()
     {
         UnlockBossFight();
-
     }
     private void UnlockBossFight()
     {
