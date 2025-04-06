@@ -1,0 +1,149 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5081261151701396684
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4738707238143801932}
+  - component: {fileID: 4387088591409273736}
+  - component: {fileID: 6498664361061926301}
+  - component: {fileID: 4600033988183540963}
+  - component: {fileID: 7587386926648314412}
+  m_Layer: 0
+  m_Name: BattleManager
+  m_TagString: BattleManager
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4738707238143801932
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5081261151701396684}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4387088591409273736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5081261151701396684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333121726ca123e4fa72503fa1ad78c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battleMomentsScreen: {fileID: 0}
+  battleInterface: {fileID: 0}
+  battleMomentsScreenDeactivationTime: 1
+  deityAchievementsController: {fileID: 0}
+  turnDisplay: {fileID: 0}
+  turnTracker: {fileID: 0}
+  turnCounter: 0
+  enemiesOnBattlefield: []
+  deity: {fileID: 0}
+  currentTurnOrder: 0
+  enemySelection: {fileID: 0}
+  captureCrystalsRewardPool: 0
+  fieldEffectStatus: 1
+  enemyTurnManager: {fileID: 6498664361061926301}
+  PlayerTurnStarts:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  PlayerTurnEnds:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  gridManager: {fileID: 0}
+--- !u!114 &6498664361061926301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5081261151701396684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2ac4ffbbf1233479f5123a1a465b28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemiesInQueue: []
+  currentEnemyTurnIndex: 0
+  battleManager: {fileID: 4387088591409273736}
+  singleEnemyturnDuration: 2
+  deity: {fileID: 0}
+--- !u!114 &4600033988183540963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5081261151701396684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b05363d8d9a06343b9c6918710926bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinsRewardPool: 0
+  experienceRewardPool: 0
+--- !u!114 &7587386926648314412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5081261151701396684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e921692f94d8d04a9e6d8b834e6065c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  summonResetHelper: {fileID: 0}
+  turnCounter: 0
+  currentTurn: 0
+  playerUnitsOnBattlefield: []
+  enemyUnitsOnBattlefield: []
+  battleManager: {fileID: 4387088591409273736}
+  battleEndUIHandler: {fileID: 0}
+  achievementsManager: {fileID: 0}
+  warFunds: 0
+  enemiesKilledInCurrentBattle: 0
+  timesSingleTargetSpellWasUsed: 0
+  mainCameraPlayableDirector: {fileID: 0}
