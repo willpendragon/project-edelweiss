@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using static TileController;
 
@@ -87,7 +86,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     {
         DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
 
-        if (distanceController.CheckDistance(attacker.ownedTile, savedSelectedTile))
+        if (distanceController.CheckDistance(attacker.ownedTile, savedSelectedTile) && LookUpDeityComponent(defender) != true)
         {
             Vector2Int attackerPos = attacker.GetGridPosition();
             Vector2Int defenderPos = defender.GetGridPosition();
@@ -134,6 +133,10 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     // Hookshot attack logic (used when hookshot is equipped)
     public void ExecuteHookshot(Unit attacker, Unit defender)
     {
+        if (LookUpDeityComponent(defender) == true)
+        {
+            return;
+        }
         int hookshotRange = 3; // Maximum range of the hookshot
 
         Vector2Int attackerPos = attacker.GetGridPosition();
@@ -307,7 +310,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     {
         attacker.gameObject.GetComponentInChildren<MagnetHelper>().OrientMagnet(attacker, defender);
     }
-
     private void AnimateConveyorTiles(Vector2Int attackerPos, Vector2Int defenderPos, Vector2Int pullDirection, Unit attacker)
     {
         // Calculate the number of tiles between the attacker and the defender
@@ -345,6 +347,19 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                     }
                 }
             }
+        }
+    }
+
+    private bool LookUpDeityComponent(Unit defenderUnit)
+    {
+        // The purpose of this method is to check if the target Unit has a Deity component on it.
+        if (defenderUnit.gameObject.GetComponent<Deity>() != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
