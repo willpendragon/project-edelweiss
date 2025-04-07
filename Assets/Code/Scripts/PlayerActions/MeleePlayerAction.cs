@@ -196,7 +196,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             destinationTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.cyan);
 
             // Trigger a feedback event for the hookshot usage
-            OnUsedMeleeAction?.Invoke("Hookshot", attacker.unitTemplate.unitName);
+            OnUsedMeleeAction?.Invoke("Magnet", attacker.unitTemplate.unitName);
         }
         else
         {
