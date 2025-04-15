@@ -12354,7 +12354,7 @@ MonoBehaviour:
       isGroup: 0
       nodeColor: 
       delaySimStatus: 0
-      falseConditionAction: 
+      falseConditionAction: Block
       conditionPriority: 2
       outgoingLinks:
       - originConversationID: 14
@@ -12397,7 +12397,8 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: King Laurinus Unlocked.
+        value: My sensors reveal that King Laurinus is now Unbound and you're able
+          to capture it.
         type: 0
         typeString: 
       - title: Sequence
@@ -12444,7 +12445,7 @@ MonoBehaviour:
         type: 5
         typeString: CustomFieldType_Actor
       - title: Conversant
-        value: 2
+        value: 1
         type: 5
         typeString: CustomFieldType_Actor
       - title: Menu Text
@@ -12452,7 +12453,7 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: Test Test Test
+        value: Luckily, this is not my problem.
         type: 0
         typeString: 
       - title: Sequence
@@ -12660,7 +12661,8 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: Deity Anguana Unlocked.
+        value: My sensors reveal that Anguana is now Unbound and you're able to capture
+          it.
         type: 0
         typeString: 
       - title: Sequence
@@ -12707,7 +12709,7 @@ MonoBehaviour:
         type: 5
         typeString: CustomFieldType_Actor
       - title: Conversant
-        value: 2
+        value: 1
         type: 5
         typeString: CustomFieldType_Actor
       - title: Menu Text
@@ -12715,7 +12717,7 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: Test Test Test
+        value: I suggest you to feed well, just in case.
         type: 0
         typeString: 
       - title: Sequence
