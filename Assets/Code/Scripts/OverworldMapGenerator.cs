@@ -5,6 +5,7 @@ using UnityEngine;
 public class OverworldMapGenerator : MonoBehaviour
 {
     public Level[] levelList;
+    //public Level[] levelListMapTwo;
     public GameObject mapNode;
     public Transform mapNodeTransform;
     public float maxPositionVariation = 2f; // Maximum variation in position
@@ -21,6 +22,12 @@ public class OverworldMapGenerator : MonoBehaviour
 
     void Awake()
     {
+        GenerateLevel(levelList);
+    }
+
+    void GenerateLevel(Level[] levelSelection)
+    {
+
         Random.InitState(randomSeed); // Initialize the random number generator with a seed for consistency
         Vector3 initialPosition = mapNodeTransform.position;
 
@@ -30,11 +37,11 @@ public class OverworldMapGenerator : MonoBehaviour
 
         // Setup LineRenderer
         lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.positionCount = levelList.Length;
+        lineRenderer.positionCount = levelSelection.Length;
         lineRenderer.startWidth = 0.5f;
         lineRenderer.endWidth = 0.5f;
 
-        for (int i = 0; i < levelList.Length; i++)
+        for (int i = 0; i < levelSelection.Length; i++)
         {
             Vector3 newPosition;
             bool isTooClose;
@@ -74,8 +81,8 @@ public class OverworldMapGenerator : MonoBehaviour
             {
                 // Instantiate the node
                 GameObject newNode = Instantiate(mapNode, newPosition, Quaternion.identity);
-                newNode.GetComponent<EnemySelection>().levelData = levelList[i];
-                newNode.GetComponent<EnemySelection>().levelNumber = levelList[i].levelNumber;
+                newNode.GetComponent<EnemySelection>().levelData = levelSelection[i];
+                newNode.GetComponent<EnemySelection>().levelNumber = levelSelection[i].levelNumber;
 
                 // Update the material color and lock status based on level progression
                 if (i == highestUnlockedLevel)
