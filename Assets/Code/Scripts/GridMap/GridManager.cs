@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -45,6 +46,27 @@ public class GridManager : MonoBehaviour
     public MapData currentMapData;
     public MapData puzzleMapData;
 
+    [SerializeField] UnitSetupController unitSetupController;
+
+    private void Update()
+    {
+        // Test for Multi-Map Dungeon Setup.
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            GenerateGridMapFromData(puzzleMapData);
+            unitSetupController.SetUnitsInitialPositionOnGrid();
+            gridTileControllers = GameObject.FindObjectsOfType<TileController>();
+            RefreshGridTileControllers();
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            GenerateGridMapFromData(currentMapData);
+            unitSetupController.SetUnitsInitialPositionOnGrid();
+            gridTileControllers = GameObject.FindObjectsOfType<TileController>();
+            RefreshGridTileControllers();
+        }
+
+    }
     private void Awake()
     {
         if (Instance == null)
@@ -227,7 +249,14 @@ public class GridManager : MonoBehaviour
         foreach (var tile in gridTileControllers)
         {
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
+            //tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
         }
+    }
+    public void RefreshGridTileControllers()
+    {
+        gridTileControllers = gridMapDictionary
+            .Values
+            .Where(tile => tile != null)
+            .ToArray();
     }
 }
