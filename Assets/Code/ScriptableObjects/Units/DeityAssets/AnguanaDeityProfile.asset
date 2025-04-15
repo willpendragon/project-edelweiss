@@ -13,16 +13,19 @@ MonoBehaviour:
   m_Name: AnguanaDeityProfile
   m_EditorClassIdentifier: 
   unitName: Anguana
-  unitHealthPoints: 1800
-  unitMaxHealthPoints: 1800
+  unitHealthPoints: 1000
+  unitMaxHealthPoints: 1000
   unitManaPoints: 10
   unitMaxManaPoints: 10
   unitOpportunityPoints: 10
+  unitFaithPoints: 0
+  unitMovemementLimit: 0
   unitShieldPoints: 10
   meleeAttackPower: 10
   unitMagicPower: 10
+  unitMeleeAttackBaseDamage: 0
   spellsList: []
-  unitCoinsReward: 0
+  coinsRewardRange: {x: 0, y: 0}
   unitExperiencePointsReward: 0
   unitPortrait: {fileID: 21300000, guid: 8f298345a85fe8d40a479ea7bd37db74, type: 3}
   unitMiniPortrait: {fileID: 21300000, guid: 1e599f2f687d217409c0c3a5b04aefd9, type: 3}
