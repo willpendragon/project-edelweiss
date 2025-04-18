@@ -23,6 +23,7 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] float battleMomentsScreenDeactivationTime;
     [SerializeField] DeityAchievementsController deityAchievementsController;
+    public BattleRewardsController battleRewardsController;
 
     public TextMeshProUGUI turnDisplay;
     public TextMeshProUGUI turnTracker;
@@ -158,4 +159,6 @@ public class BattleManager : MonoBehaviour
         SaveStateManager.SaveGame(saveData);
         Debug.Log("Unlocking Next Level");
     }
+
+
 }

@@ -114,18 +114,6 @@ public class TurnController : MonoBehaviour
             SwapTurns();
         }
     }
-    public bool CheckPlayerUnitsStatus()
-    {
-        // Retrieve all of the Player Units.
-        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag(Tags.PLAYER_PARTY_CONTROLLER).GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
-
-        // Check if all units are either dead or waiting (meaning no unit is in a state that can take action).
-        return playerUnitsOnBattlefield.All(unitObject =>
-        {
-            Unit unit = unitObject.GetComponent<Unit>();
-            return unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead || unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting;
-        });
-    }
     public void SwapTurns()
     {
         // If all units are dead or waiting, proceed to swap turns.
@@ -140,6 +128,19 @@ public class TurnController : MonoBehaviour
             Debug.Log("At least one player unit can still take actions.");
         }
     }
+    public bool CheckPlayerUnitsStatus()
+    {
+        // Retrieve all of the Player Units.
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag(Tags.PLAYER_PARTY_CONTROLLER).GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+
+        // Check if all units are either dead or waiting (meaning no unit is in a state that can take action).
+        return playerUnitsOnBattlefield.All(unitObject =>
+        {
+            Unit unit = unitObject.GetComponent<Unit>();
+            return unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead || unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting;
+        });
+    }
+
     public void PlayerGameOverCheck()
     {
         // Check if there are any units that are NOT dead, indicating the player party is still active.
@@ -178,9 +179,9 @@ public class TurnController : MonoBehaviour
                 Debug.Log("Adding enemies to kill count");
             }
         }
-        ApplyRewardsAndSave();
-        Debug.Log("Rolling Convo Unlock");
+        BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(warFunds);
         ConversationManager.Instance.UnlockRandomConversation();
+        Debug.Log("Rolled Convo Unlock");
         UpdateBattleEndUIPanel();
     }
     private void PlayerPartyDefeatSequence()
@@ -260,20 +261,7 @@ public class TurnController : MonoBehaviour
             PlayerPartyVictorySequence("Boss Defeated");
         }
     }
-    private void ApplyRewardsAndSave()
-    {
-        // Apply to each Player's their Health Points, Coins and Experience Rewards Pool.
-        // Saves each Player's Health Points, Coins and Experience Rewards.
-        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
 
-        gameStatsManager.captureCrystalsCount += BattleManager.Instance.captureCrystalsRewardPool;
-        gameStatsManager.SaveEnemiesKilled();
-        gameStatsManager.SaveCharacterData();
-        gameStatsManager.SaveWarFunds(warFunds);
-        gameStatsManager.SaveUsedSingleTargetSpells();
-        gameStatsManager.SaveCaptureCrystalsCount();
-        Debug.Log("Saving Character Stats Data");
-    }
     private void ResetBattleToInitialStatus()
     {
         // I can move this in the Battle Manager
@@ -358,7 +346,7 @@ public class TurnController : MonoBehaviour
         OnBattleEnd("Fleed");
         PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
-        ApplyRewardsAndSave();
+        BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(warFunds);
         UpdateBattleEndUIPanel();
     }
     private void PlayCameraBattleEndAnimation()
