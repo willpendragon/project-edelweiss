@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System.Linq;
 using static Unit;
 using UnityEngine.Playables;
-using JetBrains.Annotations;
 public class TurnController : MonoBehaviour
 {
     private static TurnController instance;
@@ -70,10 +69,6 @@ public class TurnController : MonoBehaviour
     public float warFunds;
     public int enemiesKilledInCurrentBattle;
     public int timesSingleTargetSpellWasUsed;
-
-    [Header("Camera Work")]
-
-    [SerializeField] PlayableDirector mainCameraPlayableDirector;
 
     public void OnEnable()
     {
@@ -159,7 +154,7 @@ public class TurnController : MonoBehaviour
     {
         // Execute the sequence of events firing when the Player Party wins the battle.
         OnBattleEnd("Victory");
-        PlayCameraBattleEndAnimation();
+        BattleManager.Instance.PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
         battleManager.UnlockNextLevel();
         Debug.Log("Enemy Party was defeated");
@@ -188,7 +183,7 @@ public class TurnController : MonoBehaviour
     {
         // This is the sequence of events firing when the Player Party wins the battle.
         OnBattleEnd("Defeat");
-        PlayCameraBattleEndAnimation();
+        BattleManager.Instance.PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
         Debug.Log("Player Party was defeated");
     }
@@ -344,16 +339,10 @@ public class TurnController : MonoBehaviour
     {
         Debug.Log("Player Party ran away.");
         OnBattleEnd("Fleed");
-        PlayCameraBattleEndAnimation();
+        BattleManager.Instance.PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
         BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(warFunds);
         UpdateBattleEndUIPanel();
     }
-    private void PlayCameraBattleEndAnimation()
-    {
-        if (mainCameraPlayableDirector != null)
-        {
-            mainCameraPlayableDirector.Play();
-        }
-    }
+
 }

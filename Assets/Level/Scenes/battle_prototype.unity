@@ -2493,7 +2493,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 82, y: -70.979996}
+  m_AnchoredPosition: {x: 83, y: -90.68}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &361098907
@@ -6588,7 +6588,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 209.88126, y: -66.608}
+  m_AnchoredPosition: {x: 210.88126, y: -86.308}
   m_SizeDelta: {x: 455.7625, y: 41.256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &873232010
@@ -18850,7 +18850,6 @@ MonoBehaviour:
   warFunds: 0
   enemiesKilledInCurrentBattle: 0
   timesSingleTargetSpellWasUsed: 0
-  mainCameraPlayableDirector: {fileID: 588608028}
 --- !u!114 &2294554817449211626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19632,7 +19631,6 @@ MonoBehaviour:
   turnCounter: 0
   enemiesOnBattlefield: []
   deity: {fileID: 0}
-  currentTurnOrder: 0
   enemySelection: {fileID: 0}
   captureCrystalsRewardPool: 0
   enemyTurnManager: {fileID: 3303934020560356054}
@@ -19667,6 +19665,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   gridManager: {fileID: 810722614}
+  mainCameraPlayableDirector: {fileID: 588608028}
 --- !u!4 &5463486613867393796
 Transform:
   m_ObjectHideFlags: 0

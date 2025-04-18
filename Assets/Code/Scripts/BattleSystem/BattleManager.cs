@@ -1,15 +1,13 @@
-using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
-using UnityEngine.UI;
-using PixelCrushers.DialogueSystem;
+using UnityEngine.Playables;
 
-public enum TurnOrder
-{
-    playerTurn,
-    enemyTurn
-}
+//public enum TurnOrder
+//{
+//    playerTurn,
+//    enemyTurn
+//}
 
 public class BattleManager : MonoBehaviour
 {
@@ -24,7 +22,7 @@ public class BattleManager : MonoBehaviour
     public int turnCounter;
     public GameObject[] enemiesOnBattlefield;
     public Deity deity;
-    public TurnOrder currentTurnOrder;
+    //public TurnOrder currentTurnOrder;
     public EnemySelection enemySelection;
 
     public int captureCrystalsRewardPool;
@@ -47,6 +45,10 @@ public class BattleManager : MonoBehaviour
     public UnityEvent PlayerTurnEnds;
 
     public GridManager gridManager;
+
+    [Header("Camera Work")]
+
+    [SerializeField] PlayableDirector mainCameraPlayableDirector;
 
     private void Awake()
     {
@@ -76,7 +78,7 @@ public class BattleManager : MonoBehaviour
     }
     public void SetTurnOrder()
     {
-        currentTurnOrder = TurnOrder.playerTurn;
+        //currentTurnOrder = TurnOrder.playerTurn;
         turnDisplay.text = "Player Turn";
         turnCounter += 1;
     }
@@ -117,9 +119,9 @@ public class BattleManager : MonoBehaviour
     }
     public void UpdateTurnCounter()
     {
-        turnDisplay.text = "Player Turn";
-        turnCounter += 1;
-        turnTracker.text = turnCounter.ToString();
+        //turnDisplay.text = "Player Turn";
+        //turnCounter += 1;
+        //turnTracker.text = turnCounter.ToString();
     }
     public void RestoreOpportunityEnemies()
     {
@@ -136,5 +138,13 @@ public class BattleManager : MonoBehaviour
         saveData.highestUnlockedLevel++;
         SaveStateManager.SaveGame(saveData);
         Debug.Log("Unlocking Next Level");
+    }
+
+    public void PlayCameraBattleEndAnimation()
+    {
+        if (mainCameraPlayableDirector != null)
+        {
+            mainCameraPlayableDirector.Play();
+        }
     }
 }
