@@ -8,7 +8,6 @@ public class BattleManager : MonoBehaviour
     public static BattleManager Instance { get; private set; }
 
     [Header("Gameplay Flow")]
-    [SerializeField] float battleMomentsScreenDeactivationTime;
     [SerializeField] DeityAchievementsController deityAchievementsController;
     public EnemyTurnManager enemyTurnManager;
 
@@ -21,11 +20,9 @@ public class BattleManager : MonoBehaviour
     public BattleRewardsController battleRewardsController;
     public int captureCrystalsRewardPool;
 
-    [Header("Camera Work")]
+    [Header("UI")]
     [SerializeField] PlayableDirector mainCameraPlayableDirector;
-    public TextMeshProUGUI turnDisplay;
-    public TextMeshProUGUI turnTracker;
-    public int turnCounter;
+    [SerializeField] float battleMomentsScreenDeactivationTime;
 
     public delegate void SavePlayerHealth(float finalPlayerHealth);
     public static event SavePlayerHealth OnSavePlayerHealth;
@@ -55,7 +52,6 @@ public class BattleManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     void Start()
     {
         ExecuteBattleStartingSequence();
@@ -64,17 +60,10 @@ public class BattleManager : MonoBehaviour
     {
         BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen("Battle Begins!");
         TrackEnemiesOnBattlefield();
-        //SetTurnOrder();
     }
     private void TrackEnemiesOnBattlefield()
     {
         enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
-    }
-    public void SetTurnOrder()
-    {
-        //currentTurnOrder = TurnOrder.playerTurn;
-        turnDisplay.text = "Player Turn";
-        turnCounter += 1;
     }
     private int frameCounter = 0;
     void Update()
@@ -111,12 +100,6 @@ public class BattleManager : MonoBehaviour
         }
         return true;
     }
-    public void UpdateTurnCounter()
-    {
-        //turnDisplay.text = "Player Turn";
-        //turnCounter += 1;
-        //turnTracker.text = turnCounter.ToString();
-    }
     public void RestoreOpportunityEnemies()
     {
         foreach (GameObject enemy in enemiesOnBattlefield)
@@ -127,7 +110,6 @@ public class BattleManager : MonoBehaviour
     }
     public void UnlockNextLevel()
     {
-        // This probably belongs more to a Progression Manager
         GameSaveData saveData = SaveStateManager.saveData;
         saveData.highestUnlockedLevel++;
         SaveStateManager.SaveGame(saveData);
