@@ -20,6 +20,7 @@ public class BattleInterface : MonoBehaviour
     [SerializeField] RectTransform battlefieldNotificationsPanel;
     [SerializeField] public GameObject movesContainer;
     [SerializeField] CanvasGroup fadePanel;
+    public BattleMomentsScreenHelper battleMomentsScreenHelper;
 
 
     [Header("UI Texts")]
@@ -43,7 +44,6 @@ public class BattleInterface : MonoBehaviour
     }
     private void OnEnable()
     {
-        //Deity.OnDeityJudgmentCounterUpdate += SetDeityJudgmentCounter;
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell += SetSpellNameOnNotificationPanel;
         MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;

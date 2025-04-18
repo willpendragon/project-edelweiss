@@ -11,20 +11,17 @@ public enum TurnOrder
     enemyTurn
 }
 
-public enum FieldEffectStatus
-{
-    active,
-    inactive
-}
+//public enum FieldEffectStatus
+//{
+//    active,
+//    inactive
+//}
 
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
 
-    [SerializeField] GameObject battleMomentsScreen;
-    [SerializeField] BattleInterface battleInterface;
     [SerializeField] float battleMomentsScreenDeactivationTime;
-
     [SerializeField] DeityAchievementsController deityAchievementsController;
 
     public TextMeshProUGUI turnDisplay;
@@ -37,9 +34,9 @@ public class BattleManager : MonoBehaviour
 
     public int captureCrystalsRewardPool;
 
-    public FieldEffectStatus fieldEffectStatus;
+    //public FieldEffectStatus fieldEffectStatus;
 
-    private GameManager gameManager;
+    //private GameManager gameManager;
 
     public EnemyTurnManager enemyTurnManager;
 
@@ -70,30 +67,21 @@ public class BattleManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        EnemyTurnManager.OnPlayerTurn += ActivateBattleMomentsScreen;
-        EnemyTurnManager.OnDeityTurn += ActivateBattleMomentsScreen;
     }
 
-    private void OnEnable()
-    {
-        TurnController.OnEnemyTurn += ActivateBattleMomentsScreen;
-    }
-
-    private void OnDisable()
-    {
-        EnemyTurnManager.OnPlayerTurn -= ActivateBattleMomentsScreen;
-        EnemyTurnManager.OnDeityTurn -= ActivateBattleMomentsScreen;
-        TurnController.OnEnemyTurn -= ActivateBattleMomentsScreen;
-
-    }
     void Start()
     {
-        //Looks for the Game Manager at the start of the battle.
-        gameManager = GameManager.Instance;
-        ActivateBattleMomentsScreen("Battle Begins!");
-        enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
-
+        ExecuteBattleStartingSequence();
+    }
+    private void ExecuteBattleStartingSequence()
+    {
+        BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen("Battle Begins!");
+        TrackEnemiesOnBattlefield();
         SetTurnOrder();
+    }
+    private void TrackEnemiesOnBattlefield()
+    {
+        enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
     }
     public void SetTurnOrder()
     {
@@ -123,17 +111,18 @@ public class BattleManager : MonoBehaviour
             }
         }
     }
-    public void PassTurnToPlayer()
-    {
-        // Hands the turn to the Player.
-        currentTurnOrder = TurnOrder.playerTurn;
-        UpdateTurnCounter();
-        Debug.Log("Turn Passed to Player");
+    // Probable zombie code
+    //public void PassTurnToPlayer()
+    //{
+    //    // Hands the turn to the Player.
+    //    currentTurnOrder = TurnOrder.playerTurn;
+    //    UpdateTurnCounter();
+    //    Debug.Log("Turn Passed to Player");
 
-        Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
-        endTurnButton.interactable = true;
-        PlayerTurnStarts.Invoke();
-    }
+    //    Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+    //    endTurnButton.interactable = true;
+    //    PlayerTurnStarts.Invoke();
+    //}
     public bool AllEnemiesOpportunityZero()
     {
         foreach (GameObject enemy in enemiesOnBattlefield)
@@ -161,18 +150,6 @@ public class BattleManager : MonoBehaviour
             enemyScript.opportunity = 1;
         }
     }
-    public void ActivateBattleMomentsScreen(string battleMomentText)
-    {
-        battleMomentsScreen.SetActive(true);
-        battleMomentsScreen.GetComponentInChildren<TextMeshProUGUI>().text = battleMomentText;
-        StartCoroutine("DeactivateBattleMomentsScreen");
-    }
-    IEnumerator DeactivateBattleMomentsScreen()
-    {
-        yield return new WaitForSeconds(battleMomentsScreenDeactivationTime);
-        battleMomentsScreen.SetActive(false);
-    }
-
     public void UnlockNextLevel()
     {
         // This probably belongs more to a Progression Manager

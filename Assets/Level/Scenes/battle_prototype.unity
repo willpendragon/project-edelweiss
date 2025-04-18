@@ -5532,6 +5532,7 @@ GameObject:
   - component: {fileID: 767884334}
   - component: {fileID: 767884335}
   - component: {fileID: 767884336}
+  - component: {fileID: 767884337}
   m_Layer: 5
   m_Name: BattleInterfaceCanvas
   m_TagString: BattleInterfaceCanvas
@@ -5652,6 +5653,7 @@ MonoBehaviour:
   battlefieldNotificationsPanel: {fileID: 2109305883}
   movesContainer: {fileID: 261502488}
   fadePanel: {fileID: 992088666}
+  battleMomentsScreenHelper: {fileID: 767884337}
   moveName: {fileID: 0}
   playerActionText: {fileID: 0}
   battlefieldTextNotifications: {fileID: 35542996}
@@ -5691,6 +5693,20 @@ MonoBehaviour:
   battleEndWarFundsGainedText: {fileID: 749872785}
   battleEndEnemiesKilledText: {fileID: 2121085910}
   battleEndCrystalObtainedText: {fileID: 660865156}
+--- !u!114 &767884337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767884329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f95ae9f24bea9647992d5b6e88087d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battleMomentsScreen: {fileID: 463913747}
+  battleMomentsScreenDeactivationTime: 1
 --- !u!1 &782934660
 GameObject:
   m_ObjectHideFlags: 0
@@ -18827,6 +18843,7 @@ MonoBehaviour:
   currentTurn: 0
   playerUnitsOnBattlefield: []
   enemyUnitsOnBattlefield: []
+  gameStatsManager: {fileID: 0}
   battleManager: {fileID: 5409979177453231299}
   battleEndUIHandler: {fileID: 767884336}
   achievementsManager: {fileID: 499339821}
@@ -19607,8 +19624,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333121726ca123e4fa72503fa1ad78c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleMomentsScreen: {fileID: 463913747}
-  battleInterface: {fileID: 767884334}
   battleMomentsScreenDeactivationTime: 1
   deityAchievementsController: {fileID: 0}
   turnDisplay: {fileID: 782934662}
@@ -19619,7 +19634,6 @@ MonoBehaviour:
   currentTurnOrder: 0
   enemySelection: {fileID: 0}
   captureCrystalsRewardPool: 0
-  fieldEffectStatus: 1
   enemyTurnManager: {fileID: 3303934020560356054}
   PlayerTurnStarts:
     m_PersistentCalls:
