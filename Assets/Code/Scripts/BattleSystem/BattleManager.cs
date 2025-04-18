@@ -11,12 +11,6 @@ public enum TurnOrder
     enemyTurn
 }
 
-//public enum FieldEffectStatus
-//{
-//    active,
-//    inactive
-//}
-
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
@@ -34,10 +28,6 @@ public class BattleManager : MonoBehaviour
     public EnemySelection enemySelection;
 
     public int captureCrystalsRewardPool;
-
-    //public FieldEffectStatus fieldEffectStatus;
-
-    //private GameManager gameManager;
 
     public EnemyTurnManager enemyTurnManager;
 
@@ -112,18 +102,6 @@ public class BattleManager : MonoBehaviour
             }
         }
     }
-    // Probable zombie code
-    //public void PassTurnToPlayer()
-    //{
-    //    // Hands the turn to the Player.
-    //    currentTurnOrder = TurnOrder.playerTurn;
-    //    UpdateTurnCounter();
-    //    Debug.Log("Turn Passed to Player");
-
-    //    Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
-    //    endTurnButton.interactable = true;
-    //    PlayerTurnStarts.Invoke();
-    //}
     public bool AllEnemiesOpportunityZero()
     {
         foreach (GameObject enemy in enemiesOnBattlefield)
@@ -159,6 +137,4 @@ public class BattleManager : MonoBehaviour
         SaveStateManager.SaveGame(saveData);
         Debug.Log("Unlocking Next Level");
     }
-
-
 }
