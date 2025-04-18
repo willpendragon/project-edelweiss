@@ -135,7 +135,6 @@ public class TurnController : MonoBehaviour
             return unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead || unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting;
         });
     }
-
     public void PlayerGameOverCheck()
     {
         // Check if there are any units that are NOT dead, indicating the player party is still active.
@@ -283,27 +282,6 @@ public class TurnController : MonoBehaviour
         battleEndUIHandler.battleEndEnemiesKilledText.text = enemiesKilledInCurrentBattle.ToString();
         battleEndUIHandler.battleEndWarFundsGainedText.text = warFunds.ToString();
         battleEndUIHandler.battleEndCrystalObtainedText.text = battleManager.captureCrystalsRewardPool.ToString();
-    }
-    public void EndTurnViaButton()
-    {
-        // It should be handled by a dedicated class for the End Turn Button.
-        // Check if it's Player Turn and no Active Unit is in play
-
-        TurnController turnController = BattleManager.Instance?.GetComponent<TurnController>();
-
-        if (turnController.currentTurn == Turn.playerTurn)
-        {
-            playerUnitsOnBattlefield = turnController?.playerUnitsOnBattlefield;
-            foreach (var playerUnit in playerUnitsOnBattlefield)
-            {
-                playerUnit?.GetComponent<UnitSelectionController>()?.StopUnitAction();
-                playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
-            }
-
-            Button endTurnButton = GameObject.FindGameObjectWithTag(Tags.END_TURN_BUTTON).GetComponent<Button>();
-            endTurnButton.interactable = false;
-            CheckPlayerUnitsStatus();
-        }
     }
     public void RestorePlayerUnitsOpportunityPoints()
     {
