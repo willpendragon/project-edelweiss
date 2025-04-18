@@ -3,31 +3,29 @@ using TMPro;
 using UnityEngine.Events;
 using UnityEngine.Playables;
 
-//public enum TurnOrder
-//{
-//    playerTurn,
-//    enemyTurn
-//}
-
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
 
+    [Header("Gameplay Flow")]
     [SerializeField] float battleMomentsScreenDeactivationTime;
     [SerializeField] DeityAchievementsController deityAchievementsController;
-    public BattleRewardsController battleRewardsController;
+    public EnemyTurnManager enemyTurnManager;
 
+    [Header("Actors on Battlefield")]
+    public GameObject[] enemiesOnBattlefield;
+    public Deity deity;
+    public EnemySelection enemySelection;
+
+    [Header("Prizes Logic")]
+    public BattleRewardsController battleRewardsController;
+    public int captureCrystalsRewardPool;
+
+    [Header("Camera Work")]
+    [SerializeField] PlayableDirector mainCameraPlayableDirector;
     public TextMeshProUGUI turnDisplay;
     public TextMeshProUGUI turnTracker;
     public int turnCounter;
-    public GameObject[] enemiesOnBattlefield;
-    public Deity deity;
-    //public TurnOrder currentTurnOrder;
-    public EnemySelection enemySelection;
-
-    public int captureCrystalsRewardPool;
-
-    public EnemyTurnManager enemyTurnManager;
 
     public delegate void SavePlayerHealth(float finalPlayerHealth);
     public static event SavePlayerHealth OnSavePlayerHealth;
@@ -45,10 +43,6 @@ public class BattleManager : MonoBehaviour
     public UnityEvent PlayerTurnEnds;
 
     public GridManager gridManager;
-
-    [Header("Camera Work")]
-
-    [SerializeField] PlayableDirector mainCameraPlayableDirector;
 
     private void Awake()
     {
@@ -70,7 +64,7 @@ public class BattleManager : MonoBehaviour
     {
         BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen("Battle Begins!");
         TrackEnemiesOnBattlefield();
-        SetTurnOrder();
+        //SetTurnOrder();
     }
     private void TrackEnemiesOnBattlefield()
     {

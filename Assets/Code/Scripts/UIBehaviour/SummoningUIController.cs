@@ -15,12 +15,12 @@ public class SummoningUIController : MonoBehaviour
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        TurnController.OnResetUnitUI += ResetButtonToSummonMode;
+        BattleFlowController.OnResetUnitUI += ResetButtonToSummonMode;
     }
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        TurnController.OnResetUnitUI -= ResetButtonToSummonMode;
+        BattleFlowController.OnResetUnitUI -= ResetButtonToSummonMode;
     }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {

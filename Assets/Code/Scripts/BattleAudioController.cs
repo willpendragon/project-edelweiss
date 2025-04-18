@@ -11,11 +11,11 @@ public class BattleAudioController : MonoBehaviour
     [SerializeField] AudioSource battleDefeatAudioSource;
     private void OnEnable()
     {
-        TurnController.OnBattleEnd += BattleEndTheme;
+        BattleFlowController.OnBattleEnd += BattleEndTheme;
     }
     private void OnDisable()
     {
-        TurnController.OnBattleEnd -= BattleEndTheme;
+        BattleFlowController.OnBattleEnd -= BattleEndTheme;
     }
     void Start()
     {

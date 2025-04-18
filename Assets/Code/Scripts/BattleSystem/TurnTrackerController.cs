@@ -8,17 +8,18 @@ public class TurnTrackerController : MonoBehaviour
 
     public void OnEnable()
     {
+        TurnController.OnPlayerTurn += SetTurnTrackerText;
         TurnController.OnEnemyTurn += SetTurnTrackerText;
         EnemyTurnManager.OnPlayerTurn += SetTurnTrackerText;
         Deity.OnPlayerTurn += SetTurnTrackerText;
     }
     public void OnDisable()
     {
+        TurnController.OnPlayerTurn -= SetTurnTrackerText;
         TurnController.OnEnemyTurn -= SetTurnTrackerText;
         EnemyTurnManager.OnPlayerTurn -= SetTurnTrackerText;
         Deity.OnPlayerTurn += SetTurnTrackerText;
     }
-
     public delegate void IncreaseTurnCounter();
     public static event IncreaseTurnCounter OnIncreaseTurnCounter;
     public void SetTurnTrackerText(string turnText)

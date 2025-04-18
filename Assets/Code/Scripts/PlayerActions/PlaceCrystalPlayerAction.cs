@@ -75,7 +75,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                     OnBattleEndCapturedDeity("Deity was Captured");
 
                     TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
-                    turnController.ResetTags();
+                    BattleFlowController.Instance.ResetTags();
                     BattleManager.Instance.UnlockNextLevel();
                     gameStatsManager.SaveCaptureCrystalsCount();
 
