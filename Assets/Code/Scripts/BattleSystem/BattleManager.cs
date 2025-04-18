@@ -86,27 +86,6 @@ public class BattleManager : MonoBehaviour
             }
         }
     }
-    public bool AllEnemiesOpportunityZero()
-    {
-        foreach (GameObject enemy in enemiesOnBattlefield)
-        {
-            EnemyAgent enemyScript = enemy.GetComponent<EnemyAgent>();
-
-            if (enemyScript != null && enemyScript.opportunity > 0)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    public void RestoreOpportunityEnemies()
-    {
-        foreach (GameObject enemy in enemiesOnBattlefield)
-        {
-            EnemyAgent enemyScript = enemy.GetComponent<EnemyAgent>();
-            enemyScript.opportunity = 1;
-        }
-    }
     public void UnlockNextLevel()
     {
         GameSaveData saveData = SaveStateManager.saveData;
