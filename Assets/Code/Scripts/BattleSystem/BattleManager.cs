@@ -172,4 +172,13 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(battleMomentsScreenDeactivationTime);
         battleMomentsScreen.SetActive(false);
     }
+
+    public void UnlockNextLevel()
+    {
+        // This probably belongs more to a Progression Manager
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.highestUnlockedLevel++;
+        SaveStateManager.SaveGame(saveData);
+        Debug.Log("Unlocking Next Level");
+    }
 }

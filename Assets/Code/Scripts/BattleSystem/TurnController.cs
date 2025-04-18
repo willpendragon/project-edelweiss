@@ -178,7 +178,7 @@ public class TurnController : MonoBehaviour
             OnBattleEnd("Victory");
             PlayCameraBattleEndAnimation();
             ResetBattleToInitialStatus();
-            UnlockNextLevel();
+            battleManager.UnlockNextLevel();
 
             foreach (var player in playerUnitsOnBattlefield)
             {
@@ -195,7 +195,7 @@ public class TurnController : MonoBehaviour
                     Debug.Log("Adding enemies to kill count");
                 }
             }
-            ApplyRewardsAndSave(gameStatsManager);
+            ApplyRewardsAndSave();
             Debug.Log("Rolling Convo Unlock");
             ConversationManager.Instance.UnlockRandomConversation();
             UpdateBattleEndUIPanel();
@@ -223,17 +223,14 @@ public class TurnController : MonoBehaviour
             OnBattleEnd("Victory");
             PlayCameraBattleEndAnimation();
             ResetBattleToInitialStatus();
-            UnlockNextLevel();
+            battleManager.UnlockNextLevel();
 
             foreach (var player in playerUnitsOnBattlefield)
             {
                 player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
                 warFunds += player.GetComponent<Unit>().unitCoins;
             }
-
-            gameStatsManager.SaveCharacterData();
-            gameStatsManager.SaveWarFunds(warFunds);
-            gameStatsManager.SaveCaptureCrystalsCount();
+            ApplyRewardsAndSave();
             UpdateBattleEndUIPanel();
         }
         else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
@@ -252,19 +249,14 @@ public class TurnController : MonoBehaviour
             OnBattleEnd("Victory");
             PlayCameraBattleEndAnimation();
             ResetBattleToInitialStatus();
+            ApplyRewardsAndSave();
         }
     }
-    public void UnlockNextLevel()
+    private void ApplyRewardsAndSave()
     {
-        GameSaveData saveData = SaveStateManager.saveData;
-        saveData.highestUnlockedLevel++;
-        SaveStateManager.SaveGame(saveData);
-        Debug.Log("Unlocking Next Level");
-    }
-    private void ApplyRewardsAndSave(GameStatsManager gameStatsManager)
-    {
-        // Applying to each Player's their Health Points, Coins and Experience Rewards Pool
-        // Saving each Player's Health Points, Coins and Experience Rewards
+        // Applyes to each Player's their Health Points, Coins and Experience Rewards Pool
+        // Saves each Player's Health Points, Coins and Experience Rewards
+        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
 
         gameStatsManager.captureCrystalsCount += BattleManager.Instance.captureCrystalsRewardPool;
         gameStatsManager.SaveEnemiesKilled();
@@ -354,14 +346,11 @@ public class TurnController : MonoBehaviour
     }
     public void RunFromBattle()
     {
-        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
         Debug.Log("Player Party ran away.");
         OnBattleEnd("Fleed");
         PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
-        gameStatsManager.SaveCharacterData();
-        gameStatsManager.SaveWarFunds(warFunds);
-        gameStatsManager.SaveCaptureCrystalsCount();
+        ApplyRewardsAndSave();
         UpdateBattleEndUIPanel();
     }
 
