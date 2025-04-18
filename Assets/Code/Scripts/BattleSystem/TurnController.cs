@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using static Unit;
-using UnityEngine.Playables;
 public class TurnController : MonoBehaviour
 {
     private static TurnController instance;
@@ -70,28 +69,30 @@ public class TurnController : MonoBehaviour
     public int enemiesKilledInCurrentBattle;
     public int timesSingleTargetSpellWasUsed;
 
-    public void OnEnable()
+    public void OnEnable() => SubscribeToEvents();
+    public void OnDisable() => UnsubscribeFromEvents();
+
+    private void SubscribeToEvents()
     {
         UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatusWrapper;
-        BumperEnemyBehavior.OnCheckPlayer += PlayerGameOverCheck;
-        StunnerEnemyBehavior.OnCheckPlayer += PlayerGameOverCheck;
-        BossSimildeBehaviour.OnCheckPlayer += PlayerGameOverCheck;
-
+        BumperEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
+        StunnerEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
+        BossSimildeBehaviour.OnCheckPlayer += PlayerUnitsLifeCheck;
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
         Unit.OnCheckGameOver += GameOverCheck;
     }
-    public void OnDisable()
+    private void UnsubscribeFromEvents()
     {
         UnitSelectionController.OnUnitWaiting -= CheckPlayerUnitsStatusWrapper;
-        BumperEnemyBehavior.OnCheckPlayer -= PlayerGameOverCheck;
-        StunnerEnemyBehavior.OnCheckPlayer -= PlayerGameOverCheck;
-        BossSimildeBehaviour.OnCheckPlayer -= PlayerGameOverCheck;
+        BumperEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
+        StunnerEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
+        BossSimildeBehaviour.OnCheckPlayer -= PlayerUnitsLifeCheck;
         EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Deity.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
         Unit.OnCheckGameOver -= GameOverCheck;
     }
-    void Start()
+    private void Start()
     {
         playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag(Tags.PLAYER_PARTY_CONTROLLER).GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
         currentTurn = Turn.playerTurn;
@@ -114,7 +115,6 @@ public class TurnController : MonoBehaviour
         // If all units are dead or waiting, proceed to swap turns.
         if (CheckPlayerUnitsStatus())
         {
-            Debug.Log("All units are either dead or waiting. Swapping to enemy turn.");
             OnEnemyTurn("Enemy Turn");
             OnEnemyTurnSwap();
         }
@@ -125,8 +125,6 @@ public class TurnController : MonoBehaviour
     }
     public bool CheckPlayerUnitsStatus()
     {
-        // Retrieve all of the Player Units.
-
         // Check if all units are either dead or waiting (meaning no unit is in a state that can take action).
         return playerUnitsOnBattlefield.All(unitObject =>
         {
@@ -134,7 +132,7 @@ public class TurnController : MonoBehaviour
             return unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead || unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting;
         });
     }
-    public void PlayerGameOverCheck()
+    public void PlayerUnitsLifeCheck()
     {
         // Check if there are any units that are NOT dead, indicating the player party is still active.
         bool isAnyPlayerUnitAlive = playerUnitsOnBattlefield.Any(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead);
@@ -148,37 +146,6 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party is still active");
         }
     }
-    //private void PlayerPartyVictorySequence(string battleEndPanelMessage)
-    //{
-    //    // Execute the sequence of events firing when the Player Party wins the battle.
-    //    OnBattleEnd("Victory");
-    //    BattleManager.Instance.PlayCameraBattleEndAnimation();
-    //    ResetBattleToInitialStatus();
-    //    battleManager.UnlockNextLevel();
-    //    Debug.Log("Enemy Party was defeated");
-
-    //    foreach (var player in playerUnitsOnBattlefield)
-    //    {
-    //        player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
-    //        warFunds += player.GetComponent<Unit>().unitCoins;
-    //    }
-
-    //    foreach (var enemy in BattleManager.Instance.enemiesOnBattlefield)
-    //    {
-    //        if (enemy.tag == Tags.ENEMY && enemy.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead)
-    //        {
-    //            enemiesKilledInCurrentBattle++;
-    //            gameStatsManager.enemiesKilled++;
-    //            Debug.Log("Adding enemies to kill count");
-    //        }
-    //    }
-    //    BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(warFunds);
-    //    ConversationManager.Instance.UnlockRandomConversation();
-    //    Debug.Log("Rolled Convo Unlock");
-    //    UpdateBattleEndUIPanel();
-    //}
-
-
     public void GameOverCheck()
     {
         // This method fires different handling of the Game Over sequence, depending on the Battle Type.
@@ -200,7 +167,6 @@ public class TurnController : MonoBehaviour
                 Debug.LogWarning("Unknown battle type encountered.");
                 break;
         }
-        Debug.Log("Performed Game Over Check");
     }
     private void HandleRegularBattle(GameStatsManager gameStatsManager)
     {
@@ -245,23 +211,6 @@ public class TurnController : MonoBehaviour
             BattleFlowController.Instance.PlayerPartyVictorySequence("Boss Defeated", warFunds);
         }
     }
-
-    //private void ResetBattleToInitialStatus()
-    //{
-    //    // I can move this in the Battle Manager
-    //    ResetTags();
-    //    DeactivateActivePlayerUnitPanel();
-    //    OnResetUnitUI();
-    //    TurnController.Instance.summonResetHelper.ResetSummonTemporaryBuffs();
-    //}
-    //public void ResetTags()
-    //{
-    //    foreach (var player in GameManager.Instance.playerPartyMembersInstances)
-    //    {
-    //        player.gameObject.tag = Tags.PLAYER;
-    //    }
-    //}
-
     public void RestorePlayerUnitsOpportunityPoints()
     {
         Debug.Log("Restoring Player Opportunity");
@@ -294,12 +243,10 @@ public class TurnController : MonoBehaviour
     }
     public void RunFromBattle()
     {
-        Debug.Log("Player Party ran away.");
         OnBattleEnd("Fleed");
         BattleManager.Instance.PlayCameraBattleEndAnimation();
         BattleFlowController.Instance.ResetBattleToInitialStatus();
         BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(warFunds);
         BattleFlowController.Instance.UpdateBattleEndUIPanel(warFunds);
     }
-
 }
