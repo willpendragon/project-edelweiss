@@ -30,6 +30,8 @@ public class BattleFeedbackController : MonoBehaviour
     public Animator unitAnimator;
     public GameObject buffIcon;
 
+    [SerializeField] Animator hitAnimator;
+
 
     public void PlayMeleeAttackAnimation(Unit activePlayerUnit, Unit currentTarget)
     {
@@ -63,6 +65,12 @@ public class BattleFeedbackController : MonoBehaviour
         {
             PlayDamageSFX.Invoke();
         }
+    }
+
+    public void PlayHitAnimation()
+    {
+        Debug.Log("Playing Hit Animation");
+        hitAnimator.SetTrigger("Hit");
     }
 
     public void PlayUnitDeathAnimationVFX()
