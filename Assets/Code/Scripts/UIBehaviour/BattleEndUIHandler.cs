@@ -28,11 +28,13 @@ public class BattleEndUIHandler : MonoBehaviour
     private void OnEnable()
     {
         BattleFlowController.OnBattleEnd += DisplayBattleEndScreen;
+        TurnController.OnBattleEnd += DisplayBattleEndScreen;
         PlaceCrystalPlayerAction.OnBattleEndCapturedDeity += DisplayBattleEndScreen;
     }
     private void OnDisable()
     {
         BattleFlowController.OnBattleEnd -= DisplayBattleEndScreen;
+        TurnController.OnBattleEnd -= DisplayBattleEndScreen;
         PlaceCrystalPlayerAction.OnBattleEndCapturedDeity -= DisplayBattleEndScreen;
     }
 
