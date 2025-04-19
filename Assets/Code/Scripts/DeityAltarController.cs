@@ -171,46 +171,7 @@ public class DeityAltarController : MonoBehaviour
         Sprite linkedDeityUnitPortrait = deity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
         deityLinkCalloutController.PlayDeityLinkCalloutTransition(selectedPlayerUnitPortrait, linkedDeityUnitPortrait);
     }
-    //public void RemoveDeityBuffsOnUnit(Unit unit, Deity deity)
-    //{
-    //    if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
-    //    {
-    //        selectedPlayerUnit.unitMagicPower -= deity.deityPrayerBuff.buffAmount;
-    //    }
-    //    else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
-    //    {
-    //        selectedPlayerUnit.unitAttackPower -= deity.deityPrayerBuff.buffAmount;
-    //    }
 
-    //    foreach (var playerUnitProfile in playerUnitsProfiles)
-    //    {
-    //        if (unit.Id == playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId)
-    //        {
-    //            playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(unit);
-    //        }
-    //    }
-    //    RemoveDeityBuffsOnOtherUnits(deity);
-    //}
-    //public void RemoveDeityBuffsOnOtherUnits(Deity deity)
-    //{
-    //    List<Unit> playerUnitsInstances = GameManager.Instance.playerPartyMembersInstances;
-    //    foreach (Unit playerUnit in playerUnitsInstances)
-    //    {
-    //        if (playerUnit.LinkedDeityId != deity.Id)
-    //        {
-    //            if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
-    //            {
-    //                selectedPlayerUnit.unitMagicPower -= deity.deityPrayerBuff.buffAmount;
-    //                UpdatePlayerUnitProfile(playerUnit);
-    //            }
-    //            else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
-    //            {
-    //                selectedPlayerUnit.unitAttackPower -= deity.deityPrayerBuff.buffAmount;
-    //                UpdatePlayerUnitProfile(playerUnit);
-    //            }
-    //        }
-    //    }
-    //}
     public void UpdatePlayerUnitProfile(Unit unit)
     {
         foreach (var playerUnitProfile in playerUnitsProfiles)
