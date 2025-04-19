@@ -28,18 +28,18 @@ public class DeityLinkCalloutController : MonoBehaviour
 
         linkedText.gameObject.SetActive(true);
 
-        // 🎵 Fade in + Play Link Forged Sound at the same moment
+        // Fade in + Play Link Forged Sound at the same moment
         deityLinkCalloutSequence.Append(unitPortrait.GetComponent<Image>().DOFade(1, 0.3f))
             .Join(deityPortrait.GetComponent<Image>().DOFade(1, 0.3f))
             .Join(unitDeityLinkPanelCalloutBackground.GetComponent<Image>().DOFade(1, 0.3f))
             .AppendCallback(() =>
             {
-                deityLinkForgedSound?.Play(); // 🔊 Plays right when fades start
+                deityLinkForgedSound?.Play(); // Plays right when fades start
             });
 
         deityLinkCalloutSequence.Append(unitDeityLinkPanelCalloutBackground.DOMove(destination, 0.4f).SetEase(Ease.OutQuad));
 
-        // 🔊 Play growl right before shake
+        // Play growl right before shake
         deityLinkCalloutSequence.AppendCallback(() =>
         {
             deityGrowlSound?.Play();
