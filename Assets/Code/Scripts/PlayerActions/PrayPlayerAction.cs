@@ -32,12 +32,15 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
     {
         Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         Deity summonedLinkedDeity = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().summonedLinkedDeity;
+        Unit summonedLinkedDeityUnit = summonedLinkedDeity.gameObject.GetComponent<Unit>();
+        string summonedLinkedDeityUnitName = summonedLinkedDeityUnit.unitTemplate.unitName;
+        string currentActivePlayerUnitName = currentActivePlayerUnit.unitTemplate.unitName;
 
         if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity && currentActivePlayerUnit.unitOpportunityPoints > 0)
         {
             if (CheckLinkedDeityPrayerPower())
             {
-                BattleInterface.Instance.SetSpellNameOnNotificationPanel(summonedLinkedDeity.name, "is fulfilling the Prayer from" + currentActivePlayerUnit.unitTemplate.name);
+                BattleInterface.Instance.SetSummonEffectNameOnNotificationPanel(summonedLinkedDeityUnitName, currentActivePlayerUnitName);
                 currentActivePlayerUnit.unitOpportunityPoints--;
                 UpdateActivePlayerUnitProfile(currentActivePlayerUnit);
                 summonedLinkedDeity.summoningBehaviour.ExecuteBehavior(summonedLinkedDeity);

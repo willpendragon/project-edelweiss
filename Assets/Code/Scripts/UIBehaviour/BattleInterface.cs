@@ -89,6 +89,13 @@ public class BattleInterface : MonoBehaviour
         battlefieldTextNotifications.text = casterName + " used " + spellName;
         StartCoroutine("ResetBattleFieldTextNotification");
     }
+
+    public void SetSummonEffectNameOnNotificationPanel(string summonName, string unitName)
+    {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
+        battlefieldTextNotifications.text = summonName + " blessed " + unitName;
+        StartCoroutine("ResetBattleFieldTextNotification");
+    }
     public void SetMeleeAttackOnNotificationPanel(string meleeAttack, string attackerName)
     {
         battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
