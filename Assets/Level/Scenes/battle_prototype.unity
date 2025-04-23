@@ -3285,6 +3285,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 525094826}
   m_CullTransparentMesh: 1
+--- !u!1 &529186301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 529186302}
+  - component: {fileID: 529186304}
+  m_Layer: 5
+  m_Name: SummonDetailsPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &529186302
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529186301}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2126734265}
+  m_Father: {fileID: 767884333}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -200}
+  m_SizeDelta: {x: 256, y: 256}
+  m_Pivot: {x: 0, y: 1}
+--- !u!222 &529186304
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529186301}
+  m_CullTransparentMesh: 1
 --- !u!1 &543133920
 GameObject:
   m_ObjectHideFlags: 0
@@ -5618,6 +5663,7 @@ RectTransform:
   - {fileID: 261502489}
   - {fileID: 1270439568}
   - {fileID: 1114723495}
+  - {fileID: 529186302}
   - {fileID: 622376890}
   - {fileID: 2029499020}
   - {fileID: 463913748}
@@ -5649,14 +5695,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleManager: {fileID: 5409979177453231299}
   battlefieldNotificationsPanelDurationTime: 2.5
+  summonedUnitInfoPanelHelper: {fileID: 0}
   moveNamePanel: {fileID: 0}
   battlefieldNotificationsPanel: {fileID: 2109305883}
   movesContainer: {fileID: 261502488}
   fadePanel: {fileID: 992088666}
   battleMomentsScreenHelper: {fileID: 767884337}
+  summonedUnitsInfoContainer: {fileID: 2126734265}
   moveName: {fileID: 0}
   playerActionText: {fileID: 0}
   battlefieldTextNotifications: {fileID: 35542996}
+  summonedUnitInfoPanel: {fileID: 7520140271015704911, guid: bba1ba893a08ca347b4bd3098c1ac5f8, type: 3}
   battleEndResult: {fileID: 922938185}
 --- !u!114 &767884335
 MonoBehaviour:
@@ -12933,6 +12982,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2121085908}
   m_CullTransparentMesh: 1
+--- !u!1 &2126734264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2126734265}
+  - component: {fileID: 2126734266}
+  m_Layer: 5
+  m_Name: SummonedUnitsInfoContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2126734265
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126734264}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 529186302}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 256, y: 64}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &2126734266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126734264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &2137499245
 GameObject:
   m_ObjectHideFlags: 0
@@ -19668,17 +19779,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333121726ca123e4fa72503fa1ad78c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleMomentsScreenDeactivationTime: 1
   deityAchievementsController: {fileID: 0}
-  battleRewardsController: {fileID: 5197312543519212456}
-  turnDisplay: {fileID: 782934662}
-  turnTracker: {fileID: 873232010}
-  turnCounter: 0
+  enemyTurnManager: {fileID: 3303934020560356054}
   enemiesOnBattlefield: []
   deity: {fileID: 0}
   enemySelection: {fileID: 0}
+  battleRewardsController: {fileID: 5197312543519212456}
   captureCrystalsRewardPool: 0
-  enemyTurnManager: {fileID: 3303934020560356054}
+  mainCameraPlayableDirector: {fileID: 588608028}
+  battleMomentsScreenDeactivationTime: 1
   PlayerTurnStarts:
     m_PersistentCalls:
       m_Calls:
@@ -19710,7 +19819,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   gridManager: {fileID: 810722614}
-  mainCameraPlayableDirector: {fileID: 588608028}
 --- !u!114 &5409979177453231300
 MonoBehaviour:
   m_ObjectHideFlags: 0

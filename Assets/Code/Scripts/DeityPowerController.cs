@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DeityPowerController : MonoBehaviour
@@ -8,11 +6,11 @@ public class DeityPowerController : MonoBehaviour
     public static event PlayerUnitPraying OnPlayerUnitPraying;
     private void OnEnable()
     {
-        PrayPlayerAction.OnPlayerPrayer += IncreaseDeityPower;
+        SummonedUnitInfoPanelHelper.OnPlayerPrayer += IncreaseDeityPower;
     }
     private void OnDisable()
     {
-        PrayPlayerAction.OnPlayerPrayer -= IncreaseDeityPower;
+        SummonedUnitInfoPanelHelper.OnPlayerPrayer -= IncreaseDeityPower;
     }
     private void IncreaseDeityPower()
     {
@@ -28,7 +26,6 @@ public class DeityPowerController : MonoBehaviour
             else
             {
                 Debug.Log("Deity Prayer Power is already at Max Capacity");
-
             }
         }
     }

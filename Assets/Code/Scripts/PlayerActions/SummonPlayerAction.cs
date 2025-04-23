@@ -33,10 +33,12 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             savedSelectedTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(1f, 0.2f, Color.magenta);
             int summoningCost = 10;
             currentActivePlayerUnit.SpendManaPoints(summoningCost);
+
             Debug.Log("Summon Deity on Battlefield");
 
             var summonPosition = savedSelectedTile.transform.position + new Vector3(0, 3, 0);
             GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
+            BattleInterface.Instance.CreateUISummonInfoPanel(deityInstance);
             currentActivePlayerUnit.summonedLinkedDeity = deityInstance.GetComponent<Deity>();
             deityInstance.transform.localScale = new Vector3(2, 2, 2);
 

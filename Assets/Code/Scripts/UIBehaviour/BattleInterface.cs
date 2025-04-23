@@ -13,21 +13,25 @@ public class BattleInterface : MonoBehaviour
     //[SerializeField] Player player;
     [SerializeField] float battlefieldNotificationsPanelDurationTime;
     //[SerializeField] GameObject playerActionPanel;
+    public SummonedUnitInfoPanelHelper summonedUnitInfoPanelHelper;
 
-    [Header("UI Visuals")]
+    [Header("UI Elements")]
     [SerializeField] Image moveNamePanel;
     //[SerializeField] Image fieldEffectIcon;
     [SerializeField] RectTransform battlefieldNotificationsPanel;
     [SerializeField] public GameObject movesContainer;
     [SerializeField] CanvasGroup fadePanel;
     public BattleMomentsScreenHelper battleMomentsScreenHelper;
-
+    [SerializeField] RectTransform summonedUnitsInfoContainer;
 
     [Header("UI Texts")]
     [SerializeField] TextMeshProUGUI moveName;
     [SerializeField] TextMeshProUGUI playerActionText;
     [SerializeField] TextMeshProUGUI battlefieldTextNotifications;
     //[SerializeField] TextMeshProUGUI deityJudgmentLimitText;
+
+    [Header("UI Objects")]
+    [SerializeField] GameObject summonedUnitInfoPanel;
 
     public TextMeshProUGUI battleEndResult;
 
@@ -121,11 +125,18 @@ public class BattleInterface : MonoBehaviour
         battlefieldTextNotifications.text = mirrorNotification;
         StartCoroutine("ResetBattleFieldTextNotification");
     }
-
     IEnumerator ResetBattleFieldTextNotification()
     {
         yield return new WaitForSeconds(battlefieldNotificationsPanelDurationTime);
         battlefieldNotificationsPanel.transform.localScale = new Vector3(0, 0, 0);
     }
-
+    public void CreateUISummonInfoPanel(GameObject deityGameObject)
+    {
+        float deityPrayerBuffThreshold = deityGameObject.GetComponent<Deity>().deityPrayerBuff.deityPrayerBuffThreshold;
+        float deityPrayerPower = deityGameObject.GetComponent<Deity>().deityPrayerPower;
+        string deityName = deityGameObject.GetComponent<Unit>().unitTemplate.unitName;
+        GameObject newSummonedUnitInfoPanel = Instantiate(summonedUnitInfoPanel, summonedUnitsInfoContainer);
+        SummonedUnitInfoPanelHelper summonedUnitInfoPanelHelper = newSummonedUnitInfoPanel.GetComponent<SummonedUnitInfoPanelHelper>();
+        summonedUnitInfoPanelHelper.SetSummonedUnitInfoPanelValues(deityName, deityPrayerBuffThreshold, deityPrayerPower);
+    }
 }
