@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
+using DG.Tweening;
 
 public class SummonPlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -14,7 +11,8 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
     {
         if (selectionLimiter > 0)
         {
-            selectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
+            //selectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.magenta;
+            selectedTile.GetComponentInChildren<TileShaderController>()?.AnimateFadeHeight(3f, 0.1f, Color.cyan);
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
             savedSelectedTile = selectedTile;
             selectionLimiter--;
@@ -23,27 +21,19 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
     public void Execute()
     {
         Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-
         Deity linkedDeity = currentActivePlayerUnit.linkedDeity;
 
         if (linkedDeity != null && currentActivePlayerUnit.unitOpportunityPoints > 0 && deityLimiter > 0)
         {
-            Debug.Log("Start of Summon Deity on Battlefield");
             savedSelectedTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-            savedSelectedTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(1f, 0.2f, Color.magenta);
+            savedSelectedTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(3f, 0f, Color.green);
+            // Beware, hard-coded number
             int summoningCost = 10;
             currentActivePlayerUnit.SpendManaPoints(summoningCost);
-
-            Debug.Log("Summon Deity on Battlefield");
-
-            var summonPosition = savedSelectedTile.transform.position + new Vector3(0, 3, 0);
-            GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
-            BattleInterface.Instance.CreateUISummonInfoPanel(deityInstance);
-            currentActivePlayerUnit.summonedLinkedDeity = deityInstance.GetComponent<Deity>();
-            deityInstance.transform.localScale = new Vector3(2, 2, 2);
-
-            currentActivePlayerUnit.GetComponent<SummoningUIController>().SwitchButtonToPrayMode();
-            currentActivePlayerUnit.unitOpportunityPoints--;
+            SummonDeityOnBattlefield(linkedDeity, currentActivePlayerUnit);
+            Debug.Log("Summoned Deity on Battlefield");
+            currentActivePlayerUnit.GetComponent<SummoningUIController>()?.SwitchButtonToPrayMode();
+            //currentActivePlayerUnit.unitOpportunityPoints--;
             deityLimiter--;
             Debug.Log("Summoning Deity");
         }
@@ -64,10 +54,9 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             int summoningRange = 2;
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, summoningRange))
             {
-                //tile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
                 tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             }
-            Debug.Log("Deselecting Summon Spawn Area");
+            Debug.Log("Deselected Summon Spawn Area");
             deityLimiter++;
         }
 
@@ -75,5 +64,26 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         {
             deitySpawningZoneTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0f, 0.2f, Color.white);
         }
+    }
+    private void SummonDeityOnBattlefield(Deity linkedDeity, Unit currentActivePlayerUnit)
+    {
+        var summonPosition = savedSelectedTile.transform.position + new Vector3(0, 3, 0);
+        GameObject deityInstance = Instantiate(linkedDeity.gameObject, summonPosition, Quaternion.identity);
+
+        // Set to small scale initially
+        deityInstance.transform.localScale = Vector3.zero;
+
+        // Optional: Add a bit of Y movement (like a pop-up)
+        deityInstance.transform.DOMoveY(summonPosition.y + 1f, 0.3f)
+            .SetEase(Ease.OutQuad)
+            .SetLoops(2, LoopType.Yoyo);
+
+        // Tween scale to final size with a bounce
+        deityInstance.transform.DOScale(new Vector3(2, 2, 2), 0.5f)
+            .SetEase(Ease.OutBack); // Gives it a little pop
+
+        // UI and logic
+        BattleInterface.Instance.CreateUISummonInfoPanel(deityInstance);
+        currentActivePlayerUnit.summonedLinkedDeity = deityInstance.GetComponent<Deity>();
     }
 }

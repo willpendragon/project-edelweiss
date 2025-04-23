@@ -11,6 +11,7 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
             savedSelectedTile = selectedTile;
             selectionLimiter--;
+            selectedTile.tileShaderController.AnimateFadeHeight(5, 0.2f, Color.blue);
             Debug.Log("Selected Deity Possessed Tile for Praying");
         }
     }
