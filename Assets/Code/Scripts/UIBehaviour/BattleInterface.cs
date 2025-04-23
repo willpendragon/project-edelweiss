@@ -139,4 +139,8 @@ public class BattleInterface : MonoBehaviour
         SummonedUnitInfoPanelHelper summonedUnitInfoPanelHelper = newSummonedUnitInfoPanel.GetComponent<SummonedUnitInfoPanelHelper>();
         summonedUnitInfoPanelHelper.SetSummonedUnitInfoPanelValues(deityName, deityPrayerBuffThreshold, deityPrayerPower);
     }
+    public void DestroyUISummonInfoPanel()
+    {
+        Destroy(summonedUnitInfoPanel, 1);
+    }
 }

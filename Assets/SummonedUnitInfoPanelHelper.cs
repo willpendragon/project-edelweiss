@@ -78,5 +78,7 @@ public class SummonedUnitInfoPanelHelper : MonoBehaviour
         currentActivePlayerUnitSummoningUIController.currentButton.GetComponentInChildren<Text>().text = "Summon";
         Destroy(summonedLinkedDeity.gameObject, 3);
         Debug.Log("Summoned Deity disappeared from the Battlefield.");
+        Destroy(this.gameObject, 3);
+        Debug.Log("Destroyed Summoned Deity Panel");
     }
 }
