@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using static TurnController;
 
@@ -40,22 +39,23 @@ public class BattleRewardsController : MonoBehaviour
     {
         multiKillCounter += newKill;
     }
-    public bool CheckMultiKillCounter()
+    public int CalculateMultiKillCounter()
     {
-        int multiKillThreshold = 3;
-        if (multiKillCounter >= multiKillThreshold)
+        switch (multiKillCounter)
         {
-            return true;
-        }
-        else
-        {
-            return false;
+            case 1:
+                return 1;
+            case 2:
+                return 2;
+            case 3:
+                return 3;
+            default:
+                return 1;
         }
     }
     public void resetMultiKillCounter()
     {
         StartCoroutine("ExecuteReset");
-
     }
     IEnumerator ExecuteReset()
     {

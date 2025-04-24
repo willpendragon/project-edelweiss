@@ -131,7 +131,6 @@ public class Unit : MonoBehaviour
             Debug.Log("Updated Boss Health Bar");
         }
     }
-
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
     {
         float damageMitigationPercentage = shieldPoints / (shieldPoints + 100); // Arbitrary scaling factor for shield effectiveness.
@@ -274,26 +273,20 @@ public class Unit : MonoBehaviour
                 var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
                 if (activePlayerUnit != null)
                 {
+                    // Calculate Coins Reward from Enemy.
                     BattleRewardsController battleRewardsController = activePlayerUnit.GetComponent<BattleRewardsController>();
                     int newKill = 1;
                     battleRewardsController.IncreaseMultiKillCounter(newKill);
                     float coinsReward;
-                    if (battleRewardsController.CheckMultiKillCounter())
-                    {
-                        int multiKillMultiplier = 2;
-                        coinsReward = CalculateCoinsReward() * multiKillMultiplier;
-                        Debug.Log("Coins Reward multiplied by 2");
-                    }
-                    else
-                    {
-                        coinsReward = CalculateCoinsReward();
-                    }
+                    int multiKillMultiplier = battleRewardsController.CalculateMultiKillCounter();
+                    coinsReward = CalculateCoinsReward() * multiKillMultiplier;
+                    Debug.Log("Coins Reward multiplied by" + multiKillMultiplier);
                     battleRewardsController.resetMultiKillCounter();
                     battleRewardsController.AddCoinsRewardToCoinsRewardPool(coinsReward);
                     battleRewardsController.AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
                     Debug.Log("Added Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
 
-                    // Spawn Prize on Battlefield
+                    // Spawn Prize on Battlefield.
                     if (fieldPrizeController != null)
                     {
                         fieldPrizeController.UnlockFieldPrize(ownedTile);
