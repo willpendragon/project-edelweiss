@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using static TurnController;
 
@@ -5,6 +7,7 @@ public class BattleRewardsController : MonoBehaviour
 {
     public float coinsRewardPool;
     public float experienceRewardPool;
+    public int multiKillCounter;
     public void AddCoinsRewardToCoinsRewardPool(float coinsRewardToAdd)
     {
         coinsRewardPool += coinsRewardToAdd;
@@ -32,5 +35,31 @@ public class BattleRewardsController : MonoBehaviour
         gameStatsManager.SaveUsedSingleTargetSpells();
         gameStatsManager.SaveCaptureCrystalsCount();
         Debug.Log("Saving Character Stats Data");
+    }
+    public void IncreaseMultiKillCounter(int newKill)
+    {
+        multiKillCounter += newKill;
+    }
+    public bool CheckMultiKillCounter()
+    {
+        int multiKillThreshold = 3;
+        if (multiKillCounter >= multiKillThreshold)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public void resetMultiKillCounter()
+    {
+        StartCoroutine("ExecuteReset");
+
+    }
+    IEnumerator ExecuteReset()
+    {
+        yield return new WaitForSeconds(1);
+        multiKillCounter = 0;
     }
 }

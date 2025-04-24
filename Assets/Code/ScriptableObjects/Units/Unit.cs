@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -273,9 +274,24 @@ public class Unit : MonoBehaviour
                 var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
                 if (activePlayerUnit != null)
                 {
-                    activePlayerUnit.GetComponent<BattleRewardsController>().AddCoinsRewardToCoinsRewardPool(CalculateCoinsReward());
-                    activePlayerUnit.GetComponent<BattleRewardsController>().AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
-                    Debug.Log("Adding Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
+                    BattleRewardsController battleRewardsController = activePlayerUnit.GetComponent<BattleRewardsController>();
+                    int newKill = 1;
+                    battleRewardsController.IncreaseMultiKillCounter(newKill);
+                    float coinsReward;
+                    if (battleRewardsController.CheckMultiKillCounter())
+                    {
+                        int multiKillMultiplier = 2;
+                        coinsReward = CalculateCoinsReward() * multiKillMultiplier;
+                        Debug.Log("Coins Reward multiplied by 2");
+                    }
+                    else
+                    {
+                        coinsReward = CalculateCoinsReward();
+                    }
+                    battleRewardsController.resetMultiKillCounter();
+                    battleRewardsController.AddCoinsRewardToCoinsRewardPool(coinsReward);
+                    battleRewardsController.AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
+                    Debug.Log("Added Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
 
                     // Spawn Prize on Battlefield
                     if (fieldPrizeController != null)
