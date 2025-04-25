@@ -15,6 +15,13 @@ public class Unit : MonoBehaviour
         unitAlive
     }
 
+    public enum UnitBuff
+    {
+        Basic,
+        InvulnerableMask
+    }
+
+
     [Header("Unit Basics")]
 
     public string Id;
@@ -55,13 +62,12 @@ public class Unit : MonoBehaviour
     [Header("Gameplay Elements")]
 
     public UnitLifeCondition currentUnitLifeCondition;
+    public UnitBuff currentUnitBuff;
     public UnitStatusController unitStatusController;
     public FieldPrizeController fieldPrizeController;
 
     public bool hasHookshot;
-
     public bool bossFlag = false;
-
 
     [Header("Deity Related")]
 
@@ -116,11 +122,14 @@ public class Unit : MonoBehaviour
         float effectiveDamage = CalculateEffectiveDamage(receivedDamage, unitShieldPoints);
 
         // Apply the effective damage to health points.
-        HealthPoints -= effectiveDamage;
+
+        if (currentUnitBuff != UnitBuff.InvulnerableMask)
+        {
+            HealthPoints -= effectiveDamage;
+        }
 
         // Invoke the event with the received damage before mitigation.
         OnTakenDamage.Invoke(receivedDamage);
-
         // Log the received and effective damage.
         Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
 

@@ -53,7 +53,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             if (activePlayerUnit.hasHookshot)
             {
                 ActivateMagnet(activePlayerUnit, currentTarget);
-                Debug.Log("Hookshot selected, waiting for confirmation...");
+                Debug.Log("Magnet selected, waiting for confirmation.");
             }
             else
             {
@@ -165,7 +165,11 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         {
             pullDirection.y = (int)Mathf.Sign(deltaY); // Pull in Y-axis
         }
-
+        // Check if the Enemy has an Invulnerable Mask Buff. If yes, the Magnet disables the Buff.
+        if (defender.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
+        {
+            defender.currentUnitBuff = Unit.UnitBuff.Basic;
+        }
         AnimateConveyorTiles(attackerPos, defenderPos, pullDirection, attacker);
 
         // Calculate the target tile directly in front of the player based on direction
