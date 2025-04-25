@@ -5,7 +5,8 @@ public enum EnemyType
 {
     dummy1,
     dummy2,
-    dummy3
+    dummy3,
+    Wildermann
 }
 
 [System.Serializable]

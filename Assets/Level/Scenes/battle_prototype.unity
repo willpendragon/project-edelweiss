@@ -7264,6 +7264,7 @@ MonoBehaviour:
   - {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
   - {fileID: 5147203796786549252, guid: fb44d29c5900bc445abe290940fb487c, type: 3}
   - {fileID: 8194179579621356911, guid: e2d5e0f6a4ecbbd4fa91bedaf9149e08, type: 3}
+  - {fileID: 5009294011632168286, guid: a0dd77619c7aaa9489b4e25fdc1c5e07, type: 3}
   battleManager: {fileID: 5409979177453231299}
 --- !u!1 &985621543
 GameObject:
@@ -19763,6 +19764,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinsRewardPool: 0
   experienceRewardPool: 0
+  multiKillCounter: 0
 --- !u!1 &5224302896361170730
 GameObject:
   m_ObjectHideFlags: 0
