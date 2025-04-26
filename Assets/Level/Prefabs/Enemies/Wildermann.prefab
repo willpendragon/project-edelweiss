@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 1625225759964626475}
   - component: {fileID: 7022843348406959941}
   - component: {fileID: 7946478245325231129}
+  - component: {fileID: 2913765136084342029}
   m_Layer: 8
   m_Name: MaskSprite
   m_TagString: Untagged
@@ -201,7 +202,7 @@ Animator:
   m_GameObject: {fileID: 996774060610138109}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1591224fd9625d24f9595c5f3031aedf, type: 2}
+  m_Controller: {fileID: 9100000, guid: 4a0536d455e882549978e14002cd8688, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -212,6 +213,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2913765136084342029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996774060610138109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d9c5aac568e30f46b006657c4da566c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maskSprite: {fileID: 7022843348406959941}
+  maskSpriteAnimator: {fileID: 7946478245325231129}
 --- !u!1 &1107299823357419468
 GameObject:
   m_ObjectHideFlags: 0

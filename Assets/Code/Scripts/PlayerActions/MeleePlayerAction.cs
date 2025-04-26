@@ -169,6 +169,8 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         if (defender.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
         {
             defender.currentUnitBuff = Unit.UnitBuff.Basic;
+            // Play mask deactivation feedback on the Enemy.
+            defender.gameObject.GetComponentInChildren<MaskFeedbackHelper>()?.DeactivateMask();
         }
         AnimateConveyorTiles(attackerPos, defenderPos, pullDirection, attacker);
 
