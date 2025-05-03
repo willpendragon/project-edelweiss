@@ -125,13 +125,20 @@ public class TurnController : MonoBehaviour
     }
     public bool CheckPlayerUnitsStatus()
     {
-        // Check if all units are either dead or waiting (meaning no unit is in a state that can take action).
+        // Check if all units are either dead, waiting, or faithless
         return playerUnitsOnBattlefield.All(unitObject =>
         {
             Unit unit = unitObject.GetComponent<Unit>();
-            return unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead || unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting;
+            var unitLifeCondition = unit.currentUnitLifeCondition;
+            var selectionStatus = unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus;
+            var status = unit.GetComponent<UnitStatusController>().unitCurrentStatus;
+
+            return unitLifeCondition == Unit.UnitLifeCondition.unitDead
+                || selectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting
+                || status == UnitStatus.Faithless;
         });
     }
+
     public void PlayerUnitsLifeCheck()
     {
         // Check if there are any units that are NOT dead, indicating the player party is still active.

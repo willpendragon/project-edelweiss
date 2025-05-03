@@ -57,6 +57,7 @@ public class BattleInterface : MonoBehaviour
         MoonPhaseController.OnMoonPhaseBuffActivation += SetMoonNotification;
         MirrorController.OnMirrorAttack += SetMirrorNotification;
         BossSimildeBehaviour.OnBossEnemyAttack += SetMeleeAttackOnNotificationPanel;
+        SelectUnitPlayerAction.OnFaithlessCharacter += SetFaithlessCharacterNotification;
     }
     private void OnDisable()
     {
@@ -69,6 +70,7 @@ public class BattleInterface : MonoBehaviour
         MoonPhaseController.OnMoonPhaseBuffActivation -= SetMoonNotification;
         MirrorController.OnMirrorAttack -= SetMirrorNotification;
         BossSimildeBehaviour.OnBossEnemyAttack -= SetMeleeAttackOnNotificationPanel;
+        SelectUnitPlayerAction.OnFaithlessCharacter -= SetFaithlessCharacterNotification;
     }
     private void Start()
     {
@@ -124,6 +126,14 @@ public class BattleInterface : MonoBehaviour
         battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
         battlefieldTextNotifications.text = mirrorNotification;
         StartCoroutine("ResetBattleFieldTextNotification");
+    }
+
+    public void SetFaithlessCharacterNotification(string faithlessCharacterNotification)
+    {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
+        battlefieldTextNotifications.text = faithlessCharacterNotification;
+        StartCoroutine("ResetBattleFieldTextNotification");
+
     }
     IEnumerator ResetBattleFieldTextNotification()
     {

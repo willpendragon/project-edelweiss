@@ -9,7 +9,7 @@ public class EndTurnButtonHelper : MonoBehaviour
     public void EndTurnViaButton()
     {
         // It should be handled by a dedicated class for the End Turn Button.
-        // Check if it's Player Turn and no Active Unit is in play
+        // Check if it's Player Turn and no Active Unit is in play.
 
         TurnController turnController = BattleManager.Instance?.GetComponent<TurnController>();
 

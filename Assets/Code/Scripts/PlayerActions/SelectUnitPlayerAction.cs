@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using static SelectUnitPlayerAction;
 
 public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -10,6 +11,9 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
     public static event ClickedTileWithUnit OnClickedTileWithUnit;
 
     public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
+
+    public delegate void FaithlessCharacter(string faithlessCharacterMessage);
+    public static event FaithlessCharacter OnFaithlessCharacter;
 
     public void Select(TileController selectedTile)
     {
@@ -43,14 +47,15 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         Unit unit = selectedTile.detectedUnit.GetComponent<Unit>();
 
         if (unitSelection == null || unit == null) return false;
-        if (unitSelection.currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting) return false;
-        if (unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitAlive) return false;
         if (unit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless)
         {
             // Display negative feedback for invalid Selection.
+            OnFaithlessCharacter("This Unit is Faithless and can't fight");
             Debug.Log("Can't select Faithless Unit");
             return false;
         }
+        if (unitSelection.currentUnitSelectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting) return false;
+        if (unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitAlive) return false;
         if (selectedTile.detectedUnit.CompareTag("Enemy")) return false;
         if (GridManager.Instance.currentPlayerUnit != null) return false;
 
