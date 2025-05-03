@@ -152,21 +152,27 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             detectedUnit.tag = "ActivePlayerUnit";
             detectedUnit.GetComponent<Unit>().ownedTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
 
-            // Gameplay and Spells Buttons generation.
-            GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
-            movesContainer.transform.localScale = new Vector3(0.9521077f, 0.9521077f, 0.9521077f);
-
-            detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
-            detectedUnit.GetComponent<UnitSelectionController>().GenerateWaitButton();
-            detectedUnit.GetComponent<MoveUIController>().AddMoveButton();
-            detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
-            detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
-            detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
-            detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
-            detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
-            detectedUnit.GetComponent<FlightUIController>().AddRunButton();
+            GenerateActionMenu(detectedUnit);
         }
     }
+
+    private void GenerateActionMenu(GameObject detectedUnit)
+    {
+        // Gameplay and Spells Buttons generation.
+        GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
+        movesContainer.transform.localScale = new Vector3(0.9521077f, 0.9521077f, 0.9521077f);
+
+        detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
+        detectedUnit.GetComponent<UnitSelectionController>().GenerateWaitButton();
+        detectedUnit.GetComponent<MoveUIController>().AddMoveButton();
+        detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
+        detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
+        detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
+        detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
+        detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
+        detectedUnit.GetComponent<FlightUIController>().AddRunButton();
+    }
+
     public void ResetCharacterSpellsMenu()
     {
         GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
