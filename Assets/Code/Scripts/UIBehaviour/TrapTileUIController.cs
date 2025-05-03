@@ -39,6 +39,7 @@ public class TrapTileUIController : MonoBehaviour
         Button currentTrapTileButton = trapTileButtonInstance.GetComponent<Button>();
         currentTrapTileButton.onClick.AddListener(() => SwitchTilesToTrapMode());
         currentTrapTileButton.onClick.AddListener(() => MoveInfoController.Instance.UpdateTrapMoveInfoPanelTexts());
+        currentTrapTileButton.onClick.AddListener(() => GridManager.Instance.ClearPath());
     }
     public void SwitchTilesToTrapMode()
     {
@@ -56,6 +57,8 @@ public class TrapTileUIController : MonoBehaviour
             }
             Debug.Log("Switching tiles to Trap Mode");
         }
+
+        GridManager.Instance.tileSelectionPermitted = true;
     }
     void DestroyMagnet()
     {

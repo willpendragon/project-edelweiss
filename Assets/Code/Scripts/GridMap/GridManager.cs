@@ -6,7 +6,7 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
 
-    public GameObject lineRendererPrefab; // Assign this in the Unity Editor
+    public GameObject lineRendererPrefab;
     private static LineRenderer lineRendererInstance;
 
     public List<GameObject> statusIcons = new List<GameObject>();
@@ -20,8 +20,6 @@ public class GridManager : MonoBehaviour
     public float inBetweenTilesXOffset;
     public float inBetweenTilesYOffset;
     public GameObject currentPlayerUnit;
-
-    //public int moveSelectionLimiter = 1;
 
     public bool tileSelectionPermitted;
 
@@ -42,7 +40,7 @@ public class GridManager : MonoBehaviour
     public delegate void SpawnActivationPlatforms();
     public static event SpawnActivationPlatforms OnSpawnActivationPlatforms;
 
-    // Add a reference to the MapData
+    [Header("Map Layouts")]
     public MapData currentMapData;
     public MapData puzzleMapData;
 
@@ -186,7 +184,6 @@ public class GridManager : MonoBehaviour
             return null;
         }
     }
-
     public List<Vector2Int> GetExistingTileCoordinates()
     {
         List<Vector2Int> existingTiles = new List<Vector2Int>();
@@ -232,14 +229,12 @@ public class GridManager : MonoBehaviour
         float worldZ = y * (1 + inBetweenTilesYOffset);
         return new Vector3(worldX, 0, worldZ);
     }
-
     public Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPosition)
     {
         int x = Mathf.RoundToInt(worldPosition.x / (1 + inBetweenTilesXOffset));
         int y = Mathf.RoundToInt(worldPosition.z / (1 + inBetweenTilesYOffset));
         return new Vector2Int(x, y);
     }
-
     public void RemoveTrapSelection()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -249,7 +244,6 @@ public class GridManager : MonoBehaviour
         foreach (var tile in gridTileControllers)
         {
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            //tile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
         }
     }
     public void RefreshGridTileControllers()
@@ -258,5 +252,13 @@ public class GridManager : MonoBehaviour
             .Values
             .Where(tile => tile != null)
             .ToArray();
+    }
+
+    public void ClearPath()
+    {
+        if (lineRendererInstance != null)
+        {
+            lineRendererInstance.positionCount = 0;
+        }
     }
 }

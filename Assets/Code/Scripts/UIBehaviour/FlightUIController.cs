@@ -36,6 +36,7 @@ public class FlightUIController : MonoBehaviour
         GameObject moveButtonInstance = Instantiate(runButtonPrefab, spellMenuContainer);
         Button currentMoveButton = moveButtonInstance.GetComponent<Button>();
         currentMoveButton.onClick.AddListener(() => RunFromBattle());
+        currentMoveButton.onClick.AddListener(() => GridManager.Instance.ClearPath());
     }
 
     public void RunFromBattle()

@@ -68,12 +68,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         }
     }
 
-    public void ClearPath()
-    {
-        LineRenderer lineRenderer = GridManager.Instance.GetLineRenderer();
-        lineRenderer.positionCount = 0;
-    }
-
     public void Deselect()
     {
         // If a saved destination esists, by clicking on that tile, this will get back to selection mode.
@@ -86,7 +80,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
             savedSelectedTile = null;
             GridManager.Instance.tileSelectionPermitted = true;
-            ClearPath();
+            GridManager.Instance.ClearPath();
         }
 
         // If a saved destination doesn't exist, by clicking on that tile, it will call the RevertToSelectionUnitPlayerAction method.
@@ -135,7 +129,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementConfirmedSFX.Invoke();
                 savedSelectedTile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
-                ClearPath();
+                GridManager.Instance.ClearPath();
 
                 activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
                 activePlayerUnit.ownedTile.detectedUnit = null;
@@ -185,7 +179,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
         movesContainer.transform.localScale = new Vector3(0, 0, 0);
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
-        ClearPath();
+        GridManager.Instance.ClearPath();
     }
 
     public string FindAnimationTrigger(Unit activePlayerUnit, TileController destinationTile)

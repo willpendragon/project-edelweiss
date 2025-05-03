@@ -34,6 +34,7 @@ public class CapsuleCrystalUIController : MonoBehaviour
         GameObject captureCrystalButtonInstance = Instantiate(capsuleCrystalButtonPrefab, spellMenuContainer);
         Button currentCaptureCrystalButton = captureCrystalButtonInstance.GetComponent<Button>();
         currentCaptureCrystalButton.onClick.AddListener(() => SwitchTilesToPlaceCaptureCrystal());
+        currentCaptureCrystalButton.onClick.AddListener(() => GridManager.Instance.ClearPath());
     }
     public void SwitchTilesToPlaceCaptureCrystal()
     {
@@ -51,6 +52,8 @@ public class CapsuleCrystalUIController : MonoBehaviour
                 tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             }
             Debug.Log("Switching tiles to Place Crystal Mode");
+
+            GridManager.Instance.tileSelectionPermitted = true;
         }
     }
 

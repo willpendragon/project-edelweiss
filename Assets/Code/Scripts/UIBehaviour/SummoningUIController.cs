@@ -46,6 +46,7 @@ public class SummoningUIController : MonoBehaviour
             currentButton = summonButtonInstance.GetComponent<Button>();
             currentButton.GetComponentInChildren<Text>().text = "Summon";
             currentButton.onClick.AddListener(() => SwitchTilesToSummonMode());
+            currentButton.onClick.AddListener(() => GridManager.Instance.ClearPath());
         }
         else if (currentSummonPhase == SummonPhase.praying)
         {
@@ -53,6 +54,7 @@ public class SummoningUIController : MonoBehaviour
             currentButton = summonButtonInstance.GetComponent<Button>();
             currentButton.GetComponentInChildren<Text>().text = "Pray";
             currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
+            currentButton.onClick.AddListener(() => GridManager.Instance.ClearPath());
         }
     }
     public void SwitchTilesToSummonMode()
@@ -75,7 +77,9 @@ public class SummoningUIController : MonoBehaviour
             Debug.Log("Switching tiles to Summon Mode");
         }
 
-        // After clicking the Summon Button, all of the Grid Map tiles switch to Selection Mode and switch to the Summon Player Action
+        // After clicking the Summon Button, all of the Grid Map tiles switch to Selection Mode and switch to the Summon Player Action.
+
+        GridManager.Instance.tileSelectionPermitted = true;
     }
 
     public void SwitchButtonToPrayMode()
@@ -114,6 +118,8 @@ public class SummoningUIController : MonoBehaviour
             }
             Debug.Log("Switching tiles to Pray Mode");
         }
+
+        GridManager.Instance.tileSelectionPermitted = true;
     }
     void DestroyMagnet()
     {

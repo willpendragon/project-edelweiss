@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
 
 public class SpellUIController : MonoBehaviour
 {
@@ -37,22 +36,9 @@ public class SpellUIController : MonoBehaviour
             GameObject spellButtonInstance = Instantiate(spellButtonPrefab, spellMenuContainer);
             Button currentSpellButton = spellButtonInstance.GetComponent<Button>();
             currentSpellButton.GetComponentInChildren<Text>().text = spell.spellName;
-            if (spell.spellType == SpellType.AOE)
-            {
-                //currentSpellButton.onClick.AddListener(() => spellCastingController.CastSpell(spell));
-                currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
-                currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
-            }
-            else if (spell.spellType == SpellType.SingleTarget)
-            {
-                currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
-                currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
-            }
-            else if (spell.spellType == SpellType.Formation)
-            {
-                currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
-                currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
-            }
+            currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
+            currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
+            currentSpellButton.onClick.AddListener(() => GridManager.Instance.ClearPath());
         }
     }
     public void ResetCharacterSpellsMenu()
@@ -64,7 +50,7 @@ public class SpellUIController : MonoBehaviour
         }
     }
 
-    //Retrieves a list of Spell from the Active Character.
+    // Retrieves a list of Spell from the Active Character.
     public List<Spell> GetCharacterSpells(GameObject detectedUnit)
     {
         List<Spell> activePlayerUnitSpellsList = detectedUnit.GetComponent<Unit>().unitTemplate.spellsList;
@@ -76,7 +62,8 @@ public class SpellUIController : MonoBehaviour
         DestroyMagnet();
         DeactivateTrapSelection();
 
-        //After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode
+        //After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode.
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             tile.currentPlayerAction = new AOESpellPlayerAction();
@@ -86,6 +73,8 @@ public class SpellUIController : MonoBehaviour
                 tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             }
         }
+
+        GridManager.Instance.tileSelectionPermitted = true;
     }
     void DestroyMagnet()
     {

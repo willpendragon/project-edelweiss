@@ -46,7 +46,7 @@ public class MeleeUIController : MonoBehaviour
 
     public void SwitchTilesToSelectionMode()
     {
-        ClearPath();
+        GridManager.Instance.ClearPath();
         MoveInfoController.Instance.HideActionInfoPanel();
         DeactivateTrapSelection();
 
@@ -69,11 +69,5 @@ public class MeleeUIController : MonoBehaviour
     public void DeactivateTrapSelection()
     {
         GridManager.Instance.RemoveTrapSelection();
-    }
-
-    void ClearPath()
-    {
-        LineRenderer lineRenderer = GridManager.Instance.GetLineRenderer();
-        lineRenderer.positionCount = 0;
     }
 }
