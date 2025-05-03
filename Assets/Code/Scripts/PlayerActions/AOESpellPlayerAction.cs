@@ -86,6 +86,13 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 Debug.Log("No valid unit found for single-target spell selection");
             }
         }
+        else if (spellCastingController.currentSelectedSpell.spellType == SpellType.Formation)
+        {
+            savedSelectedTile = selectedTile;
+            savedSelectedTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.blue);
+            selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
+            selectionLimiter--;
+        }
     }
 
     public void Execute()
@@ -169,6 +176,16 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                         OnUsedSingleTargetSpell();
                         DeityEnmityCheck();
                         Debug.Log("Applied " + (isCritical ? "critical " : "") + "damage to the target unit.");
+                    }
+                }
+                else if (currentSpell.spellType == SpellType.Formation)
+                {
+                    if (savedSelectedTile.detectedUnit == null && savedSelectedTile.currentSingleTileCondition == SingleTileCondition.free)
+                    {
+                        // Imbue the Tile with Sacred Triad Power.
+                        savedSelectedTile.tileType = TileType.Triad;
+                        savedSelectedTile.tileShaderController.AnimateFadeHeight(3, 0.1f, Color.cyan);
+                        Debug.Log(savedSelectedTile + "imbued with Sacred Triad Power");
                     }
                 }
             }

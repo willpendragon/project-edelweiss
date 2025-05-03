@@ -8,6 +8,9 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     public TileController savedSelectedTile;
     private int destinationTileXCoordinate;
     private int destinationTileYCoordinate;
+
+    public delegate void UnitMovedToTile(TileController tileController);
+    public static event UnitMovedToTile OnUnitMovedToTile;
     public void Select(TileController selectedTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -146,6 +149,8 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
                 activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
                 GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
+                TileController destinationTile = activePlayerUnit.ownedTile;
+                OnUnitMovedToTile(destinationTile);
             }
             else
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class SpellUIController : MonoBehaviour
 {
@@ -43,6 +44,11 @@ public class SpellUIController : MonoBehaviour
                 currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
             }
             else if (spell.spellType == SpellType.SingleTarget)
+            {
+                currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
+                currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));
+            }
+            else if (spell.spellType == SpellType.Formation)
             {
                 currentSpellButton.onClick.AddListener(() => SwitchTilesToSpellMode());
                 currentSpellButton.onClick.AddListener(() => spellCastingController.SetCurrentSpell(spell));

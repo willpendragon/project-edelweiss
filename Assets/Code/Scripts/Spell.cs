@@ -14,6 +14,7 @@ public enum SpellType
 {
     SingleTarget,
     AOE,
+    Formation
 }
 
 public enum SpellSecundaryEffect
@@ -21,7 +22,6 @@ public enum SpellSecundaryEffect
     NoEffect,
     Stun
 }
-
 
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spell")]
 public class Spell : ScriptableObject

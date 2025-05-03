@@ -29,7 +29,8 @@ public enum TileType
     Basic,
     ActivationPlatform,
     Obstacle,
-    Mirror
+    Mirror,
+    Triad
 }
 public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
