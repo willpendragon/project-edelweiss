@@ -180,6 +180,7 @@ public class TurnController : MonoBehaviour
     {
         if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.Faithless))
         {
+            Debug.Log("All Player Units are Faithless");
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
     }

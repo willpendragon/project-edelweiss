@@ -64,7 +64,7 @@ public class BattleFlowController : MonoBehaviour
     }
     public void PlayerPartyDefeatSequence()
     {
-        // This is the sequence of events firing when the Player Party wins the battle.
+        // This is the sequence of events firing when the Player Party loses the battle.
         OnBattleEnd("Defeat");
         BattleManager.Instance.PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();

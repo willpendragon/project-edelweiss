@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class FaithController : MonoBehaviour
@@ -23,12 +24,19 @@ public class FaithController : MonoBehaviour
                 }
             }
         }
+        StartCoroutine(FaithlessGameOverCheck());
+    }
+
+    IEnumerator FaithlessGameOverCheck()
+    {
+        yield return null;
         if (turnController != null)
         {
             turnController.FaithlessGameOverCheck();
             Debug.Log("Called FaithlessGameOverCheck");
         }
     }
+
     int CalculateReduction(int playerUnitFaithPoints)
     {
         int randomRate = localRandom.Next(10, 30);
