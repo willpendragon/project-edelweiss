@@ -175,6 +175,15 @@ public class TurnController : MonoBehaviour
                 break;
         }
     }
+
+    public void FaithlessGameOverCheck()
+    {
+        if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.Faithless))
+        {
+            BattleFlowController.Instance.PlayerPartyDefeatSequence();
+        }
+    }
+
     private void HandleRegularBattle(GameStatsManager gameStatsManager)
     {
         // Handle the game over sequence in a Regular Battle against enemies.

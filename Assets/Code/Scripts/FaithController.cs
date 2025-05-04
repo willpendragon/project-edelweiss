@@ -4,7 +4,10 @@ public class FaithController : MonoBehaviour
 {
     [SerializeField] PlayerPartyController playerPartyController;
     [SerializeField] int faithPointReductionRate = 10;
+    [SerializeField] TurnController turnController;
+
     private System.Random localRandom = new System.Random();
+
     public void DecreaseFaithPoints()
     {
         if (playerPartyController != null)
@@ -19,6 +22,11 @@ public class FaithController : MonoBehaviour
                     Debug.Log(faithPointsReduction);
                 }
             }
+        }
+        if (turnController != null)
+        {
+            turnController.FaithlessGameOverCheck();
+            Debug.Log("Called FaithlessGameOverCheck");
         }
     }
     int CalculateReduction(int playerUnitFaithPoints)
