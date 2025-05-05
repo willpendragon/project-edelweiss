@@ -123,6 +123,8 @@ public class BattleEndUIHandler : MonoBehaviour
         {
             Debug.LogWarning("No Saved Game Data found.");
         }
+        GameObject gameManagerInstance = GameObject.FindGameObjectWithTag("GameManager");
+        Destroy(gameManagerInstance);
         SceneManager.LoadScene("start_screen");
     }
 }
