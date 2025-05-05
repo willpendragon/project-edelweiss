@@ -11,6 +11,9 @@ public class DeityKingLaurinusBehavior : DeityBehavior
 
     public int attackExecutionThreshold = 2;
     private int lastAttackTurn = -1;
+
+    public delegate void CheckPlayer();
+    public static event CheckPlayer OnCheckPlayer;
     public override void ExecuteBehavior(Deity deity)
     {
         TileController[] gridTiles = ExtractRandomTiles();
@@ -88,6 +91,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             {
                 unit.TakeDamage(scaledDamage);
                 unit.OnTakenDamage.Invoke(scaledDamage);
+                OnCheckPlayer?.Invoke();
             }
         }
     }
