@@ -23,8 +23,23 @@ public class EnemyInfoPanelController : MonoBehaviour, IPointerEnterHandler, IPo
     }
     public void ShowEnemyInfo()
     {
-        CreateEnemyUnitProfile(enemyGameObject);
-        Debug.Log("Showing Enemy Information");
+        if (enemyGameObject != null && CheckEnemyStatus(enemyGameObject))
+        {
+            CreateEnemyUnitProfile(enemyGameObject);
+            Debug.Log("Showing Enemy Information");
+        }
+    }
+    private bool CheckEnemyStatus(GameObject enemyGameObject)
+    {
+        Unit enemyGOUnit = enemyGameObject?.GetComponent<Unit>();
+        if (enemyGOUnit != null && enemyGOUnit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     private void CreateEnemyUnitProfile(GameObject hoveredEnemyGameObject)
     {
