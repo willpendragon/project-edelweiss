@@ -109,7 +109,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
                 Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
             }
         }
-        selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+        //selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2f, Color.white);
     }
     public void Execute()
