@@ -48,7 +48,17 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
         {
             savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            BattleInterface.Instance.DeactivateActionInfoPanel();
             Debug.Log("Deselecting Currently Selected Tile");
+        }
+        else if (savedSelectedTile == null)
+        {
+            BattleInterface.Instance.DeactivateActionInfoPanel();
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentPlayerAction = new SelectUnitPlayerAction();
+                tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+            }
         }
     }
     public void Execute()
