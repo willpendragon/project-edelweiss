@@ -83,6 +83,9 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                 {
                     Debug.Log("Deity was not captured");
                 }
+
+                currentSavedTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+
             }
         }
     }
