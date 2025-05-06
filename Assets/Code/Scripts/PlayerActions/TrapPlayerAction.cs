@@ -59,6 +59,21 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
                 tile.currentPlayerAction = new SelectUnitPlayerAction();
                 tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
             }
+            GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
+            foreach (var playerUISpellButton in playerUISpellButtons)
+            {
+                Destroy(playerUISpellButton);
+            }
+            Destroy(GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitProfilePanel);
+            GridManager.Instance.currentPlayerUnit.tag = "Player";
+            GridManager.Instance.currentPlayerUnit = null;
+
+            GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
+            movesContainer.transform.localScale = new Vector3(0, 0, 0);
+            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+            GridManager.Instance.ClearPath();
+            BattleInterface.Instance.DeactivateActionInfoPanel();
+
         }
     }
     public void Execute()
