@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using static TileController;
 
@@ -78,10 +79,32 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
             magnetHelper.DestroyMagnet();
         }
+
+        if (savedSelectedTile != null)
+        {
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+                tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
+                Debug.Log("Deselected Melee Attack.");
+            }
+        }
         UnitProfilesController.Instance.DestroyEnemyUnitPanel();
+
+        if (savedSelectedTile == null)
+        {
+            // If no Enemy Unit is selected, deactivates the Spell Player Actions and allows the Player to choose other actions.
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentPlayerAction = new SelectUnitPlayerAction();
+                tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+            }
+            BattleInterface.Instance.DeactivateActionInfoPanel();
+            Debug.Log("Deselected Melee Attack.");
+        }
     }
 
-    // Method for knockback logic (used for normal melee attacks)
+    // Method for knockback logic (used for normal melee attacks).
     public void CheckKnockback(Unit attacker, Unit defender)
     {
         DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
@@ -91,11 +114,11 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             Vector2Int attackerPos = attacker.GetGridPosition();
             Vector2Int defenderPos = defender.GetGridPosition();
 
-            // Calculate the difference in positions
+            // Calculate the difference in positions.
             int deltaX = attackerPos.x - defenderPos.x;
             int deltaY = attackerPos.y - defenderPos.y;
 
-            // Determine the direction of the knockback
+            // Determine the direction of the knockback.
             knockbackDirection = Vector2Int.zero;
             if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
             {
@@ -130,40 +153,40 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         }
     }
 
-    // Hookshot attack logic (used when hookshot is equipped)
+    // Magnet attack logic (used when Magnet is equipped). Note: Hookshot is legacy name for the Magnet.
     public void ExecuteHookshot(Unit attacker, Unit defender)
     {
         if (LookUpDeityComponent(defender) == true)
         {
             return;
         }
-        int hookshotRange = 3; // Maximum range of the hookshot
+        int hookshotRange = 3; // Maximum range of the Magnet.
 
         Vector2Int attackerPos = attacker.GetGridPosition();
         Vector2Int defenderPos = defender.GetGridPosition();
 
-        // Calculate the Manhattan distance (abs(dx) + abs(dy))
+        // Calculate the Manhattan distance (abs(dx) + abs(dy)).
         int distance = Mathf.Abs(defenderPos.x - attackerPos.x) + Mathf.Abs(defenderPos.y - attackerPos.y);
 
-        // Check if the distance is within the hookshot range
+        // Check if the distance is within the hookshot range.
         if (distance > hookshotRange)
         {
             Debug.Log("Enemy is out of hookshot range.");
             return;
         }
-        // Calculate the difference in positions
+        // Calculate the difference in positions.
         int deltaX = defenderPos.x - attackerPos.x;
         int deltaY = defenderPos.y - attackerPos.y;
 
-        // Determine the direction of the pull (opposite of knockback logic)
+        // Determine the direction of the pull (opposite of knockback logic).
         Vector2Int pullDirection = Vector2Int.zero;
         if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
         {
-            pullDirection.x = (int)Mathf.Sign(deltaX); // Pull in X-axis
+            pullDirection.x = (int)Mathf.Sign(deltaX); // Pull in X-axis.
         }
         else
         {
-            pullDirection.y = (int)Mathf.Sign(deltaY); // Pull in Y-axis
+            pullDirection.y = (int)Mathf.Sign(deltaY); // Pull in Y-axis.
         }
         // Check if the Enemy has an Invulnerable Mask Buff. If yes, the Magnet disables the Buff.
         if (defender.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
@@ -174,19 +197,19 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         }
         AnimateConveyorTiles(attackerPos, defenderPos, pullDirection, attacker);
 
-        // Calculate the target tile directly in front of the player based on direction
+        // Calculate the target tile directly in front of the player based on direction.
         Vector2Int newGridPos = attackerPos + pullDirection;
 
-        // Clamp the position to the grid bounds
+        // Clamp the position to the grid bounds.
         newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
         newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
         TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
 
-        // Ensure the destination tile is not occupied
+        // Ensure the destination tile is not occupied.
         if (destinationTile != null && destinationTile.currentSingleTileCondition != SingleTileCondition.occupied)
         {
-            // Move the defender to the new tile in front of the player
+            // Move the defender to the new tile in front of the player.
             defender.ownedTile.detectedUnit = null;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
 
@@ -197,16 +220,14 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
 
             Debug.Log("Enemy pulled in with hookshot");
-
-            // Optional: Apply visual or sound effects to show the hookshot pull
             destinationTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.cyan);
 
-            // Trigger a feedback event for the hookshot usage
+            // Trigger a feedback event for the Magnet usage
             OnUsedMeleeAction?.Invoke("Magnet", attacker.unitTemplate.unitName);
         }
         else
         {
-            Debug.Log("No valid position for hookshot pull.");
+            Debug.Log("No valid position for Magnet pull.");
         }
     }
     public void Execute()
@@ -215,20 +236,20 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
         if (activePlayerUnit.unitOpportunityPoints > 0 && currentTarget.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
-            // Check if the player has a hookshot equipped
+            // Check if the player has a Magnet equipped
             if (activePlayerUnit.hasHookshot)
             {
-                // Execute the hookshot attack instead of the melee attack
+                // Execute the Magnet attack instead of the standard Melee attack,
                 ExecuteHookshot(activePlayerUnit, currentTarget);
 
-                // Reduce the opportunity points after the attack
+                // Reduce the opportunity points after the attack.
                 activePlayerUnit.unitOpportunityPoints--;
 
                 UpdateActivePlayerUnitProfile(activePlayerUnit);
             }
             else
             {
-                // Standard melee attack execution with knockback
+                // Standard melee attack execution with knockback.
                 float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
 
                 DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
@@ -244,7 +265,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                     currentTarget.TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
                 }
                 UnitProfilesController.Instance.UpdateEnemyUnitPanel(currentTarget.gameObject);
-                // Reduce the opportunity points after the attack
+                // Reduce the opportunity points after the attack.
                 activePlayerUnit.unitOpportunityPoints--;
 
                 UpdateActivePlayerUnitProfile(activePlayerUnit);
