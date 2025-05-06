@@ -46,6 +46,7 @@ public class MoveInfoController : MonoBehaviour
         AOESpellPlayerAction.OnSelectedSpell += DisplayActionInfoPanel;
         AOESpellPlayerAction.OnDeselectedSpell += HideActionInfoPanel;
         MakeActivePlayerUnitWait.OnPlayerWaiting += HideActionInfoPanel;
+        BattleInterface.OnDeselectPlayerAction += HideActionInfoPanel;
     }
     void OnDisable()
     {
@@ -53,6 +54,7 @@ public class MoveInfoController : MonoBehaviour
         AOESpellPlayerAction.OnSelectedSpell -= DisplayActionInfoPanel;
         AOESpellPlayerAction.OnDeselectedSpell -= HideActionInfoPanel;
         MakeActivePlayerUnitWait.OnPlayerWaiting -= HideActionInfoPanel;
+        BattleInterface.OnDeselectPlayerAction -= HideActionInfoPanel;
     }
     private void Start()
     {
@@ -61,7 +63,7 @@ public class MoveInfoController : MonoBehaviour
     }
     private void UpdateActionInfoPanelTexts(Spell clickedSpell)
     {
-        // Retrieve Information from Spell and popoulate the Move Info Panel
+        // Retrieve Information from Spell and popoulate the Move Info Panel.
         DisplayActionInfoPanel();
         currentPlayerAction = PlayerAction.Spell;
 
@@ -72,7 +74,7 @@ public class MoveInfoController : MonoBehaviour
     }
     public void UpdateMeleeMoveInfoPanelTexts()
     {
-        // Retrieve Information from Melee Move and popoulate the Move Info Panel
+        // Retrieve Information from Melee Move and popoulate the Move Info Panel.
         DisplayActionInfoPanel();
 
         int meleeRange = 2;
@@ -134,7 +136,6 @@ public class MoveInfoController : MonoBehaviour
             case PlayerAction.Trap:
                 helpPanelText.text = "Send an Enemy over a trap to eliminate it instantly during its turn and gain Capture Crystals.";
                 break;
-
         }
     }
     public void HideHelpPanel()

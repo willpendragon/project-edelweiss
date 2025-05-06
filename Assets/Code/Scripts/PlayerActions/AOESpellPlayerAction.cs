@@ -94,7 +94,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             selectionLimiter--;
         }
     }
-
     public void Execute()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -194,7 +193,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 Debug.Log("Active Player Unit has not enough Mana Points or enough Opportunity Points.");
             }
         }
-
     }
     public void Deselect()
     {
@@ -208,11 +206,13 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                 Debug.Log("Deselecting AOE Range");
             }
             OnDeselectedSpell();
+
         }
         UnitProfilesController.Instance.DestroyEnemyUnitPanel();
 
         if (savedSelectedTile == null)
         {
+            // If no Enemy Unit is selected, deactivates the Spell Player Actions and allows the Player to choose other actions.
             foreach (var tile in GridManager.Instance.gridTileControllers)
             {
                 tile.currentPlayerAction = new SelectUnitPlayerAction();
@@ -231,9 +231,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             movesContainer.transform.localScale = new Vector3(0, 0, 0);
             Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
             GridManager.Instance.ClearPath();
+            BattleInterface.Instance.DeactivateActionInfoPanel();
         }
     }
-
     public void DeityEnmityCheck()
     {
         if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<EnemyTurnManager>().deity == null)
@@ -262,7 +262,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             }
         }
     }
-
     public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
     {
         //Misleading method name, as this updates all of the Active Player Profile Unit parameters, not just the manas
@@ -280,7 +279,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             Destroy(spellVFXInstance, 0.5f);
         }
     }
-
     public bool unitManaDoesNotGoBelowZeroAfterUsage(float unitManaPoints, float spellPrice)
     {
         if (unitManaPoints - spellPrice >= 0)
@@ -292,7 +290,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             return false;
         }
     }
-
     private void PlayFrozenFeedback(Unit targetUnit)
     {
         // Define the Y offset for the VFX spawn position
@@ -310,6 +307,5 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         {
             targetUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
         }
-
     }
 }

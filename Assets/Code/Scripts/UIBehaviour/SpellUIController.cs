@@ -73,7 +73,6 @@ public class SpellUIController : MonoBehaviour
                 tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             }
         }
-
         GridManager.Instance.tileSelectionPermitted = true;
     }
     void DestroyMagnet()

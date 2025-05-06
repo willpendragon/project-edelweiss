@@ -10,14 +10,11 @@ public class BattleInterface : MonoBehaviour
 
     [Header("Logic")]
     [SerializeField] BattleManager battleManager;
-    //[SerializeField] Player player;
     [SerializeField] float battlefieldNotificationsPanelDurationTime;
-    //[SerializeField] GameObject playerActionPanel;
     public SummonedUnitInfoPanelHelper summonedUnitInfoPanelHelper;
 
     [Header("UI Elements")]
     [SerializeField] Image moveNamePanel;
-    //[SerializeField] Image fieldEffectIcon;
     [SerializeField] RectTransform battlefieldNotificationsPanel;
     [SerializeField] public GameObject movesContainer;
     [SerializeField] CanvasGroup fadePanel;
@@ -28,12 +25,14 @@ public class BattleInterface : MonoBehaviour
     [SerializeField] TextMeshProUGUI moveName;
     [SerializeField] TextMeshProUGUI playerActionText;
     [SerializeField] TextMeshProUGUI battlefieldTextNotifications;
-    //[SerializeField] TextMeshProUGUI deityJudgmentLimitText;
 
     [Header("UI Objects")]
     [SerializeField] GameObject summonedUnitInfoPanel;
 
     public TextMeshProUGUI battleEndResult;
+
+    public delegate void DeselectPlayerAction();
+    public static event DeselectPlayerAction OnDeselectPlayerAction;
 
     private void Awake()
     {
@@ -133,7 +132,6 @@ public class BattleInterface : MonoBehaviour
         battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
         battlefieldTextNotifications.text = faithlessCharacterNotification;
         StartCoroutine("ResetBattleFieldTextNotification");
-
     }
     IEnumerator ResetBattleFieldTextNotification()
     {
@@ -152,5 +150,9 @@ public class BattleInterface : MonoBehaviour
     public void DestroyUISummonInfoPanel()
     {
         Destroy(summonedUnitInfoPanel, 1);
+    }
+    public void DeactivateActionInfoPanel()
+    {
+        OnDeselectPlayerAction();
     }
 }
