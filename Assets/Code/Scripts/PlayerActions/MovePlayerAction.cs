@@ -78,7 +78,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             Debug.Log("Deselecting Destination");
             //savedSelectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            //savedSelectedTile = null;
+            savedSelectedTile = null;
             GridManager.Instance.tileSelectionPermitted = true;
             GridManager.Instance.ClearPath();
             BattleAudioController battleAudioController = GameObject.FindGameObjectWithTag("BattleAudioController").GetComponent<BattleAudioController>();
