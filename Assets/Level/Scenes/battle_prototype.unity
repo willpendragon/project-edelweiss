@@ -11706,7 +11706,7 @@ Transform:
   m_GameObject: {fileID: 1847050643}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 406.38208, y: 705.1977, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13801,6 +13801,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleAudioController
       objectReference: {fileID: 0}
+    - target: {fileID: 797238632357320793, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: m_TagString
+      value: BattleAudioController
+      objectReference: {fileID: 0}
+    - target: {fileID: 5791820355447313058, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: Priority
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5791820355447313058, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: da2d07b48a4f82846aa9796a48664735, type: 3}
+    - target: {fileID: 5791820355447313058, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6708501396561797880, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: cancelMoveSelectionAudioSource
+      value: 
+      objectReference: {fileID: 748068806843783400}
     - target: {fileID: 7881867642617583607, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13846,6 +13866,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+--- !u!82 &748068806843783400 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 5791820355447313058, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+  m_PrefabInstance: {fileID: 748068806843783399}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &805566670094987758
 Transform:
   m_ObjectHideFlags: 0

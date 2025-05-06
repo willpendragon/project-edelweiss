@@ -9,6 +9,7 @@ public class BattleAudioController : MonoBehaviour
     [SerializeField] AudioSource deityBattleAudioSource;
     [SerializeField] AudioSource battleVictoryAudioSource;
     [SerializeField] AudioSource battleDefeatAudioSource;
+    [SerializeField] AudioSource cancelMoveSelectionAudioSource;
     private void OnEnable()
     {
         BattleFlowController.OnBattleEnd += BattleEndTheme;
@@ -30,6 +31,7 @@ public class BattleAudioController : MonoBehaviour
                 break;
         }
     }
+
     public void BattleEndTheme(string battleEndResult)
     {
         switch (battleEndResult)
@@ -55,5 +57,10 @@ public class BattleAudioController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         battleDefeatAudioSource?.Play();
+    }
+
+    public void PlayCancelMoveSelectionSound()
+    {
+        cancelMoveSelectionAudioSource?.Play();
     }
 }
