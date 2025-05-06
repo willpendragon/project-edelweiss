@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using TMPro;
 
 public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -29,8 +25,6 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 currentSavedTile = selectedTile;
                 selectedTile.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
-                activePlayerUnit.SpendManaPoints(ManaCost);
-                activePlayerUnit.unitOpportunityPoints--;
                 selectionLimiter--;
             }
         }
@@ -38,8 +32,8 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
         {
             Debug.Log("This is not a Deity Battle therefore the Player can't place Capture Crystals");
         }
+        Debug.Log("Tried to Apply Crystal Tile");
     }
-
     public void Execute()
     {
         if (currentSavedTile.currentSingleTileStatus == SingleTileStatus.waitingForConfirmationMode)
@@ -49,6 +43,9 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
 
             if (activePlayerUnit.unitManaPoints > 0 && gameStatsManager.captureCrystalsCount > 0)
             {
+                activePlayerUnit.SpendManaPoints(ManaCost);
+                activePlayerUnit.unitOpportunityPoints--;
+
                 GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, currentSavedTile.transform.position, Quaternion.identity);
                 gameStatsManager.captureCrystalsCount--;
 
@@ -89,7 +86,6 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
             }
         }
     }
-
     private void AnimateCrystal(GameObject captureCrystalInstance, Vector3 currentSavedTilePosition)
     {
         // Instantiate the crystal at the initial small size and initial position
@@ -111,12 +107,47 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
         // Play the sequence
         crystalSequence.Play();
     }
-
     public void Deselect()
     {
-        // Logic to handle deselection if needed
-    }
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        TrapTileUIController trapTileUIController = activePlayerUnit.GetComponent<TrapTileUIController>();
+        trapTileUIController.trapTileSelectionIsActive = true;
 
+        if (currentSavedTile != null)
+        {
+            currentSavedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
+            currentSavedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            BattleInterface.Instance.DeactivateActionInfoPanel();
+            Debug.Log("Deselecting Currently Selected Tile");
+            currentSavedTile.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            currentSavedTile = null;
+            selectionLimiter++;
+        }
+        else if (currentSavedTile == null)
+        {
+            BattleInterface.Instance.DeactivateActionInfoPanel();
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentPlayerAction = new SelectUnitPlayerAction();
+                tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+            }
+            GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
+            foreach (var playerUISpellButton in playerUISpellButtons)
+            {
+                Destroy(playerUISpellButton);
+            }
+            Destroy(GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitProfilePanel);
+            GridManager.Instance.currentPlayerUnit.tag = "Player";
+            GridManager.Instance.currentPlayerUnit = null;
+
+            GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
+            movesContainer.transform.localScale = new Vector3(0, 0, 0);
+            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+            GridManager.Instance.ClearPath();
+            BattleInterface.Instance.DeactivateActionInfoPanel();
+            selectionLimiter++;
+        }
+    }
     private bool AttemptCapture()
     {
         Deity deity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
@@ -144,14 +175,11 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                 captureProbability = 0.1f; // 10% chance to capture if above 60% HP
                 break;
         }
-
         // Generate a random number between 0 and 1
         float captureRoll = (float)localRandom.NextDouble();
-
         // Return true if captureRoll is less than captureProbability, indicating a successful capture
         return captureRoll < captureProbability;
     }
-
     public void CreateDictionaryEntry(Deity capturedDeity)
     {
         string activePlayerUnitId = GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().Id;
