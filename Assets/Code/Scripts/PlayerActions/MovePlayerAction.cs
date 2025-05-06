@@ -81,6 +81,17 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
             savedSelectedTile = null;
             GridManager.Instance.tileSelectionPermitted = true;
             GridManager.Instance.ClearPath();
+            BattleAudioController battleAudioController = GameObject.FindGameObjectWithTag("BattleAudioController").GetComponent<BattleAudioController>();
+
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+            }
+            if (battleAudioController != null)
+            {
+                battleAudioController.PlayCancelMoveSelectionSound();
+            }
+
         }
 
         // If a saved destination doesn't exist, by clicking on that tile, it will call the RevertToSelectionUnitPlayerAction method.
@@ -160,7 +171,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
     public void RevertToSelectionUnitPlayerAction()
     {
-        //Loops through all the grids on the Grid Map, reactivates the select Player Unit Action Mode, deactivates the spell menu, reset the current Active Player Unit
+        // Loops through all the grids on the Grid Map, reactivates the select Player Unit Action Mode, deactivates the spell menu, reset the current Active Player Unit.
 
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
@@ -180,6 +191,11 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         movesContainer.transform.localScale = new Vector3(0, 0, 0);
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
         GridManager.Instance.ClearPath();
+        BattleAudioController battleAudioController = GameObject.FindGameObjectWithTag("BattleAudioController").GetComponent<BattleAudioController>();
+        if (battleAudioController != null)
+        {
+            battleAudioController.PlayCancelMoveSelectionSound();
+        }
     }
 
     public string FindAnimationTrigger(Unit activePlayerUnit, TileController destinationTile)
