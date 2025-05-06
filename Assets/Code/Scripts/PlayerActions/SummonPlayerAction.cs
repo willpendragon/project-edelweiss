@@ -16,6 +16,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
             savedSelectedTile = selectedTile;
             selectionLimiter--;
+            Debug.Log(selectedTile + "chosen for summoning.");
         }
     }
     public void Execute()
@@ -51,19 +52,48 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
         selectionLimiter++;
         if (savedSelectedTile != null)
         {
-            int summoningRange = 2;
-            foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, summoningRange))
-            {
-                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            }
+            //int summoningRange = 2;
+            savedSelectedTile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            savedSelectedTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0f, 0.2f, Color.white);
+            //foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, summoningRange))
+
+            //{
+            //    tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+            //}
             Debug.Log("Deselected Summon Spawn Area");
             deityLimiter++;
+            savedSelectedTile = null;
+        }
+        else if (savedSelectedTile == null)
+        {
+            BattleInterface.Instance.DeactivateActionInfoPanel();
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentPlayerAction = new SelectUnitPlayerAction();
+                tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+            }
+            GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
+            foreach (var playerUISpellButton in playerUISpellButtons)
+            {
+                Destroy(playerUISpellButton);
+            }
+            Destroy(GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitProfilePanel);
+            GridManager.Instance.currentPlayerUnit.tag = "Player";
+            GridManager.Instance.currentPlayerUnit = null;
+
+            GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
+            movesContainer.transform.localScale = new Vector3(0, 0, 0);
+            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+            GridManager.Instance.ClearPath();
+            BattleInterface.Instance.DeactivateActionInfoPanel();
         }
 
-        foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, 2))
-        {
-            deitySpawningZoneTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0f, 0.2f, Color.white);
-        }
+        //foreach (var deitySpawningZoneTile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, 2))
+        //{
+        //    deitySpawningZoneTile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0f, 0.2f, Color.white);
+        //}
+
+
     }
     private void SummonDeityOnBattlefield(Deity linkedDeity, Unit currentActivePlayerUnit)
     {
