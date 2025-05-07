@@ -6132,6 +6132,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DamageTakenSFX
       objectReference: {fileID: 0}
+    - target: {fileID: 7472373059907632207, guid: a36c3cb32524a5846a4847f14736eb08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6203,6 +6207,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectedCharacterWaitingConfirmationSFX
       objectReference: {fileID: 0}
+    - target: {fileID: 5244229856162990846, guid: dc6a5542c47bec64a81368de39bd3096, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6440,6 +6448,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectedCharacterSFX
       objectReference: {fileID: 0}
+    - target: {fileID: 5050768009426441810, guid: c9fdf1513844af149962ea6f925e1742, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

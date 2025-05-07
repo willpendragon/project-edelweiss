@@ -192,6 +192,7 @@ MonoBehaviour:
   unitHealthPoints: 0
   unitMaxHealthPoints: 0
   unitOpportunityPoints: 0
+  unitFaithPoints: 0
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
@@ -203,6 +204,7 @@ MonoBehaviour:
   unitMagicPower: 0
   unitMeleeAttackBaseDamage: 0
   currentUnitLifeCondition: 1
+  currentUnitBuff: 0
   unitStatusController: {fileID: 6804547558390777160}
   fieldPrizeController: {fileID: 0}
   hasHookshot: 1
@@ -332,6 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinsRewardPool: 0
   experienceRewardPool: 0
+  multiKillCounter: 0
 --- !u!114 &878605096084481255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -581,6 +584,7 @@ MonoBehaviour:
   comboIncreaseVFXAnimator: {fileID: 0}
   unitAnimator: {fileID: 6180686884810482089}
   buffIcon: {fileID: 7203561652851106972, guid: 434c3c0a511b02c4aa92c6efa6dd915b, type: 3}
+  hitAnimator: {fileID: 0}
 --- !u!114 &8130161269669623750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -803,7 +807,7 @@ AudioSource:
   m_GameObject: {fileID: 5959858009669788163}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
   m_audioClip: {fileID: 8300000, guid: ed945fc35f698da4ba4cec44d5fe087f, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -1251,6 +1255,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectedCharacterWaitingConfirmationSFX
       objectReference: {fileID: 0}
+    - target: {fileID: 5244229856162990846, guid: dc6a5542c47bec64a81368de39bd3096, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1322,6 +1330,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DamageTakenSFX
       objectReference: {fileID: 0}
+    - target: {fileID: 7472373059907632207, guid: a36c3cb32524a5846a4847f14736eb08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1393,6 +1405,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8605507457998865352, guid: d79a1c08c07ac704ba434059b569311c, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1539,6 +1555,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7377412060224346451, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     - target: {fileID: 8533243964974082771, guid: b89f7d096bfa3ec488bb612eb3aa79b7, type: 3}
       propertyPath: m_Name
       value: PlacingCrystalSFX
@@ -1866,6 +1886,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 452031790448863200}
     m_Modifications:
+    - target: {fileID: 3658304403213116480, guid: 9118da58b7df0fd458e38493ab2cdabc, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     - target: {fileID: 3658304403213116481, guid: 9118da58b7df0fd458e38493ab2cdabc, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1941,6 +1965,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TileSelectedSFX
       objectReference: {fileID: 0}
+    - target: {fileID: 2065918244318796794, guid: 78d67a271ce7ccd4bb81e114c8ec0407, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     - target: {fileID: 2065918244318796795, guid: 78d67a271ce7ccd4bb81e114c8ec0407, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -2056,6 +2084,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectedCharacterSFX
       objectReference: {fileID: 0}
+    - target: {fileID: 5050768009426441810, guid: c9fdf1513844af149962ea6f925e1742, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

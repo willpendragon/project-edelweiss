@@ -13805,6 +13805,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: BattleAudioController
       objectReference: {fileID: 0}
+    - target: {fileID: 1667419858105504247, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
+    - target: {fileID: 2857230602773587428, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     - target: {fileID: 5791820355447313058, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: Priority
       value: 50
@@ -13817,10 +13825,18 @@ PrefabInstance:
       propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5791820355447313058, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     - target: {fileID: 6708501396561797880, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: cancelMoveSelectionAudioSource
       value: 
       objectReference: {fileID: 748068806843783400}
+    - target: {fileID: 7324555068394218106, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     - target: {fileID: 7881867642617583607, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13861,6 +13877,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8094380234372350077, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
