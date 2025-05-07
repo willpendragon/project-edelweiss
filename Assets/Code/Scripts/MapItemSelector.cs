@@ -21,6 +21,7 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     public Canvas overworldMapCanvas;
     public SceneLoader selectedNodeSceneLoader;
     public TextMeshProUGUI footerMarqueeText;
+    [SerializeField] string buildingDescription;
 
     [SerializeField] string footerMarqueeTutorialText = $"Drag the Mouse to explore the Map. Click on Buildings to access a location";
 
@@ -76,7 +77,7 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     private void SelectItem()
     {
         currentStatus = SelectionStatus.Selected;
-        footerMarqueeText.text = $"{mapItemName} selected. Click on the YES button to access the Building.";
+        footerMarqueeText.text = $"{mapItemName} selected. {buildingDescription}";
         // Implement logic for when the item is selected
         Debug.Log($"{gameObject.name} selected");
     }
