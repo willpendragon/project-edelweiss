@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static SelectUnitPlayerAction;
 
@@ -42,6 +43,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
     private bool IsSelectionValid(TileController selectedTile)
     {
         if (selectedTile == null) return false;
+        if (selectedTile.detectedUnit == null) return false;
 
         UnitSelectionController unitSelection = selectedTile.detectedUnit.GetComponent<UnitSelectionController>();
         Unit unit = selectedTile.detectedUnit.GetComponent<Unit>();
@@ -198,9 +200,17 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
         detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
         detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
-        detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
-        detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
         detectedUnit.GetComponent<FlightUIController>().AddRunButton();
+
+        if (detectedUnit.GetComponent<Unit>().linkedDeity != null)
+        {
+            detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
+        }
+
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
+        {
+            detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
+        }
     }
 
     public void ResetCharacterSpellsMenu()
