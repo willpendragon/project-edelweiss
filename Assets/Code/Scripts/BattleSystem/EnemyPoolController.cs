@@ -57,12 +57,12 @@ public class EnemyPoolController : MonoBehaviour
             unitComponent.startingXCoordinate = (int)coords.x;
             unitComponent.startingYCoordinate = (int)coords.y;
             SetTileDetectedUnit(unitComponent, spawnedEnemy);
+            Debug.Log("Spawned Enemies on the Battlefield");
         }
     }
 
     void SpawnBossBattleEnemies()
     {
-        Debug.Log("Spawning Boss Battle Enemies");
         List<Vector2> enemyCoords = GameManager.Instance.currentEnemySelectionCoords;
 
         foreach (var enemy in GameManager.Instance.currentEnemySelection)

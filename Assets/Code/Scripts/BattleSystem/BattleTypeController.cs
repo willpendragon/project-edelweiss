@@ -21,6 +21,11 @@ public class BattleTypeController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName == "battle_tutorial")
+        {
+            BattleSelection();
+        }
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
