@@ -109,6 +109,31 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
                 Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
             }
         }
+        else
+        {
+            GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+
+            GridManager.Instance.currentPlayerUnit.tag = "Player";
+            GridManager.Instance.currentPlayerUnit = null;
+            Destroy(newCurrentlySelectedUnitPanel);
+            ResetCharacterSpellsMenu();
+
+            GameObject activePlayerUnitProfile = GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile");
+            Destroy(activePlayerUnitProfile);
+
+            Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+
+            foreach (var tile in GridManager.Instance.gridTileControllers)
+            {
+                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+                Debug.Log("Switching Tiles back to Selection Mode");
+            }
+
+            Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
+            endTurnButton.interactable = true;
+            Debug.Log("Global Deselection Executed");
+        }
+
         //selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2f, Color.white);
     }
