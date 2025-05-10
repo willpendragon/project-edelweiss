@@ -118,7 +118,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             StartCoroutine(TileClickingCooldown(0.3f));
         }
     }
-
     IEnumerator TileClickingCooldown(float tileClickingCooldown)
     {
         yield return new WaitForSecondsRealtime(tileClickingCooldown);
