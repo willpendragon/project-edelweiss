@@ -1,6 +1,9 @@
+using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+
 
 public enum SingleTileStatus
 {
@@ -34,6 +37,7 @@ public enum TileType
 }
 public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+
     [Header("Gameplay Logic")]
     public GameObject detectedUnit;
     public int tileXCoordinate;
@@ -69,8 +73,11 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public float clickCooldown = 0.5f;
     private float lastClickTime;
 
+    private bool tileClickingAllowed;
+
     public delegate void UpdateEnemyTargetUnitProfile(GameObject detectedUnit);
     public static event UpdateEnemyTargetUnitProfile OnUpdateEnemyTargetUnitProfile;
+
     void Start()
     {
         currentTileCurseStatus = TileCurseStatus.notCursed;
@@ -90,6 +97,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     }
     public void OnPointerClick(PointerEventData eventData)
     {
+
         if (eventData.button == PointerEventData.InputButton.Left && Time.time - lastClickTime > clickCooldown)
         {
             lastClickTime = Time.time;
@@ -101,8 +109,30 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             HandleTileDeselection();
         }
     }
+    private void TileControllerCooldown()
+    {
+        foreach (TileController tile in GridManager.Instance.gridTileControllers)
+        {
+            tileClickingAllowed = false;
+            tile.gameObject.GetComponent<BoxCollider>().enabled = false;
+            StartCoroutine(TileClickingCooldown(0.3f));
+        }
+    }
+
+    IEnumerator TileClickingCooldown(float tileClickingCooldown)
+    {
+        yield return new WaitForSecondsRealtime(tileClickingCooldown);
+        tileClickingAllowed = true;
+        foreach (TileController tile in GridManager.Instance.gridTileControllers)
+        {
+            tileClickingAllowed = true;
+            tile.gameObject.GetComponent<BoxCollider>().enabled = true;
+        }
+    }
+
     public void HandleTileSelection()
     {
+        TileControllerCooldown();
         switch (currentSingleTileStatus)
         {
             case SingleTileStatus.selectionMode:
