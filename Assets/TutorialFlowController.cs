@@ -14,6 +14,7 @@ public class TutorialFlowController : MonoBehaviour
     private void OnEnable()
     {
         MovePlayerAction.OnUnitMovedToTile += CompleteFirstTutorial;
+        MeleePlayerAction.OnUsedMeleeAction += CompleteSecondTutorial;
     }
 
     private void OnDisable()
@@ -43,6 +44,13 @@ public class TutorialFlowController : MonoBehaviour
         tutorialText.text = tutorialTexts[1];
         Debug.Log("First Tutorial Completed");
     }
+    private void CompleteSecondTutorial(string moveName, string attackerName)
+    {
+        EnlargeTutorialPanel();
+        tutorialText.text = tutorialTexts[2];
+        Debug.Log("Second Tutorial Completed");
+    }
+
     public void MinimizeTutorialPanel()
     {
         tutorialPanel.localScale = Vector3.zero;
