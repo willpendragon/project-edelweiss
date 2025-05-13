@@ -18,6 +18,9 @@ public class TutorialFlowController : MonoBehaviour
     [SerializeField] RectTransform tutorialPanel;
     [SerializeField] TextMeshProUGUI tutorialText;
     [SerializeField] string[] tutorialTexts;
+    [SerializeField] RectTransform movesContainer;
+    [SerializeField] RectTransform actionInfoPanel;
+    [SerializeField] EndTurnButtonHelper endTurnButtonHelper;
 
     [SerializeField] Unit unitEdel;
     [SerializeField] Unit unitAliza;
@@ -38,6 +41,8 @@ public class TutorialFlowController : MonoBehaviour
         MeleePlayerAction.OnUsedMeleeAction += CompleteMeleeActionTutorial;
         AOESpellPlayerAction.OnUsedSpell += CompleteSpellActionTutorial;
         MeleePlayerAction.OnUsedMagnet += CompleteMagnetTutorial;
+        TrapPlayerAction.OnTrapPlaced += CompleteTrapActionTutorial;
+        TrapController.OnTrapAction += TutorialEnd;
     }
     private void OnDisable()
     {
@@ -45,13 +50,12 @@ public class TutorialFlowController : MonoBehaviour
         MeleePlayerAction.OnUsedMeleeAction -= CompleteMeleeActionTutorial;
         AOESpellPlayerAction.OnUsedSpell -= CompleteSpellActionTutorial;
         MeleePlayerAction.OnUsedMagnet -= CompleteMagnetTutorial;
-
+        TrapPlayerAction.OnTrapPlaced -= CompleteTrapActionTutorial;
+        TrapController.OnTrapAction -= TutorialEnd;
     }
 
     private void Start()
     {
-        //Transform spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
-
         IdentifyPartyMembers();
         StartCoroutine(StartMovementTutorial());
     }
@@ -109,38 +113,54 @@ public class TutorialFlowController : MonoBehaviour
             EnlargeTutorialPanel();
             tutorialText.text = tutorialTexts[3];
 
-            // Spell Action Tutorial is over, state changed to Magnet Action Tutorial
-            currentTutorialState = TutorialState.MagnetActionTutorial;
+            // Spell Action Tutorial is over, state changed to Trap Action Tutorial
+            currentTutorialState = TutorialState.TrapActionTutorial;
             DisableUnit(unitEdel);
             DisableUnit(unitViolet);
             Debug.Log("Spell Action Tutorial Completed");
+            RevertGridMapToSelectionMode();
         }
     }
+    private void CompleteTrapActionTutorial()
+    {
+        if (tutorialText.text != null && currentTutorialState == TutorialState.TrapActionTutorial)
+        {
+            EnlargeTutorialPanel();
+            tutorialText.text = tutorialTexts[4];
+            // Trap Action Tutorial is over, tutorial is over.
+            currentTutorialState = TutorialState.MagnetActionTutorial;
+            Debug.Log("Trap Action Tutorial Completed");
+        }
+    }
+
     private void CompleteMagnetTutorial()
     {
 
         if (tutorialText.text != null && currentTutorialState == TutorialState.MagnetActionTutorial)
         {
-            EnlargeTutorialPanel();
-            tutorialText.text = tutorialTexts[4];
-
-            // Magnet Action Tutorial is over, state changed to Trap Action Tutorial
-            currentTutorialState = TutorialState.TrapActionTutorial;
+            //EnlargeTutorialPanel();
+            //tutorialText.text = tutorialTexts[5];
+            endTurnButtonHelper.EndTurnViaButton();
+            //StartCoroutine(TutorialEnd());
             Debug.Log("Magnet Action Tutorial Completed");
-
         }
     }
-    private void CompleteTrapActionTutorial(string moveName, string attackerName)
+    private void TutorialEnd()
     {
-        if (tutorialText.text != null && currentTutorialState == TutorialState.TrapActionTutorial)
+        //yield return new WaitForSeconds(5f);
+        EnlargeTutorialPanel();
+        tutorialText.text = tutorialTexts[6];
+    }
+    private void RevertGridMapToSelectionMode()
+    {
+        TileController[] tileControllers = GridManager.Instance.gridTileControllers;
+        foreach (var tileController in tileControllers)
         {
-            EnlargeTutorialPanel();
-            tutorialText.text = tutorialTexts[5];
-
-            // Trap Action Tutorial is over, tutorial is over.
-
-            Debug.Log("Trap Action Tutorial Completed");
+            tileController.currentPlayerAction = new SelectUnitPlayerAction();
+            tileController.currentSingleTileStatus = SingleTileStatus.selectionMode;
         }
+        movesContainer.localScale = new Vector3(0, 0, 0);
+        actionInfoPanel.localScale = new Vector3(0, 0, 0);
     }
 
     public void MinimizeTutorialPanel()

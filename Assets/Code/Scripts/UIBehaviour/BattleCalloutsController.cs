@@ -18,19 +18,18 @@ public class BattleCalloutsController : MonoBehaviour
 
     public void ShowCriticalHitCallout()
     {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
+        if (activePlayerUnit != null)
+        {
+            GameObject battleCalloutInstance = Instantiate(activePlayerUnit.unitTemplate.unitCalloutPortrait, this.gameObject.transform);
+            battleCalloutInstance.GetComponentInChildren<Animator>().SetTrigger("ShowUnitCallout");
 
-        GameObject battleCalloutInstance = Instantiate(activePlayerUnit.unitTemplate.unitCalloutPortrait, this.gameObject.transform);
-        battleCalloutInstance.GetComponentInChildren<Animator>().SetTrigger("ShowUnitCallout");
+            GameObject criticalHitVoiceSFX = Instantiate(activePlayerUnit.unitTemplate.unitCriticalHitVoice, Camera.main.transform);
 
-        GameObject criticalHitVoiceSFX = Instantiate(activePlayerUnit.unitTemplate.unitCriticalHitVoice, Camera.main.transform);
+            float battleCalloutDuration = 1f;
 
-        float battleCalloutDuration = 1f;
-
-        Destroy(battleCalloutInstance, battleCalloutDuration);
-        Destroy(battleCalloutInstance, activePlayerUnit.unitTemplate.unitCriticalHitVoice.GetComponent<AudioSource>().clip.length);
-
+            Destroy(battleCalloutInstance, battleCalloutDuration);
+            Destroy(battleCalloutInstance, activePlayerUnit.unitTemplate.unitCriticalHitVoice.GetComponent<AudioSource>().clip.length);
+        }
     }
-
-
 }

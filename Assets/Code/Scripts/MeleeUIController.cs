@@ -20,7 +20,7 @@ public class MeleeUIController : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
-        if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype")
+        if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype" || scene.name == "battle_tutorial")
         {
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
         }

@@ -1,4 +1,5 @@
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using static TileController;
 
@@ -14,6 +15,9 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
     public delegate void UsedMeleeAction(string moveName, string attackerName);
     public static event UsedMeleeAction OnUsedMeleeAction;
+
+    public delegate void UsedMagnet();
+    public static event UsedMagnet OnUsedMagnet;
 
     public void Select(TileController selectedTile)
     {
@@ -229,6 +233,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         {
             Debug.Log("No valid position for Magnet pull.");
         }
+        OnUsedMagnet();
     }
     public void Execute()
     {

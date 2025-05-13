@@ -10,6 +10,9 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
     public float trapCreationCost = 5;
     public int trapCreationRange = 1;
 
+    public delegate void TrapPlaced();
+    public static event TrapPlaced OnTrapPlaced;
+
     public void Select(TileController selectedTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -110,6 +113,7 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
                 activePlayerUnit.unitOpportunityPoints++;
                 ResetTrapSelectionLimiter();
             }
+            OnTrapPlaced();
         }
     }
     public void ResetTrapSelectionLimiter()
