@@ -19,6 +19,7 @@ public class TutorialFlowController : MonoBehaviour
     [SerializeField] RectTransform tutorialPanelBackground;
     [SerializeField] Button closeTutorialCanvasButton;
     [SerializeField] Button endTutorialButton;
+    [SerializeField] RectTransform endTurnButtonRectTransform;
 
     [SerializeField] TextMeshProUGUI tutorialText;
     [SerializeField] string[] tutorialTexts;
@@ -65,6 +66,7 @@ public class TutorialFlowController : MonoBehaviour
         IdentifyPartyMembers();
         StartCoroutine(StartMovementTutorial());
         ActivateEndTutorialButton(false);
+        endTurnButtonRectTransform.localScale = Vector3.zero;
     }
 
     private void IdentifyPartyMembers()
