@@ -13,16 +13,19 @@ MonoBehaviour:
   m_Name: LaurinusDeityProfile
   m_EditorClassIdentifier: 
   unitName: King Laurinus
-  unitHealthPoints: 2000
-  unitMaxHealthPoints: 2000
+  unitHealthPoints: 300
+  unitMaxHealthPoints: 300
   unitManaPoints: 10
   unitMaxManaPoints: 10
   unitOpportunityPoints: 10
+  unitFaithPoints: 0
+  unitMovemementLimit: 0
   unitShieldPoints: 10
   meleeAttackPower: 10
   unitMagicPower: 10
+  unitMeleeAttackBaseDamage: 0
   spellsList: []
-  unitCoinsReward: 0
+  coinsRewardRange: {x: 0, y: 0}
   unitExperiencePointsReward: 0
   unitPortrait: {fileID: 21300000, guid: 6b30c28bc4dd2dc4e8e3f13a408aee6f, type: 3}
   unitMiniPortrait: {fileID: 21300000, guid: 39cfa3f6428804a4aa85c477cf1da7f5, type: 3}
