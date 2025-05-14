@@ -113,7 +113,7 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
                 activePlayerUnit.unitOpportunityPoints++;
                 ResetTrapSelectionLimiter();
             }
-            OnTrapPlaced();
+            OnTrapPlaced?.Invoke();
         }
     }
     public void ResetTrapSelectionLimiter()
