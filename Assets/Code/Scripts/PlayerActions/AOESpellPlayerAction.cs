@@ -116,6 +116,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                     activePlayerUnit.SpendManaPoints(currentSpell.manaPointsCost);
                     UpdateActivePlayerUnitMana(activePlayerUnit);
 
+                    // Used Spell notification appears on the Battle Interface
+                    OnUsedSpell?.Invoke(currentSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+
                     foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
                     {
                         Debug.Log("Using AOE Spell on Multiple Targets");
@@ -129,8 +132,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
                             PlayVFX(currentSpell.spellVFX, tile, currentSpell.spellVFXOffset);
                             activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
 
-                            // Used Spell notification appears on the Battle Interface
-                            OnUsedSpell(currentSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+
 
                             // If the Spell is a Critical Hit, sends an event to display the Battle Callout
                             if (isCritical)
@@ -144,6 +146,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
                             DeityEnmityCheck();
                         }
+
                     }
                 }
                 else if (currentSpell.spellType == SpellType.SingleTarget)

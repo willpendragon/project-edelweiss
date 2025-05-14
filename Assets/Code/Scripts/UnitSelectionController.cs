@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UnitSelectionController : MonoBehaviour
 {
@@ -41,7 +42,8 @@ public class UnitSelectionController : MonoBehaviour
 
     public void GenerateWaitButton()
     {
-        if (unitSpellUIController != null)
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (unitSpellUIController != null && sceneName != "battle_tutorial")
         {
             GameObject newWaitButton = Instantiate(waitButton, unitSpellUIController.spellMenuContainer);
         }

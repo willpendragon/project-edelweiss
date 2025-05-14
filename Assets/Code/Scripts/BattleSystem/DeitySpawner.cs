@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
-using UnityEditor.SearchService;
 
 public class DeitySpawner : MonoBehaviour
 {

@@ -31,6 +31,8 @@ public class TutorialFlowController : MonoBehaviour
     [SerializeField] Unit unitAliza;
     [SerializeField] Unit unitViolet;
 
+    private int tomodachickRage = 0;
+
     //private bool movementActionTutorialCompleted = false;
     //private bool meleeActionTutorialCompleted = false;
     //private bool spellActionTutorialCompleted = false;
@@ -47,6 +49,7 @@ public class TutorialFlowController : MonoBehaviour
         MovePlayerAction.OnUnitMovedToTile += CompleteMovementActionTutorial;
         MeleePlayerAction.OnUsedMeleeAction += CompleteMeleeActionTutorial;
         AOESpellPlayerAction.OnUsedSpell += CompleteSpellActionTutorial;
+        AOESpellPlayerAction.OnUsedSpell += UpsetTomodachick;
         MeleePlayerAction.OnUsedMagnet += CompleteMagnetTutorial;
         TrapPlayerAction.OnTrapPlaced += CompleteTrapActionTutorial;
         TrapController.OnTrapAction += CompleteBattleTutorial;
@@ -56,6 +59,7 @@ public class TutorialFlowController : MonoBehaviour
         MovePlayerAction.OnUnitMovedToTile -= CompleteMovementActionTutorial;
         MeleePlayerAction.OnUsedMeleeAction -= CompleteMeleeActionTutorial;
         AOESpellPlayerAction.OnUsedSpell -= CompleteSpellActionTutorial;
+        AOESpellPlayerAction.OnUsedSpell -= UpsetTomodachick;
         MeleePlayerAction.OnUsedMagnet -= CompleteMagnetTutorial;
         TrapPlayerAction.OnTrapPlaced -= CompleteTrapActionTutorial;
         TrapController.OnTrapAction -= CompleteBattleTutorial;
@@ -171,7 +175,6 @@ public class TutorialFlowController : MonoBehaviour
         }
         ActivateEndTutorialButton(true);
     }
-
     public void CloseTutorial()
     {
         saveFilePath = Application.persistentDataPath + "/gameSaveData.json";
@@ -244,5 +247,47 @@ public class TutorialFlowController : MonoBehaviour
         {
             endTutorialButton.gameObject.SetActive(false);
         }
+    }
+
+    private void UpsetTomodachick(string spellName, string casterName)
+    {
+        if (spellName != "Light Ordeal") return;
+
+        EnlargeTutorialPanel();
+
+        switch (tomodachickRage)
+        {
+            case 0:
+                tutorialText.text = "STOP IT.";
+                break;
+            case 1:
+                tutorialText.text = "I'M SERIOUS. STOP IT";
+                break;
+            case 2:
+                tutorialText.text = "DO YOU THINK THIS IS FUNNY?";
+                break;
+            case 3:
+                tutorialText.text = "ALRIGHT. ENOUGH IS ENOUGH";
+                //foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
+                //{
+                //    playerUnit.TakeDamage(20);
+                //}
+
+                foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
+                {
+                    GameObject newDeityAttackVFX = Instantiate(BattleManager.Instance.deity.deityAttackVFX, playerUnit.GetComponent<Unit>().ownedTile.transform.position, Quaternion.identity);
+                    Vector3 attackVFXOffset = new Vector3(0, 1, 0);
+                    newDeityAttackVFX.transform.localPosition += attackVFXOffset;
+                    Destroy(newDeityAttackVFX, 1);
+                    playerUnit.GetComponent<Unit>().TakeDamage(BattleManager.Instance.deity.deitySpecialAttackPower);
+                }
+
+                break;
+            default:
+                // Optional: Additional consequences or reset
+                break;
+        }
+
+        tomodachickRage++;
     }
 }
