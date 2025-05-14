@@ -1,9 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System;
-using Unity.VisualScripting;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.IO;
 
 enum TutorialState
 {
@@ -17,6 +17,9 @@ public class TutorialFlowController : MonoBehaviour
 {
     [SerializeField] RectTransform tutorialPanel;
     [SerializeField] RectTransform tutorialPanelBackground;
+    [SerializeField] Button closeTutorialCanvasButton;
+    [SerializeField] Button endTutorialButton;
+
     [SerializeField] TextMeshProUGUI tutorialText;
     [SerializeField] string[] tutorialTexts;
     [SerializeField] RectTransform movesContainer;
@@ -34,6 +37,8 @@ public class TutorialFlowController : MonoBehaviour
     //private bool trapActionTutorialCompleted = false;
 
     [SerializeField] TutorialState currentTutorialState;
+    private string saveFilePath;
+
 
     // Add a class that inhibits the possibility to click for the Player
     private void OnEnable()
@@ -43,7 +48,7 @@ public class TutorialFlowController : MonoBehaviour
         AOESpellPlayerAction.OnUsedSpell += CompleteSpellActionTutorial;
         MeleePlayerAction.OnUsedMagnet += CompleteMagnetTutorial;
         TrapPlayerAction.OnTrapPlaced += CompleteTrapActionTutorial;
-        TrapController.OnTrapAction += TutorialEnd;
+        TrapController.OnTrapAction += CompleteBattleTutorial;
     }
     private void OnDisable()
     {
@@ -52,13 +57,14 @@ public class TutorialFlowController : MonoBehaviour
         AOESpellPlayerAction.OnUsedSpell -= CompleteSpellActionTutorial;
         MeleePlayerAction.OnUsedMagnet -= CompleteMagnetTutorial;
         TrapPlayerAction.OnTrapPlaced -= CompleteTrapActionTutorial;
-        TrapController.OnTrapAction -= TutorialEnd;
+        TrapController.OnTrapAction -= CompleteBattleTutorial;
     }
 
     private void Start()
     {
         IdentifyPartyMembers();
         StartCoroutine(StartMovementTutorial());
+        ActivateEndTutorialButton(false);
     }
 
     private void IdentifyPartyMembers()
@@ -133,7 +139,6 @@ public class TutorialFlowController : MonoBehaviour
             Debug.Log("Trap Action Tutorial Completed");
         }
     }
-
     private void CompleteMagnetTutorial()
     {
 
@@ -151,12 +156,43 @@ public class TutorialFlowController : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         endTurnButtonHelper.EndTurnViaButton();
     }
-    private void TutorialEnd()
+    private void CompleteBattleTutorial()
     {
         //yield return new WaitForSeconds(5f);
         EnlargeTutorialPanel();
         tutorialText.text = tutorialTexts[6];
+        if (closeTutorialCanvasButton != null)
+        {
+            closeTutorialCanvasButton.interactable = false;
+        }
+        ActivateEndTutorialButton(true);
     }
+
+    public void CloseTutorial()
+    {
+        saveFilePath = Application.persistentDataPath + "/gameSaveData.json";
+        if (File.Exists(saveFilePath))
+        {
+            File.Delete(saveFilePath);
+            Debug.Log("Deleted Saved Game Data");
+        }
+        else
+        {
+            Debug.LogWarning("No Saved Game Data found.");
+        }
+        GameObject gameManagerInstance = GameObject.FindGameObjectWithTag("GameManager");
+        Destroy(gameManagerInstance);
+        DestroyPlayerPartyUnitsInstances();
+        SceneManager.LoadScene("overworld_map");
+    }
+
+    private void DestroyPlayerPartyUnitsInstances()
+    {
+        Destroy(unitEdel?.gameObject);
+        Destroy(unitAliza?.gameObject);
+        Destroy(unitViolet?.gameObject);
+    }
+
     private void RevertGridMapToSelectionMode()
     {
         TileController[] tileControllers = GridManager.Instance.gridTileControllers;
@@ -184,5 +220,16 @@ public class TutorialFlowController : MonoBehaviour
     private void DisableUnit(Unit playerUnit)
     {
         playerUnit.gameObject.GetComponent<UnitSelectionController>().StopUnitAction();
+    }
+    void ActivateEndTutorialButton(bool endTutorialButtonCondition)
+    {
+        if (endTutorialButtonCondition == true && endTutorialButton != null)
+        {
+            endTutorialButton.gameObject.SetActive(true);
+        }
+        else if (endTutorialButtonCondition == false && endTutorialButton != null)
+        {
+            endTutorialButton.gameObject.SetActive(false);
+        }
     }
 }
