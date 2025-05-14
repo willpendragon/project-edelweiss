@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
+using UnityEditor.SearchService;
 
 public class DeitySpawner : MonoBehaviour
 {
@@ -26,16 +28,29 @@ public class DeitySpawner : MonoBehaviour
     {
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
-            int deityRollMinRange = 0;
-            int deityRollMaxRange = 7;
-            var deityRoll = localRandom.Next(deityRollMinRange, deityRollMaxRange);
+            string sceneName = SceneManager.GetActiveScene().name;
 
-            int deityRollFirstThreshold = 3;
-            int deityRollSecondThreshold = 6;
-            if (deityRoll >= deityRollFirstThreshold && deityRoll <= deityRollSecondThreshold)
+            // This behaviour allows to spawn Tomodachick as a Deity in the Tutorial Battle.
+            if (sceneName == "battle_tutorial")
             {
-                DeitySelector();
-                Debug.Log("Rolled Deity arrival on battlefield");
+                GameObject spawningDeity = spawnableDeities[0];
+                GameObject deityOnBattlefield = Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
+
+                BattleManager.Instance.deity = deityOnBattlefield.GetComponent<Deity>();
+            }
+            else
+            {
+                int deityRollMinRange = 0;
+                int deityRollMaxRange = 7;
+                var deityRoll = localRandom.Next(deityRollMinRange, deityRollMaxRange);
+
+                int deityRollFirstThreshold = 3;
+                int deityRollSecondThreshold = 6;
+                if (deityRoll >= deityRollFirstThreshold && deityRoll <= deityRollSecondThreshold)
+                {
+                    DeitySelector();
+                    Debug.Log("Rolled Deity arrival on battlefield");
+                }
             }
         }
         else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
@@ -45,6 +60,8 @@ public class DeitySpawner : MonoBehaviour
                 PopulateDeityHealthBar();
             }
         }
+
+
 
     }
     public void DeitySelector()

@@ -2847,6 +2847,7 @@ RectTransform:
   - {fileID: 1495493859}
   - {fileID: 712029842}
   - {fileID: 656495208}
+  - {fileID: 1944498694}
   m_Father: {fileID: 432932542}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
@@ -3015,13 +3016,25 @@ MonoBehaviour:
   endTurnButtonRectTransform: {fileID: 936415925}
   tutorialText: {fileID: 1495493860}
   tutorialTexts:
-  - Movement Tutorial Explanation.
-  - Movement Tutorial Complete. Melee Attack Explanation.
-  - Melee Tutorial Complete. Spell Explanation.
-  - Spell Tutorial Complete. Trap Explanation.
-  - Trap Tutorial Complete. Magnet Explanation + Farming Crystals
-  - Magnet Tutorial + Crystals Complete.
-  - End of tutorial text.
+  - Good morning, Saints. Time to earn your payroll. I will instruct you about the
+    basics of combat. Now, let's start by selecting one of you with the Left Mouse
+    Button. Then, press the Move button and Select a destination.
+  - Why don't you try attacking an Enemy with a Melee attack? Select the Melee button
+    and then Left Click an Enemy. You may notice that close attacks send an Enemy
+    away... like a golf ball! Or you can attack from a distance. Decide wisely what
+    works best.
+  - Well, now it's time for some good old-fashioned spellcasting. Each one of you
+    is equipped with Spells. They can be Single Target or affect an area. Try one
+    of those.
+  - Ok, now it's time to talk about Magitechnica tools, and the Traps plus Magnet
+    combination. Only Aliza has the Magnet. So, please Aliza, step out and place
+    a Trap on the Floor.
+  - Well done. Albeit blasphemous, Magitechnica artifacts are truly impressive. Now,
+    let's try pulling an Enemy on the Trap, and something nice will happen.
+  - "You see? Traps have been activated! If an Enemy sits on a Trap, you will transmute
+    their mortal spoils into a Capture Crystal. This is a conversation we will have
+    later, inside the Caf\xE9. For the time being, the tutorial is over (and so my
+    eagerness to explain stuff to you dummies)."
   movesContainer: {fileID: 261502489}
   actionInfoPanel: {fileID: 622376890}
   endTurnButtonHelper: {fileID: 819868225}
@@ -10879,8 +10892,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0000047683716, y: 0}
-  m_SizeDelta: {x: 512, y: 256}
+  m_AnchoredPosition: {x: 44.84, y: 39.9356}
+  m_SizeDelta: {x: 701.0552, y: 223.473}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1495493860
 MonoBehaviour:
@@ -10965,7 +10978,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 3.6356812, y: 2.423767, z: -0.00012207031, w: 1.2119141}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -12497,8 +12510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnableDeities:
-  - {fileID: 3348349630364506734, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
-  - {fileID: 3348349630364506734, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
+  - {fileID: 3348349630364506734, guid: 25c2c32049a054240a8bc07e4345e483, type: 3}
   deitySpawnPosition: {fileID: 1790485010}
   deityAchievementsController: {fileID: 0}
   battleManager: {fileID: 5409979177453231299}
@@ -12515,7 +12527,7 @@ Transform:
   m_GameObject: {fileID: 1790485008}
   serializedVersion: 2
   m_LocalRotation: {x: -0.102050625, y: -0.21525384, z: -0.022624068, w: 0.97094786}
-  m_LocalPosition: {x: 8.64, y: -3.2, z: 19.36}
+  m_LocalPosition: {x: 8.64, y: -0.97, z: 16.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13094,6 +13106,81 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1944498693
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1944498694}
+  - component: {fileID: 1944498696}
+  - component: {fileID: 1944498695}
+  m_Layer: 5
+  m_Name: TomodachickPortrait
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1944498694
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944498693}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 432080645}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 121.7211, y: 23.67}
+  m_SizeDelta: {x: 128, y: 256}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1944498695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944498693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 62100defe186409409c1de4230b3d626, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1944498696
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944498693}
+  m_CullTransparentMesh: 1
 --- !u!1 &1957666789
 GameObject:
   m_ObjectHideFlags: 0

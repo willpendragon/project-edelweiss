@@ -80,6 +80,7 @@ public class TutorialFlowController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
+        DisableUnit(unitAliza);
         currentTutorialState = TutorialState.MovementActionTutorial;
         EnlargeTutorialPanel();
         if (tutorialText != null && currentTutorialState == TutorialState.MovementActionTutorial)
@@ -126,6 +127,7 @@ public class TutorialFlowController : MonoBehaviour
             currentTutorialState = TutorialState.TrapActionTutorial;
             DisableUnit(unitEdel);
             DisableUnit(unitViolet);
+            EnableUnit(unitAliza);
             Debug.Log("Spell Action Tutorial Completed");
             RevertGridMapToSelectionMode();
         }
@@ -162,7 +164,7 @@ public class TutorialFlowController : MonoBehaviour
     {
         //yield return new WaitForSeconds(5f);
         EnlargeTutorialPanel();
-        tutorialText.text = tutorialTexts[6];
+        tutorialText.text = tutorialTexts[5];
         if (closeTutorialCanvasButton != null)
         {
             closeTutorialCanvasButton.interactable = false;
@@ -222,6 +224,15 @@ public class TutorialFlowController : MonoBehaviour
     private void DisableUnit(Unit playerUnit)
     {
         playerUnit.gameObject.GetComponent<UnitSelectionController>().StopUnitAction();
+    }
+
+    private void EnableUnit(Unit playerUnit)
+    {
+        playerUnit.unitOpportunityPoints = 1000;
+        playerUnit.unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+
+        UnitIconsController playerUnitIconsController = playerUnit.gameObject.GetComponentInChildren<UnitIconsController>();
+        playerUnitIconsController.HideWaitingIcon();
     }
     void ActivateEndTutorialButton(bool endTutorialButtonCondition)
     {
