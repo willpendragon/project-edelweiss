@@ -16,6 +16,7 @@ enum TutorialState
 public class TutorialFlowController : MonoBehaviour
 {
     [SerializeField] RectTransform tutorialPanel;
+    [SerializeField] RectTransform tutorialPanelBackground;
     [SerializeField] TextMeshProUGUI tutorialText;
     [SerializeField] string[] tutorialTexts;
     [SerializeField] RectTransform movesContainer;
@@ -140,10 +141,15 @@ public class TutorialFlowController : MonoBehaviour
         {
             //EnlargeTutorialPanel();
             //tutorialText.text = tutorialTexts[5];
-            endTurnButtonHelper.EndTurnViaButton();
+            StartCoroutine(TutorialEndTurn());
             //StartCoroutine(TutorialEnd());
             Debug.Log("Magnet Action Tutorial Completed");
         }
+    }
+    IEnumerator TutorialEndTurn()
+    {
+        yield return new WaitForSeconds(1.5f);
+        endTurnButtonHelper.EndTurnViaButton();
     }
     private void TutorialEnd()
     {
@@ -166,11 +172,13 @@ public class TutorialFlowController : MonoBehaviour
     public void MinimizeTutorialPanel()
     {
         tutorialPanel.localScale = Vector3.zero;
+        tutorialPanelBackground.localScale = Vector3.zero;
     }
 
     private void EnlargeTutorialPanel()
     {
         tutorialPanel.localScale = Vector3.one;
+        tutorialPanelBackground.localScale = Vector3.one;
     }
 
     private void DisableUnit(Unit playerUnit)
