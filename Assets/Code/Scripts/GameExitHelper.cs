@@ -18,7 +18,14 @@ public class GameExitHandler : MonoBehaviour
     // Loads the start screen scene.
     public void LoadStartScreen()
     {
+        DestroyCurrentGameManager();
         SceneManager.LoadScene("start_screen", LoadSceneMode.Single);
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+    }
+
+    private void DestroyCurrentGameManager()
+    {
+        GameObject gameManagerInstance = GameObject.FindGameObjectWithTag("GameManager");
+        Destroy(gameManagerInstance);
     }
 }
