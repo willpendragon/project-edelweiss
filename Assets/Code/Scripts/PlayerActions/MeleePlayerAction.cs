@@ -315,10 +315,18 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             Debug.Log("Enemy knocked back");
             destinationTile.tileShaderController.ResetTileFadeHeightAnimation(destinationTile);
         }
+
         else
         {
             Debug.Log("Can't knockback Enemy Unit");
         }
+        if (defender.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
+        {
+            defender.currentUnitBuff = Unit.UnitBuff.Basic;
+            // Play mask deactivation feedback on the Enemy.
+            defender.gameObject.GetComponentInChildren<MaskFeedbackHelper>()?.DeactivateMask();
+        }
+
         ResetTileColours();
     }
 
