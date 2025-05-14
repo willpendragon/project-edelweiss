@@ -176,67 +176,70 @@ public class CafeMenuUIController : MonoBehaviour
 
         foreach (var partyMember in GameManager.Instance.playerPartyMembersInstances)
         {
-            GameObject characterProfile = Instantiate(characterProfilesPrefab, characterProfilesContainer.transform);
-
-            // Set up the CharacterProfileSmallController reference and other details
-            CharacterProfileSmallController profileController = characterProfile.GetComponent<CharacterProfileSmallController>();
-            profileController.referenceUnit = partyMember;
-
-            // Assign the character portrait and stats to the UI
-            characterProfile.GetComponentInChildren<Image>().sprite = partyMember.GetComponent<Unit>().unitTemplate.unitPortrait;
-
-            TextMeshProUGUI[] characterTexts = characterProfile.GetComponentsInChildren<TextMeshProUGUI>();
-
-            if (characterTexts.Length >= 5)
+            if (partyMember.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
             {
-                characterTexts[0].text = partyMember.unitTemplate.unitName;
-                characterTexts[1].text = "HP";
-                characterTexts[2].text = partyMember.unitHealthPoints.ToString();
-                characterTexts[3].text = "/";
-                characterTexts[4].text = partyMember.unitMaxHealthPoints.ToString();
-                characterTexts[5].text = "MP";
-                characterTexts[6].text = partyMember.unitManaPoints.ToString();
-                characterTexts[7].text = "/";
-                characterTexts[8].text = partyMember.unitMaxManaPoints.ToString();
+                GameObject characterProfile = Instantiate(characterProfilesPrefab, characterProfilesContainer.transform);
+
+                // Set up the CharacterProfileSmallController reference and other details
+                CharacterProfileSmallController profileController = characterProfile.GetComponent<CharacterProfileSmallController>();
+                profileController.referenceUnit = partyMember;
+
+                // Assign the character portrait and stats to the UI
+                characterProfile.GetComponentInChildren<Image>().sprite = partyMember.GetComponent<Unit>().unitTemplate.unitPortrait;
+
+                TextMeshProUGUI[] characterTexts = characterProfile.GetComponentsInChildren<TextMeshProUGUI>();
+
+                if (characterTexts.Length >= 5)
+                {
+                    characterTexts[0].text = partyMember.unitTemplate.unitName;
+                    characterTexts[1].text = "HP";
+                    characterTexts[2].text = partyMember.unitHealthPoints.ToString();
+                    characterTexts[3].text = "/";
+                    characterTexts[4].text = partyMember.unitMaxHealthPoints.ToString();
+                    characterTexts[5].text = "MP";
+                    characterTexts[6].text = partyMember.unitManaPoints.ToString();
+                    characterTexts[7].text = "/";
+                    characterTexts[8].text = partyMember.unitMaxManaPoints.ToString();
+                }
+
+                // Add the profile to the list of small controllers
+                characterProfileSmallControllers.Add(characterProfile);
+
+                // Create and configure the feed button for this character
+                GameObject feedCharacterButtonGO = new GameObject("CharacterFeedButton");
+                RectTransform rectTransform = feedCharacterButtonGO.AddComponent<RectTransform>();
+                rectTransform.SetParent(characterProfile.transform, false);
+                rectTransform.sizeDelta = new Vector2(128, 32);
+
+                Image buttonImage = feedCharacterButtonGO.AddComponent<Image>();
+                Button feedCharacterButton = feedCharacterButtonGO.AddComponent<Button>();
+
+                GameObject textGO = new GameObject("ButtonText");
+                RectTransform textRectTransform = textGO.AddComponent<RectTransform>();
+                textRectTransform.SetParent(feedCharacterButtonGO.transform, false);
+                textRectTransform.anchorMin = Vector2.zero;
+                textRectTransform.anchorMax = Vector2.one;
+                textRectTransform.sizeDelta = Vector2.zero;
+
+                TextMeshProUGUI textMeshPro = textGO.AddComponent<TextMeshProUGUI>();
+                textMeshPro.text = "Feed";
+                textMeshPro.fontSize = 24;
+                textMeshPro.alignment = TextAlignmentOptions.Center;
+                textMeshPro.color = Color.black;
+
+                ColorBlock colors = feedCharacterButton.colors;
+                colors.normalColor = Color.white;
+                colors.highlightedColor = new Color(0.8f, 0.8f, 0.8f, 1);
+                colors.pressedColor = new Color(0.6f, 0.6f, 0.6f, 1);
+                feedCharacterButton.colors = colors;
+
+                // Add the onClick listener for feeding the character
+                Unit characterUnit = profileController.referenceUnit;  // Capture the reference to avoid closure issues
+                feedCharacterButton.onClick.AddListener(() => OnCharacterClicked(characterUnit));
+
+                feedCharacterButton.enabled = false;  // Disable initially; can be enabled when an item is selected
+                feedPlayerCharactersButtons.Add(feedCharacterButton);
             }
-
-            // Add the profile to the list of small controllers
-            characterProfileSmallControllers.Add(characterProfile);
-
-            // Create and configure the feed button for this character
-            GameObject feedCharacterButtonGO = new GameObject("CharacterFeedButton");
-            RectTransform rectTransform = feedCharacterButtonGO.AddComponent<RectTransform>();
-            rectTransform.SetParent(characterProfile.transform, false);
-            rectTransform.sizeDelta = new Vector2(128, 32);
-
-            Image buttonImage = feedCharacterButtonGO.AddComponent<Image>();
-            Button feedCharacterButton = feedCharacterButtonGO.AddComponent<Button>();
-
-            GameObject textGO = new GameObject("ButtonText");
-            RectTransform textRectTransform = textGO.AddComponent<RectTransform>();
-            textRectTransform.SetParent(feedCharacterButtonGO.transform, false);
-            textRectTransform.anchorMin = Vector2.zero;
-            textRectTransform.anchorMax = Vector2.one;
-            textRectTransform.sizeDelta = Vector2.zero;
-
-            TextMeshProUGUI textMeshPro = textGO.AddComponent<TextMeshProUGUI>();
-            textMeshPro.text = "Feed";
-            textMeshPro.fontSize = 24;
-            textMeshPro.alignment = TextAlignmentOptions.Center;
-            textMeshPro.color = Color.black;
-
-            ColorBlock colors = feedCharacterButton.colors;
-            colors.normalColor = Color.white;
-            colors.highlightedColor = new Color(0.8f, 0.8f, 0.8f, 1);
-            colors.pressedColor = new Color(0.6f, 0.6f, 0.6f, 1);
-            feedCharacterButton.colors = colors;
-
-            // Add the onClick listener for feeding the character
-            Unit characterUnit = profileController.referenceUnit;  // Capture the reference to avoid closure issues
-            feedCharacterButton.onClick.AddListener(() => OnCharacterClicked(characterUnit));
-
-            feedCharacterButton.enabled = false;  // Disable initially; can be enabled when an item is selected
-            feedPlayerCharactersButtons.Add(feedCharacterButton);
         }
     }
     public void OnCharacterClicked(Unit character)
