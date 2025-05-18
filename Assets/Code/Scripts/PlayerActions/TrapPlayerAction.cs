@@ -34,17 +34,29 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
         {
             if (selectedTiletrapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active && trapTileUIController.trapTileSelectionIsActive == true)
             {
-                selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
+                //selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().material.color = Color.red;
                 selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
                 savedSelectedTile = selectedTile;
                 trapTileUIController.trapTileSelectionIsActive = false;
+                DisplayTrapSelectionFeedback(selectedTile);
             }
         }
+    }
+
+    private void DisplayTrapSelectionFeedback(TileController selectedTile)
+    {
+        GameObject trapTileSelectionPreview = Instantiate((GameObject)Resources.Load("trapTileSelectionPreview"), selectedTile.transform);
+        trapTileSelectionPreview.transform.localScale = new Vector3(1, 45, 1);
+        trapTileSelectionPreview.transform.localPosition = new Vector3(0, 45, 0);
     }
     public void Deselect()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         TrapTileUIController trapTileUIController = activePlayerUnit.GetComponent<TrapTileUIController>();
+
+        GameObject trapTileSelectionPreview = GameObject.FindGameObjectWithTag("TrapTileSelectionPreview");
+        Destroy(trapTileSelectionPreview);
+
         trapTileUIController.trapTileSelectionIsActive = true;
 
         if (savedSelectedTile != null)
@@ -81,6 +93,9 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
     }
     public void Execute()
     {
+        GameObject trapTileSelectionPreview = GameObject.FindGameObjectWithTag("TrapTileSelectionPreview");
+        Destroy(trapTileSelectionPreview);
+
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
         if (activePlayerUnit.unitOpportunityPoints == 0)
