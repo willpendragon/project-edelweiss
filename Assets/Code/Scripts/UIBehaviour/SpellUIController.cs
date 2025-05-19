@@ -19,6 +19,8 @@ public class SpellUIController : MonoBehaviour
     public GameObject spellButtonPrefab;
     public Transform spellMenuContainer;
 
+    public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
+
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype" || scene.name == "battle_tutorial")
@@ -62,7 +64,7 @@ public class SpellUIController : MonoBehaviour
         DestroyMagnet();
         DeactivateTrapSelection();
 
-        //After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode.
+        // After clicking the Spell Button, all of the Grid Map tiles switch to Selection Mode.
 
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
@@ -74,6 +76,11 @@ public class SpellUIController : MonoBehaviour
             }
         }
         GridManager.Instance.tileSelectionPermitted = true;
+
+        Unit currentActiveUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        int unitSpellRange = currentActiveUnit.unitTemplate.spellsList[0].spellRange;
+        Color spellCastingTileVisualizingColor = new Color(0.45f, 0.2f, 0.75f);
+        GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowTargetableTiles(currentActiveUnit, unitSpellRange, spellCastingTileVisualizingColor);
     }
     void DestroyMagnet()
     {

@@ -16,6 +16,9 @@ public class MeleeUIController : MonoBehaviour
     public GameObject meleeButtonPrefab;
     public Transform spellMenuContainer;
     private string buttonName;
+    private int meleeRange = 2;
+
+    public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -61,8 +64,10 @@ public class MeleeUIController : MonoBehaviour
             {
                 tile.gameObject.GetComponentInChildren<TileShaderController>().AnimateFadeHeight(0, 0.2f, Color.white);
             }
+            Unit currentActiveUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+            Color meleeTileVisualizingColor = new Color(0.75f, 0.1f, 0.1f);
+            GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowTargetableTiles(currentActiveUnit, meleeRange, meleeTileVisualizingColor);
         }
-
         GridManager.Instance.tileSelectionPermitted = true;
     }
 

@@ -19,6 +19,9 @@ public class TrapTileUIController : MonoBehaviour
     public GameObject trapButtonPrefab;
     public Transform spellMenuContainer;
     public bool trapTileSelectionIsActive;
+    private int trapPlacementRange = 1;
+
+    public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
 
     private void Start()
     {
@@ -57,6 +60,10 @@ public class TrapTileUIController : MonoBehaviour
             }
             Debug.Log("Switching tiles to Trap Mode");
         }
+
+        Unit currentActiveUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        Color trapPlacementTileVisualizingColor = Color.yellow;
+        GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowTargetableTiles(currentActiveUnit, trapPlacementRange, trapPlacementTileVisualizingColor);
 
         GridManager.Instance.tileSelectionPermitted = true;
     }

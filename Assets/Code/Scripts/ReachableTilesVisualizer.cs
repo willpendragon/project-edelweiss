@@ -90,6 +90,59 @@ public class ReachableTilesVisualizer : MonoBehaviour
         return reachableTiles;
     }
 
+    private List<TileController> GetTargetableTiles(Unit unit, int range)
+    {
+        List<TileController> targetableTiles = new List<TileController>();
+        Queue<TileController> tilesToExplore = new Queue<TileController>();
+        Dictionary<TileController, int> visitedTiles = new Dictionary<TileController, int>();
+
+        TileController startTile = unit.ownedTile;
+        tilesToExplore.Enqueue(startTile);
+        visitedTiles[startTile] = 0;
+
+        while (tilesToExplore.Count > 0)
+        {
+            TileController currentTile = tilesToExplore.Dequeue();
+            int currentDistance = visitedTiles[currentTile];
+
+            if (currentDistance > 0 && currentDistance <= range)
+            {
+                targetableTiles.Add(currentTile);
+            }
+
+            if (currentDistance < range)
+            {
+                List<TileController> neighbors = GridManager.Instance.gridMovementController.GetNeighbours(currentTile);
+
+                foreach (TileController neighbor in neighbors)
+                {
+                    if (!visitedTiles.ContainsKey(neighbor))
+                    {
+                        tilesToExplore.Enqueue(neighbor);
+                        visitedTiles[neighbor] = currentDistance + 1;
+                    }
+                }
+            }
+        }
+
+        return targetableTiles;
+    }
+
+    public void ShowTargetableTiles(Unit unit, int range, Color highlightColor)
+    {
+        ClearReachableTiles(0, 0.2f, Color.white);
+
+        reachableTiles = GetTargetableTiles(unit, range);
+
+        foreach (TileController tile in reachableTiles)
+        {
+            tile.tileShaderController.AnimateFadeHeight(1f, 0.5f, highlightColor);
+        }
+
+        Debug.Log($"Targetable tiles highlighted: {reachableTiles.Count}");
+    }
+
+
     // Clear the visual effect from previously highlighted tiles
     public void ClearReachableTiles(float targetFadeHeight, float animationDuration, Color glowColor)
     {

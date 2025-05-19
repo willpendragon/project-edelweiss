@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using static TileController;
@@ -233,7 +232,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         {
             Debug.Log("No valid position for Magnet pull.");
         }
-        OnUsedMagnet();
+        OnUsedMagnet?.Invoke();
     }
     public void Execute()
     {
