@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,8 @@ public class TrapTileUIController : MonoBehaviour
     public Transform spellMenuContainer;
     public bool trapTileSelectionIsActive;
     private int trapPlacementRange = 1;
+    string leftMouseButtonInstructionsText = "LMB - Select/Confirm Placement Tile";
+    string rightMouseButtonInstructionsText = "RMB - Deselect Tile";
 
     public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
 
@@ -66,7 +69,13 @@ public class TrapTileUIController : MonoBehaviour
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowTargetableTiles(currentActiveUnit, trapPlacementRange, trapPlacementTileVisualizingColor);
 
         GridManager.Instance.tileSelectionPermitted = true;
+        UpdateInstructionsPanel();
     }
+    private void UpdateInstructionsPanel()
+    {
+        InstructionsPanelController.Instance.UpdateInstructions(leftMouseButtonInstructionsText, rightMouseButtonInstructionsText);
+    }
+
     void DestroyMagnet()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();

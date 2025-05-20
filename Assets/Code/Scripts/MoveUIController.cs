@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +17,9 @@ public class MoveUIController : MonoBehaviour
     public GameObject moveButtonPrefab;
     public Transform spellMenuContainer;
     private string buttonName;
+    string leftMouseButtonInstructionsText = "LMB - Select/Confirm Destination Tile";
+    string rightMouseButtonInstructionsText = "RMB - Deselect Destination Tile";
+
 
     public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
 
@@ -53,7 +57,13 @@ public class MoveUIController : MonoBehaviour
         }
         ResetTileControllersGlow();
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
+        UpdateInstructionsPanel();
     }
+    private void UpdateInstructionsPanel()
+    {
+        InstructionsPanelController.Instance.UpdateInstructions(leftMouseButtonInstructionsText, rightMouseButtonInstructionsText);
+    }
+
     void DestroyMagnet()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();

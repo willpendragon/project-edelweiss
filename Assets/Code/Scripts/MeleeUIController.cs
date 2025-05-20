@@ -17,6 +17,9 @@ public class MeleeUIController : MonoBehaviour
     public Transform spellMenuContainer;
     private string buttonName;
     private int meleeRange = 2;
+    string leftMouseButtonInstructionsText = "LMB - Select/Confirm Target";
+    string rightMouseButtonInstructionsText = "RMB - Deselect Target";
+
 
     public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
 
@@ -69,6 +72,11 @@ public class MeleeUIController : MonoBehaviour
             GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowTargetableTiles(currentActiveUnit, meleeRange, meleeTileVisualizingColor);
         }
         GridManager.Instance.tileSelectionPermitted = true;
+        UpdateInstructionsPanel();
+    }
+    private void UpdateInstructionsPanel()
+    {
+        InstructionsPanelController.Instance.UpdateInstructions(leftMouseButtonInstructionsText, rightMouseButtonInstructionsText);
     }
 
     public void DeactivateTrapSelection()

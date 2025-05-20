@@ -18,6 +18,8 @@ public class SpellUIController : MonoBehaviour
     public SpellcastingController spellCastingController;
     public GameObject spellButtonPrefab;
     public Transform spellMenuContainer;
+    string leftMouseButtonInstructionsText = "LMB - Select/Confirm Target(s)";
+    string rightMouseButtonInstructionsText = "RMB - Deselect Target(s)";
 
     public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
 
@@ -81,6 +83,11 @@ public class SpellUIController : MonoBehaviour
         int unitSpellRange = currentActiveUnit.unitTemplate.spellsList[0].spellRange;
         Color spellCastingTileVisualizingColor = new Color(0.45f, 0.2f, 0.75f);
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ShowTargetableTiles(currentActiveUnit, unitSpellRange, spellCastingTileVisualizingColor);
+        UpdateInstructionsPanel();
+    }
+    private void UpdateInstructionsPanel()
+    {
+        InstructionsPanelController.Instance.UpdateInstructions(leftMouseButtonInstructionsText, rightMouseButtonInstructionsText);
     }
     void DestroyMagnet()
     {
