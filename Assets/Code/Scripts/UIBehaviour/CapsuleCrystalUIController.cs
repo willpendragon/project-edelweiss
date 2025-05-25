@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class CapsuleCrystalUIController : MonoBehaviour
 {
+    string leftMouseButtonInstructionsText = "LMB - Select/Confirm Placement Tile";
+    string rightMouseButtonInstructionsText = "RMB - Deselect Placement Tile";
     public void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -54,7 +56,13 @@ public class CapsuleCrystalUIController : MonoBehaviour
             Debug.Log("Switching tiles to Place Crystal Mode");
 
             GridManager.Instance.tileSelectionPermitted = true;
+            UpdateInstructionsPanel();
         }
+    }
+
+    private void UpdateInstructionsPanel()
+    {
+        InstructionsPanelController.Instance.UpdateInstructions(leftMouseButtonInstructionsText, rightMouseButtonInstructionsText);
     }
 
     private void DeactivateTrapSelection()
