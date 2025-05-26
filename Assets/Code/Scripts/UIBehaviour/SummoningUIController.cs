@@ -1,16 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SummoningUIController : MonoBehaviour
 {
+    public enum SummonPhase
+    {
+        summoning,
+        praying
+    }
+
+    string summonLeftMouseButtonInstructionsText = "LMB - Select/Confirm Summoning Spot";
+    string summonRightMouseButtonInstructionsText = "RMB - Deselect Summoning Spot";
+    string prayLeftMouseButtonInstructionsText = "LMB - Select/Confirm Summon for Praying";
+    string prayRightMouseButtonInstructionsText = "-";
+
     public SummoningController summoningCastingController;
     public GameObject summonButtonPrefab;
     public Transform spellMenuContainer;
     public IPlayerAction currentPlayerAction;
     public Button currentButton;
+
+    public SummonPhase currentSummonPhase = SummonPhase.summoning;
 
     void OnEnable()
     {
@@ -29,13 +43,6 @@ public class SummoningUIController : MonoBehaviour
             spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
         }
     }
-    public enum SummonPhase
-    {
-        summoning,
-        praying
-    }
-
-    public SummonPhase currentSummonPhase = SummonPhase.summoning;
 
     public void AddSummonButton()
 
@@ -80,6 +87,15 @@ public class SummoningUIController : MonoBehaviour
         // After clicking the Summon Button, all of the Grid Map tiles switch to Selection Mode and switch to the Summon Player Action.
 
         GridManager.Instance.tileSelectionPermitted = true;
+
+        if (currentSummonPhase == SummonPhase.summoning)
+        {
+            UpdateInstructionsPanel(summonLeftMouseButtonInstructionsText, summonRightMouseButtonInstructionsText);
+        }
+        else if (currentSummonPhase == SummonPhase.praying)
+        {
+            UpdateInstructionsPanel(prayLeftMouseButtonInstructionsText, prayRightMouseButtonInstructionsText);
+        }
     }
 
     public void SwitchButtonToPrayMode()
@@ -91,6 +107,11 @@ public class SummoningUIController : MonoBehaviour
         currentButton.GetComponentInChildren<Text>().text = "Pray";
         currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
     }
+    private void UpdateInstructionsPanel(string lmbText, string rmbText)
+    {
+        InstructionsPanelController.Instance.UpdateInstructions(lmbText, rmbText);
+    }
+
     public void ResetButtonToSummonMode()
     {
         Debug.Log("Reset Button to Summon Mode");

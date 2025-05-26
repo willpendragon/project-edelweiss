@@ -37,6 +37,9 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             //currentActivePlayerUnit.unitOpportunityPoints--;
             deityLimiter--;
             Debug.Log("Summoning Deity");
+            string prayLeftMouseButtonInstructionsText = "LMB - Select/Confirm Summon for Praying";
+            string prayRightMouseButtonInstructionsText = "-";
+            InstructionsPanelController.Instance.UpdateInstructions(prayLeftMouseButtonInstructionsText, prayRightMouseButtonInstructionsText);
         }
         else if (currentActivePlayerUnit.summonedLinkedDeity != null)
         {
