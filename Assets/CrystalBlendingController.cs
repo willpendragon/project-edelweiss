@@ -10,6 +10,7 @@ public class CrystalBlendingController : MonoBehaviour
     [SerializeField] Button[] ingredientButtons;
     //[SerializeField] RectTransform ingredientsButtonsGrid;
     [SerializeField] Animator blendingMachine;
+    [SerializeField] Animator blendingMachineArrow;
 
     private void Start()
     {
@@ -29,5 +30,6 @@ public class CrystalBlendingController : MonoBehaviour
     public void BlendIngredients()
     {
         blendingMachine.SetTrigger("CrystalBlending");
+        blendingMachineArrow.SetTrigger("CrystalBlending");
     }
 }
