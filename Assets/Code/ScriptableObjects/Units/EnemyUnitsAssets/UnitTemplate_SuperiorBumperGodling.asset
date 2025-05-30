@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9bf9d7c58a60514f82f4e8516356b1b, type: 3}
   m_Name: UnitTemplate_SuperiorBumperGodling
   m_EditorClassIdentifier: 
-  unitName: Corrupted Groundhog
+  unitName: Groundhog
   unitHealthPoints: 60
   unitMaxHealthPoints: 60
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitOpportunityPoints: 3
+  unitFaithPoints: 0
   unitMovemementLimit: 10
   unitShieldPoints: 10
   meleeAttackPower: 35

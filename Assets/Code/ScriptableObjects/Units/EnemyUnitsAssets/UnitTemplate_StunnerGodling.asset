@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9bf9d7c58a60514f82f4e8516356b1b, type: 3}
   m_Name: UnitTemplate_StunnerGodling
   m_EditorClassIdentifier: 
-  unitName: Stunner Godling
+  unitName: Petrifier
   unitHealthPoints: 25
   unitMaxHealthPoints: 25
   unitManaPoints: 20
   unitMaxManaPoints: 20
   unitOpportunityPoints: 3
+  unitFaithPoints: 0
   unitMovemementLimit: 2
   unitShieldPoints: 5
   meleeAttackPower: 5

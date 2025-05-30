@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9bf9d7c58a60514f82f4e8516356b1b, type: 3}
   m_Name: UnitTemplate_BumperGodling
   m_EditorClassIdentifier: 
-  unitName: Bumper Godling
+  unitName: Godling
   unitHealthPoints: 30
   unitMaxHealthPoints: 30
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitOpportunityPoints: 2
+  unitFaithPoints: 0
   unitMovemementLimit: 3
   unitShieldPoints: 5
   meleeAttackPower: 20
