@@ -85,6 +85,7 @@ public class TutorialFlowController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         DisableUnit(unitAliza);
+        unitAliza.unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
         currentTutorialState = TutorialState.MovementActionTutorial;
         EnlargeTutorialPanel();
         if (tutorialText != null && currentTutorialState == TutorialState.MovementActionTutorial)
@@ -131,6 +132,8 @@ public class TutorialFlowController : MonoBehaviour
             currentTutorialState = TutorialState.TrapActionTutorial;
             DisableUnit(unitEdel);
             DisableUnit(unitViolet);
+            unitViolet.unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
+            unitEdel.unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             EnableUnit(unitAliza);
             Debug.Log("Spell Action Tutorial Completed");
             RevertGridMapToSelectionMode();
