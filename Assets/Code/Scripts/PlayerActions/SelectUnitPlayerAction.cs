@@ -133,6 +133,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
 
             Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
             endTurnButton.interactable = true;
+            GridManager.Instance.AOESelectionPermitted = true;
             Debug.Log("Global Deselection Executed");
         }
 

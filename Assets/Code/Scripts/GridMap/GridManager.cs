@@ -22,6 +22,7 @@ public class GridManager : MonoBehaviour
     public GameObject currentPlayerUnit;
 
     public bool tileSelectionPermitted;
+    public bool AOESelectionPermitted = true;
 
     public TileController[] gridTileControllers;
 

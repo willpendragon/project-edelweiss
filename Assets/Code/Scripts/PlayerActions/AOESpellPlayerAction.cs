@@ -31,6 +31,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     {
         spellCastingController = GameObject.FindGameObjectWithTag("SpellcastingController")?.GetComponent<SpellcastingController>();
         if (spellCastingController == null) return;
+        if (GridManager.Instance.AOESelectionPermitted == false) return;
 
         OnSelectedSpell?.Invoke();
         if (selectedTile == null || selectionLimiter <= 0) return;
@@ -61,6 +62,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
             savedSelectedTile = selectedTile;
             selectionLimiter--;
+            GridManager.Instance.AOESelectionPermitted = false;
             Debug.Log("Selected AOE Spell Range");
         }
         else if (spellCastingController.currentSelectedSpell.spellType == SpellType.SingleTarget)
@@ -72,7 +74,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             {
                 currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
 
-                // **Fix: Ensure previous panel is destroyed before creating a new one**
+                // Fix: Ensure previous panel is destroyed before creating a new one
                 UnitProfilesController.Instance.DestroyEnemyUnitPanel();
                 UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
 
@@ -112,46 +114,46 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
                 if (currentSpell.spellType == SpellType.AOE)
                 {
-                    activePlayerUnit.unitOpportunityPoints--;
-                    activePlayerUnit.SpendManaPoints(currentSpell.manaPointsCost);
-                    UpdateActivePlayerUnitMana(activePlayerUnit);
-
-                    // Used Spell notification appears on the Battle Interface
-                    OnUsedSpell?.Invoke(currentSpell.spellName, activePlayerUnit.unitTemplate.unitName);
-
-                    foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
+                    if (CheckTargetTileValidity(savedSelectedTile))
                     {
-                        Debug.Log("Using AOE Spell on Multiple Targets");
+                        activePlayerUnit.unitOpportunityPoints--;
+                        activePlayerUnit.SpendManaPoints(currentSpell.manaPointsCost);
+                        UpdateActivePlayerUnitMana(activePlayerUnit);
 
-                        if (tile.detectedUnit == null || tile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+                        // Used Spell notification appears on the Battle Interface
+                        OnUsedSpell?.Invoke(currentSpell.spellName, activePlayerUnit.unitTemplate.unitName);
+
+                        foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
                         {
-                            Debug.Log("No Unit found or found Unit has died. Can't apply damage");
-                        }
-                        else if (tile.detectedUnit.tag == "Enemy")
-                        {
-                            PlayVFX(currentSpell.spellVFX, tile, currentSpell.spellVFXOffset);
-                            activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
+                            Debug.Log("Using AOE Spell on Multiple Targets");
 
-
-
-                            // If the Spell is a Critical Hit, sends an event to display the Battle Callout
-                            if (isCritical)
+                            if (tile.detectedUnit == null || tile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
                             {
-                                OnSpellCriticalHit();
+                                Debug.Log("No Unit found or found Unit has died. Can't apply damage");
                             }
+                            else if (tile.detectedUnit.tag == "Enemy")
+                            {
+                                PlayVFX(currentSpell.spellVFX, tile, currentSpell.spellVFXOffset);
+                                activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
 
-                            tile.detectedUnit.GetComponent<Unit>().TakeDamage(damageToApply);
+                                // If the Spell is a Critical Hit, sends an event to display the Battle Callout
+                                if (isCritical)
+                                {
+                                    OnSpellCriticalHit();
+                                }
 
-                            Debug.Log("Applied " + (isCritical ? "critical " : "") + "damage on Enemy Units affected by the AOE Spell");
+                                tile.detectedUnit.GetComponent<Unit>().TakeDamage(damageToApply);
 
-                            DeityEnmityCheck();
+                                Debug.Log("Applied " + (isCritical ? "critical " : "") + "damage on Enemy Units affected by the AOE Spell");
+
+                                DeityEnmityCheck();
+                            }
                         }
-
                     }
                 }
                 else if (currentSpell.spellType == SpellType.SingleTarget)
                 {
-                    if (savedSelectedTile.detectedUnit != null && savedSelectedTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+                    if (CheckTargetTileValidity(savedSelectedTile))
                     {
                         PlayVFX(currentSpell.spellVFX, savedSelectedTile, currentSpell.spellVFXOffset);
                         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
@@ -197,9 +199,20 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             }
         }
     }
+
+    public bool CheckTargetTileValidity(TileController targetTile)
+    {
+        if (targetTile.detectedUnit != null
+            && targetTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead
+            && targetTile.detectedUnit.gameObject.tag == "Enemy")
+            return true;
+        else return false;
+    }
+
     public void Deselect()
     {
         selectionLimiter++;
+        GridManager.Instance.AOESelectionPermitted = true;
         if (savedSelectedTile != null)
         {
             foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
