@@ -4,35 +4,35 @@ using UnityEngine.UI;
 using TMPro;
 public class DeityAltarController : MonoBehaviour
 {
-    public RectTransform playerPartyMembembersContainer;
-    public RectTransform capturedDeitiesContainer;
 
+    [Header("Game Logic")]
     public Unit selectedPlayerUnit;
-    public GameObject playerUnitImageGO;
-    public GameObject deityImageGO;
-    public GameObject deityLinkButtonPrefab;
-    public RectTransform deityLinkMenuContainer;
-    public RectTransform saveDeityLinkButtonContainer;
-    public TextMeshProUGUI nameLabelPrefab;
-
     [SerializeField] DeityLinkCalloutController deityLinkCalloutController;
     [SerializeField] SummoningBuffController summoningBuffController;
-
-    [SerializeField] GameObject playerUnitProfileGO;
-    [SerializeField] GameObject deityProfileGO;
-
-    private GameObject selectedPlayerUnitProfileGO;
-
-    [SerializeField] Image fadePanel;
-    [SerializeField] Transform deitySpot;
-
     Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
 
+    [Header("UI")]
+    [SerializeField] RectTransform playerPartyMembembersContainer;
+    [SerializeField] RectTransform capturedDeitiesContainer;
+    [SerializeField] GameObject playerUnitImageGO;
+    [SerializeField] GameObject deityImageGO;
+    [SerializeField] RectTransform deityLinkMenuContainer;
+    [SerializeField] RectTransform saveDeityLinkButtonContainer;
+    [SerializeField] TextMeshProUGUI nameLabelPrefab;
+    [SerializeField] GameObject playerUnitProfileGO;
+    [SerializeField] GameObject deityProfileGO;
+    private GameObject selectedPlayerUnitProfileGO;
+    [SerializeField] Image fadePanel;
     List<GameObject> playerUnitsProfiles = new List<GameObject>();
+
+    [Header("Visuals")]
+    [SerializeField] Transform deitySpot;
+
     public void Start()
     {
         GameManager.Instance.ApplyDeityLinks();
-        foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
+        List<Unit> playerPartyMemberInstances = GameManager.Instance.playerPartyMembersInstances;
+        foreach (var playerUnit in playerPartyMemberInstances)
         {
             GameObject newPlayerUnitProfileInstance = Instantiate(playerUnitProfileGO, playerPartyMembembersContainer);
             newPlayerUnitProfileInstance.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(playerUnit);

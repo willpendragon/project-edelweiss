@@ -1,6 +1,3 @@
-using Language.Lua;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ComboController : MonoBehaviour
@@ -9,7 +6,6 @@ public class ComboController : MonoBehaviour
 
     public int comboCounter;
     private string wantedEnemy;
-    // Start is called before the first frame update
 
     public void Awake()
     {
@@ -54,6 +50,4 @@ public class ComboController : MonoBehaviour
             return false;
         }
     }
-
-
 }

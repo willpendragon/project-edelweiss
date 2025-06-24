@@ -18,7 +18,6 @@ public class SummoningUIController : MonoBehaviour
     string prayLeftMouseButtonInstructionsText = "LMB - Select/Confirm Summon for Praying";
     string prayRightMouseButtonInstructionsText = "-";
 
-    public SummoningController summoningCastingController;
     public GameObject summonButtonPrefab;
     public Transform spellMenuContainer;
     public IPlayerAction currentPlayerAction;

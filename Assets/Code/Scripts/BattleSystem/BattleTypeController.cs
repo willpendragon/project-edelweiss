@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +6,10 @@ public class BattleTypeController : MonoBehaviour
 {
     public static BattleTypeController Instance { get; private set; }
     public static event Action OnBattleTypeInitialized;
+
+    private const string BattleTutorialSceneName = "battle_tutorial";
+    private const string BattleSceneName = "battle_prototype";
+
     public enum BattleType
     {
         RegularBattle,
@@ -22,7 +24,7 @@ public class BattleTypeController : MonoBehaviour
     {
         Instance = this;
         string sceneName = SceneManager.GetActiveScene().name;
-        if (sceneName == "battle_tutorial")
+        if (sceneName == BattleTutorialSceneName)
         {
             BattleSelection();
         }
@@ -31,7 +33,6 @@ public class BattleTypeController : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Always unsubscribe from events when the object is destroyed
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
@@ -41,7 +42,7 @@ public class BattleTypeController : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("Scene Loaded: " + scene.name);
-        if (scene.name == "battle_prototype")
+        if (scene.name == BattleSceneName)
         {
             BattleSelection();
         }

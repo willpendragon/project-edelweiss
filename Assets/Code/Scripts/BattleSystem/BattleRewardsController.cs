@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using static TurnController;
-
 public class BattleRewardsController : MonoBehaviour
 {
     public float coinsRewardPool;
@@ -10,12 +9,10 @@ public class BattleRewardsController : MonoBehaviour
     public void AddCoinsRewardToCoinsRewardPool(float coinsRewardToAdd)
     {
         coinsRewardPool += coinsRewardToAdd;
-        Debug.Log("Adding Coins Reward");
     }
     public void AddExperienceRewardToExperienceRewardPool(float experienceRewardToAdd)
     {
         experienceRewardPool += experienceRewardToAdd;
-        Debug.Log("Adding Experience Reward");
     }
     public void ApplyRewardsToThisUnit()
     {

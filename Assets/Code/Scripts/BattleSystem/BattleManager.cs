@@ -23,6 +23,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] PlayableDirector mainCameraPlayableDirector;
     [SerializeField] float battleMomentsScreenDeactivationTime;
 
+    private string battleStartMessage = "Battle Begins!";
+
     public delegate void SavePlayerHealth(float finalPlayerHealth);
     public static event SavePlayerHealth OnSavePlayerHealth;
 
@@ -57,7 +59,7 @@ public class BattleManager : MonoBehaviour
     }
     private void ExecuteBattleStartingSequence()
     {
-        BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen("Battle Begins!");
+        BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen(battleStartMessage);
         TrackEnemiesOnBattlefield();
     }
     private void TrackEnemiesOnBattlefield()
@@ -67,7 +69,7 @@ public class BattleManager : MonoBehaviour
     private int frameCounter = 0;
     void Update()
     {
-        if (frameCounter % 10 == 0) // Run every 10 frames
+        if (frameCounter % 10 == 0)
         {
             ClearTilesWithMissingUnits();
         }
@@ -79,7 +81,7 @@ public class BattleManager : MonoBehaviour
         {
             foreach (TileController tile in gridManager.gridTileControllers)
             {
-                if (tile.detectedUnit == null || !tile.detectedUnit) // This catches both null and missing references
+                if (tile.detectedUnit == null || !tile.detectedUnit)
                 {
                     tile.currentSingleTileCondition = SingleTileCondition.free;
                 }

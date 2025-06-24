@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +13,6 @@ public class EnemySelection : MonoBehaviour
 
     public void SelectMapNode()
     {
-        GameManager.Instance.GenerateLevelData(levelData); // Generate random enemy data
+        GameManager.Instance.GenerateLevelData(levelData); // Generate random enemy data.
     }
 }

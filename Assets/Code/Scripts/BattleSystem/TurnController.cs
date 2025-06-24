@@ -79,8 +79,8 @@ public class TurnController : MonoBehaviour
         StunnerEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         BossSimildeBehaviour.OnCheckPlayer += PlayerUnitsLifeCheck;
-        EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
-        Deity.OnPlayerTurnSwap += RestorePlayerUnitsOpportunityPoints;
+        EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnits;
+        Deity.OnPlayerTurnSwap += RestorePlayerUnits;
         Unit.OnCheckGameOver += GameOverCheck;
     }
     private void UnsubscribeFromEvents()
@@ -90,8 +90,8 @@ public class TurnController : MonoBehaviour
         StunnerEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
         BossSimildeBehaviour.OnCheckPlayer -= PlayerUnitsLifeCheck;
         DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
-        EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
-        Deity.OnPlayerTurnSwap -= RestorePlayerUnitsOpportunityPoints;
+        EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnits;
+        Deity.OnPlayerTurnSwap -= RestorePlayerUnits;
         Unit.OnCheckGameOver -= GameOverCheck;
     }
     private void Start()
@@ -101,11 +101,10 @@ public class TurnController : MonoBehaviour
         OnPlayerTurn("Player Turn");
         enemyUnitsOnBattlefield = GameObject.FindGameObjectsWithTag(Tags.ENEMY);
         gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
-        RestorePlayerUnitsOpportunityPoints();
+        RestorePlayerUnits();
     }
     private void CheckPlayerUnitsStatusWrapper()
     {
-        // Call the method and, if the condition is validated, act on the result.
         bool allUnitsDone = CheckPlayerUnitsStatus();
         if (allUnitsDone)
         {
@@ -114,7 +113,7 @@ public class TurnController : MonoBehaviour
     }
     public void SwapTurns()
     {
-        // If all units are dead or waiting, proceed to swap turns.
+        // If all Player Units are Waiting or all Dead except one, proceed to swap turns.
         if (CheckPlayerUnitsStatus())
         {
             OnEnemyTurn("Enemy Turn");
@@ -122,7 +121,7 @@ public class TurnController : MonoBehaviour
         }
         else
         {
-            Debug.Log("At least one player unit can still take actions.");
+            //  At least one Player Unit can still take actions.
         }
     }
     public bool CheckPlayerUnitsStatus()
@@ -143,7 +142,7 @@ public class TurnController : MonoBehaviour
 
     public void PlayerUnitsLifeCheck()
     {
-        // Check if there are any units that are NOT dead, indicating the player party is still active.
+        // Check if there are any units that are NOT dead, indicating the Player Party is still active.
         bool isAnyPlayerUnitAlive = playerUnitsOnBattlefield.Any(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead);
 
         if (!isAnyPlayerUnitAlive) // If no units are alive, then the player party has been defeated.
@@ -157,7 +156,7 @@ public class TurnController : MonoBehaviour
     }
     public void GameOverCheck()
     {
-        // This method fires different handling of the Game Over sequence, depending on the Battle Type.
+        // Fires different handling of the Game Over sequence, depending on the Battle Type.
         switch (BattleTypeController.Instance.currentBattleType)
         {
             case BattleTypeController.BattleType.RegularBattle:
@@ -182,14 +181,12 @@ public class TurnController : MonoBehaviour
     {
         if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.Faithless))
         {
-            Debug.Log("All Player Units are Faithless");
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
     }
 
     private void HandleRegularBattle(GameStatsManager gameStatsManager)
     {
-        // Handle the game over sequence in a Regular Battle against enemies.
         if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
@@ -209,7 +206,6 @@ public class TurnController : MonoBehaviour
     }
     private void HandleBattleWithDeity(GameStatsManager gameStatsManager)
     {
-        // Handle the game over sequence in a Battle against a Deity.
         if (GameObject.FindGameObjectWithTag(Tags.ENEMY).GetComponent<Unit>().unitHealthPoints <= 0)
         {
             BattleFlowController.Instance.PlayerPartyVictorySequence("Killed Deity", warFunds);
@@ -230,18 +226,14 @@ public class TurnController : MonoBehaviour
             BattleFlowController.Instance.PlayerPartyVictorySequence("Boss Defeated", warFunds);
         }
     }
-    public void RestorePlayerUnitsOpportunityPoints()
+    public void RestorePlayerUnits()
     {
-        Debug.Log("Restoring Player Opportunity");
         foreach (var playerUnit in TurnController.Instance.playerUnitsOnBattlefield)
         {
-            // Increases Turn Counter
             TurnController.Instance.turnCounter++;
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
             playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
-
-            // Hides Waiting Icons on Player Units
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
         }
 
