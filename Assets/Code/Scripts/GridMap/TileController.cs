@@ -98,16 +98,16 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public void OnPointerClick(PointerEventData eventData)
     {
 
-        if (eventData.button == PointerEventData.InputButton.Left && Time.time - lastClickTime > clickCooldown)
-        {
-            lastClickTime = Time.time;
-            HandleTileSelection();
-        }
-        else if (eventData.button == PointerEventData.InputButton.Right && Time.time - lastClickTime > clickCooldown)
-        {
-            lastClickTime = Time.time;
-            HandleTileDeselection();
-        }
+        //if (eventData.button == PointerEventData.InputButton.Left && Time.time - lastClickTime > clickCooldown)
+        //{
+        //    lastClickTime = Time.time;
+        //    HandleTileSelection();
+        //}
+        //else if (eventData.button == PointerEventData.InputButton.Right && Time.time - lastClickTime > clickCooldown)
+        //{
+        //    lastClickTime = Time.time;
+        //    HandleTileDeselection();
+        //}
     }
     private void TileControllerCooldown()
     {
@@ -165,7 +165,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     private void ExecutePlayerAction()
     {
         currentPlayerAction.Select(this);
-        currentPlayerAction.Execute();
+        currentPlayerAction.Execute(this);
     }
     public void HandleTileDeselection()
     {

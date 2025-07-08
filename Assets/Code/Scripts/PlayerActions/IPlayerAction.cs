@@ -5,7 +5,7 @@ using UnityEngine;
 public interface IPlayerAction
 {
     public void Select(TileController selectedTile);
-    public void Execute();
+    public void Execute(TileController tile);
     public void Deselect();
 
 }

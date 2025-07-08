@@ -126,7 +126,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         }
         return true; // All neighbouring tiles are occupied, Unit is surrounded.
     }
-    public void Execute()
+    public void Execute(TileController targetTile)
     {
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 

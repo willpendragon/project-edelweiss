@@ -140,7 +140,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
         //selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2f, Color.white);
     }
-    public void Execute()
+    public void Execute(TileController targetTile)
     {
         if (this.selectedUnit != null)
         {

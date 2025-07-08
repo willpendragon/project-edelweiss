@@ -21,7 +21,7 @@ public class PrayPlayerAction : MonoBehaviour, IPlayerAction
         savedSelectedTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.green;
         selectionLimiter++;
     }
-    public void Execute()
+    public void Execute(TileController targetTile)
     {
         Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         if (savedSelectedTile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity && currentActivePlayerUnit.unitOpportunityPoints > 0)

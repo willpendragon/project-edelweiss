@@ -19,7 +19,7 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction
             Debug.Log(selectedTile + "chosen for summoning.");
         }
     }
-    public void Execute()
+    public void Execute(TileController targetTile)
     {
         Unit currentActivePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         Deity linkedDeity = currentActivePlayerUnit.linkedDeity;

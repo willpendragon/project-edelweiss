@@ -91,7 +91,7 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
 
         }
     }
-    public void Execute()
+    public void Execute(TileController targetTile)
     {
         GameObject trapTileSelectionPreview = GameObject.FindGameObjectWithTag("TrapTileSelectionPreview");
         Destroy(trapTileSelectionPreview);

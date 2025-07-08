@@ -96,7 +96,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
             selectionLimiter--;
         }
     }
-    public void Execute()
+    public void Execute(TileController targetTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 

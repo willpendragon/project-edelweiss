@@ -234,11 +234,12 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         }
         OnUsedMagnet?.Invoke();
     }
-    public void Execute()
+    public void Execute(TileController targetTile)
     {
+        Debug.Log("Attack Sequence Initiated");
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (activePlayerUnit.unitOpportunityPoints > 0 && currentTarget.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+        if (activePlayerUnit.unitOpportunityPoints > 0 && targetTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             // Check if the player has a Magnet equipped
             if (activePlayerUnit.hasHookshot)
@@ -258,15 +259,15 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
                 DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
 
-                if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, savedSelectedTile))
+                if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, targetTile))
                 {
                     attackPower = attackPower * 2;
-                    ApplyKnockback(activePlayerUnit, currentTarget);
+                    ApplyKnockback(activePlayerUnit, targetTile.GetComponent<Unit>());
                     Debug.Log($"Defending Unit receives {attackPower} damage points");
                 }
                 else
                 {
-                    currentTarget.TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
+                    targetTile.detectedUnit.GetComponent<Unit>().TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
                 }
                 UnitProfilesController.Instance.UpdateEnemyUnitPanel(currentTarget.gameObject);
                 // Reduce the opportunity points after the attack.

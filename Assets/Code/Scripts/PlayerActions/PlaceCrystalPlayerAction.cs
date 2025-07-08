@@ -34,7 +34,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
         }
         Debug.Log("Tried to Apply Crystal Tile");
     }
-    public void Execute()
+    public void Execute(TileController targetTile)
     {
         if (currentSavedTile.currentSingleTileStatus == SingleTileStatus.waitingForConfirmationMode)
         {
