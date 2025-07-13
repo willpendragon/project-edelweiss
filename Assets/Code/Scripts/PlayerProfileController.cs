@@ -126,7 +126,7 @@ public class PlayerProfileController : MonoBehaviour
         // Update Profile Owner.
         currentProfileOwner = profileOwner;
 
-        Debug.Log("Updated" + detectedUnit + "Profile" + "with Current Info");
+        Debug.Log($"Updated {detectedUnit} profile");
 
     }
 

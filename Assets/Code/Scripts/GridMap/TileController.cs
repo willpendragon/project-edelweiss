@@ -78,6 +78,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public delegate void UpdateEnemyTargetUnitProfile(GameObject detectedUnit);
     public static event UpdateEnemyTargetUnitProfile OnUpdateEnemyTargetUnitProfile;
 
+    public delegate void DragCursorAcrossTile(TileController tileController);
+    public static event DragCursorAcrossTile OnDragCursorAcrossTile;
+
     void Start()
     {
         currentTileCurseStatus = TileCurseStatus.notCursed;
@@ -221,5 +224,11 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().activeCharacterAttackPower.text = activePlayerUnit.unitAttackPower.ToString();
             activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().activeCharacterMagicPower.text = activePlayerUnit.unitMagicPower.ToString();
         }
+    }
+
+    public void DragCursorWrapper()
+    {
+        OnDragCursorAcrossTile(this);
+        Debug.Log($"Started Dragging on {this.detectedUnit}");
     }
 }
