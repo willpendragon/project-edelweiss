@@ -158,7 +158,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         }
         else
         {
-            currentPlayerAction.Select(this);
+            //currentPlayerAction.Select(this);
         }
     }
     private void HandleConfirmationMode()
@@ -167,7 +167,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     }
     private void ExecutePlayerAction()
     {
-        currentPlayerAction.Select(this);
+        //currentPlayerAction.Select(this);
         currentPlayerAction.Execute(this);
     }
     public void HandleTileDeselection()
