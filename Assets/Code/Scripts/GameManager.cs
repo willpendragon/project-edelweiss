@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
         //currentEnemySelection = enemySelection;
     }
 
+    // This can be separated in a class that manages the Units
     public void InstantiateUnits()
     {
         // Clear the existing instances list
@@ -80,6 +81,8 @@ public class GameManager : MonoBehaviour
         }
         ApplyDeityLinks();
     }
+
+    // This refers to save state and should be moved in its own class.
 
     public void ApplyDeityLinks()
     {
@@ -109,6 +112,8 @@ public class GameManager : MonoBehaviour
         return startingCoordinates;
     }
 
+    // This is a level generator and should have its own dedicated class.
+
     public void GenerateLevelData(Level level)
     {
         if (GridManager.Instance != null)
@@ -136,6 +141,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // This could be moved in its own class
     private List<EnemyType> GenerateEnemyPool(List<EnemyWeight> weights, int poolSize)
     {
         List<EnemyType> pool = new List<EnemyType>();

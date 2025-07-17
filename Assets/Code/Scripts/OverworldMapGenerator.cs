@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class OverworldMapGenerator : MonoBehaviour
 {
-    public Level[] levelList;
+    public List<Domain> domains = new List<Domain>();
     //public Level[] levelListMapTwo;
     public GameObject mapNode;
     public Transform mapNodeTransform;
-    public float maxPositionVariation = 2f; // Maximum variation in position
-    public float minDistanceApart = 3f; // Minimum distance between nodes
-    public int randomSeed = 12345; // Seed for the random number generator
+    public float maxPositionVariation = 2f;
+    public float minDistanceApart = 3f; // Minimum distance between nodes.
+    public int randomSeed = 12345; // Seed for the random number generator.
 
     public Transform currentMapNodeTransform;
 
@@ -18,30 +18,31 @@ public class OverworldMapGenerator : MonoBehaviour
     private List<Vector3> nodePositions = new List<Vector3>();
 
     public GameObject[] partyMemberIcons;
-    public float iconZOffset = 1f;
+    public float iconZOffset = 1f; // This should be updated after clearing a domain.
+    private int currentDomainId = 0;
 
     void Awake()
     {
-        GenerateLevel(levelList);
+        GenerateLevel(domains[currentDomainId]);
     }
 
-    void GenerateLevel(Level[] levelSelection)
+    void GenerateLevel(Domain domainLevelSelection)
     {
 
-        Random.InitState(randomSeed); // Initialize the random number generator with a seed for consistency
+        Random.InitState(randomSeed);
         Vector3 initialPosition = mapNodeTransform.position;
 
-        // Load game data to determine the highest unlocked level
+        // Load game data to determine the highest unlocked level.
         GameSaveData gameSaveData = SaveStateManager.LoadGame();
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
 
-        // Setup LineRenderer
+        // LineRenderer setup (pertains to node visualisation).
         lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.positionCount = levelSelection.Length;
+        lineRenderer.positionCount = domainLevelSelection.levelList.Length;
         lineRenderer.startWidth = 0.5f;
         lineRenderer.endWidth = 0.5f;
 
-        for (int i = 0; i < levelSelection.Length; i++)
+        for (int i = 0; i < domainLevelSelection.levelList.Length; i++)
         {
             Vector3 newPosition;
             bool isTooClose;
@@ -50,7 +51,7 @@ public class OverworldMapGenerator : MonoBehaviour
             do
             {
                 isTooClose = false;
-                // Create random variation in position
+                // Create a random variation for the Node positioning (pertains to visual).
                 Vector3 variation = new Vector3(
                     Random.Range(-maxPositionVariation, maxPositionVariation),
                     0,
@@ -58,20 +59,20 @@ public class OverworldMapGenerator : MonoBehaviour
                 );
                 newPosition = initialPosition + new Vector3(5 * i, 0, 0) + variation;
 
-                // Check that the newPosition is not too close to other nodes
+                // Ensure that the newPosition is not too close to other nodes (pertains to visuals).
                 foreach (var pos in nodePositions)
                 {
                     if (Vector3.Distance(newPosition, pos) < minDistanceApart)
                     {
                         isTooClose = true;
-                        break; // Break out of the foreach loop
+                        break;
                     }
                 }
 
                 attempt++;
-                if (attempt > 100) // Prevent an infinite loop in case a suitable position cannot be found
+                // Arbitrary number to avoid an infinite loop (if no suitable position for the node is found).
+                if (attempt > 100)
                 {
-                    Debug.LogError("Could not find a suitable position for the node that isn't too close to others.");
                     break;
                 }
             }
@@ -79,29 +80,17 @@ public class OverworldMapGenerator : MonoBehaviour
 
             if (!isTooClose)
             {
-                // Instantiate the node
                 GameObject newNode = Instantiate(mapNode, newPosition, Quaternion.identity);
-                newNode.GetComponent<EnemySelection>().levelData = levelSelection[i];
-                newNode.GetComponent<EnemySelection>().levelNumber = levelSelection[i].levelNumber;
+                newNode.GetComponent<EnemySelection>().levelData = domainLevelSelection.levelList[i];
+                newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
 
-                // Update the material color and lock status based on level progression
+                // Unlocks levels based on the current state of level progression.
                 if (i == highestUnlockedLevel)
                 {
                     currentMapNodeTransform = newNode.transform;
-                    newNode.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-                    newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
-                    Vector3 partyMemberIconPosition = newNode.transform.position + new Vector3(0, 0, iconZOffset);
-                    float horizontalOffset = 2; // The horizontal offset distance between icons
-                    float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f; // Center the icons
-
-                    for (int j = 0; j < partyMemberIcons.Length; j++)
-                    {
-                        // Calculate the offset for this particular icon
-                        Vector3 offsetPosition = new Vector3(startOffset + horizontalOffset * j, 0, 0);
-
-                        // Instantiate the icon with the offset position
-                        Instantiate(partyMemberIcons[j], partyMemberIconPosition + offsetPosition, Quaternion.identity);
-                    }
+                    UpdateNodeVisuals(newNode);
+                    UnlockLevel(newNode);
+                    UpdatePartyMemberVisuals(newNode);
                 }
                 else
                 {
@@ -116,5 +105,29 @@ public class OverworldMapGenerator : MonoBehaviour
                 lineRenderer.SetPosition(i, newPosition);
             }
         }
+    }
+
+    private void UpdatePartyMemberVisuals(GameObject mapNode)
+    {
+        Vector3 partyMemberIconPosition = mapNode.transform.position + new Vector3(0, 0, iconZOffset);
+        float horizontalOffset = 2; // The horizontal offset distance between icons.
+        float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f; // Align icons to the centre.
+
+        for (int j = 0; j < partyMemberIcons.Length; j++)
+        {
+            // Calculate the offset of a single party member icon.
+            Vector3 offsetPosition = new Vector3(startOffset + horizontalOffset * j, 0, 0);
+            Instantiate(partyMemberIcons[j], partyMemberIconPosition + offsetPosition, Quaternion.identity);
+        }
+    }
+
+    private void UnlockLevel(GameObject mapNode)
+    {
+        mapNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
+    }
+
+    private void UpdateNodeVisuals(GameObject mapNode)
+    {
+        mapNode.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
     }
 }
