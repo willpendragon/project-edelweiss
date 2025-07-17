@@ -4,4 +4,8 @@ using UnityEngine;
 public class Domain : ScriptableObject
 {
     public Level[] levelList;
+    public string domainName;
+    public int nextDomainRequirement;
+    public int bossFightRequirement;
+    public int clearRequirement;
 }

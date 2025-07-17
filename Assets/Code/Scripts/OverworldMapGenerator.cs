@@ -5,7 +5,6 @@ using UnityEngine;
 public class OverworldMapGenerator : MonoBehaviour
 {
     public List<Domain> domains = new List<Domain>();
-    //public Level[] levelListMapTwo;
     public GameObject mapNode;
     public Transform mapNodeTransform;
     public float maxPositionVariation = 2f;
@@ -21,12 +20,12 @@ public class OverworldMapGenerator : MonoBehaviour
     public float iconZOffset = 1f; // This should be updated after clearing a domain.
     private int currentDomainId = 0;
 
-    void Awake()
-    {
-        GenerateLevel(domains[currentDomainId]);
-    }
+    //void Awake()
+    //{
+    //    GenerateLevel(domains[currentDomainId]);
+    //}
 
-    void GenerateLevel(Domain domainLevelSelection)
+    public void GenerateLevel(Domain domainLevelSelection)
     {
 
         Random.InitState(randomSeed);
