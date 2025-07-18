@@ -32,7 +32,7 @@ public class EnemyPoolController : MonoBehaviour
         }
         else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BossBattle)
         {
-            SpawnBossBattleEnemies();
+            //SpawnBossBattleEnemies();
         }
     }
 
@@ -61,15 +61,15 @@ public class EnemyPoolController : MonoBehaviour
         }
     }
 
-    void SpawnBossBattleEnemies()
-    {
-        List<Vector2> enemyCoords = GameManager.Instance.currentEnemySelectionCoords;
+    //void SpawnBossBattleEnemies()
+    //{
+    //    List<Vector2> enemyCoords = GameManager.Instance.currentEnemySelectionCoords;
 
-        foreach (var enemy in GameManager.Instance.currentEnemySelection)
-        {
-            Instantiate(enemy);
-        }
-    }
+    //    foreach (var enemy in GameManager.Instance.currentEnemySelection)
+    //    {
+    //        Instantiate(enemy);
+    //    }
+    //}
     void SetEnemiesStartingCoordinatesInBossBattle()
     {
         List<Vector2> enemyCoords = GameManager.Instance.currentEnemySelectionCoords;

@@ -18,17 +18,17 @@ public class MapNodeInfoPanelController : MonoBehaviour
     {
         EnemySelection mapNodeEnemySelection = mapNodeGameObject.GetComponent<EnemySelection>();
 
-        minPoolSizeText.text = mapNodeEnemySelection.levelData.minEnemyPoolSize.ToString();
-        maxPoolSizeText.text = mapNodeEnemySelection.levelData.maxEnemyPoolSize.ToString();
+        minPoolSizeText.text = mapNodeEnemySelection.enemyParty.minEnemyPoolSize.ToString();
+        maxPoolSizeText.text = mapNodeEnemySelection.enemyParty.maxEnemyPoolSize.ToString();
 
         for (int i = 0; i < enemyPoolPredictionsGameObject.Length; i++)
         {
 
-            if (i < mapNodeEnemySelection.levelData.enemyWeights.Count)
+            if (i < mapNodeEnemySelection.enemyParty.enemyWeights.Count)
             {
                 // Assign enemy type text if within range
-                enemyPoolPredictionsGameObject[i].GetComponentInChildren<TextMeshProUGUI>().text = mapNodeEnemySelection.levelData.enemyWeights[i].weight.ToString().ToUpper();
-                string enemyType = mapNodeEnemySelection.levelData.enemyWeights[i].enemyType.ToString();
+                enemyPoolPredictionsGameObject[i].GetComponentInChildren<TextMeshProUGUI>().text = mapNodeEnemySelection.enemyParty.enemyWeights[i].weight.ToString().ToUpper();
+                string enemyType = mapNodeEnemySelection.enemyParty.enemyWeights[i].enemyType.ToString();
                 enemyPoolPredictionsGameObject[i].GetComponent<Image>().sprite = SetEnemyIcon(enemyType);
             }
             else

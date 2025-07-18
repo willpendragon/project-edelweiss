@@ -6,10 +6,10 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
-    public NodeController currentNode;
+    //public NodeController currentNode;
     public static GameManager Instance;
-    public GameObject[] currentEnemySelection;
-    public EnemySelection currentEnemySelectionComponent;
+    //public GameObject[] currentEnemySelection;
+    //public EnemySelection currentEnemySelectionComponent;
     public List<EnemyType> currentEnemySelectionIds = new List<EnemyType>();
     public List<Vector2> currentEnemySelectionCoords = new List<Vector2>();
     public List<Unit> playerPartyMembers;
@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // This class does too many things, responsibility must be split.
+
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -55,16 +57,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("DeityLinkController component not found on GameManager GameObject.");
         }
-    }
-
-    public void MarkCurrentNodeAsCompleted()
-    {
-        currentNode.nodeCompleted = true;
-    }
-
-    public void DefineEnemySelection(GameObject[] enemySelection)
-    {
-        //currentEnemySelection = enemySelection;
     }
 
     // This can be separated in a class that manages the Units
@@ -112,17 +104,18 @@ public class GameManager : MonoBehaviour
         return startingCoordinates;
     }
 
-    // This is a level generator and should have its own dedicated class.
+    // This is a level enemy generator and should have its own dedicated class.
 
-    public void GenerateLevelData(Level level)
+    public void GenerateEnemyPartyData(EnemyPartyData enemyParty)
     {
-        if (GridManager.Instance != null)
+        if (GridManager.Instance == null)
+            return;
         {
             // Generate a random number of enemies within the specified range
-            int enemyPoolSize = RandomRange(level.minEnemyPoolSize, level.maxEnemyPoolSize + 1);
+            int enemyPoolSize = RandomRange(enemyParty.minEnemyPoolSize, enemyParty.maxEnemyPoolSize + 1);
 
             // Generate the enemy pool based on the weights
-            List<EnemyType> generatedEnemies = GenerateEnemyPool(level.enemyWeights, enemyPoolSize);
+            List<EnemyType> generatedEnemies = GenerateEnemyPool(enemyParty.enemyWeights, enemyPoolSize);
 
             // Get player starting coordinates from the GameManager
             List<Vector2Int> playerStartingCoordinates = GetPlayerStartingCoordinates();
@@ -207,10 +200,5 @@ public class GameManager : MonoBehaviour
     private int RandomRange(int min, int max)
     {
         return random.Next(min, max);
-    }
-
-    private float RandomRange(float min, float max)
-    {
-        return (float)(random.NextDouble() * (max - min) + min);
     }
 }

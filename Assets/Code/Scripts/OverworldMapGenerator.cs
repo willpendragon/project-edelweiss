@@ -80,7 +80,7 @@ public class OverworldMapGenerator : MonoBehaviour
             if (!isTooClose)
             {
                 GameObject newNode = Instantiate(mapNode, newPosition, Quaternion.identity);
-                newNode.GetComponent<EnemySelection>().levelData = domainLevelSelection.levelList[i];
+                newNode.GetComponent<EnemySelection>().enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
                 newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
 
                 // Unlocks levels based on the current state of level progression.

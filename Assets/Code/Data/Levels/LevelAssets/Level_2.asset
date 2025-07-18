@@ -12,13 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fefbf6998d53fe45ba97e63239c2b6a, type: 3}
   m_Name: Level_2
   m_EditorClassIdentifier: 
-  levelNumber: 0
-  minEnemyPoolSize: 3
-  maxEnemyPoolSize: 5
-  enemyWeights:
-  - enemyType: 0
-    weight: 3
-  - enemyType: 1
-    weight: 2
-  - enemyType: 2
-    weight: 0
+  levelNumber: 2
+  enemyPartyData: {fileID: 11400000, guid: 1c1258a5c6029354a9d2c770c530904a, type: 2}

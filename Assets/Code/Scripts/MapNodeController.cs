@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class MapNodeController : MonoBehaviour, IPointerClickHandler
 {
     public EnemySelection enemySelection;
-    //public CheckRequirement checkRequirement;
 
     public enum LockStatus
     {
@@ -30,11 +29,6 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             HandleTileSelection();
-            Debug.Log("Left Click Registered");
-        }
-        else if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            //HandleTileDeselection();
         }
     }
 
@@ -56,24 +50,10 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     private void HandleRegularBattle()
     {
         enemySelection.SelectMapNode();
-        GameManager.Instance.currentEnemySelectionComponent = GetComponentInParent<EnemySelection>();
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
-        Debug.Log("Player chose to enter in Regular Battle");
     }
     private void HandleBossBattle()
     {
-        GameObject[] bossBattleCurrentEnemySelection = GetComponentInParent<EnemySelection>().enemySelection;
-        List<Vector2> bossBattleEnemySelectionCoords = GetComponentInParent<EnemySelection>().EnemyCoordinates;
 
-        GameManager.Instance.currentEnemySelection = bossBattleCurrentEnemySelection;
-        GameManager.Instance.currentEnemySelectionCoords = bossBattleEnemySelectionCoords;
-
-        List<Unit> playerPartyMembersInstances = GameManager.Instance.playerPartyMembersInstances;
-        for (int i = 0; i < playerPartyMembersInstances.Count; i++)
-        {
-            playerPartyMembersInstances[i].startingXCoordinate = (int)playerUnitsBossBattleStartingCoords[i].x;
-            playerPartyMembersInstances[i].startingYCoordinate = (int)playerUnitsBossBattleStartingCoords[i].y;
-        }
-        SceneManager.LoadScene("boss_battle_prototype");
     }
 }
