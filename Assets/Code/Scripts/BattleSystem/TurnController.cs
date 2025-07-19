@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using static Unit;
+using System;
 public class TurnController : MonoBehaviour
 {
     private static TurnController instance;
@@ -17,9 +18,8 @@ public class TurnController : MonoBehaviour
     }
     public enum Turn
     {
-        playerTurn,
-        enemyTurn,
-        deityTurn
+        PlayerTurn,
+        EnemyTurn
     }
     public static class Tags
     {
@@ -74,18 +74,20 @@ public class TurnController : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        UnitSelectionController.OnUnitWaiting += CheckPlayerUnitsStatusWrapper;
+        UnitSelectionController.OnUnitTurnEnded += DecideTurn;
         BumperEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         StunnerEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         BossSimildeBehaviour.OnCheckPlayer += PlayerUnitsLifeCheck;
+        // Instead of subscribing to every single enemy, just move the call to the check
+        // inside the EnemyAgent class.
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnits;
         Deity.OnPlayerTurnSwap += RestorePlayerUnits;
         Unit.OnCheckGameOver += GameOverCheck;
     }
     private void UnsubscribeFromEvents()
     {
-        UnitSelectionController.OnUnitWaiting -= CheckPlayerUnitsStatusWrapper;
+        UnitSelectionController.OnUnitTurnEnded -= DecideTurn;
         BumperEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
         StunnerEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
         BossSimildeBehaviour.OnCheckPlayer -= PlayerUnitsLifeCheck;
@@ -96,33 +98,57 @@ public class TurnController : MonoBehaviour
     }
     private void Start()
     {
+        RetrieveUnits();
+        RestorePlayerUnits();
+        DecideTurn();
+    }
+    private void RetrieveUnits()
+    {
         playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag(Tags.PLAYER_PARTY_CONTROLLER).GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
-        currentTurn = Turn.playerTurn;
-        OnPlayerTurn("Player Turn");
         enemyUnitsOnBattlefield = GameObject.FindGameObjectsWithTag(Tags.ENEMY);
         gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
-        RestorePlayerUnits();
     }
-    private void CheckPlayerUnitsStatusWrapper()
+    private void SetTurn(Turn turn)
     {
-        bool allUnitsDone = CheckPlayerUnitsStatus();
-        if (allUnitsDone)
-        {
-            SwapTurns();
-        }
+        currentTurn = turn;
     }
-    public void SwapTurns()
+
+    public void DecideTurn()
     {
         // If all Player Units are Waiting or all Dead except one, proceed to swap turns.
-        if (CheckPlayerUnitsStatus())
+        if (CheckPlayerUnitsStatus() == false)
         {
-            OnEnemyTurn("Enemy Turn");
-            OnEnemyTurnSwap();
+            SetTurn(Turn.PlayerTurn);
         }
         else
         {
-            //  At least one Player Unit can still take actions.
+            SetTurn(Turn.EnemyTurn);
         }
+        AssignTurn();
+    }
+    private void AssignTurn()
+    {
+        switch (currentTurn)
+        {
+            case Turn.PlayerTurn:
+                StartPlayerTurn();
+                break;
+            case Turn.EnemyTurn:
+                StartEnemyTurn();
+                break;
+        }
+    }
+
+    private void StartPlayerTurn()
+    {
+        OnPlayerTurn("Player Turn");
+        // Allow the Player to select characters.
+    }
+
+    private void StartEnemyTurn()
+    {
+        OnEnemyTurn("Enemy Turn");
+        OnEnemyTurnSwap();
     }
     public bool CheckPlayerUnitsStatus()
     {

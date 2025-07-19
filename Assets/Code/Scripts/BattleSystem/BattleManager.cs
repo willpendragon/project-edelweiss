@@ -37,9 +37,6 @@ public class BattleManager : MonoBehaviour
     public delegate void BattleEndResultsScreen(string battleEndMessage);
     public static event BattleEndResultsScreen OnBattleEndResultsScreen;
 
-    public UnityEvent PlayerTurnStarts;
-    public UnityEvent PlayerTurnEnds;
-
     public GridManager gridManager;
 
     private void Awake()
@@ -55,9 +52,9 @@ public class BattleManager : MonoBehaviour
     }
     void Start()
     {
-        ExecuteBattleStartingSequence();
+        BeginBattle();
     }
-    private void ExecuteBattleStartingSequence()
+    private void BeginBattle()
     {
         BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen(battleStartMessage);
         TrackEnemiesOnBattlefield();

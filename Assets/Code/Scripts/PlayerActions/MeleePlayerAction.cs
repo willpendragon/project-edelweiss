@@ -269,7 +269,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                 {
                     targetTile.detectedUnit.GetComponent<Unit>().TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
                 }
-                UnitProfilesController.Instance.UpdateEnemyUnitPanel(currentTarget.gameObject);
+                //UnitProfilesController.Instance.UpdateEnemyUnitPanel(targetTile.detectedUnit.gameObject);
                 // Reduce the opportunity points after the attack.
                 activePlayerUnit.unitOpportunityPoints--;
 

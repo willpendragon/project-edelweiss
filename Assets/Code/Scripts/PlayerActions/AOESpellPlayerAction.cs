@@ -42,7 +42,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public UnityEvent playSpellVFX;
     public void Execute(TileController targetTile)
     {
-
+        Debug.Log("Executing Spell");
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
         if (CheckTargetTileValidity(targetTile) == false)
@@ -119,7 +119,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         {
             OnSpellCriticalHit();
         }
-        UnitProfilesController.Instance.UpdateEnemyUnitPanel(spellTarget.gameObject);
+        //UnitProfilesController.Instance.UpdateEnemyUnitPanel(spellTarget.gameObject);
         PlayVFX(spell.spellVFX, spellTarget.ownedTile, spell.spellVFXOffset);
     }
 
@@ -240,30 +240,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         }
         OnDeselectedSpell();
         UnitProfilesController.Instance.DestroyEnemyUnitPanel();
-
-        //if (savedSelectedTile == null)
-        //{
-        //    // If no Enemy Unit is selected, deactivates the Spell Player Actions and allows the Player to choose other actions.
-        //    foreach (var tile in GridManager.Instance.gridTileControllers)
-        //    {
-        //        tile.currentPlayerAction = new SelectUnitPlayerAction();
-        //        tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
-        //    }
-        //    GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
-        //    foreach (var playerUISpellButton in playerUISpellButtons)
-        //    {
-        //        Destroy(playerUISpellButton);
-        //    }
-        //    Destroy(GridManager.Instance.currentPlayerUnit.GetComponent<Unit>().unitProfilePanel);
-        //    GridManager.Instance.currentPlayerUnit.tag = "Player";
-        //    GridManager.Instance.currentPlayerUnit = null;
-
-        //    GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
-        //    movesContainer.transform.localScale = new Vector3(0, 0, 0);
-        //    Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
-        //    GridManager.Instance.ClearPath();
-        //    BattleInterface.Instance.DeactivateActionInfoPanel();
-        //}
     }
     public void DeityEnmityCheck()
     {

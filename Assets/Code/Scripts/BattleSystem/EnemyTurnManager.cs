@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using UnityEngine.Playables;
 
 public class EnemyTurnManager : MonoBehaviour
 {
@@ -19,16 +19,18 @@ public class EnemyTurnManager : MonoBehaviour
     public delegate void PlayerTurnSwap();
     public static event PlayerTurnSwap OnPlayerTurnSwap;
 
+    [SerializeField] IconDisplayHelper _iconDisplayHelper;
+
     public GameObject deity;
 
     private void OnEnable()
     {
-        TurnController.OnEnemyTurnSwap += EnemyTurnSequence;
+        TurnController.OnEnemyTurnSwap += TriggerEnemyActions;
     }
 
     private void OnDisable()
     {
-        TurnController.OnEnemyTurnSwap -= EnemyTurnSequence;
+        TurnController.OnEnemyTurnSwap -= TriggerEnemyActions;
     }
 
     private void Start()
@@ -37,28 +39,23 @@ public class EnemyTurnManager : MonoBehaviour
     }
     private void Update()
     {
-        //Fix this, doesn't make any sense to be on Update 07012024
+        // Fix this, doesn't make any sense to be on Update 07012024.
         deity = GameObject.FindGameObjectWithTag("Deity");
     }
     private void AddEnemiesToQueue()
     {
         GameObject[] enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
         enemiesInQueue = new List<EnemyAgent>();
-        //Convert the array of Enemy GameObjects to a List<Enemy>
+
         foreach (GameObject enemyGameObject in enemiesOnBattlefield)
         {
             EnemyAgent enemyComponent = enemyGameObject.GetComponent<EnemyAgent>();
-            if (enemyComponent != null)
-            {
-                enemiesInQueue.Add(enemyComponent);
-            }
-            else
-            {
-                Debug.Log("No Enemies found");
-            }
+            if (enemyComponent == null)
+                return;
+            enemiesInQueue.Add(enemyComponent);
         }
     }
-    private void EnemyTurnSequence()
+    private void TriggerEnemyActions()
     {
         enemiesInQueue.Sort((a, b) => b.speed.CompareTo(a.speed));
         currentEnemyTurnIndex = 0;
@@ -66,81 +63,54 @@ public class EnemyTurnManager : MonoBehaviour
     }
     private IEnumerator ExecuteTurns()
     {
+        // Refactor this moving out Deity logic. Call the Deity Logic and separately (if the Deity is present).
 
-        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
+        while (currentEnemyTurnIndex < enemiesInQueue.Count)
         {
-            while (currentEnemyTurnIndex < enemiesInQueue.Count)
+            EnemyAgent activeEnemy = enemiesInQueue[currentEnemyTurnIndex];
+            Debug.Log("Current Turn: " + activeEnemy.name);
+            ActivateThinkingIcon(activeEnemy);
+
+            if (activeEnemy.gameObject.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
             {
-                EnemyAgent currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
-                Debug.Log("Current Turn: " + currentEnemy.name);
-                IconDisplayHelper iconDisplayHelper = currentEnemy.gameObject.GetComponentInChildren<IconDisplayHelper>();
-
-                if (currentEnemy.gameObject.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-                {
-                    iconDisplayHelper.ShowIcon();
-                    currentEnemy.EnemyTurnEvents();
-                    yield return new WaitForSeconds(singleEnemyturnDuration);
-                    iconDisplayHelper.HideIcon();
-                }
-                else
-                {
-                    float deadEnemyTurnWaitingTime = 0.1f;
-                    yield return new WaitForSeconds(deadEnemyTurnWaitingTime);
-                }
-                currentEnemyTurnIndex++;
-            }
-
-            TrapBehaviour();
-            if (deity != null)
-            {
-                OnDeityTurn?.Invoke("Deity Turn");
-                Debug.Log("Enemy turns are over. Passing turn to Deity");
-
-                // Ensure we wait for the deity to finish its turn before proceeding.
+                _iconDisplayHelper.ShowIcon();
+                activeEnemy.EnemyTurnEvents();
                 yield return new WaitForSeconds(singleEnemyturnDuration);
-
-                // Now, switch to player turn explicitly.
-                OnPlayerTurn?.Invoke("Player Turn");
-                OnPlayerTurnSwap?.Invoke();
-                Debug.Log("Deity turn is over. Passing turn to Player.");
+                _iconDisplayHelper.HideIcon();
             }
             else
             {
-                OnPlayerTurn?.Invoke("Player Turn");
-                OnPlayerTurnSwap?.Invoke();
-                Debug.Log("No Deity on the battlefield. Passing turn to the Player");
+                float deadEnemyTurnWaitingTime = 0.1f;
+                yield return new WaitForSeconds(deadEnemyTurnWaitingTime);
             }
+            currentEnemyTurnIndex++;
         }
-        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
+
+        ActivateTrap();
+
+        if (deity == null)
         {
-            while (currentEnemyTurnIndex < enemiesInQueue.Count)
-            {
-                EnemyAgent currentEnemy = enemiesInQueue[currentEnemyTurnIndex];
-                Debug.Log("Current Turn: " + currentEnemy.name);
-
-                if (currentEnemy.gameObject.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-                {
-                    currentEnemy.EnemyTurnEvents();
-                    yield return new WaitForSeconds(singleEnemyturnDuration);
-                }
-                else
-                {
-                    float deadEnemyTurnWaitingTime = 0.1f;
-                    yield return new WaitForSeconds(deadEnemyTurnWaitingTime);
-                }
-
-                currentEnemyTurnIndex++;
-            }
+            OnPlayerTurn?.Invoke("Player Turn");
+            OnPlayerTurnSwap?.Invoke();
+            Debug.Log("No Deity on the battlefield. Passing turn to the Player");
+        }
+        else
+        {
             OnDeityTurn?.Invoke("Deity Turn");
-            // Ensure deity turn ends before switching to the player.
+            // Increase the single enemy turn duration to accomodate more time for the notification.
             yield return new WaitForSeconds(singleEnemyturnDuration);
-
             OnPlayerTurn?.Invoke("Player Turn");
             OnPlayerTurnSwap?.Invoke();
             Debug.Log("Deity turn is over. Passing turn to Player.");
         }
     }
-    private void TrapBehaviour()
+
+    private void ActivateThinkingIcon(EnemyAgent enemy)
+    {
+        _iconDisplayHelper = enemy.gameObject.GetComponentInChildren<IconDisplayHelper>();
+    }
+
+    private void ActivateTrap()
     {
         //Need to move this in another class or move in a class of its own, following the single responsibility principle
 
@@ -153,5 +123,4 @@ public class EnemyTurnManager : MonoBehaviour
             }
         }
     }
-
 }

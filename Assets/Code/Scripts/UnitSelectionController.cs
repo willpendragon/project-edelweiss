@@ -1,6 +1,8 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UnitSelectionController : MonoBehaviour
 {
@@ -13,8 +15,8 @@ public class UnitSelectionController : MonoBehaviour
         unitWaiting
     }
 
-    public delegate void UnitWaiting();
-    public static event UnitWaiting OnUnitWaiting;
+    public delegate void UnitTurnEnded();
+    public static event UnitTurnEnded OnUnitTurnEnded;
 
     public GameObject activeCharacterSelectorIcon;
     public GameObject moveButton;
@@ -26,9 +28,45 @@ public class UnitSelectionController : MonoBehaviour
 
     public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
 
-    public void Start()
+    private void OnEnable()
+    {
+        PlayableUnitSelectionHelper.OnPlayableUnitSelected += SelectPlayerUnit;
+    }
+    private void OnDisable()
+    {
+        PlayableUnitSelectionHelper.OnPlayableUnitSelected -= SelectPlayerUnit;
+    }
+
+    private void Start()
     {
         currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
+    }
+
+    public void SelectPlayerUnit(Unit playerUnit)
+    {
+        if (playerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+            return;
+        if (playerUnit.gameObject.tag == "Enemy" || playerUnit.gameObject.tag == "Deity")
+            return;
+        if (playerUnit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless)
+            return;
+        // Play Feedback for invalid selection. Add icons that convey the Player Unit status
+        SetAsActivePlayer(playerUnit);
+        GameObject playerSelectorIconIstance = Instantiate(Resources.Load("PlayerCharacterSelectorIcon") as GameObject, playerUnit.gameObject.transform);
+
+        Vector3 playerSelectionInstanceOffset = new Vector3(0, 2.5f, 0);
+        playerSelectorIconIstance.transform.localPosition += playerSelectionInstanceOffset;
+        PlaySelectionFeedback(playerUnit);
+    }
+    private void PlaySelectionFeedback(Unit playerUnit)
+    {
+        BattleFeedbackController battleFeedbackController = playerUnit.GetComponent<BattleFeedbackController>();
+        battleFeedbackController.PlaySelectionSFX.Invoke();
+    }
+    private void SetAsActivePlayer(Unit playerUnit)
+    {
+        playerUnit.gameObject.tag = "ActivePlayerUnit";
+        Debug.Log($"{playerUnit.unitTemplate.unitName} is now the ActivePlayerUnit");
     }
 
     public void ResetUnitSelection()
@@ -53,22 +91,14 @@ public class UnitSelectionController : MonoBehaviour
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
         unitIconsController?.DisplayWaitingIcon();
         Debug.Log("Display Waiting Icon on Unit");
-
-        unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = "Player";
 
         GridManager.Instance.currentPlayerUnit = null;
         Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
-        OnUnitWaiting();
-
-        foreach (var tile in GridManager.Instance.gridTileControllers)
-        {
-            tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-        }
-
+        OnUnitTurnEnded();
         Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
         endTurnButton.interactable = true;
 
-        GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2F, Color.white);
+        //GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2F, Color.white);
     }
 }

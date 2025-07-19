@@ -1468,6 +1468,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &209913981
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 209913983}
+  - component: {fileID: 209913982}
+  m_Layer: 0
+  m_Name: UnitSelectionController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &209913982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 209913981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ea15ee3f60ec9a46b47097f03cb5504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeCharacterSelectorIcon: {fileID: 1223835749750046018, guid: ceabf4832ab64bf4f80156c76913627e, type: 3}
+  moveButton: {fileID: 6278539958340940975, guid: d5dd23d0e8c3dcd409bc6af0caf1dcad, type: 3}
+  waitButton: {fileID: 6278539958340940975, guid: 0504fc7049432f846b5f4ee879490c8e, type: 3}
+  currentUnitSelectionStatus: 0
+  unitSpellUIController: {fileID: 0}
+  unitSprite: {fileID: 0}
+  unitIconsController: {fileID: 0}
+--- !u!4 &209913983
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 209913981}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.1, y: 0.5, z: 3.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &212484904
 GameObject:
   m_ObjectHideFlags: 0
@@ -3996,6 +4047,7 @@ MonoBehaviour:
   tileController: {fileID: 0}
   state: 0
   actionButtonPrefab: {fileID: 8683707359061790768, guid: c27fdbd27cbe39e44b4267c595296298, type: 3}
+  _moveButtonPrefabInstance: {fileID: 0}
   _meleeButtonPrefabInstance: {fileID: 0}
   _spellButtonPrefabInstance: {fileID: 0}
   radialMenu: {fileID: 1975660717}
@@ -20497,6 +20549,7 @@ MonoBehaviour:
   currentEnemyTurnIndex: 0
   battleManager: {fileID: 5409979177453231299}
   singleEnemyturnDuration: 2
+  _iconDisplayHelper: {fileID: 0}
   deity: {fileID: 0}
 --- !u!1 &3355292549774257060
 GameObject:
@@ -20989,36 +21042,6 @@ MonoBehaviour:
   captureCrystalsRewardPool: 0
   mainCameraPlayableDirector: {fileID: 588608028}
   battleMomentsScreenDeactivationTime: 1
-  PlayerTurnStarts:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1270439567}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  PlayerTurnEnds:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1270439567}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   gridManager: {fileID: 810722614}
 --- !u!114 &5409979177453231300
 MonoBehaviour:
@@ -31514,6 +31537,7 @@ SceneRoots:
   - {fileID: 819868224}
   - {fileID: 814362705}
   - {fileID: 709194842}
+  - {fileID: 209913983}
   - {fileID: 363277734}
   - {fileID: 1655354750540488359}
   - {fileID: 1720886331}

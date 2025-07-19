@@ -13,7 +13,7 @@ public class EndTurnButtonHelper : MonoBehaviour
 
         TurnController turnController = BattleManager.Instance?.GetComponent<TurnController>();
 
-        if (turnController.currentTurn == Turn.playerTurn)
+        if (turnController.currentTurn == Turn.PlayerTurn)
         {
             GameObject[] playerUnitsOnBattlefield = turnController?.playerUnitsOnBattlefield;
             foreach (var playerUnit in playerUnitsOnBattlefield)
@@ -21,10 +21,9 @@ public class EndTurnButtonHelper : MonoBehaviour
                 playerUnit?.GetComponent<UnitSelectionController>()?.StopUnitAction();
                 playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             }
-
             Button endTurnButton = GameObject.FindGameObjectWithTag(Tags.END_TURN_BUTTON).GetComponent<Button>();
             endTurnButton.interactable = false;
-            turnController.SwapTurns();
+            turnController.DecideTurn();
         }
     }
 
