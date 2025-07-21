@@ -43,10 +43,9 @@ public class EnemyInfoPanelController : MonoBehaviour, IPointerEnterHandler, IPo
     }
     private void CreateEnemyUnitProfile(GameObject hoveredEnemyGameObject)
     {
-        // Spawns an information panel with Active Character Unit details on the Lower Left of the Screen.
         newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
         newCurrentlySelectedUnitPanel.tag = "ActiveCharacterUnitProfile";
-        newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
+        newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
         enemyGameObject.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
         OnHoverMouseOnEnemy(hoveredEnemyGameObject);
     }

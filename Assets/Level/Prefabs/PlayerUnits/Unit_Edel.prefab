@@ -331,7 +331,6 @@ GameObject:
   - component: {fileID: 8642592451490499264}
   - component: {fileID: 5048801818827486388}
   - component: {fileID: 5027015947622485375}
-  - component: {fileID: 3379728500558068915}
   - component: {fileID: 3379728500558068914}
   - component: {fileID: 7598564458177837309}
   - component: {fileID: 1424958496577049021}
@@ -404,7 +403,7 @@ MonoBehaviour:
   currentYCoordinate: 0
   startingXCoordinate: 6
   startingYCoordinate: 2
-  unitSelectionController: {fileID: 3379728500558068915}
+  unitSelectionController: {fileID: 0}
   ownedTile: {fileID: 0}
   unitHealthPoints: 0
   unitMaxHealthPoints: 0
@@ -475,25 +474,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1802ea89f3831e94998ba7ffd64c3f9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3379728500558068915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8642592451490499134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ea15ee3f60ec9a46b47097f03cb5504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  activeCharacterSelectorIcon: {fileID: 1223835749750046018, guid: ceabf4832ab64bf4f80156c76913627e, type: 3}
-  moveButton: {fileID: 6278539958340940975, guid: d5dd23d0e8c3dcd409bc6af0caf1dcad, type: 3}
-  waitButton: {fileID: 6278539958340940975, guid: 0504fc7049432f846b5f4ee879490c8e, type: 3}
-  currentUnitSelectionStatus: 0
-  unitSpellUIController: {fileID: 3379728500558068914}
-  unitSprite: {fileID: 8374982091355949035}
-  unitIconsController: {fileID: 7201058756695911675}
 --- !u!114 &3379728500558068914
 MonoBehaviour:
   m_ObjectHideFlags: 0

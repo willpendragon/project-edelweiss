@@ -62,7 +62,7 @@ public class PlayerProfileController : MonoBehaviour
             case "Enemy":
                 if (currentProfileOwner != ProfileOwner.playerUnit && currentProfileOwner != ProfileOwner.activePlayerUnit)
                 {
-                    ApplyProfileChanges(detectedUnit, ProfileOwner.enemyUnit);
+                    //ApplyProfileChanges(detectedUnit, ProfileOwner.enemyUnit);
                     Debug.Log("Updated Unit Profile with Enemy Info");
 
                 }

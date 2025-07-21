@@ -141,7 +141,6 @@ GameObject:
   - component: {fileID: 3348349630364506732}
   - component: {fileID: 3348349630364506731}
   - component: {fileID: 1219321713655519419}
-  - component: {fileID: -100078452703400956}
   m_Layer: 0
   m_Name: DeityKingLaurinus
   m_TagString: Deity
@@ -265,11 +264,12 @@ MonoBehaviour:
   currentYCoordinate: 0
   startingXCoordinate: 5
   startingYCoordinate: 9
-  unitSelectionController: {fileID: -100078452703400956}
+  unitSelectionController: {fileID: 0}
   ownedTile: {fileID: 0}
   unitHealthPoints: 1500
   unitMaxHealthPoints: 1500
   unitOpportunityPoints: 0
+  unitFaithPoints: 0
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
@@ -281,13 +281,18 @@ MonoBehaviour:
   unitMagicPower: 0
   unitMeleeAttackBaseDamage: 0
   currentUnitLifeCondition: 1
+  currentUnitBuff: 0
   unitStatusController: {fileID: 0}
   fieldPrizeController: {fileID: 0}
+  hasHookshot: 0
+  bossFlag: 0
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}
   LinkedDeityId: 
   battleFeedbackController: {fileID: 0}
   unitProfilePanel: {fileID: 0}
+  unitSprite: {fileID: 0}
+  characterAnimator: {fileID: 0}
   onHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -306,24 +311,6 @@ MonoBehaviour:
   OnTakenDamage:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &-100078452703400956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3348349630364506734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ea15ee3f60ec9a46b47097f03cb5504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  activeCharacterSelectorIcon: {fileID: 0}
-  moveButton: {fileID: 0}
-  waitButton: {fileID: 0}
-  currentUnitSelectionStatus: 0
-  unitSpellUIController: {fileID: 0}
-  unitSprite: {fileID: 0}
 --- !u!1001 &3348349631370794795
 PrefabInstance:
   m_ObjectHideFlags: 0

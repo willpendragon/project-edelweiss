@@ -175,7 +175,7 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
             detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
 
             // The newly spawned Unit Profile Panel becomes the Detected Unit Profile Panel.
-            OnClickedTileWithUnit(detectedUnit);
+            //OnClickedTileWithUnit(detectedUnit);
             Debug.Log("Clicked on a Tile with Unit standing on it");
 
             // If the Unit is a Player Unit, it becomes the Active Player Unit in the GridManager.

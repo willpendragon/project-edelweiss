@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4009798023604197780}
   - component: {fileID: 3780442932800135263}
   - component: {fileID: 452031789749913624}
-  - component: {fileID: 452031789749913625}
   - component: {fileID: 6804547558390777160}
   - component: {fileID: 992189169463386825}
   - component: {fileID: 878605096084481255}
@@ -82,7 +81,7 @@ MonoBehaviour:
   currentYCoordinate: 0
   startingXCoordinate: 4
   startingYCoordinate: 2
-  unitSelectionController: {fileID: 452031789749913625}
+  unitSelectionController: {fileID: 0}
   ownedTile: {fileID: 0}
   unitHealthPoints: 0
   unitMaxHealthPoints: 0
@@ -180,25 +179,6 @@ MonoBehaviour:
   spellCastingController: {fileID: 0}
   spellButtonPrefab: {fileID: 6278539958340940975, guid: dcdb643eb9d225d4bbd83e3998662618, type: 3}
   spellMenuContainer: {fileID: 0}
---- !u!114 &452031789749913625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ea15ee3f60ec9a46b47097f03cb5504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  activeCharacterSelectorIcon: {fileID: 1223835749750046018, guid: ceabf4832ab64bf4f80156c76913627e, type: 3}
-  moveButton: {fileID: 6278539958340940975, guid: d5dd23d0e8c3dcd409bc6af0caf1dcad, type: 3}
-  waitButton: {fileID: 6278539958340940975, guid: 0504fc7049432f846b5f4ee879490c8e, type: 3}
-  currentUnitSelectionStatus: 0
-  unitSpellUIController: {fileID: 452031789749913624}
-  unitSprite: {fileID: 2803219925591249153}
-  unitIconsController: {fileID: 7692419924391721579}
 --- !u!114 &6804547558390777160
 MonoBehaviour:
   m_ObjectHideFlags: 0
