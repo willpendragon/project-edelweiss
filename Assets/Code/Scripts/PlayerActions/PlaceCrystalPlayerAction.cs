@@ -63,7 +63,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction
                 Debug.Log("Placing Crystal, attempting to Capture the Deity");
 
                 activePlayerUnit.GetComponent<BattleFeedbackController>().PlayPlaceCrystalSFX.Invoke();
-                activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+                //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
 
                 if (AttemptCapture())
                 {

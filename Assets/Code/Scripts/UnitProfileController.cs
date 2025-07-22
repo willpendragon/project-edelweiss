@@ -1,18 +1,9 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerProfileController : MonoBehaviour
+public class UnitProfileController : MonoBehaviour
 {
-    public enum ProfileOwner
-    {
-        empty,
-        enemyUnit,
-        activePlayerUnit,
-        playerUnit
-    }
-
     [Header("Gameplay Logic")]
     public GameObject activeCharacterPortrait;
 
@@ -40,57 +31,16 @@ public class PlayerProfileController : MonoBehaviour
     public Slider activeCharacterShieldPointsSlider;
     public Slider activeCharacterOpportunityPointsSlider;
 
-    public ProfileOwner currentProfileOwner;
-
-    public delegate void ClickedTileWithUnit(GameObject detectedUnit);
-    public static event ClickedTileWithUnit OnClickedTileWithUnit;
-
     private void OnEnable()
     {
-        SelectUnitPlayerAction.OnClickedTileWithUnit += UpdateUnitProfile;
-        EnemyInfoPanelController.OnHoverMouseOnEnemy += UpdateUnitProfile;
+        EnemyInfoPanelController.OnHoverMouseOnEnemy += ApplyProfileChanges;
+
     }
     private void OnDisable()
     {
-        SelectUnitPlayerAction.OnClickedTileWithUnit -= UpdateUnitProfile;
-        EnemyInfoPanelController.OnHoverMouseOnEnemy -= UpdateUnitProfile;
+        EnemyInfoPanelController.OnHoverMouseOnEnemy -= ApplyProfileChanges;
     }
-    public void UpdateUnitProfile(GameObject detectedUnit)
-    {
-        switch (detectedUnit.tag)
-        {
-            case "Enemy":
-                if (currentProfileOwner != ProfileOwner.playerUnit && currentProfileOwner != ProfileOwner.activePlayerUnit)
-                {
-                    //ApplyProfileChanges(detectedUnit, ProfileOwner.enemyUnit);
-                    Debug.Log("Updated Unit Profile with Enemy Info");
-
-                }
-                break;
-            case "Player":
-                if (currentProfileOwner != ProfileOwner.enemyUnit && GridManager.Instance.currentPlayerUnit == null)
-                {
-                    ApplyProfileChanges(detectedUnit, ProfileOwner.playerUnit);
-                    UpdateLinkedDeityIcon(detectedUnit);
-                    Debug.Log("Updated Unit Profile with Player Info");
-
-                }
-                break;
-            case "ActivePlayerUnit":
-            case "TargetedEnemyUnitProfile":
-                if (currentProfileOwner != ProfileOwner.enemyUnit)
-                {
-                    ApplyProfileChanges(detectedUnit, ProfileOwner.activePlayerUnit);
-                    UpdateLinkedDeityIcon(detectedUnit);
-                    Debug.Log("Updated Active Player Unit Profile");
-                }
-                break;
-            default:
-                Debug.Log("Unknown unit tag: " + detectedUnit.tag);
-                break;
-        }
-    }
-    public void ApplyProfileChanges(GameObject detectedUnit, ProfileOwner profileOwner)
+    public void ApplyProfileChanges(GameObject detectedUnit)
     {
         // Update Unit Profile Portrait and Name.
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = detectedUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
@@ -106,7 +56,7 @@ public class PlayerProfileController : MonoBehaviour
         activeCharacterAttackPower.text = detectedUnit.GetComponent<Unit>().unitAttackPower.ToString();
         activeCharacterMagicPower.text = detectedUnit.GetComponent<Unit>().unitMagicPower.ToString();
 
-        if (detectedUnit.tag != "Enemy")
+        if (detectedUnit.tag == "ActivePlayerUnit")
         {
             activeCharacterFaithPower.text = detectedUnit.GetComponent<Unit>().unitFaithPoints.ToString();
         }
@@ -122,12 +72,7 @@ public class PlayerProfileController : MonoBehaviour
         activeCharacterManaPointsSlider.value = detectedUnit.GetComponent<Unit>().unitManaPoints;
         activeCharacterShieldPointsSlider.value = detectedUnit.GetComponent<Unit>().unitShieldPoints;
         activeCharacterOpportunityPointsSlider.value = detectedUnit.GetComponent<Unit>().unitOpportunityPoints;
-
-        // Update Profile Owner.
-        currentProfileOwner = profileOwner;
-
         Debug.Log($"Updated {detectedUnit} profile");
-
     }
 
     public void UpdateActivePlayerProfile(Unit activePlayerUnit)

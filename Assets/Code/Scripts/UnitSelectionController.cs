@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -33,13 +31,12 @@ public class UnitSelectionController : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayableUnitSelectionHelper.OnPlayableUnitSelected += SelectPlayerUnit;
+        UnitSelectionHelper.OnUnitSelected += SelectPlayerUnit;
     }
     private void OnDisable()
     {
-        PlayableUnitSelectionHelper.OnPlayableUnitSelected -= SelectPlayerUnit;
+        UnitSelectionHelper.OnUnitSelected -= SelectPlayerUnit;
     }
-
     private void Start()
     {
         currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
@@ -103,8 +100,14 @@ public class UnitSelectionController : MonoBehaviour
         _selectedUnitPanel.tag = "ActiveCharacterUnitProfile";
         _selectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
         playerUnit.unitProfilePanel = _selectedUnitPanel;
-        _selectedUnitPanel.GetComponent<PlayerProfileController>().activeCharacterName.text = playerUnit.unitTemplate.unitName;
-        Debug.Log($"Spawned {_selectedUnitPanel} belonging to {playerUnit.unitTemplate.unitName}");
+        FillPanelDetails(playerUnit);
+
+    }
+    public void FillPanelDetails(Unit unit)
+    {
+        UnitProfileController unitProfileController = _selectedUnitPanel.GetComponent<UnitProfileController>();
+        unitProfileController.ApplyProfileChanges(unit.gameObject);
+        Debug.Log($"Spawned {_selectedUnitPanel} belonging to {unit.unitTemplate.unitName}");
     }
 
     private void PlaySelectionFeedback(Unit playerUnit)

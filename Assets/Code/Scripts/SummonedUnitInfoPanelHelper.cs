@@ -68,7 +68,7 @@ public class SummonedUnitInfoPanelHelper : MonoBehaviour
     // This method is called by the Slider at each value change.
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
-        activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
         Debug.Log("Updating OP points after using Prayer");
     }
     private void ResetSummon(Unit currentActivePlayerUnit, Deity summonedLinkedDeity)

@@ -274,7 +274,7 @@ public class Unit : MonoBehaviour
 
             unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             Destroy(unitProfilePanel);
-            UnitProfilesController.Instance.DestroyEnemyUnitPanel();
+            //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
 
             if (this.gameObject.tag == "Enemy")

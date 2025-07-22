@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 public class EnemyInfoPanelController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private GameObject newCurrentlySelectedUnitPanel;
-    [SerializeField] GameObject enemyGameObject;
+    [SerializeField] private GameObject _enemyUnitPanel;
+    [SerializeField] private GameObject _enemyGameObject;
     public delegate void HoverMouseOnEnemy(GameObject enemyGameObject);
     public static event HoverMouseOnEnemy OnHoverMouseOnEnemy;
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (GridManager.Instance.currentPlayerUnit == null)
-        {
-            ShowEnemyInfo();
-        }
+        ShowEnemyInfo();
+        Debug.Log("Display Enemy Info");
     }
     public void OnPointerExit(PointerEventData eventData)
     {
@@ -23,34 +22,29 @@ public class EnemyInfoPanelController : MonoBehaviour, IPointerEnterHandler, IPo
     }
     public void ShowEnemyInfo()
     {
-        if (enemyGameObject != null && CheckEnemyStatus(enemyGameObject))
+        if (_enemyGameObject != null && CheckEnemyStatus(_enemyGameObject))
         {
-            CreateEnemyUnitProfile(enemyGameObject);
-            Debug.Log("Showing Enemy Information");
+            CreateEnemyUnitProfile(_enemyGameObject);
+            Debug.Log($"Showing {_enemyGameObject} Information");
         }
     }
     private bool CheckEnemyStatus(GameObject enemyGameObject)
     {
         Unit enemyGOUnit = enemyGameObject?.GetComponent<Unit>();
-        if (enemyGOUnit != null && enemyGOUnit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-        {
-            return true;
-        }
-        else
-        {
+        if (enemyGOUnit == null || enemyGOUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
             return false;
-        }
+        else
+            return true;
     }
     private void CreateEnemyUnitProfile(GameObject hoveredEnemyGameObject)
     {
-        newCurrentlySelectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
-        newCurrentlySelectedUnitPanel.tag = "ActiveCharacterUnitProfile";
-        newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
-        enemyGameObject.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
-        OnHoverMouseOnEnemy(hoveredEnemyGameObject);
+        _enemyUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+        _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
+        _enemyGameObject.GetComponent<Unit>().unitProfilePanel = _enemyUnitPanel;
+        _enemyUnitPanel.GetComponent<UnitProfileController>().ApplyProfileChanges(_enemyGameObject);
     }
     public void DestroyEnemyUnitProfile()
     {
-        Destroy(newCurrentlySelectedUnitPanel);
+        Destroy(_enemyUnitPanel);
     }
 }

@@ -221,8 +221,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
         if (activePlayerUnit != null)
         {
-            activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().activeCharacterAttackPower.text = activePlayerUnit.unitAttackPower.ToString();
-            activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().activeCharacterMagicPower.text = activePlayerUnit.unitMagicPower.ToString();
+            activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().activeCharacterAttackPower.text = activePlayerUnit.unitAttackPower.ToString();
+            activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().activeCharacterMagicPower.text = activePlayerUnit.unitMagicPower.ToString();
         }
     }
 

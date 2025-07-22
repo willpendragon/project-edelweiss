@@ -212,6 +212,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
     }
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
-        activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
 }

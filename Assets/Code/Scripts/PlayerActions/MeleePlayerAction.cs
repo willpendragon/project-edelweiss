@@ -48,8 +48,8 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             selectionLimiter--;
 
             // Reset previous enemy panel before creating a new one
-            UnitProfilesController.Instance.DestroyEnemyUnitPanel();
-            UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
+            //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
+            //UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
 
             selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
             selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
@@ -92,7 +92,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
                 Debug.Log("Deselected Melee Attack.");
             }
         }
-        UnitProfilesController.Instance.DestroyEnemyUnitPanel();
+        //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
 
         if (savedSelectedTile == null)
         {
@@ -332,7 +332,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
-        activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
 
     public void ResetTileColours()

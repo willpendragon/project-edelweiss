@@ -119,7 +119,7 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
             if (activePlayerUnit.unitManaPoints - trapCreationCost >= 0)
             {
                 activePlayerUnit.unitManaPoints -= trapCreationCost;
-                activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+                //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
                 ResetTrapSelectionLimiter();
             }
             else
