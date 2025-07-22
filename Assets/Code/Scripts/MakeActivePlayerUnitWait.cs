@@ -12,7 +12,7 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
         DeactivateTrapSelection();
 
         GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
-        GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopUnitAction();
+        GridManager.Instance.currentPlayerUnit.GetComponent<UnitSelectionController>().StopPlayerParty();
 
         Destroy(GameObject.FindGameObjectWithTag("TargetedEnemyUnitProfile"));
         Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));

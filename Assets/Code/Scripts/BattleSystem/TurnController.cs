@@ -116,7 +116,7 @@ public class TurnController : MonoBehaviour
     public void DecideTurn()
     {
         // If all Player Units are Waiting or all Dead except one, proceed to swap turns.
-        if (CheckPlayerUnitsStatus() == false)
+        if (PlayerPartyAvailable())
         {
             SetTurn(Turn.PlayerTurn);
         }
@@ -141,8 +141,17 @@ public class TurnController : MonoBehaviour
 
     private void StartPlayerTurn()
     {
-        OnPlayerTurn("Player Turn");
+        // Send Player Turn UI notification.
         // Allow the Player to select characters.
+        OnPlayerTurn("Player Turn");
+        SetPlayerUnitsToActive();
+    }
+    private void SetPlayerUnitsToActive()
+    {
+        foreach (var unitGO in playerUnitsOnBattlefield)
+        {
+            unitGO.GetComponent<Unit>().currentUnitPhase = UnitPhase.Active;
+        }
     }
 
     private void StartEnemyTurn()
@@ -150,20 +159,29 @@ public class TurnController : MonoBehaviour
         OnEnemyTurn("Enemy Turn");
         OnEnemyTurnSwap();
     }
-    public bool CheckPlayerUnitsStatus()
+    public bool PlayerPartyAvailable()
     {
-        // Check if all units are either dead, waiting, or faithless
-        return playerUnitsOnBattlefield.All(unitObject =>
-        {
-            Unit unit = unitObject.GetComponent<Unit>();
-            var unitLifeCondition = unit.currentUnitLifeCondition;
-            var selectionStatus = unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus;
-            var status = unit.GetComponent<UnitStatusController>().unitCurrentStatus;
+        if (playerUnitsOnBattlefield.All(unitGO =>
+            unitGO.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead
+            || unitGO.GetComponent<Unit>().currentUnitPhase == UnitPhase.Waiting
+            || unitGO.GetComponent<UnitStatusController>().unitCurrentStatus == UnitStatus.Faithless))
+            return false;
+        else
+            return true;
 
-            return unitLifeCondition == Unit.UnitLifeCondition.unitDead
-                || selectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting
-                || status == UnitStatus.Faithless;
-        });
+
+        //// Check if all units are either dead, waiting, or faithless
+        //return playerUnitsOnBattlefield.All(unitObject =>
+        //{
+        //    Unit unit = unitObject.GetComponent<Unit>();
+        //    var unitLifeCondition = unit.currentUnitLifeCondition;
+        //    //var selectionStatus = unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus;
+        //    var status = unit.GetComponent<UnitStatusController>().unitCurrentStatus;
+
+        //    return unitLifeCondition == Unit.UnitLifeCondition.unitDead
+        //        /*|| selectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting*/
+        //        || status == UnitStatus.Faithless;
+        //});
     }
 
     public void PlayerUnitsLifeCheck()
@@ -259,9 +277,10 @@ public class TurnController : MonoBehaviour
             TurnController.Instance.turnCounter++;
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
-            playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+            //playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
         }
+        SetPlayerUnitsToActive();
 
         // Try to find the End Turn button and enable it, if it exists
         GameObject endTurnButtonObject = GameObject.FindGameObjectWithTag(Tags.END_TURN_BUTTON);

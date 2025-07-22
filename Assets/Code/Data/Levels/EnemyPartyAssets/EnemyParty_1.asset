@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7954709b594692a44a06915f078ca1b0, type: 3}
   m_Name: EnemyParty_1
   m_EditorClassIdentifier: 
-  minEnemyPoolSize: 5
-  maxEnemyPoolSize: 10
+  minEnemyPoolSize: 3
+  maxEnemyPoolSize: 5
   enemyWeights:
   - enemyType: 0
     weight: 2

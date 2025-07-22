@@ -229,7 +229,7 @@ public class TutorialFlowController : MonoBehaviour
 
     private void DisableUnit(Unit playerUnit)
     {
-        playerUnit.gameObject.GetComponent<UnitSelectionController>().StopUnitAction();
+        playerUnit.gameObject.GetComponent<UnitSelectionController>().StopPlayerParty();
     }
 
     private void EnableUnit(Unit playerUnit)

@@ -83,7 +83,7 @@ public class UnitSetupController : MonoBehaviour
         foreach (var playerUnitGO in TurnController.Instance.playerUnitsOnBattlefield)
         {
             Unit playerUnit = playerUnitGO.GetComponent<Unit>();
-            playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+            //playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
             if (playerUnit.currentUnitLifeCondition == UnitLifeCondition.unitDead)
             {
                 playerUnitGO.GetComponent<Unit>().characterAnimator.SetTrigger("Die");

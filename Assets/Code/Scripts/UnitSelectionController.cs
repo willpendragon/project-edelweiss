@@ -39,7 +39,7 @@ public class UnitSelectionController : MonoBehaviour
     }
     private void Start()
     {
-        currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
+        //currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
         SetPlayerUnits();
     }
     private void SetPlayerUnits()
@@ -49,11 +49,11 @@ public class UnitSelectionController : MonoBehaviour
 
     public void SelectPlayerUnit(Unit playerUnit)
     {
-        if (playerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+        if (playerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead
+            || playerUnit.currentUnitPhase == Unit.UnitPhase.Waiting
+            || playerUnit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless)
             return;
         if (playerUnit.gameObject.tag == "Enemy" || playerUnit.gameObject.tag == "Deity")
-            return;
-        if (playerUnit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless)
             return;
         // Play Feedback for invalid selection. Include negative statuses as invalid as well (such as paralysis).
         // Add icons that convey the Player Unit status.
@@ -122,7 +122,7 @@ public class UnitSelectionController : MonoBehaviour
         unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = "Player";
         GridManager.Instance.currentPlayerUnit = null;
-        currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
+        //currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
     }
 
     public void GenerateWaitButton()
@@ -133,16 +133,17 @@ public class UnitSelectionController : MonoBehaviour
             GameObject newWaitButton = Instantiate(waitButton, unitSpellUIController.spellMenuContainer);
         }
     }
-    public void StopUnitAction()
+    public void StopPlayerParty()
     {
+        Debug.Log("Stopping Player party");
         Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
         unitIconsController?.DisplayWaitingIcon();
-        Debug.Log("Display Waiting Icon on Unit");
-        this.gameObject.tag = "Player";
         GridManager.Instance.currentPlayerUnit = null;
         Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
+        foreach (var unitGO in _playerUnits)
+        {
+            unitGO.GetComponent<Unit>().currentUnitPhase = Unit.UnitPhase.Waiting;
+        }
         OnUnitTurnEnded();
-        Button endTurnButton = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
-        endTurnButton.interactable = true;
     }
 }

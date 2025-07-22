@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime;
@@ -14,6 +15,13 @@ public class Unit : MonoBehaviour
         unitDead,
         unitAlive
     }
+
+    public enum UnitPhase
+    {
+        Active,
+        Waiting
+    }
+
 
     public enum UnitBuff
     {
@@ -63,6 +71,7 @@ public class Unit : MonoBehaviour
 
     public UnitLifeCondition currentUnitLifeCondition;
     public UnitBuff currentUnitBuff;
+    public UnitPhase currentUnitPhase;
     public UnitStatusController unitStatusController;
     public FieldPrizeController fieldPrizeController;
 
@@ -114,6 +123,12 @@ public class Unit : MonoBehaviour
         {
             RetrieveTemplateValues();
         }
+        SetPhase(UnitPhase.Active);
+    }
+
+    private void SetPhase(UnitPhase phase)
+    {
+        currentUnitPhase = phase;
     }
 
     public void TakeDamage(float receivedDamage)
