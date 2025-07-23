@@ -287,7 +287,7 @@ public class Unit : MonoBehaviour
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
             Debug.Log("This Unit has died");
 
-            unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
+            //unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             Destroy(unitProfilePanel);
             //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));

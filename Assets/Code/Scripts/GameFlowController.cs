@@ -51,7 +51,10 @@ public class GameFlowController : MonoBehaviour
 
     private void SetDomainData()
     {
-        _currentDomain = domains[_currentSessionHighestUnlockedLevel];
+        // 0 is an arbitrarily set number to retrieve the first domain in the list.
+        // This value needs to be updated dynamically once the domain is complete.
+        // The domain list should be populated with the corresponding assets.
+        _currentDomain = domains[0];
         _bossFightRequirement = _currentDomain.bossFightRequirement;
         _nextDomainUnlockRequirement = _currentDomain.nextDomainRequirement;
         _demoEndRequirement = _currentDomain.clearRequirement;
