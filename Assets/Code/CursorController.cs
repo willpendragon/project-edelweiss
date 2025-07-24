@@ -77,15 +77,17 @@ public class CursorController : MonoBehaviour
 
         if (CheckDistance() && _tileController.detectedUnit == null)// Knockback requires additional logic and will give a null ref at the moment
         {
+            radialMenu.GetComponent<Image>().color = new Color(1, 1, 1, 1);
             _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _moveButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToMove());
+            TextMeshProUGUI moveButtonText = _moveButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>();
+            moveButtonText.text = "Move";
         }
         else if (CheckDistance() && _tileController.detectedUnit != null)
         {
             radialMenu.GetComponent<Image>().color = new Color(1, 1, 1, 1);
             _meleeButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _spellButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-            PopulateButtonsList();
 
             // Remember that the logic is already expressed in the Action Interfaces, no need to change the move properties when spawning the button
             _meleeButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToMelee());
@@ -96,11 +98,13 @@ public class CursorController : MonoBehaviour
             spellButtonText.text = "Spell";
         }
         _isRadialMenuOpen = true;
+        PopulateButtonsList();
     }
 
     void CloseRadialMenu()
     {
         radialMenu.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+        _moveButtonPrefabInstance = null;
         _meleeButtonPrefabInstance = null;
         _spellButtonPrefabInstance = null;
         DestroyButtons();
