@@ -1,3 +1,6 @@
+using JetBrains.Annotations;
+using System;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using static TileController;
@@ -23,22 +26,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        int distance = gridMovementController.GetDistance(activePlayerUnit.ownedTile, selectedTile);
-        Debug.Log($"Calculated distance: {distance}");
-
-        if (distance > meleeRange)
-        {
-            // Play the error animation for the invalid selection.
-            selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
-            return;
-        }
-
-        if (selectedTile.detectedUnit == null)
-        {
-            // No enemy is present on the selected tile.
-            selectedTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
-            return;
-        }
 
         currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
 
@@ -236,60 +223,76 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     }
     public void Execute(TileController targetTile)
     {
-        Debug.Log("Attack Sequence Initiated");
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (activePlayerUnit.unitOpportunityPoints <= 0)
+            return;
+        if (activePlayerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+            return;
+        if (activePlayerUnit.unitStatusController.unitCurrentStatus != UnitStatus.basic)
+            return;
+        if (IsEnemyReachable(activePlayerUnit, targetTile) == false)
+            return;
+        GameObject enemyObject = targetTile.detectedUnit;
+        UseMagnet(activePlayerUnit);
+        AttemptKnockback(activePlayerUnit, enemyObject.GetComponent<Unit>());
+        HitTarget(activePlayerUnit, enemyObject.GetComponent<Unit>(), targetTile);
+        // Streamline the knockback/regular attack selection. 
+        // UnitProfilesController.Instance.UpdateEnemyUnitPanel(targetTile.detectedUnit.gameObject);
+        // Reduce the opportunity points after the attack.
+        activePlayerUnit.unitOpportunityPoints--;
+        UpdateActivePlayerUnitProfile(activePlayerUnit);
+        activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
+        OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
+    }
 
-        if (activePlayerUnit.unitOpportunityPoints > 0 && targetTile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+    private bool IsKnockbackPossible(Unit activePlayerUnit, TileController targetTile)
+    {
+        DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
+
+        if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, targetTile))
         {
-            // Check if the player has a Magnet equipped
-            if (activePlayerUnit.hasHookshot)
-            {
-                // Execute the Magnet attack instead of the standard Melee attack,
-                ExecuteHookshot(activePlayerUnit, currentTarget);
-
-                // Reduce the opportunity points after the attack.
-                activePlayerUnit.unitOpportunityPoints--;
-
-                UpdateActivePlayerUnitProfile(activePlayerUnit);
-            }
-            else
-            {
-                // Standard melee attack execution with knockback.
-                float attackPower = activePlayerUnit.unitTemplate.meleeAttackPower;
-
-                DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
-
-                if (distanceController.CheckDistance(GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>().ownedTile, targetTile))
-                {
-                    attackPower = attackPower * 2;
-                    ApplyKnockback(activePlayerUnit, targetTile.GetComponent<Unit>());
-                    Debug.Log($"Defending Unit receives {attackPower} damage points");
-                }
-                else
-                {
-                    targetTile.detectedUnit.GetComponent<Unit>().TakeDamage(activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage);
-                }
-                //UnitProfilesController.Instance.UpdateEnemyUnitPanel(targetTile.detectedUnit.gameObject);
-                // Reduce the opportunity points after the attack.
-                activePlayerUnit.unitOpportunityPoints--;
-
-                UpdateActivePlayerUnitProfile(activePlayerUnit);
-                activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
-                OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
-
-                Debug.Log("Melee Execution Logic");
-            }
+            return true;
         }
         else
         {
-            Debug.Log("Not enough Opportunity Points on Active Player Unit or Unit has already died");
+            return false;
         }
     }
 
-    public void ApplyKnockback(Unit attacker, Unit defender)
+    private bool IsEnemyReachable(Unit activePlayerUnit, TileController targetTile)
     {
-        currentTarget.TakeDamage(attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage);
+        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
+        int distance = gridMovementController.GetDistance(activePlayerUnit.ownedTile, targetTile);
+        if (distance > meleeRange)
+        {
+            targetTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    private void UseMagnet(Unit activePlayerUnit)
+    {
+        if (activePlayerUnit.hasHookshot == false)
+            return;
+        {
+            // Execute the Magnet attack instead of the standard Melee attack,
+            ExecuteHookshot(activePlayerUnit, currentTarget);
 
+            // Reduce the opportunity points after the attack.
+            activePlayerUnit.unitOpportunityPoints--;
+
+            UpdateActivePlayerUnitProfile(activePlayerUnit);
+        }
+    }
+    public void AttemptKnockback(Unit attacker, Unit defender)
+    {
+        if (IsKnockbackPossible(attacker, defender.ownedTile) == false)
+            return;
+        bool modifierIsActive = true;
+        HitTarget(attacker, defender, modifierIsActive);
         Vector2Int defenderPos = defender.GetGridPosition();
 
         // Reuse the knockbackDirection and knockbackStrength calculated during selection
@@ -329,7 +332,20 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
         ResetTileColours();
     }
-
+    private void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
+    {
+        float damage = CalculateDamage(attacker, defender, modifierIsActive);
+        currentTarget.TakeDamage(damage);
+    }
+    private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive)
+    {
+        float damageOutput = attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage;
+        if (modifierIsActive)
+        {
+            damageOutput = damageOutput * 2; // Beware, magic number;
+        }
+        return damageOutput;
+    }
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
         //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);

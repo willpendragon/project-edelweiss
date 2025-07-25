@@ -14,7 +14,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         if (activePlayerUnit.CheckTileAvailability(targetTile.tileXCoordinate, targetTile.tileYCoordinate) == false)
             return;
-        if (activePlayerUnit.unitOpportunityPoints == 0)
+        if (activePlayerUnit.unitOpportunityPoints <= 0)
             return;
         if (UnitHasNegativeStatus(activePlayerUnit) == true)
             return;
