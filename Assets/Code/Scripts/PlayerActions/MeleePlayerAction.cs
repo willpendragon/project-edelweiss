@@ -241,8 +241,8 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         // Reduce the opportunity points after the attack.
         activePlayerUnit.unitOpportunityPoints--;
         UpdateActivePlayerUnitProfile(activePlayerUnit);
-        activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, currentTarget);
         OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
+        activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, enemyObject.GetComponent<Unit>());
     }
 
     private bool IsKnockbackPossible(Unit activePlayerUnit, TileController targetTile)
@@ -335,7 +335,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     private void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
     {
         float damage = CalculateDamage(attacker, defender, modifierIsActive);
-        currentTarget.TakeDamage(damage);
+        defender.TakeDamage(damage);
     }
     private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive)
     {
