@@ -21,42 +21,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     public delegate void UsedMagnet();
     public static event UsedMagnet OnUsedMagnet;
 
-    public void Select(TileController selectedTile)
-    {
-        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-
-
-        currentTarget = selectedTile.detectedUnit.GetComponent<Unit>();
-
-        if (currentTarget != null && currentTarget.CompareTag("Enemy"))
-        {
-            savedSelectedTile = selectedTile;
-            selectionLimiter--;
-
-            // Reset previous enemy panel before creating a new one
-            //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
-            //UnitProfilesController.Instance.CreateEnemyUnitPanel(currentTarget.gameObject);
-
-            selectedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
-            selectedTile.currentSingleTileStatus = SingleTileStatus.waitingForConfirmationMode;
-
-            if (activePlayerUnit.hasHookshot)
-            {
-                ActivateMagnet(activePlayerUnit, currentTarget);
-                Debug.Log("Magnet selected, waiting for confirmation.");
-            }
-            else
-            {
-                CheckKnockback(activePlayerUnit, currentTarget);
-            }
-        }
-        else
-        {
-            Debug.Log("No Enemy Found");
-        }
-    }
-
     public void Deselect()
     {
         selectionLimiter++;
@@ -91,55 +55,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             }
             BattleInterface.Instance.DeactivateActionInfoPanel();
             Debug.Log("Deselected Melee Attack.");
-        }
-    }
-
-    // Method for knockback logic (used for normal melee attacks).
-    public void CheckKnockback(Unit attacker, Unit defender)
-    {
-        DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
-
-        if (distanceController.CheckDistance(attacker.ownedTile, savedSelectedTile) && LookUpDeityComponent(defender) != true)
-        {
-            Vector2Int attackerPos = attacker.GetGridPosition();
-            Vector2Int defenderPos = defender.GetGridPosition();
-
-            // Calculate the difference in positions.
-            int deltaX = attackerPos.x - defenderPos.x;
-            int deltaY = attackerPos.y - defenderPos.y;
-
-            // Determine the direction of the knockback.
-            knockbackDirection = Vector2Int.zero;
-            if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
-            {
-                knockbackDirection.x = -(int)Mathf.Sign(deltaX);
-            }
-            else
-            {
-                knockbackDirection.y = -(int)Mathf.Sign(deltaY);
-            }
-
-            // Clamp knockback strength between 1 and 3 tiles
-            knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
-
-            // Calculate preview knockback position
-            Vector2Int previewGridPos = defenderPos + (knockbackDirection * knockbackStrength);
-
-            // Clamp the preview position to the grid bounds
-            previewGridPos.x = Mathf.Clamp(previewGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
-            previewGridPos.y = Mathf.Clamp(previewGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
-
-            TileController previewTile = GridManager.Instance.GetTileControllerInstance(previewGridPos.x, previewGridPos.y);
-
-            if (previewTile != null && previewTile.currentSingleTileCondition != SingleTileCondition.occupied)
-            {
-                // Show the knockback preview (e.g., change tile color, animation)
-                previewTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
-            }
-            else
-            {
-                Debug.Log("Can't preview knockback, invalid destination.");
-            }
         }
     }
 
@@ -236,9 +151,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         UseMagnet(activePlayerUnit);
         AttemptKnockback(activePlayerUnit, enemyObject.GetComponent<Unit>());
         HitTarget(activePlayerUnit, enemyObject.GetComponent<Unit>(), targetTile);
-        // Streamline the knockback/regular attack selection. 
         // UnitProfilesController.Instance.UpdateEnemyUnitPanel(targetTile.detectedUnit.gameObject);
-        // Reduce the opportunity points after the attack.
         activePlayerUnit.unitOpportunityPoints--;
         UpdateActivePlayerUnitProfile(activePlayerUnit);
         OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
@@ -278,7 +191,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         if (activePlayerUnit.hasHookshot == false)
             return;
         {
-            // Execute the Magnet attack instead of the standard Melee attack,
+            // Execute the Magnet attack instead of the standard Melee attack.
             ExecuteHookshot(activePlayerUnit, currentTarget);
 
             // Reduce the opportunity points after the attack.
@@ -289,13 +202,12 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     }
     public void AttemptKnockback(Unit attacker, Unit defender)
     {
-        if (IsKnockbackPossible(attacker, defender.ownedTile) == false)
+        if (!IsKnockbackPossible(attacker, defender.ownedTile))
             return;
         bool modifierIsActive = true;
         HitTarget(attacker, defender, modifierIsActive);
+        ExecuteKnockback(attacker, defender);
         Vector2Int defenderPos = defender.GetGridPosition();
-
-        // Reuse the knockbackDirection and knockbackStrength calculated during selection
         Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
         // Clamp the new position to the grid bounds
@@ -332,6 +244,50 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
         ResetTileColours();
     }
+
+    private void ExecuteKnockback(Unit attacker, Unit defender)
+    {
+        Vector2Int attackerPos = attacker.GetGridPosition();
+        Vector2Int defenderPos = defender.GetGridPosition();
+
+        // Calculate the difference in positions.
+        int deltaX = attackerPos.x - defenderPos.x;
+        int deltaY = attackerPos.y - defenderPos.y;
+
+        // Determine the direction of the knockback.
+        knockbackDirection = Vector2Int.zero;
+        if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
+        {
+            knockbackDirection.x = -(int)Mathf.Sign(deltaX);
+        }
+        else
+        {
+            knockbackDirection.y = -(int)Mathf.Sign(deltaY);
+        }
+
+        // Clamp knockback strength between 1 and 3 tiles
+        knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
+
+        // Calculate preview knockback position
+        Vector2Int previewGridPos = defenderPos + (knockbackDirection * knockbackStrength);
+
+        // Clamp the preview position to the grid bounds
+        previewGridPos.x = Mathf.Clamp(previewGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
+        previewGridPos.y = Mathf.Clamp(previewGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
+
+        TileController previewTile = GridManager.Instance.GetTileControllerInstance(previewGridPos.x, previewGridPos.y);
+
+        if (previewTile != null && previewTile.currentSingleTileCondition != SingleTileCondition.occupied)
+        {
+            // Show the knockback preview (e.g., change tile color, animation)
+            previewTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
+        }
+        else
+        {
+            Debug.Log("Can't preview knockback, invalid destination.");
+        }
+    }
+
     private void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
     {
         float damage = CalculateDamage(attacker, defender, modifierIsActive);
@@ -342,10 +298,12 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         float damageOutput = attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage;
         if (modifierIsActive)
         {
-            damageOutput = damageOutput * 2; // Beware, magic number;
+            damageOutput = damageOutput += 2; // Beware, magic number;
         }
         return damageOutput;
     }
+
+
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
         //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
