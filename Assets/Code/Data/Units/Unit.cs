@@ -1,3 +1,4 @@
+using FlatKit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -152,7 +153,6 @@ public class Unit : MonoBehaviour
         {
             BossController currentBossController = GameObject.FindGameObjectWithTag("BossController")?.GetComponent<BossController>();
             currentBossController.UpdateBossHealthBar(unitHealthPoints);
-            Debug.Log("Updated Boss Health Bar");
         }
     }
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
@@ -197,10 +197,9 @@ public class Unit : MonoBehaviour
         if (ignoreUnitMovementLimit == true)
         {
             unitMovementLimit = 10000;
-            Debug.Log("Unit Movement Limit arbitrarility set to 10000");
         }
-        // 05082024 Temporary fix. Sets a very high number that actually makes the Unit move in virtually any gameplay situation where the
-        // flag ignoreMovementLimit is set to true.
+        // Sets a very high number that actually makes the Unit move in virtually any gameplay situation
+        // where the flag ignoreMovementLimit is set to true.
 
         if (path != null && path.Count > 0 && path.Count <= unitMovementLimit)
         {
@@ -211,7 +210,6 @@ public class Unit : MonoBehaviour
         else
         {
             unitMovementLimit = unitTemplate.unitMovemementLimit;
-            Debug.Log("No valid path found or path exceeds movement limit.");
             return false;
         }
     }
@@ -291,38 +289,50 @@ public class Unit : MonoBehaviour
             Destroy(unitProfilePanel);
             //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
-
-            if (this.gameObject.tag == "Enemy")
-            {
-                var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-                if (activePlayerUnit != null)
-                {
-                    // Calculate Coins Reward from Enemy.
-                    BattleRewardsController battleRewardsController = activePlayerUnit.GetComponent<BattleRewardsController>();
-                    int newKill = 1;
-                    battleRewardsController.IncreaseMultiKillCounter(newKill);
-                    float coinsReward;
-                    int multiKillMultiplier = battleRewardsController.CalculateMultiKillCounter();
-                    coinsReward = CalculateCoinsReward() * multiKillMultiplier;
-                    Debug.Log("Coins Reward multiplied by" + multiKillMultiplier);
-                    battleRewardsController.resetMultiKillCounter();
-                    battleRewardsController.AddCoinsRewardToCoinsRewardPool(coinsReward);
-                    battleRewardsController.AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
-                    Debug.Log("Added Enemy and Experience Points Rewards to Active Player Units Rewards Pool");
-
-                    // Spawn Prize on Battlefield.
-                    if (fieldPrizeController != null)
-                    {
-                        fieldPrizeController.UnlockFieldPrize(ownedTile);
-                    }
-                }
-                ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-                ownedTile.detectedUnit = null;
-                ownedTile = null;
-            }
+            CheckEnemyDefeat();
             OnCheckGameOver();
         }
     }
+
+    private void CheckEnemyDefeat()
+    {
+        if (this.gameObject.tag != "Enemy")
+            return;
+        var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
+        if (activePlayerUnit != null)
+        {
+            CheckBattleRewards(activePlayerUnit);
+        }
+        if (ownedTile != null)
+        {
+            ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+            ownedTile.detectedUnit = null;
+            ownedTile = null;
+        }
+    }
+
+    private void CheckBattleRewards(GameObject activePlayerUnit)
+    {
+        BattleRewardsController battleRewardsController = activePlayerUnit.GetComponent<BattleRewardsController>();
+        int newKill = 1;
+        battleRewardsController.IncreaseMultiKillCounter(newKill);
+        float coinsReward;
+        int multiKillMultiplier = battleRewardsController.CalculateMultiKillCounter();
+        coinsReward = CalculateCoinsReward() * multiKillMultiplier;
+        battleRewardsController.resetMultiKillCounter();
+        battleRewardsController.AddCoinsRewardToCoinsRewardPool(coinsReward);
+        battleRewardsController.AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
+        SpawnPrize();
+    }
+
+    private void SpawnPrize()
+    {
+        if (fieldPrizeController != null)
+        {
+            fieldPrizeController.UnlockFieldPrize(ownedTile);
+        }
+    }
+
     public float CalculateCoinsReward()
     {
         int coinsRewardMinRange = (int)coinsRewardRange.x;

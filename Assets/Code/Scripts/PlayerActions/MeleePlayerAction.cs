@@ -306,7 +306,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
-        //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
 
     public void ResetTileColours()
