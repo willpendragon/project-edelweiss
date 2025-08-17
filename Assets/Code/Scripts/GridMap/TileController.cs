@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -35,7 +36,8 @@ public enum TileType
     Mirror,
     Triad
 }
-public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler,
+    IBeginDragHandler, IEndDragHandler
 {
 
     [Header("Gameplay Logic")]
@@ -64,6 +66,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public GameObject cursorPrefab; // Reference to the cursor prefab
     private GameObject cursorInstance; // Instance of the cursor prefab
 
+    [SerializeField] string _actionButtonTag = "ActionButton";
+
     // A* Pathfinding properties
     public int gCost;
     public int hCost;
@@ -80,6 +84,10 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     public delegate void DragCursorAcrossTile(TileController tileController);
     public static event DragCursorAcrossTile OnDragCursorAcrossTile;
+
+    public delegate void EndDragCursorAcrossTile();
+    public static event EndDragCursorAcrossTile OnEndDragCursorAcrossTile;
+
 
     void Start()
     {
@@ -229,6 +237,40 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public void DragCursorWrapper()
     {
         OnDragCursorAcrossTile(this);
+        // Shoot Raycast
+        // If HitItem == ActionButton open Menu
+        // On Drag Exit
         Debug.Log($"Started Dragging on {this.detectedUnit}");
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        OnDragCursorAcrossTile(this);
+        Debug.Log($"Started Dragging on {this.detectedUnit}");
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        bool foundAction = false;
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+
+        foreach (var result in results)
+        {
+            if (result.gameObject.CompareTag("ActionButton"))
+            {
+                foundAction = true;
+                result.gameObject.GetComponent<RadialMenuEntry>().FireAction();
+                Debug.Log("Found Action Button");
+                OnEndDragCursorAcrossTile();
+                break;
+            }
+        }
+
+        if (!foundAction)
+        {
+            OnEndDragCursorAcrossTile();
+            Debug.Log("Found no Action, closing menu");
+        }
     }
 }

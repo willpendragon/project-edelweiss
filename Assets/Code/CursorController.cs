@@ -36,10 +36,12 @@ public class CursorController : MonoBehaviour
     private void OnEnable()
     {
         TileController.OnDragCursorAcrossTile += RetrieveTileStatus;
+        TileController.OnEndDragCursorAcrossTile += CloseRadialMenu;
     }
     private void OnDisable()
     {
         TileController.OnDragCursorAcrossTile -= RetrieveTileStatus;
+        TileController.OnEndDragCursorAcrossTile -= CloseRadialMenu;
     }
     private void Start()
     {
@@ -77,27 +79,38 @@ public class CursorController : MonoBehaviour
 
         if (CheckDistance() && _tileController.detectedUnit == null)// Knockback requires additional logic and will give a null ref at the moment
         {
-            radialMenu.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            // Visualize Radial Menu near the Tile
+            //radialMenu.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            // Instantiate Action Buttons inside the radial menu
+            // The Action Button should hold the specific values for the corresponding move
             _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-            _moveButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToMove());
+            _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Move;
+            //_moveButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToMove());
             TextMeshProUGUI moveButtonText = _moveButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>();
             moveButtonText.text = "Move";
+            radialMenu.GetComponent<RadialMenu>().entries.Add(_moveButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
         else if (CheckDistance() && _tileController.detectedUnit != null)
         {
-            radialMenu.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            //radialMenu.GetComponent<Image>().color = new Color(1, 1, 1, 1);
             _meleeButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _spellButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-
             // Remember that the logic is already expressed in the Action Interfaces, no need to change the move properties when spawning the button
-            _meleeButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToMelee());
-            _spellButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToSpell());
+            //_meleeButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToMelee());
+            //_spellButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToSpell());
             TextMeshProUGUI meleeButtonText = _meleeButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>();
             meleeButtonText.text = "Melee";
             TextMeshProUGUI spellButtonText = _spellButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>();
             spellButtonText.text = "Spell";
+            _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Melee;
+            _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Spell;
+            radialMenu.GetComponent<RadialMenu>().entries.Add(_meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>());
+            radialMenu.GetComponent<RadialMenu>().entries.Add(_spellButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
         _isRadialMenuOpen = true;
+        // Arranges the button following a radial shape
+
+        radialMenu.GetComponent<RadialMenu>().ArrangeButtons();
         PopulateButtonsList();
     }
 
@@ -110,6 +123,7 @@ public class CursorController : MonoBehaviour
         DestroyButtons();
         _actionButtons.Clear();
         _isRadialMenuOpen = false;
+        radialMenu.GetComponent<RadialMenu>().ClearButtonsList();
     }
 
     private void DestroyButtons()
@@ -126,45 +140,47 @@ public class CursorController : MonoBehaviour
         _actionButtons.AddRange(buttons);
     }
 
-    private void ChangeTileToMove()
-    {
-        _tileController.currentPlayerAction = new MovePlayerAction();
-        state = CursorState.Move;
-        ChangeCursorMode(state);
-    }
+    //private void ChangeTileToMove()
+    //{
+    //    _tileController.currentPlayerAction = new MovePlayerAction();
+    //    state = CursorState.Move;
+    //    ChangeCursorMode(state);
+    //}
+    //public void ChangeTileToMelee()
+    //{
+    //    _tileController.currentPlayerAction = new MeleePlayerAction();
+    //    state = CursorState.Melee;
+    //    ChangeCursorMode(state);
+    //}
+    //private void ChangeTileToSpell()
+    //{
+    //    _tileController.currentPlayerAction = new AOESpellPlayerAction();
+    //    state = CursorState.Spell;
+    //    ChangeCursorMode(state);
+    //}
 
-    private void ChangeTileToMelee()
-    {
-        _tileController.currentPlayerAction = new MeleePlayerAction();
-        state = CursorState.Melee;
-        ChangeCursorMode(state);
-    }
-    private void ChangeTileToSpell()
-    {
-        _tileController.currentPlayerAction = new AOESpellPlayerAction();
-        state = CursorState.Spell;
-        ChangeCursorMode(state);
-    }
-
-    public void ChangeCursorMode(CursorState state)
+    public void ChangeCursorMode(RadialMenuEntry.ActionType state)
     {
         switch (state)
         {
-            case CursorState.Move:
+            case RadialMenuEntry.ActionType.Move:
+                _tileController.currentPlayerAction = new MovePlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 Debug.Log($"Current Action is {state}");
                 break;
         }
         switch (state)
         {
-            case CursorState.Melee:
+            case RadialMenuEntry.ActionType.Melee:
+                _tileController.currentPlayerAction = new MeleePlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 Debug.Log($"Current Action is {state}");
                 break;
         }
         switch (state)
         {
-            case CursorState.Spell:
+            case RadialMenuEntry.ActionType.Spell:
+                _tileController.currentPlayerAction = new AOESpellPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 Debug.Log($"Current Action is {state}");
                 break;

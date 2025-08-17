@@ -307,7 +307,6 @@ public class Unit : MonoBehaviour
         {
             ownedTile.currentSingleTileCondition = SingleTileCondition.free;
             ownedTile.detectedUnit = null;
-            ownedTile = null;
         }
     }
 

@@ -261,20 +261,16 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     }
     public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
     {
-        //Misleading method name, as this updates all of the Active Player Profile Unit parameters, not just the manas
-        //activePlayerUnit.unitProfilePanel.GetComponent<PlayerProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
 
     public void PlayVFX(GameObject spellVFX, TileController enemyOccupiedTile, Vector3 spellVFXOffset)
     {
-        if (enemyOccupiedTile.detectedUnit != null)
-        {
-            GameObject spellVFXInstance = Instantiate(spellVFX, enemyOccupiedTile.detectedUnit.transform.position, Quaternion.identity);
-            spellVFXInstance.transform.localPosition += spellVFXOffset;
-            //Beware: Magic numbers
-            Debug.Log("Instantiating VFX");
-            Destroy(spellVFXInstance, 0.5f);
-        }
+        GameObject spellVFXInstance = Instantiate(spellVFX, enemyOccupiedTile.transform.position, Quaternion.identity);
+        spellVFXInstance.transform.localPosition += spellVFXOffset;
+        //Beware: Magic numbers
+        Debug.Log("Instantiating VFX");
+        Destroy(spellVFXInstance, 0.5f);
     }
     public bool manaPointsAvailable(float unitManaPoints, float spellPrice)
     {
