@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
@@ -27,6 +26,7 @@ public class CursorController : MonoBehaviour
     [SerializeField] private GameObject _moveButtonPrefabInstance;
     [SerializeField] private GameObject _meleeButtonPrefabInstance;
     [SerializeField] private GameObject _spellButtonPrefabInstance;
+    [SerializeField] private GameObject _trapButtonPrefabInstance;
     [SerializeField] RectTransform radialMenu;
     [SerializeField] private TileController _tileController;
     private bool _isRadialMenuOpen;
@@ -38,11 +38,13 @@ public class CursorController : MonoBehaviour
         TileController.OnDragCursorAcrossTile += RetrieveTileStatus;
         TileController.OnEndDragCursorAcrossTile += CloseRadialMenu;
     }
+
     private void OnDisable()
     {
         TileController.OnDragCursorAcrossTile -= RetrieveTileStatus;
         TileController.OnEndDragCursorAcrossTile -= CloseRadialMenu;
     }
+
     private void Start()
     {
         state = CursorState.Basic;
@@ -52,8 +54,6 @@ public class CursorController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            // Debug Control
-            // Add Edel as Active Player Unit
             foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
             {
                 playerUnit.gameObject.tag = "ActivePlayerUnit";
@@ -67,37 +67,41 @@ public class CursorController : MonoBehaviour
 
     private void RetrieveTileStatus(TileController tileController)
     {
-        {
-            _tileController = tileController;
-            OpenRadialMenu();
-        }
+        _tileController = tileController;
+        OpenRadialMenu();
     }
+
     void OpenRadialMenu()
     {
         if (_isRadialMenuOpen == true)
             return;
 
-        if (CheckDistance() && _tileController.detectedUnit == null)// Knockback requires additional logic and will give a null ref at the moment
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
+        if (CheckDistance() && _tileController.detectedUnit == null)
         {
-            // Visualize Radial Menu near the Tile
-            //radialMenu.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-            // Instantiate Action Buttons inside the radial menu
-            // The Action Button should hold the specific values for the corresponding move
             _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Move;
-            //_moveButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToMove());
             TextMeshProUGUI moveButtonText = _moveButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>();
             moveButtonText.text = "Move";
             radialMenu.GetComponent<RadialMenu>().entries.Add(_moveButtonPrefabInstance.GetComponent<RadialMenuEntry>());
+
+            TrapController trapController = _tileController.GetComponentInChildren<TrapController>();
+            if (_tileController.currentSingleTileCondition == SingleTileCondition.free &&
+                trapController != null &&
+                trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active)
+            {
+                _trapButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
+                _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Trap;
+                TextMeshProUGUI trapButtonText = _trapButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>();
+                trapButtonText.text = "Trap";
+                radialMenu.GetComponent<RadialMenu>().entries.Add(_trapButtonPrefabInstance.GetComponent<RadialMenuEntry>());
+            }
         }
         else if (CheckDistance() && _tileController.detectedUnit != null)
         {
-            //radialMenu.GetComponent<Image>().color = new Color(1, 1, 1, 1);
             _meleeButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _spellButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-            // Remember that the logic is already expressed in the Action Interfaces, no need to change the move properties when spawning the button
-            //_meleeButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToMelee());
-            //_spellButtonPrefabInstance?.GetComponent<Button>().onClick.AddListener(() => ChangeTileToSpell());
             TextMeshProUGUI meleeButtonText = _meleeButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>();
             meleeButtonText.text = "Melee";
             TextMeshProUGUI spellButtonText = _spellButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>();
@@ -107,9 +111,8 @@ public class CursorController : MonoBehaviour
             radialMenu.GetComponent<RadialMenu>().entries.Add(_meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>());
             radialMenu.GetComponent<RadialMenu>().entries.Add(_spellButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
-        _isRadialMenuOpen = true;
-        // Arranges the button following a radial shape
 
+        _isRadialMenuOpen = true;
         radialMenu.GetComponent<RadialMenu>().ArrangeButtons();
         PopulateButtonsList();
     }
@@ -120,6 +123,7 @@ public class CursorController : MonoBehaviour
         _moveButtonPrefabInstance = null;
         _meleeButtonPrefabInstance = null;
         _spellButtonPrefabInstance = null;
+        _trapButtonPrefabInstance = null;
         DestroyButtons();
         _actionButtons.Clear();
         _isRadialMenuOpen = false;
@@ -140,25 +144,6 @@ public class CursorController : MonoBehaviour
         _actionButtons.AddRange(buttons);
     }
 
-    //private void ChangeTileToMove()
-    //{
-    //    _tileController.currentPlayerAction = new MovePlayerAction();
-    //    state = CursorState.Move;
-    //    ChangeCursorMode(state);
-    //}
-    //public void ChangeTileToMelee()
-    //{
-    //    _tileController.currentPlayerAction = new MeleePlayerAction();
-    //    state = CursorState.Melee;
-    //    ChangeCursorMode(state);
-    //}
-    //private void ChangeTileToSpell()
-    //{
-    //    _tileController.currentPlayerAction = new AOESpellPlayerAction();
-    //    state = CursorState.Spell;
-    //    ChangeCursorMode(state);
-    //}
-
     public void ChangeCursorMode(RadialMenuEntry.ActionType state)
     {
         switch (state)
@@ -168,19 +153,18 @@ public class CursorController : MonoBehaviour
                 _tileController.currentPlayerAction.Execute(_tileController);
                 Debug.Log($"Current Action is {state}");
                 break;
-        }
-        switch (state)
-        {
             case RadialMenuEntry.ActionType.Melee:
                 _tileController.currentPlayerAction = new MeleePlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 Debug.Log($"Current Action is {state}");
                 break;
-        }
-        switch (state)
-        {
             case RadialMenuEntry.ActionType.Spell:
                 _tileController.currentPlayerAction = new AOESpellPlayerAction();
+                _tileController.currentPlayerAction.Execute(_tileController);
+                Debug.Log($"Current Action is {state}");
+                break;
+            case RadialMenuEntry.ActionType.Trap:
+                _tileController.currentPlayerAction = new TrapPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 Debug.Log($"Current Action is {state}");
                 break;
@@ -189,16 +173,8 @@ public class CursorController : MonoBehaviour
 
     private bool CheckDistance()
     {
-        // This method needs to check the distance and return the available actions.
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         int distance = GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController);
-        if (distance <= activePlayerUnit.unitMovementLimit)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return distance <= activePlayerUnit.unitMovementLimit;
     }
 }
