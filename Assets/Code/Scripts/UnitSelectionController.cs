@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
@@ -92,8 +93,7 @@ public class UnitSelectionController : MonoBehaviour
     }
     public void SpawnSelectionIcon(GameObject playerUnit)
     {
-        var existingIcon = GameObject.FindGameObjectWithTag(ACTIVE_PLAYER_UNIT_ICON);
-        Destroy(existingIcon);
+        DestroySelectionIcons();
         _selectionIcon = Instantiate(Resources.Load("PlayerCharacterSelectorIcon") as GameObject, playerUnit.gameObject.transform);
         Vector3 playerSelectionInstanceOffset = new Vector3(0, 2.5f, 0);
         _selectionIcon.transform.localPosition += playerSelectionInstanceOffset;
@@ -123,7 +123,7 @@ public class UnitSelectionController : MonoBehaviour
 
     public void ResetUnitSelection()
     {
-        Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+        DestroySelectionIcons();
         unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = "Player";
         GridManager.Instance.currentPlayerUnit = null;
@@ -141,7 +141,7 @@ public class UnitSelectionController : MonoBehaviour
     public void StopPlayerParty()
     {
         Debug.Log("Stopping Player party");
-        Destroy(GameObject.FindGameObjectWithTag("ActivePlayerCharacterSelectionIcon"));
+        DestroySelectionIcons();
         unitIconsController?.DisplayWaitingIcon();
         GridManager.Instance.currentPlayerUnit = null;
         Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
@@ -150,5 +150,14 @@ public class UnitSelectionController : MonoBehaviour
             unitGO.GetComponent<Unit>().currentUnitPhase = Unit.UnitPhase.Waiting;
         }
         OnUnitTurnEnded();
+    }
+
+    private void DestroySelectionIcons()
+    {
+        GameObject[] icons = GameObject.FindGameObjectsWithTag(ACTIVE_PLAYER_UNIT_ICON);
+        foreach (var icon in icons)
+        {
+            Destroy(icon);
+        }
     }
 }
