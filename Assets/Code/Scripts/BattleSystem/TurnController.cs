@@ -25,6 +25,7 @@ public class TurnController : MonoBehaviour
     {
         public const string PLAYER = "Player";
         public const string ENEMY = "Enemy";
+        public const string ACTIVE_PLAYER_UNIT = "ActivePlayerUnit";
         public const string GAME_STATS_MANAGER = "GameStatsManager";
         public const string BATTLE_MANAGER = "BattleManager";
         public const string BOSS_CONTROLLER = "BossController";
@@ -279,6 +280,7 @@ public class TurnController : MonoBehaviour
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
             //playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
+            RestoreActivePlayerUnit();
         }
         SetPlayerUnitsToActive();
 
@@ -297,6 +299,15 @@ public class TurnController : MonoBehaviour
             Debug.LogWarning("End Turn button not found in the current scene.");
         }
     }
+
+    private void RestoreActivePlayerUnit()
+    {
+        GameObject activePlayerUnit = GameObject.FindGameObjectWithTag(Tags.ACTIVE_PLAYER_UNIT);
+        var unitSelection = FindAnyObjectByType<UnitSelectionController>();
+        unitSelection.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
+        unitSelection.SpawnSelectionIcon(activePlayerUnit);
+    }
+
     public void RunFromBattle()
     {
         OnBattleEnd("Fleed");

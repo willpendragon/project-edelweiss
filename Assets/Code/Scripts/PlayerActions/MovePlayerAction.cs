@@ -31,9 +31,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         SpendOpportunityPoints(activePlayerUnit);
         UpdateActivePlayerUnitProfile(activePlayerUnit);
         activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
-        UpdatePathVisual(path);
-        //savedSelectedTile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
-        //activePlayerUnit.GetComponentInChildren<Animator>().SetTrigger(FindAnimationTrigger(activePlayerUnit, savedSelectedTile));
+        //UpdatePathVisual(path);
         //GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
         OnUnitMovedToTile(targetTile);
     }

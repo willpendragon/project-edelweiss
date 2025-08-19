@@ -192,16 +192,15 @@ public class Unit : MonoBehaviour
         Vector2Int startGridPos = GridManager.Instance.GetGridCoordinatesFromWorldPosition(transform.position);
 
         // Find path using grid coordinates.
-        List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
+        List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>()
+            .FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
 
-        if (ignoreUnitMovementLimit == true)
+        if (ignoreUnitMovementLimit)
         {
             unitMovementLimit = 10000;
         }
-        // Sets a very high number that actually makes the Unit move in virtually any gameplay situation
-        // where the flag ignoreMovementLimit is set to true.
 
-        if (path != null && path.Count > 0 && path.Count <= unitMovementLimit)
+        if (path != null && path.Count > 1 && (path.Count - 1) <= unitMovementLimit)
         {
             StartCoroutine(FollowPath(path));
             unitMovementLimit = unitTemplate.unitMovemementLimit;
@@ -213,6 +212,7 @@ public class Unit : MonoBehaviour
             return false;
         }
     }
+
 
     private IEnumerator FollowPath(List<TileController> path)
     {
@@ -236,13 +236,12 @@ public class Unit : MonoBehaviour
 
     public bool CheckTileAvailability(int targetX, int targetY)
     {
-        // Convert current world position to grid coordinates.
         Vector2Int startGridPos = GridManager.Instance.GetGridCoordinatesFromWorldPosition(transform.position);
 
-        // Find path using grid coordinates.
-        List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
+        List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>()
+            .FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
 
-        if (path != null && path.Count > 0 && path.Count <= unitMovementLimit)
+        if (path != null && path.Count > 1 && (path.Count - 1) <= unitMovementLimit)
         {
             return true;
         }

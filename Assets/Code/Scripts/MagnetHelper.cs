@@ -5,6 +5,7 @@ public class MagnetHelper : MonoBehaviour
     public GameObject miniMagnetPrefab;
     public GameObject tileConveyorOverlayPrefab;
     private GameObject activeMagnet;
+    private float destroyDelay = 1f;
 
     public void OrientMagnet(Unit attacker, Unit defender)
     {
@@ -33,8 +34,7 @@ public class MagnetHelper : MonoBehaviour
     }
     public void DestroyMagnet()
     {
-        //float timeToDestroyMagnet = 3f;
-        Destroy(activeMagnet);
+        Destroy(activeMagnet, destroyDelay);
         activeMagnet = null;
     }
 }

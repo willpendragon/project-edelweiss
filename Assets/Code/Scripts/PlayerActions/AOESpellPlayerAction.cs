@@ -87,7 +87,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         SpendResources(activePlayerUnit, spell);
 
         OnUsedSingleTargetSpell();
-        DeityEnmityCheck();
+        DeityEnmityCheck(spell.alignment);
     }
 
     private void SpendResources(Unit activePlayerUnit, Spell spell)
@@ -241,14 +241,13 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         OnDeselectedSpell();
         //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
     }
-    public void DeityEnmityCheck()
+    public void DeityEnmityCheck(SpellAlignment spellAlignment)
     {
         if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<EnemyTurnManager>().deity == null)
             return;
         // Look for the Unbound Deity on the Battlefield.
         unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<EnemyTurnManager>().deity.GetComponent<Deity>();
         // Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments.
-        SpellAlignment spellAlignment = spellCastingController.currentSelectedSpell.alignment;
 
         if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
         {

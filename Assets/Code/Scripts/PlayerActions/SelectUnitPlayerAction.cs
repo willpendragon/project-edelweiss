@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static SelectUnitPlayerAction;
 
@@ -16,6 +15,10 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction
     public delegate void FaithlessCharacter(string faithlessCharacterMessage);
     public static event FaithlessCharacter OnFaithlessCharacter;
 
+    public static class Tags
+    {
+        public const string ACTIVE_PLAYER_UNIT_ICON = "ActivePlayerCharacterSelectionIcon";
+    }
     public void Select(TileController selectedTile)
     {
         if (!IsSelectionValid(selectedTile)) return;

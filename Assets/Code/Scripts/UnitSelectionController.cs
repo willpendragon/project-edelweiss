@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -28,6 +29,8 @@ public class UnitSelectionController : MonoBehaviour
     [SerializeField] private List<Unit> _playerUnits;
 
     public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
+    public const string ACTIVE_PLAYER_UNIT_ICON = "ActivePlayerCharacterSelectionIcon";
+
 
     private void OnEnable()
     {
@@ -87,14 +90,16 @@ public class UnitSelectionController : MonoBehaviour
         _activePlayerUnit = playerUnit;
         Debug.Log($"{playerUnit.unitTemplate.unitName} is now the ActivePlayerUnit");
     }
-    private void SpawnSelectionIcon(GameObject playerUnit)
+    public void SpawnSelectionIcon(GameObject playerUnit)
     {
+        var existingIcon = GameObject.FindGameObjectWithTag(ACTIVE_PLAYER_UNIT_ICON);
+        Destroy(existingIcon);
         _selectionIcon = Instantiate(Resources.Load("PlayerCharacterSelectorIcon") as GameObject, playerUnit.gameObject.transform);
         Vector3 playerSelectionInstanceOffset = new Vector3(0, 2.5f, 0);
         _selectionIcon.transform.localPosition += playerSelectionInstanceOffset;
     }
 
-    private void SpawnUnitInfoPanel(Unit playerUnit)
+    public void SpawnUnitInfoPanel(Unit playerUnit)
     {
         _selectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
         _selectedUnitPanel.tag = "ActiveCharacterUnitProfile";

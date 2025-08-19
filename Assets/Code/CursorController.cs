@@ -192,7 +192,7 @@ public class CursorController : MonoBehaviour
         // This method needs to check the distance and return the available actions.
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         int distance = GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController);
-        if (distance <= 10)
+        if (distance <= activePlayerUnit.unitMovementLimit)
         {
             return true;
         }
