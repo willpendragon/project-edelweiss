@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -45,16 +46,19 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         Debug.Log("Executing Spell");
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (CheckTargetTileValidity(targetTile) == false)
+        if (!CheckTargetTileValidity(targetTile))
             return;
 
         if (activePlayerUnit.unitManaPoints <= 0 || activePlayerUnit.unitOpportunityPoints <= 0)
             return;
 
-        // BEWARE: Hard-coded logic, retrieves first spell only.
         Spell spell = activePlayerUnit.unitTemplate.spellsList[0];
         SetSpellType(spell);
-        CastSpell(spell, targetTile);
+
+        if (spellMode == SpellMode.AOE)
+            CastAOESpell(spell, targetTile);
+        else
+            CastSpell(spell, targetTile);
     }
 
     private void SetSpellType(Spell spell)
@@ -78,17 +82,60 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         Unit spellTarget = targetTile.detectedUnit.GetComponent<Unit>();
 
-        if (manaPointsAvailable(activePlayerUnit.unitManaPoints, spell.manaPointsCost) == false)
+        if (!manaPointsAvailable(activePlayerUnit.unitManaPoints, spell.manaPointsCost))
             return;
 
-        spellTarget.TakeDamage(CalculateSpellDamage(spell));
-        TriggerSecondaryEffect(spellTarget);
+        int damageToApply = CalculateSpellDamage(spell);
+        spellTarget.TakeDamage(damageToApply);
+
+        if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun)
+            TriggerSecondaryEffect(spellTarget);
+
         PlaySpellFeedback(activePlayerUnit, spellTarget, spell);
         SpendResources(activePlayerUnit, spell);
 
-        OnUsedSingleTargetSpell();
+        OnUsedSingleTargetSpell?.Invoke();
         DeityEnmityCheck(spell.alignment);
     }
+
+
+    private void CastAOESpell(Spell spell, TileController targetTile)
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+
+        if (!manaPointsAvailable(activePlayerUnit.unitManaPoints, spell.manaPointsCost))
+            return;
+
+        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
+        List<TileController> affectedTiles = gridMovementController.GetMultipleTiles(targetTile, aoeRange);
+
+        activePlayerUnit.unitOpportunityPoints--;
+        activePlayerUnit.SpendManaPoints(spell.manaPointsCost);
+        UpdateActivePlayerUnitMana(activePlayerUnit);
+
+        OnUsedSpell?.Invoke(spell.spellName, activePlayerUnit.unitTemplate.unitName);
+
+        foreach (var tile in affectedTiles)
+        {
+            if (tile.detectedUnit == null || tile.detectedUnit.tag != "Enemy")
+                continue;
+
+            Unit enemy = tile.detectedUnit.GetComponent<Unit>();
+            if (enemy.currentUnitLifeCondition != Unit.UnitLifeCondition.unitAlive)
+                continue;
+
+            int damageToApply = CalculateSpellDamage(spell);
+            enemy.TakeDamage(damageToApply);
+
+            if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun)
+                TriggerSecondaryEffect(enemy);
+
+            PlaySpellFeedback(activePlayerUnit, enemy, spell);
+            DeityEnmityCheck(spell.alignment);
+            PlayVFX(spell.spellVFX, tile, spell.spellVFXOffset);
+        }
+    }
+
 
     private void SpendResources(Unit activePlayerUnit, Spell spell)
     {
