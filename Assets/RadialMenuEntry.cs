@@ -11,7 +11,8 @@ public class RadialMenuEntry : MonoBehaviour
         Move,
         Melee,
         Spell,
-        Trap
+        Trap,
+        Crystal
     }
 
     [SerializeField] private TextMeshProUGUI _actionLabel;

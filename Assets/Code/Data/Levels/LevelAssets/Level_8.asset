@@ -13,12 +13,4 @@ MonoBehaviour:
   m_Name: Level_8
   m_EditorClassIdentifier: 
   levelNumber: 0
-  minEnemyPoolSize: 6
-  maxEnemyPoolSize: 10
-  enemyWeights:
-  - enemyType: 0
-    weight: 3
-  - enemyType: 1
-    weight: 5
-  - enemyType: 2
-    weight: 2
+  enemyPartyData: {fileID: 11400000, guid: 8b0c627625e914448bbaf89f8e6204d6, type: 2}

@@ -48,6 +48,7 @@ public class BattleInterface : MonoBehaviour
     private void OnEnable()
     {
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
+        PlaceCrystalPlayerAction.OnCaptureAttempt += SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell += SetSpellNameOnNotificationPanel;
         MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack += SetMeleeAttackOnNotificationPanel;
@@ -61,6 +62,7 @@ public class BattleInterface : MonoBehaviour
     private void OnDisable()
     {
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
+        PlaceCrystalPlayerAction.OnCaptureAttempt -= SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell -= SetSpellNameOnNotificationPanel;
         MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetMeleeAttackOnNotificationPanel;
