@@ -940,15 +940,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3095801245679236853, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.089933
+      value: -0.06
       objectReference: {fileID: 0}
     - target: {fileID: -3095801245679236853, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.3052845
+      value: -0.16008404
       objectReference: {fileID: 0}
     - target: {fileID: -3095801245679236853, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.614451
+      value: -0.21748176
       objectReference: {fileID: 0}
     - target: {fileID: -1581822108160424023, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
       propertyPath: m_Layer
@@ -4144,8 +4144,10 @@ MonoBehaviour:
   _moveButtonPrefabInstance: {fileID: 0}
   _meleeButtonPrefabInstance: {fileID: 0}
   _spellButtonPrefabInstance: {fileID: 0}
+  _trapButtonPrefabInstance: {fileID: 0}
   radialMenu: {fileID: 448129072}
   _tileController: {fileID: 0}
+  hazardsLimit: 1
 --- !u!4 &582521118
 Transform:
   m_ObjectHideFlags: 0
@@ -20860,7 +20862,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 42.386597, y: 42.386597, z: 42.386597}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911147375969266743}
@@ -21030,7 +21032,7 @@ Transform:
   m_GameObject: {fileID: 2853166123752632539}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 15.7, y: 10, z: -0.4}
+  m_LocalPosition: {x: 14.396306, y: 10.746946, z: -24.3501}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
