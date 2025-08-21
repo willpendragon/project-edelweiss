@@ -77,6 +77,15 @@ public class CursorController : MonoBehaviour
     {
         if (_isRadialMenuOpen == true)
             return;
+        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("Player"))
+        {
+            return;
+        }
+
+        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("ActivePlayerUnit"))
+        {
+            return;
+        }
 
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
