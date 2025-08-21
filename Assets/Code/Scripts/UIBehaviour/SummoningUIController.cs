@@ -99,12 +99,6 @@ public class SummoningUIController : MonoBehaviour
 
     public void SwitchButtonToPrayMode()
     {
-        MoveInfoController.Instance.HideActionInfoPanel();
-        DestroyMagnet();
-
-        currentSummonPhase = SummonPhase.praying;
-        currentButton.GetComponentInChildren<Text>().text = "Pray";
-        currentButton.onClick.AddListener(() => SwitchTilesToPrayMode());
     }
     private void UpdateInstructionsPanel(string lmbText, string rmbText)
     {

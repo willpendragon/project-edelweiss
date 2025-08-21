@@ -12,6 +12,8 @@ public class RadialMenuEntry : MonoBehaviour
         Melee,
         Spell,
         Trap,
+        Pray,
+        Summon,
         Crystal
     }
 

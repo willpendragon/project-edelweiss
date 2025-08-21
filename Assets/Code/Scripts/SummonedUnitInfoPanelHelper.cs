@@ -73,10 +73,6 @@ public class SummonedUnitInfoPanelHelper : MonoBehaviour
     }
     private void ResetSummon(Unit currentActivePlayerUnit, Deity summonedLinkedDeity)
     {
-        SummoningUIController currentActivePlayerUnitSummoningUIController = currentActivePlayerUnit.gameObject.GetComponent<SummoningUIController>();
-        currentActivePlayerUnitSummoningUIController.currentSummonPhase = SummoningUIController.SummonPhase.summoning;
-        currentActivePlayerUnitSummoningUIController.currentButton.GetComponentInChildren<Text>().text = "Summon";
-
         PlayDespawnTween(summonedLinkedDeity.gameObject);
 
         Destroy(summonedLinkedDeity.gameObject, 3);
@@ -106,7 +102,6 @@ public class SummonedUnitInfoPanelHelper : MonoBehaviour
             Debug.Log("Summoned Deity teleported away.");
         });
     }
-    // I should centralize this logic.
     public void ResetTileControllersAfterDeitySummon()
     {
         foreach (var tile in GridManager.Instance.gridTileControllers)

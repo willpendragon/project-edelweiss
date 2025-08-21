@@ -10,11 +10,8 @@ public class AnguanaHealingBehavior : DeityBehavior
     public string deityBuffDescription = "";
     public override void ExecuteBehavior(Deity deity)
     {
-        GameObject currentPlayerUnitGO = GridManager.Instance.currentPlayerUnit;
-
+        GameObject currentPlayerUnitGO = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         currentPlayerUnitGO.GetComponent<Unit>().unitShieldPoints += bubbleBuffShieldPointsIncreaseAmount;
         currentPlayerUnitGO.GetComponentInChildren<TileShaderController>()?.AnimateFadeHeight(2.08f, 2, Color.cyan);
-
-        Debug.Log("Testing Anguana Alternative Behaviour");
     }
 }
