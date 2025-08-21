@@ -159,6 +159,12 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
         newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
+        TileController projectedTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
+        if (projectedTile.detectedUnit != null)
+        {
+            return;
+        }
+
         if (defender.MoveUnit(newGridPos.x, newGridPos.y, true) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             defender.ownedTile.detectedUnit = null;
@@ -204,10 +210,10 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
         TileController previewTile = GridManager.Instance.GetTileControllerInstance(previewGridPos.x, previewGridPos.y);
 
-        if (previewTile != null && previewTile.currentSingleTileCondition != SingleTileCondition.occupied)
-        {
-            previewTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
-        }
+        //if (previewTile != null && previewTile.currentSingleTileCondition != SingleTileCondition.occupied)
+        //{
+        //    previewTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
+        //}
     }
 
     private bool IsKnockbackPossible(Unit activePlayerUnit, TileController targetTile)
