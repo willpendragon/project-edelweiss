@@ -14,7 +14,8 @@ public class RadialMenuEntry : MonoBehaviour
         Trap,
         Pray,
         Summon,
-        Crystal
+        Crystal,
+        Run
     }
 
     [SerializeField] private TextMeshProUGUI _actionLabel;

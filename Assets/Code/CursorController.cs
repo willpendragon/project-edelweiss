@@ -28,6 +28,7 @@ public class CursorController : MonoBehaviour
     [SerializeField] private GameObject _meleeButtonPrefabInstance;
     [SerializeField] private GameObject _spellButtonPrefabInstance;
     [SerializeField] private GameObject _trapButtonPrefabInstance;
+    [SerializeField] private GameObject _runButtonPrefabInstance;
     [SerializeField] RectTransform radialMenu;
     [SerializeField] private TileController _tileController;
     [SerializeField] private int hazardsLimit = 1;
@@ -82,7 +83,13 @@ public class CursorController : MonoBehaviour
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
 
-        // ---- Movement-related actions ----
+        _runButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
+        _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Run;
+        _runButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Run";
+        radialMenu.GetComponent<RadialMenu>().entries.Add(_runButtonPrefabInstance.GetComponent<RadialMenuEntry>());
+
+
+
         if (CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit == null)
         {
             _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
@@ -91,7 +98,6 @@ public class CursorController : MonoBehaviour
             radialMenu.GetComponent<RadialMenu>().entries.Add(_moveButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
 
-        // ---- Hazard-related actions (Trap, Crystal, Summon) ----
         if (CheckDistance(hazardsLimit) && _tileController.detectedUnit == null)
         {
             TrapController trapController = _tileController.GetComponentInChildren<TrapController>();
@@ -210,6 +216,9 @@ public class CursorController : MonoBehaviour
             case RadialMenuEntry.ActionType.Pray:
                 _tileController.currentPlayerAction = new PrayPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
+                break;
+            case RadialMenuEntry.ActionType.Run:
+                TurnController.Instance.RunFromBattle();
                 break;
         }
     }
