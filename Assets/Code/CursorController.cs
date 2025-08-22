@@ -31,7 +31,9 @@ public class CursorController : MonoBehaviour
     [SerializeField] private GameObject _runButtonPrefabInstance;
     [SerializeField] RectTransform radialMenu;
     [SerializeField] private TileController _tileController;
-    [SerializeField] private int hazardsLimit = 1;
+    [SerializeField] private int _hazardsLimit = 1;
+    [SerializeField] private int _meleeRange = 2; // Fallback value
+
     private bool _isRadialMenuOpen;
 
     private List<Button> _actionButtons = new List<Button>();
@@ -98,7 +100,7 @@ public class CursorController : MonoBehaviour
             radialMenu.GetComponent<RadialMenu>().entries.Add(_moveButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
 
-        if (CheckDistance(hazardsLimit) && _tileController.detectedUnit == null)
+        if (CheckDistance(_hazardsLimit) && _tileController.detectedUnit == null)
         {
             TrapController trapController = _tileController.GetComponentInChildren<TrapController>();
             if (_tileController.currentSingleTileCondition == SingleTileCondition.free &&
@@ -130,13 +132,19 @@ public class CursorController : MonoBehaviour
                 radialMenu.GetComponent<RadialMenu>().entries.Add(summonButton.GetComponent<RadialMenuEntry>());
             }
         }
-        else if (CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit != null)
+
+        else if (CheckDistance(_meleeRange) && _tileController.detectedUnit != null)
+
         {
             _meleeButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Melee;
             _meleeButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Melee";
             radialMenu.GetComponent<RadialMenu>().entries.Add(_meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>());
+        }
 
+
+        else if (CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit != null)
+        {
             _spellButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Spell;
             _spellButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Spell";
