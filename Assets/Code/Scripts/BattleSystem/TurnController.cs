@@ -304,8 +304,11 @@ public class TurnController : MonoBehaviour
     {
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag(Tags.ACTIVE_PLAYER_UNIT);
         var unitSelection = FindAnyObjectByType<UnitSelectionController>();
-        unitSelection.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
-        unitSelection.SpawnSelectionIcon(activePlayerUnit);
+        if (activePlayerUnit != null)
+        {
+            unitSelection.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
+            unitSelection.SpawnSelectionIcon(activePlayerUnit);
+        }
     }
 
     public void RunFromBattle()
