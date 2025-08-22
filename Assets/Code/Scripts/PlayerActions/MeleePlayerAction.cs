@@ -55,7 +55,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         if (activePlayerUnit.unitOpportunityPoints <= 0 ||
             activePlayerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead ||
-            activePlayerUnit.unitStatusController.unitCurrentStatus != UnitStatus.basic ||
+            activePlayerUnit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless || // Negating Melee if Player is Faithless
             !IsEnemyReachable(activePlayerUnit, targetTile))
             return;
 
