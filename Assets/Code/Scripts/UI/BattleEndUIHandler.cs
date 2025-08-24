@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.IO;
-
+using System;
 
 public class BattleEndUIHandler : MonoBehaviour
 {
@@ -15,6 +15,8 @@ public class BattleEndUIHandler : MonoBehaviour
     public Image battleEndResultsScreen;
     public RectTransform battlefieldNotificationsContainer;
     public Button returnButton;
+    [SerializeField] GameObject _battleInterfaceCanvasObject;
+    [SerializeField] GameObject _battleDetailsPanelObject;
 
     [Header("UI Texts")]
     public TextMeshProUGUI battleEndMessageText;
@@ -37,8 +39,6 @@ public class BattleEndUIHandler : MonoBehaviour
         TurnController.OnBattleEnd -= DisplayBattleEndScreen;
         PlaceCrystalPlayerAction.OnBattleEndCapturedDeity -= DisplayBattleEndScreen;
     }
-
-    // At the end of the Battle UI overlay appears (using Size scaling) with the results of the Battle.
     private void DisplayBattleEndScreen(string battleEndMessage)
     {
         battleEndMessageText.text = battleEndMessage;
@@ -56,31 +56,31 @@ public class BattleEndUIHandler : MonoBehaviour
     }
     private void DeactivateBattleUI()
     {
-        GameObject battleInterfaceCanvas = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
-        if (battleInterfaceCanvas != null) // Check if the GameObject was found
-        {
-            Transform childTransform;
-            // Check if the child index exists
-            if (battleInterfaceCanvas.transform.childCount > 1 && (childTransform = battleInterfaceCanvas.transform.GetChild(1)) != null)
-            {
-                childTransform.gameObject.SetActive(false);
-            }
-            else
-            {
-                Debug.LogWarning("The specified child of BattleInterfaceCanvas does not exist!");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("BattleInterfaceCanvas not found!");
-        }
-
-        BattleInterface.Instance.movesContainer.SetActive(false);
-        DeactivateUnitSelectionCursor();
+        DeactivateUnitProfile();
+        DeactivateUnitSelectionIcon();
         DeactivateStatusIcons();
         DeactivateWaitIcons();
+        DeactivateBattleDetailsPanel();
+        //Transform childTransform;
+        //// Check if the child index exists
+        //if (_battleInterfaceCanvasObject.transform.childCount > 1 && (childTransform = _battleInterfaceCanvasObject.transform.GetChild(1)) != null)
+        //{
+        //    childTransform.gameObject.SetActive(false);
+        //}
     }
-    private void DeactivateUnitSelectionCursor()
+
+    private void DeactivateBattleDetailsPanel()
+    {
+        _battleDetailsPanelObject.SetActive(false);
+    }
+
+    private void DeactivateUnitProfile()
+    {
+        var existingInfoPanel = GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile");
+        Destroy(existingInfoPanel);
+    }
+
+    private void DeactivateUnitSelectionIcon()
     {
         GameObject[] selectionCursors = GameObject.FindGameObjectsWithTag("ActivePlayerCharacterSelectionIcon");
         foreach (var selectionCursor in selectionCursors)

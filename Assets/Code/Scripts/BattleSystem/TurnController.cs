@@ -280,8 +280,9 @@ public class TurnController : MonoBehaviour
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
             //playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
-            RestoreActivePlayerUnit();
+
         }
+        RestoreActivePlayerUnit();
         SetPlayerUnitsToActive();
 
         // Try to find the End Turn button and enable it, if it exists

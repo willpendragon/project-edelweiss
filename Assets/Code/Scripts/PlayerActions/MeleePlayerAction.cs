@@ -133,8 +133,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             destinationTile.detectedUnit = defender.gameObject;
             defender.ownedTile = destinationTile;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
-
-            destinationTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.cyan);
             OnUsedMeleeAction?.Invoke("Magnet", attacker.unitTemplate.unitName);
         }
 

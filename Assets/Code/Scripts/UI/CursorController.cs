@@ -90,8 +90,6 @@ public class CursorController : MonoBehaviour
         _runButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Run";
         radialMenu.GetComponent<RadialMenu>().entries.Add(_runButtonPrefabInstance.GetComponent<RadialMenuEntry>());
 
-
-
         if (CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit == null)
         {
             _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);

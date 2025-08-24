@@ -101,6 +101,7 @@ public class UnitSelectionController : MonoBehaviour
 
     public void SpawnUnitInfoPanel(Unit playerUnit)
     {
+        ClearExistingPanels();
         _selectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
         _selectedUnitPanel.tag = "ActiveCharacterUnitProfile";
         _selectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
@@ -108,6 +109,16 @@ public class UnitSelectionController : MonoBehaviour
         FillPanelDetails(playerUnit);
 
     }
+
+    private void ClearExistingPanels()
+    {
+        GameObject[] existingInfoPanels = GameObject.FindGameObjectsWithTag("ActiveCharacterUnitProfile");
+        foreach (var existingPanel in existingInfoPanels)
+        {
+            Destroy(existingPanel);
+        }
+    }
+
     public void FillPanelDetails(Unit unit)
     {
         UnitProfileController unitProfileController = _selectedUnitPanel.GetComponent<UnitProfileController>();

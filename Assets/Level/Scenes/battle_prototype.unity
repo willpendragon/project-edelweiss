@@ -4145,9 +4145,11 @@ MonoBehaviour:
   _meleeButtonPrefabInstance: {fileID: 0}
   _spellButtonPrefabInstance: {fileID: 0}
   _trapButtonPrefabInstance: {fileID: 0}
+  _runButtonPrefabInstance: {fileID: 0}
   radialMenu: {fileID: 448129072}
   _tileController: {fileID: 0}
-  hazardsLimit: 1
+  _hazardsLimit: 1
+  _meleeRange: 2
 --- !u!4 &582521118
 Transform:
   m_ObjectHideFlags: 0
@@ -6110,6 +6112,8 @@ MonoBehaviour:
   battleEndResultsScreen: {fileID: 869859802}
   battlefieldNotificationsContainer: {fileID: 739119494}
   returnButton: {fileID: 1248081782}
+  _battleInterfaceCanvasObject: {fileID: 767884329}
+  _battleDetailsPanelObject: {fileID: 1114723494}
   battleEndMessageText: {fileID: 1180730695}
   battleEndExperiencePointsText: {fileID: 1766102753}
   battleEndWarFundsGainedText: {fileID: 749872785}
@@ -20862,7 +20866,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 42.386597, y: 42.386597, z: 42.386597}
+  m_LocalScale: {x: 19.499931, y: 19.499931, z: 19.499931}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911147375969266743}
@@ -21032,7 +21036,7 @@ Transform:
   m_GameObject: {fileID: 2853166123752632539}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 14.396306, y: 10.746946, z: -24.3501}
+  m_LocalPosition: {x: -12.404865, y: 9.435142, z: -1.9633927}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
