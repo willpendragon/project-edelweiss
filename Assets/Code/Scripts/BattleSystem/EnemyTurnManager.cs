@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -90,18 +91,16 @@ public class EnemyTurnManager : MonoBehaviour
 
         if (deity == null)
         {
-            OnPlayerTurn?.Invoke("Player Turn");
-            OnPlayerTurnSwap?.Invoke();
-            Debug.Log("No Deity on the battlefield. Passing turn to the Player");
+            DOVirtual.DelayedCall(1f, () => OnPlayerTurn?.Invoke("Player Turn"));
+            DOVirtual.DelayedCall(1f, () => OnPlayerTurnSwap?.Invoke());
         }
         else
         {
-            OnDeityTurn?.Invoke("Deity Turn");
-            // Increase the single enemy turn duration to accomodate more time for the notification.
-            yield return new WaitForSeconds(singleEnemyturnDuration);
+            float deityTurnDuration = 5f;
+            DOVirtual.DelayedCall(1f, () => OnDeityTurn?.Invoke("Deity Turn"));
+            yield return new WaitForSeconds(deityTurnDuration);
             OnPlayerTurn?.Invoke("Player Turn");
-            OnPlayerTurnSwap?.Invoke();
-            Debug.Log("Deity turn is over. Passing turn to Player.");
+            DOVirtual.DelayedCall(1.5f, () => OnPlayerTurnSwap?.Invoke());
         }
     }
 

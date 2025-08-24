@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 
 [CreateAssetMenu(fileName = "AnguanaBehavior", menuName = "DeityBehavior/Anguana")]
 public class DeityAnguanaBehavior : DeityBehavior
@@ -9,7 +10,7 @@ public class DeityAnguanaBehavior : DeityBehavior
     private string deityName = "Anguana";
     public string attackName;
 
-    private System.Random localRandom; // Random instance for flexibility
+    private System.Random localRandom;
 
     public override void ExecuteBehavior(Deity deity)
     {
@@ -19,19 +20,16 @@ public class DeityAnguanaBehavior : DeityBehavior
         {
             if (deity.PerformDeityEnmityCheck())
             {
-                Attack(deity);
+                DOVirtual.DelayedCall(1.5f, () => Attack(deity));
             }
             else
             {
-                BattleInterface.Instance.SetDeityNotification("Deity Anguana placidly looks around");
-                Debug.Log("Deity Anguana doesn't do anything");
+                DOVirtual.DelayedCall(1f, () => BattleInterface.Instance.SetDeityNotification("Deity Anguana placidly looks around"));
             }
         }
         else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             Attack(deity);
-            Debug.Log("Change Tile Position");
-
             MoveDeityToRandomTile(deity);
             GameObject deitySpawnerGameObject = GameObject.FindGameObjectWithTag("DeitySpawner");
             DeitySpawner deitySpawner = deitySpawnerGameObject.GetComponent<DeitySpawner>();
@@ -41,8 +39,9 @@ public class DeityAnguanaBehavior : DeityBehavior
 
     public void Attack(Deity deity)
     {
-        deity.deityCry.Play();
         BattleInterface.Instance.SetSpellNameOnNotificationPanel(attackName, deityName);
+        deity.deityCry.Play();
+
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
 
         foreach (var playerUnit in playerUnitsOnBattlefield)
@@ -56,7 +55,6 @@ public class DeityAnguanaBehavior : DeityBehavior
 
         deity.enmity = 0;
         deity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
-        Debug.Log("Anguana Executes Spiteful Wave attack");
     }
 
     private void MoveDeityToRandomTile(Deity deity)

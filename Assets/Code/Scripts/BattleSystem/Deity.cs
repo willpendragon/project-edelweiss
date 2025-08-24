@@ -61,7 +61,7 @@ public class Deity : MonoBehaviour
     public void Start()
     {
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
-        OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
+        //OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
 
         //Finds the Turn Tracker Details Panel where to instance the Deity Enmity Tracker
         GameObject currentDeityEnmityTracker = GameObject.FindGameObjectWithTag("DeityEnmityCounter");
@@ -73,8 +73,6 @@ public class Deity : MonoBehaviour
     //Retrieves the Deity Behavior from a compatible Scriptable Object added in the Inspector.
     public void DeityBehaviour(string deityText)
     {
-        Debug.Log("Deity Behaviour Starts");
-        StartCoroutine("EndDeityTurn");
         deityBehavior.ExecuteBehavior(this);
     }
 
@@ -84,13 +82,7 @@ public class Deity : MonoBehaviour
         deityHealthBar.GetComponentInChildren<Slider>().value = deityUnitComponent.unitHealthPoints;
         deityHealthBar.GetComponentInChildren<TextMeshProUGUI>().text = deityUnitComponent.unitHealthPoints.ToString();
     }
-    IEnumerator EndDeityTurn()
-    {
-        yield return new WaitForSeconds(1f);
-        Debug.Log("Ending Deity Turn");
-        OnPlayerTurnSwap();
-        OnPlayerTurn("Player Turn");
-    }
+
     public bool PerformDeityEnmityCheck()
     {
         if (enmity >= enmityThreshold)

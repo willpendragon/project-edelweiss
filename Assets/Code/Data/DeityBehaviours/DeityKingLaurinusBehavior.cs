@@ -1,7 +1,7 @@
 using System.Linq;
 using System;
 using UnityEngine;
-using static Deity;
+using DG.Tweening;
 
 [CreateAssetMenu(fileName = "KingLaurinusBehavior", menuName = "DeityBehavior/KingLaurinus")]
 public class DeityKingLaurinusBehavior : DeityBehavior
@@ -16,28 +16,34 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     public static event CheckPlayer OnCheckPlayer;
     public override void ExecuteBehavior(Deity deity)
     {
-        TileController[] gridTiles = ExtractRandomTiles();
 
         deity.deityCry.Play();
+        DOVirtual.DelayedCall(1.5f, () => SpreadCurse());
+        TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
+        if ((turnController.turnCounter - lastAttackTurn) >= attackExecutionThreshold)
+        {
+            DOVirtual.DelayedCall(3f, () => Attack(deity));
+        }
+    }
+
+    private void Attack(Deity deity)
+    {
+        TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
+        lastAttackTurn = turnController.turnCounter;
+        AttackPlayerUnits(deity);
+        AttackEnemyUnits(deity);
+        BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
+        //OnUsedSpecialAttack?.Invoke("Cursed Garden", "King Laurinus");
+    }
+
+    private void SpreadCurse()
+    {
+        TileController[] gridTiles = ExtractRandomTiles();
         foreach (var tile in gridTiles)
         {
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
             Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
             BattleInterface.Instance.SetDeityNotification("King Laurinus's Curse spreads");
-        }
-
-        TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
-
-        if ((turnController.turnCounter - lastAttackTurn) >= attackExecutionThreshold)
-        {
-            lastAttackTurn = turnController.turnCounter;
-
-            Debug.Log("Reached Attack Execution Turn. King Laurinus attacks the Player Units on the cursed tiles");
-            deity.deityCry.Play();
-            AttackPlayerUnits(deity);
-            AttackEnemyUnits(deity);
-            BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
-            OnUsedSpecialAttack?.Invoke("Cursed Garden", "King Laurinus");
         }
     }
 

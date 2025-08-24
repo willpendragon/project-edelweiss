@@ -2857,10 +2857,10 @@ RectTransform:
   - {fileID: 563278382}
   m_Father: {fileID: 767884333}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 216}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &463913749
 MonoBehaviour:
@@ -4150,6 +4150,7 @@ MonoBehaviour:
   _tileController: {fileID: 0}
   _hazardsLimit: 1
   _meleeRange: 2
+  _spellRange: 3
 --- !u!4 &582521118
 Transform:
   m_ObjectHideFlags: 0
@@ -6628,7 +6629,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: ebf8747b9aa90df4183225dbc590c671, type: 3}
-    m_FontSize: 30
+    m_FontSize: 42
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -6639,8 +6640,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 0.7
-  m_Text: Attacking a nearby enemy pushes it back for some tiles. Maybe we can send
-    it on Traps?
+  m_Text: Attacking a nearby enemy pushes it back for some tiles.
 --- !u!222 &838969622
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9753,7 +9753,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 261.9, y: 606}
+  m_AnchoredPosition: {x: 268, y: 0}
   m_SizeDelta: {x: 236, y: 125}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1347551487
@@ -11157,7 +11157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 540}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 248, y: 248}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1661818862
@@ -12915,16 +12915,15 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1976212847
-Transform:
+--- !u!224 &1976212847
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1976212846}
-  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -960, y: -598.29, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12932,6 +12931,11 @@ Transform:
   - {fileID: 1347551486}
   m_Father: {fileID: 767884333}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -720.5, y: -179}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &1976212848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12947,24 +12951,21 @@ MonoBehaviour:
   characters:
   - portrait: {fileID: -841876788, guid: 2729732451864374d84851f9f566f3c5, type: 3}
     dialogues:
-    - "Attacking a nearby enemy pushes it back for some tiles. Maybe we can send
-      it on Traps?\r"
+    - "Attacking nearby enemies to knockback them.\r"
     - I'm trained to attack from a long distance.
-    - I've heard killing enemies upsets Anguana... What if we try to lure it?
-    - If we pray the Deities, we may receive a blessing...
-    - "So tired... I wish I could enjoy some fine pastry in the Caf\xE9."
+    - I've heard killing enemies upsets some Deities...
+    - If we pray the Deities, we receive a blessing.
+    - I wish I could relax and eat pastry...
   - portrait: {fileID: 226725293, guid: 2729732451864374d84851f9f566f3c5, type: 3}
     dialogues:
-    - King Laurinus can summon a Cursed Garden. Escape from evil-infested tiles.
+    - King Laurinus can infest tiles with evil magic.
     - Each new battle, brings new memories.
-    - Enemies release Crystals that enhance our battle prowess.
-    - Attacking a nearby enemy pushes it back for some tiles. Maybe we can send it
-      on Traps?
+    - Enemies release Crystals  enhancing our prowess.
   - portrait: {fileID: 1501421962, guid: 2729732451864374d84851f9f566f3c5, type: 3}
     dialogues:
     - Using specific Spells upsets the Deities.. beware!
-    - I can use the Magnet to attract Enemies closer to my friends.
-    - Some enemies follow you around... I hate clingy people.
+    - I can use the Magnet to attract Enemies.
+    - Some enemies follow you around... so annoying.
     - If we lure Enemies into a Trap, we gain Crystals.
     - Crystals have the power to constrain Deities.
   portraitImage: {fileID: 1661818862}
@@ -12973,7 +12974,7 @@ MonoBehaviour:
   fadeDuration: 0.5
   scaleDuration: 0.5
   targetScale: {x: 1, y: 1, z: 1}
-  displayDuration: 3
+  displayDuration: 4.5
 --- !u!1 &1983234663
 GameObject:
   m_ObjectHideFlags: 0
@@ -20866,7 +20867,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 19.499931, y: 19.499931, z: 19.499931}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911147375969266743}
@@ -21036,7 +21037,7 @@ Transform:
   m_GameObject: {fileID: 2853166123752632539}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: -12.404865, y: 9.435142, z: -1.9633927}
+  m_LocalPosition: {x: 15.7, y: 10, z: -0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

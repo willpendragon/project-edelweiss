@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 public class CursorController : MonoBehaviour
 {
@@ -138,7 +139,7 @@ public class CursorController : MonoBehaviour
         {
             _meleeButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Melee;
-            _meleeButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Melee";
+            _meleeButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = GetButtonName(activePlayerUnit);
             radialMenu.GetComponent<RadialMenu>().entries.Add(_meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
 
@@ -163,8 +164,6 @@ public class CursorController : MonoBehaviour
         PopulateButtonsList();
     }
 
-
-
     void CloseRadialMenu()
     {
         radialMenu.GetComponent<Image>().color = new Color(0, 0, 0, 0);
@@ -183,6 +182,17 @@ public class CursorController : MonoBehaviour
         foreach (var button in _actionButtons)
         {
             Destroy(button.gameObject);
+        }
+    }
+    private string GetButtonName(Unit activePlayerUnit)
+    {
+        if (activePlayerUnit.hasHookshot == true)
+        {
+            return "Magnet";
+        }
+        else
+        {
+            return "Melee";
         }
     }
 

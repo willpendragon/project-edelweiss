@@ -1,8 +1,9 @@
+using DG.Tweening;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 using static Unit;
-using System;
 public class TurnController : MonoBehaviour
 {
     private static TurnController instance;
@@ -158,7 +159,7 @@ public class TurnController : MonoBehaviour
     private void StartEnemyTurn()
     {
         OnEnemyTurn("Enemy Turn");
-        OnEnemyTurnSwap();
+        DOVirtual.DelayedCall(1.5f, () => OnEnemyTurnSwap?.Invoke());
     }
     public bool PlayerPartyAvailable()
     {

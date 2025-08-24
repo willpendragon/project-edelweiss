@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,8 @@ public class CameraPan : MonoBehaviour
     public Vector2 panLimitZ; // Set the Z-axis boundaries
     public float margin = 10f; // Margin in pixels from the edge of the screen
     public Camera currentCamera;
-
+    [SerializeField] private GameObject _enterCafePanelObject;
+    [SerializeField] private GameObject _enterAltarPanelObject;
     [SerializeField] OverworldMapGenerator overworldMapGenerator;
 
     // Update is called once per frame
@@ -22,10 +24,12 @@ public class CameraPan : MonoBehaviour
         if (Input.mousePosition.x >= Screen.width - margin)
         {
             pos.x += panSpeed * Time.deltaTime;
+            CloseBuildingMenu();
         }
         if (Input.mousePosition.x <= margin)
         {
             pos.x -= panSpeed * Time.deltaTime;
+            CloseBuildingMenu();
         }
         //if (Input.mousePosition.y >= Screen.height - margin)
         //{
@@ -45,6 +49,13 @@ public class CameraPan : MonoBehaviour
         transform.position = pos;
 
     }
+
+    private void CloseBuildingMenu()
+    {
+        _enterAltarPanelObject.SetActive(false);
+        _enterCafePanelObject.SetActive(false);
+    }
+
     void Start()
     {
         float horizontalNodePosition = overworldMapGenerator.currentMapNodeTransform.position.x;
