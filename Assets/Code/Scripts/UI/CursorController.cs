@@ -33,6 +33,8 @@ public class CursorController : MonoBehaviour
     [SerializeField] private TileController _tileController;
     [SerializeField] private int _hazardsLimit = 1;
     [SerializeField] private int _meleeRange = 2; // Fallback value
+    [SerializeField] private int _spellRange = 3; // Fallback value
+
 
     private bool _isRadialMenuOpen;
 
@@ -131,7 +133,7 @@ public class CursorController : MonoBehaviour
             }
         }
 
-        else if (CheckDistance(_meleeRange) && _tileController.detectedUnit != null)
+        if (CheckDistance(_meleeRange) && _tileController.detectedUnit != null)
 
         {
             _meleeButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
@@ -140,8 +142,7 @@ public class CursorController : MonoBehaviour
             radialMenu.GetComponent<RadialMenu>().entries.Add(_meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
 
-
-        else if (CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit != null)
+        if (CheckDistance(_spellRange) && _tileController.detectedUnit != null)
         {
             _spellButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Spell;
