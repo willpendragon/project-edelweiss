@@ -6613,8 +6613,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.55}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7.3332, y: 4.41}
-  m_SizeDelta: {x: 303.0621, y: 130.38}
+  m_AnchoredPosition: {x: 51.2378, y: 0.9177}
+  m_SizeDelta: {x: 313.9065, y: 157.5623}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &838969621
 MonoBehaviour:
@@ -6629,7 +6629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9762,8 +9762,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 268, y: 0}
-  m_SizeDelta: {x: 236, y: 125}
+  m_AnchoredPosition: {x: 0, y: 0.00048828}
+  m_SizeDelta: {x: 393.65, y: 145.88}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1347551487
 MonoBehaviour:
@@ -9785,8 +9785,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a718ee18eef47b34bbf41a191a19babb, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: d05a34055acb24c4b9dca885efed1a9d, type: 3}
+  m_Type: 1
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
@@ -11166,8 +11166,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 248, y: 248}
+  m_AnchoredPosition: {x: 47, y: 1.9}
+  m_SizeDelta: {x: 180, y: 180}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1661818862
 MonoBehaviour:
@@ -12936,8 +12936,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1661818861}
   - {fileID: 1347551486}
+  - {fileID: 1661818861}
   m_Father: {fileID: 767884333}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
@@ -12960,7 +12960,7 @@ MonoBehaviour:
   characters:
   - portrait: {fileID: -841876788, guid: 2729732451864374d84851f9f566f3c5, type: 3}
     dialogues:
-    - "Attacking nearby enemies to knockback them.\r"
+    - "Attack nearby enemies to knockback them.\r"
     - I'm trained to attack from a long distance.
     - I've heard killing enemies upsets some Deities...
     - If we pray the Deities, we receive a blessing.
