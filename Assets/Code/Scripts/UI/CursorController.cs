@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
-using Unity.VisualScripting.Antlr3.Runtime;
+
 
 public class CursorController : MonoBehaviour
 {
@@ -35,6 +34,17 @@ public class CursorController : MonoBehaviour
     [SerializeField] private int _hazardsLimit = 1;
     [SerializeField] private int _meleeRange = 2; // Fallback value
     [SerializeField] private int _spellRange = 3; // Fallback value
+
+    // Icons
+    [SerializeField] private Sprite _moveIcon;
+    [SerializeField] private Sprite _meleeIcon;
+    [SerializeField] private Sprite _spellIcon;
+    [SerializeField] private Sprite _runIcon;
+    [SerializeField] private Sprite _trapIcon;
+    [SerializeField] private Sprite _crystalIcon;
+    [SerializeField] private Sprite _summonIcon;
+    [SerializeField] private Sprite _prayIcon;
+    [SerializeField] private Sprite _magnetIcon;
 
 
     private bool _isRadialMenuOpen;
@@ -90,6 +100,7 @@ public class CursorController : MonoBehaviour
 
         _runButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
         _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Run;
+        _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _runIcon;
         _runButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Run";
         radialMenu.GetComponent<RadialMenu>().entries.Add(_runButtonPrefabInstance.GetComponent<RadialMenuEntry>());
 
@@ -97,6 +108,7 @@ public class CursorController : MonoBehaviour
         {
             _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Move;
+            _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _moveIcon;
             _moveButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Move";
             radialMenu.GetComponent<RadialMenu>().entries.Add(_moveButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
@@ -110,6 +122,7 @@ public class CursorController : MonoBehaviour
             {
                 _trapButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
                 _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Trap;
+                _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _trapIcon;
                 _trapButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Trap";
                 radialMenu.GetComponent<RadialMenu>().entries.Add(_trapButtonPrefabInstance.GetComponent<RadialMenuEntry>());
             }
@@ -119,6 +132,7 @@ public class CursorController : MonoBehaviour
             {
                 GameObject crystalButton = Instantiate(actionButtonPrefab, radialMenu.transform);
                 crystalButton.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Crystal;
+                crystalButton.GetComponent<RadialMenuEntry>().icon.sprite = _crystalIcon;
                 crystalButton.GetComponentInChildren<TextMeshProUGUI>().text = "Crystal";
                 radialMenu.GetComponent<RadialMenu>().entries.Add(crystalButton.GetComponent<RadialMenuEntry>());
             }
@@ -129,6 +143,7 @@ public class CursorController : MonoBehaviour
             {
                 GameObject summonButton = Instantiate(actionButtonPrefab, radialMenu.transform);
                 summonButton.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Summon;
+                summonButton.GetComponent<RadialMenuEntry>().icon.sprite = _summonIcon;
                 summonButton.GetComponentInChildren<TextMeshProUGUI>().text = "Summon";
                 radialMenu.GetComponent<RadialMenu>().entries.Add(summonButton.GetComponent<RadialMenuEntry>());
             }
@@ -139,6 +154,7 @@ public class CursorController : MonoBehaviour
         {
             _meleeButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Melee;
+            _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = GetButtonIcon(activePlayerUnit);
             _meleeButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = GetButtonName(activePlayerUnit);
             radialMenu.GetComponent<RadialMenu>().entries.Add(_meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
@@ -147,6 +163,7 @@ public class CursorController : MonoBehaviour
         {
             _spellButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Spell;
+            _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _spellIcon;
             _spellButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Spell";
             radialMenu.GetComponent<RadialMenu>().entries.Add(_spellButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
@@ -155,6 +172,7 @@ public class CursorController : MonoBehaviour
         {
             GameObject prayButton = Instantiate(actionButtonPrefab, radialMenu.transform);
             prayButton.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Pray;
+            prayButton.GetComponent<RadialMenuEntry>().icon.sprite = _prayIcon;
             prayButton.GetComponentInChildren<TextMeshProUGUI>().text = "Pray";
             radialMenu.GetComponent<RadialMenu>().entries.Add(prayButton.GetComponent<RadialMenuEntry>());
         }
@@ -184,6 +202,18 @@ public class CursorController : MonoBehaviour
             Destroy(button.gameObject);
         }
     }
+    private Sprite GetButtonIcon(Unit activePlayerUnit)
+    {
+        if (activePlayerUnit.hasHookshot == true)
+        {
+            return _magnetIcon;
+        }
+        else
+        {
+            return _meleeIcon;
+        }
+    }
+
     private string GetButtonName(Unit activePlayerUnit)
     {
         if (activePlayerUnit.hasHookshot == true)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RadialMenuEntry : MonoBehaviour
 {
@@ -18,7 +19,10 @@ public class RadialMenuEntry : MonoBehaviour
         Run
     }
 
+
     [SerializeField] private TextMeshProUGUI _actionLabel;
+    public Image icon;
+
     public ActionType actionType;
 
     public void SetLabel(string labelText)
