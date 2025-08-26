@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: central_altar
+    second: {fileID: 2100000, guid: 0124b0c2df4745444980101e9471690d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: central_altar_pixel_texture
     second: {fileID: 2100000, guid: dd2cfdb1ecd9ab8478360158d1f954a4, type: 2}
   - first:
@@ -37,8 +42,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: deity_symbol_material
+    second: {fileID: 2100000, guid: 35891db4f0d8f4645878b81488d927c7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: lateral_square_column_texture_pixel
     second: {fileID: 2100000, guid: 6f2abc793a3cec446a1fe2c477b8d6e6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: podium_material
+    second: {fileID: 2100000, guid: c8a3621a5ecad1549a0e7b50795ff838, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -59,6 +74,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: tower_lateral_element_pixel_texture
     second: {fileID: 2100000, guid: b992ef148ac985d4289b6e57884d70ed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wing_material
+    second: {fileID: 2100000, guid: 5a73411544dba86478eac40586a0613e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
