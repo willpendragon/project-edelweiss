@@ -146,6 +146,8 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     {
         if (!IsKnockbackPossible(attacker, defender.ownedTile))
             return;
+        if (defender.unitType == Unit.UnitType.Deity)
+            return;
 
         bool modifierIsActive = true;
         HitTarget(attacker, defender, modifierIsActive);

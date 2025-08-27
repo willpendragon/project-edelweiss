@@ -284,8 +284,11 @@ MonoBehaviour:
   unitMagicPower: 0
   unitMeleeAttackBaseDamage: 0
   currentUnitLifeCondition: 1
+  currentUnitBuff: 0
+  currentUnitPhase: 0
   unitStatusController: {fileID: 0}
   fieldPrizeController: {fileID: 0}
+  unitType: 2
   hasHookshot: 0
   bossFlag: 0
   linkedDeity: {fileID: 0}
@@ -325,13 +328,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ea15ee3f60ec9a46b47097f03cb5504, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeCharacterSelectorIcon: {fileID: 0}
-  moveButton: {fileID: 0}
   waitButton: {fileID: 0}
   currentUnitSelectionStatus: 0
   unitSpellUIController: {fileID: 0}
   unitSprite: {fileID: 0}
   unitIconsController: {fileID: 0}
+  _activePlayerUnit: {fileID: 0}
+  _selectionIcon: {fileID: 0}
+  _selectedUnitPanel: {fileID: 0}
+  _playerUnits: []
 --- !u!114 &3098965702385623563
 MonoBehaviour:
   m_ObjectHideFlags: 0

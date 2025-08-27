@@ -23,13 +23,18 @@ public class Unit : MonoBehaviour
         Waiting
     }
 
-
     public enum UnitBuff
     {
         Basic,
         InvulnerableMask
     }
 
+    public enum UnitType
+    {
+        PlayerUnit,
+        Godling,
+        Deity
+    }
 
     [Header("Unit Basics")]
 
@@ -75,6 +80,7 @@ public class Unit : MonoBehaviour
     public UnitPhase currentUnitPhase;
     public UnitStatusController unitStatusController;
     public FieldPrizeController fieldPrizeController;
+    public UnitType unitType;
 
     public bool hasHookshot;
     public bool bossFlag = false;
@@ -84,7 +90,6 @@ public class Unit : MonoBehaviour
     public Deity linkedDeity;
     public Deity summonedLinkedDeity;
     public string LinkedDeityId; // This will store the ID of the linked Deity.
-
 
     [Header("Visuals")]
 

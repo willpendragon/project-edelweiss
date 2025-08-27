@@ -501,8 +501,10 @@ MonoBehaviour:
   unitMeleeAttackBaseDamage: 0
   currentUnitLifeCondition: 0
   currentUnitBuff: 0
+  currentUnitPhase: 0
   unitStatusController: {fileID: 361118017173477511}
   fieldPrizeController: {fileID: 1254154078120300381}
+  unitType: 1
   hasHookshot: 0
   bossFlag: 0
   linkedDeity: {fileID: 0}

@@ -34,6 +34,7 @@ public class CursorController : MonoBehaviour
     [SerializeField] private int _hazardsLimit = 1;
     [SerializeField] private int _meleeRange = 2; // Fallback value
     [SerializeField] private int _spellRange = 3; // Fallback value
+    [SerializeField] private TurnController _turnController;
 
     // Icons
     [SerializeField] private Sprite _moveIcon;
@@ -91,9 +92,14 @@ public class CursorController : MonoBehaviour
 
     public void OpenRadialMenu()
     {
-        if (_isRadialMenuOpen) return;
-        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("Player")) return;
-        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("ActivePlayerUnit")) return;
+        if (_isRadialMenuOpen)
+            return;
+        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("Player"))
+            return;
+        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("ActivePlayerUnit"))
+            return;
+        if (_turnController.currentTurn == TurnController.Turn.EnemyTurn)
+            return;
 
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();

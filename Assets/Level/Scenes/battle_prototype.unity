@@ -2784,7 +2784,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entryPrefab: {fileID: 3697401084752425904, guid: 163fe0ec09bf00b4ea589f61d2a8069d, type: 3}
   entries: []
-  _radius: 150
+  _radius: 200
 --- !u!114 &448129074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4151,6 +4151,7 @@ MonoBehaviour:
   _hazardsLimit: 1
   _meleeRange: 2
   _spellRange: 3
+  _turnController: {fileID: 2215166866216881511}
   _moveIcon: {fileID: 21300000, guid: 3c5c715bee9958044969af3fb789345b, type: 3}
   _meleeIcon: {fileID: 21300000, guid: b86df38f098093e40bc71c8c53d02882, type: 3}
   _spellIcon: {fileID: 21300000, guid: 8f9cb3ef97d34fa40b913628472fc313, type: 3}
@@ -20876,7 +20877,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 14.9828825, y: 14.9828825, z: 14.9828825}
+  m_LocalScale: {x: 971.45996, y: 971.45996, z: 971.45996}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911147375969266743}
@@ -21046,7 +21047,7 @@ Transform:
   m_GameObject: {fileID: 2853166123752632539}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 19.776054, y: 11.215519, z: -2.6818476}
+  m_LocalPosition: {x: 1104.8265, y: 622.195, z: -730.99866}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

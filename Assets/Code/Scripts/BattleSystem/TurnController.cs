@@ -274,6 +274,7 @@ public class TurnController : MonoBehaviour
     }
     public void RestorePlayerUnits()
     {
+        currentTurn = Turn.PlayerTurn;
         foreach (var playerUnit in TurnController.Instance.playerUnitsOnBattlefield)
         {
             TurnController.Instance.turnCounter++;
