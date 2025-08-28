@@ -35,11 +35,11 @@ public class UnitSelectionController : MonoBehaviour
 
     private void OnEnable()
     {
-        UnitSelectionHelper.OnUnitSelected += SelectPlayerUnit;
+        //UnitSelectionHelper.OnUnitSelected += SelectPlayerUnit;
     }
     private void OnDisable()
     {
-        UnitSelectionHelper.OnUnitSelected -= SelectPlayerUnit;
+        //UnitSelectionHelper.OnUnitSelected -= SelectPlayerUnit;
     }
     private void Start()
     {

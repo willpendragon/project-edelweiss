@@ -11,6 +11,6 @@ public class UnitSelectionHelper : MonoBehaviour
 
     public void SelectionEventWrapper()
     {
-        OnUnitSelected(unit);
+        //OnUnitSelected(unit);
     }
 }

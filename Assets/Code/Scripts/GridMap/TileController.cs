@@ -108,7 +108,13 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-
+        if (detectedUnit == null)
+            return;
+        if (detectedUnit.CompareTag("Player"))
+        {
+            var unitSelection = FindAnyObjectByType<UnitSelectionController>();
+            unitSelection.SelectPlayerUnit(detectedUnit.GetComponent<Unit>());
+        }
         //if (eventData.button == PointerEventData.InputButton.Left && Time.time - lastClickTime > clickCooldown)
         //{
         //    lastClickTime = Time.time;
