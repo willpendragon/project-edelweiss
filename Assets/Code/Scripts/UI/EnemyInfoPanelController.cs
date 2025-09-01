@@ -13,8 +13,8 @@ public class EnemyInfoPanelController : MonoBehaviour, IPointerEnterHandler, IPo
     public static event HoverMouseOnEnemy OnHoverMouseOnEnemy;
     public void OnPointerEnter(PointerEventData eventData)
     {
-        ShowEnemyInfo();
-        Debug.Log("Display Enemy Info");
+        //ShowEnemyInfo();
+        //Debug.Log("Display Enemy Info");
     }
     public void OnPointerExit(PointerEventData eventData)
     {

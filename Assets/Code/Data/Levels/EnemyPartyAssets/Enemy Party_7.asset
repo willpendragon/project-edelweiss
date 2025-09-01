@@ -9,8 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fefbf6998d53fe45ba97e63239c2b6a, type: 3}
-  m_Name: Level_4
+  m_Script: {fileID: 11500000, guid: 7954709b594692a44a06915f078ca1b0, type: 3}
+  m_Name: Enemy Party_7
   m_EditorClassIdentifier: 
-  levelNumber: 0
-  enemyPartyData: {fileID: 11400000, guid: 60616fafbf1b0b0459c70743e5cf5c50, type: 2}
+  minEnemyPoolSize: 3
+  maxEnemyPoolSize: 10
+  enemyWeights:
+  - enemyType: 3
+    weight: 2
+  - enemyType: 2
+    weight: 2

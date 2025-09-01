@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using static TileController;
 
@@ -160,6 +161,8 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
 
         TileController projectedTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
+        if (projectedTile == null)
+            return;
         if (projectedTile.detectedUnit != null)
         {
             return;

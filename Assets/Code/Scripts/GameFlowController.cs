@@ -96,6 +96,9 @@ public class GameFlowController : MonoBehaviour
     {
         // GameObject newBossLevelTower = Instantiate(bossLevelTowerPrefab, bossLevelTowerSpawnpoint);
         // Debug.Log("Boss Jacob's Ladder appears");
+        // Hard-coded for demo purposes
+        overWorldMapCanvas.enabled = true;
+        endOfDemoPanel.localScale = Vector3.one;
     }
     private void UnlockNewDomain()
     {

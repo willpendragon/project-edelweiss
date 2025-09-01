@@ -1,9 +1,12 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using static EnemyInfoPanelController;
 
 
 public enum SingleTileStatus
@@ -65,6 +68,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     [Header("Cursor Visual")]
     public GameObject cursorPrefab; // Reference to the cursor prefab
     private GameObject cursorInstance; // Instance of the cursor prefab
+    GameObject _enemyUnitPanel;
 
     [SerializeField] string _actionButtonTag = "ActionButton";
 
@@ -239,19 +243,26 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().activeCharacterMagicPower.text = activePlayerUnit.unitMagicPower.ToString();
         }
     }
-
     public void DragCursorWrapper()
     {
         OnDragCursorAcrossTile(this);
         // Shoot Raycast
         // If HitItem == ActionButton open Menu
         // On Drag Exit
+
         Debug.Log($"Started Dragging on {this.detectedUnit}");
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         OnDragCursorAcrossTile(this);
+        if (detectedUnit != null && detectedUnit.CompareTag("Enemy"))
+        {
+            _enemyUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+            _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
+            detectedUnit.GetComponent<Unit>().unitProfilePanel = _enemyUnitPanel;
+            _enemyUnitPanel.GetComponent<UnitProfileController>().ApplyProfileChanges(detectedUnit);
+        }
         Debug.Log($"Started Dragging on {this.detectedUnit}");
     }
 
@@ -269,7 +280,12 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 result.gameObject.GetComponent<RadialMenuEntry>().FireAction();
                 Debug.Log("Found Action Button");
                 OnEndDragCursorAcrossTile();
+                ApplyProfileChangesWrapper();
                 break;
+            }
+            else
+            {
+                Destroy(_enemyUnitPanel);
             }
         }
 
@@ -278,5 +294,12 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             OnEndDragCursorAcrossTile();
             Debug.Log("Found no Action, closing menu");
         }
+    }
+
+    private void ApplyProfileChangesWrapper()
+    {
+        if (_enemyUnitPanel == null)
+            return;
+        _enemyUnitPanel.GetComponent<UnitProfileController>().ApplyProfileChanges(detectedUnit);
     }
 }

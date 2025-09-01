@@ -42,6 +42,8 @@ public class UnitProfileController : MonoBehaviour
     }
     public void ApplyProfileChanges(GameObject detectedUnit)
     {
+        if (detectedUnit == null)
+            return;
         // Update Unit Profile Portrait and Name.
         activeCharacterPortrait.GetComponent<Image>().overrideSprite = detectedUnit.GetComponent<Unit>().unitTemplate.unitPortrait;
         activeCharacterName.text = detectedUnit.GetComponent<Unit>().unitTemplate.unitName;

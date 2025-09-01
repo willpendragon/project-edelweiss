@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Collections;
 
 public class MovePlayerAction : MonoBehaviour, IPlayerAction
 {
@@ -31,6 +32,8 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
         SpendOpportunityPoints(activePlayerUnit);
         UpdateActivePlayerUnitProfile(activePlayerUnit);
         activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
+        var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
+        reachableTilesVisualizer.ClearReachableTiles(0, 0.5f, Color.white);
         //UpdatePathVisual(path);
         //GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
         OnUnitMovedToTile(targetTile);

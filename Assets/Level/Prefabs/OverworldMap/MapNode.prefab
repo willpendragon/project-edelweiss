@@ -732,7 +732,8 @@ GameObject:
   - component: {fileID: 5935151212853679583}
   - component: {fileID: 5707329951775936691}
   - component: {fileID: 530915590371661356}
-  - component: {fileID: 973073751076642194}
+  - component: {fileID: 5238110405125146984}
+  - component: {fileID: 7039514794350108353}
   m_Layer: 0
   m_Name: MapNode
   m_TagString: Untagged
@@ -825,6 +826,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
+        - m_Target: {fileID: 5238110405125146984}
+          m_TargetAssemblyTypeName: MapNodeFeedback, Assembly-CSharp
+          m_MethodName: OnHoverEnter
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
   - eventID: 1
     callback:
       m_PersistentCalls:
@@ -841,8 +854,34 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!136 &973073751076642194
-CapsuleCollider:
+        - m_Target: {fileID: 5238110405125146984}
+          m_TargetAssemblyTypeName: MapNodeFeedback, Assembly-CSharp
+          m_MethodName: OnHoverExit
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &5238110405125146984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7530335955166926438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82efc6e2ca4f37d49aebc09ceaec872f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pulseScale: 1.2
+  pulseDuration: 0.2
+--- !u!65 &7039514794350108353
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -859,11 +898,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+  serializedVersion: 3
+  m_Size: {x: 3.552124, y: 3.265564, z: 1}
+  m_Center: {x: 0.010437012, y: 1.2721252, z: 0}
 --- !u!1 &8434271442286553102
 GameObject:
   m_ObjectHideFlags: 0

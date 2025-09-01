@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -66,6 +65,8 @@ public class UnitSelectionController : MonoBehaviour
         SpawnSelectionIcon(playerUnit.gameObject);
         SpawnUnitInfoPanel(playerUnit);
         PlaySelectionFeedback(playerUnit);
+        var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
+        reachableTilesVisualizer.ShowReachableTiles();
     }
 
     private void ClearPreviousSelection()

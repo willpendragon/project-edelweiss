@@ -59,7 +59,6 @@ public class ReachableTilesVisualizer : MonoBehaviour
         TileController startTile = unit.ownedTile;
         tilesToExplore.Enqueue(startTile);
 
-        // Dictionary to track visited tiles and distance from the start tile
         Dictionary<TileController, int> visitedTiles = new Dictionary<TileController, int>();
         visitedTiles[startTile] = 0;
 
@@ -68,20 +67,30 @@ public class ReachableTilesVisualizer : MonoBehaviour
             TileController currentTile = tilesToExplore.Dequeue();
             int currentDistance = visitedTiles[currentTile];
 
-            // If the tile is within movement range, add it to reachable tiles
-            if (currentDistance < unit.unitMovementLimit)  // We use < to avoid over-counting the last step
+
+            if (currentDistance <= unit.unitMovementLimit)
             {
-                reachableTiles.Add(currentTile);
 
-                // Get neighboring tiles (non-diagonal)
-                List<TileController> neighbors = GridManager.Instance.gridMovementController.GetNeighbours(currentTile);
-
-                foreach (TileController neighbor in neighbors)
+                if (currentTile.currentSingleTileCondition == SingleTileCondition.free || currentTile == startTile)
                 {
-                    if (!visitedTiles.ContainsKey(neighbor) && neighbor.detectedUnit == null) // Check for no units on tile
+                    if (!reachableTiles.Contains(currentTile))
+                        reachableTiles.Add(currentTile);
+                }
+
+                if (currentDistance < unit.unitMovementLimit)
+                {
+                    List<TileController> neighbors = GridManager.Instance.gridMovementController.GetNeighbours(currentTile);
+
+                    foreach (TileController neighbor in neighbors)
                     {
-                        tilesToExplore.Enqueue(neighbor);
-                        visitedTiles[neighbor] = currentDistance + 1;
+
+                        if (!visitedTiles.ContainsKey(neighbor) &&
+                            neighbor.currentSingleTileCondition == SingleTileCondition.free &&
+                            neighbor.detectedUnit == null)
+                        {
+                            tilesToExplore.Enqueue(neighbor);
+                            visitedTiles[neighbor] = currentDistance + 1;
+                        }
                     }
                 }
             }
@@ -89,6 +98,7 @@ public class ReachableTilesVisualizer : MonoBehaviour
 
         return reachableTiles;
     }
+
 
     private List<TileController> GetTargetableTiles(Unit unit, int range)
     {
@@ -105,7 +115,7 @@ public class ReachableTilesVisualizer : MonoBehaviour
             TileController currentTile = tilesToExplore.Dequeue();
             int currentDistance = visitedTiles[currentTile];
 
-            if (currentDistance > 0 && currentDistance <= range)
+            if (currentDistance > 0 && currentDistance <= range && currentTile.detectedUnit != null && currentTile.detectedUnit.CompareTag("Enemy"))
             {
                 targetableTiles.Add(currentTile);
             }

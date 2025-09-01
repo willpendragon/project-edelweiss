@@ -266,7 +266,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &410839505
 RectTransform:
   m_ObjectHideFlags: 0
@@ -282,9 +282,9 @@ RectTransform:
   - {fileID: 1644348474}
   m_Father: {fileID: 1918409276}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 128, y: 0}
   m_SizeDelta: {x: 256, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &410839506
@@ -615,7 +615,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 256, y: 64}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1318853539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -821,7 +821,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1024, y: 256}
+  m_SizeDelta: {x: 1024, y: 330.51}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1470840703
 MonoBehaviour:
@@ -1173,6 +1173,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadScene_SkipTutorial
       objectReference: {fileID: 0}
+    - target: {fileID: 8846347044957032891, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1224,7 +1228,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -268, y: -42}
+  m_AnchoredPosition: {x: -268, y: -103.2}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1918409277
@@ -1241,7 +1245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 0
-    m_Right: 0
+    m_Right: -540
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
@@ -1310,7 +1314,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SKIP TUTORIAL
+  m_text: START DEMO
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
@@ -1447,6 +1451,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadScene_PlayTutorial
       objectReference: {fileID: 0}
+    - target: {fileID: 8846347044957032891, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1497,7 +1505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.3887, y: 34.565308}
+  m_AnchoredPosition: {x: 3.3887, y: 61.1}
   m_SizeDelta: {x: 965.8587, y: 119.1306}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2031171858
@@ -1520,10 +1528,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'This game features many systems and tactical nuances.
+  m_text: 'The game is still in the works, so many hiccups may occur. Please refer
+    to the PDF manual to fully understand the game systems.
 
-    Please partake
-    in the Tutorial to enjoy a better experience.'
+
+    Thank you for stopping
+    by and please wishlist the game and follow our social media channel to support
+    us!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}

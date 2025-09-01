@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -56,12 +57,14 @@ public class CursorController : MonoBehaviour
     {
         TileController.OnDragCursorAcrossTile += RetrieveTileStatus;
         TileController.OnEndDragCursorAcrossTile += CloseRadialMenu;
+        MovePlayerAction.OnUnitMovedToTile += UpdateTilesVisualizer;
     }
 
     private void OnDisable()
     {
         TileController.OnDragCursorAcrossTile -= RetrieveTileStatus;
         TileController.OnEndDragCursorAcrossTile -= CloseRadialMenu;
+        MovePlayerAction.OnUnitMovedToTile -= UpdateTilesVisualizer;
     }
 
     private void Start()
@@ -101,16 +104,15 @@ public class CursorController : MonoBehaviour
         if (_turnController.currentTurn == TurnController.Turn.EnemyTurn)
             return;
 
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-
         _runButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
         _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Run;
         _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _runIcon;
-        _runButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Run";
+        _runButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Escape from Battle";
         radialMenu.GetComponent<RadialMenu>().entries.Add(_runButtonPrefabInstance.GetComponent<RadialMenuEntry>());
 
-        if (CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit == null)
+        if (activePlayerUnit != null && CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit == null)
         {
             _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Move;
@@ -276,10 +278,20 @@ public class CursorController : MonoBehaviour
         }
     }
 
+    public void UpdateTilesVisualizer(TileController targetTile)
+    {
+        var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
+        reachableTilesVisualizer.ShowReachableTiles();
+    }
+
     private bool CheckDistance(int limit)
     {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        int distance = GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController);
-        return distance <= limit;
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
+        if (activePlayerUnit != null)
+        {
+            int distance = GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController);
+            return distance <= limit;
+        }
+        else return false;
     }
 }
