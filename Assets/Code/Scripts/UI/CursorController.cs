@@ -103,12 +103,15 @@ public class CursorController : MonoBehaviour
             return;
         if (_turnController.currentTurn == TurnController.Turn.EnemyTurn)
             return;
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(_tileController.transform.position);
+        radialMenu.position = screenPosition;
 
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
         _runButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
         _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Run;
         _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _runIcon;
+        _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 3;
         _runButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Escape from Battle";
         radialMenu.GetComponent<RadialMenu>().entries.Add(_runButtonPrefabInstance.GetComponent<RadialMenuEntry>());
 
@@ -117,6 +120,7 @@ public class CursorController : MonoBehaviour
             _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
             _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Move;
             _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _moveIcon;
+            _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 1;
             _moveButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Move";
             radialMenu.GetComponent<RadialMenu>().entries.Add(_moveButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
@@ -131,6 +135,7 @@ public class CursorController : MonoBehaviour
                 _trapButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
                 _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Trap;
                 _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _trapIcon;
+                _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 2;
                 _trapButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Trap";
                 radialMenu.GetComponent<RadialMenu>().entries.Add(_trapButtonPrefabInstance.GetComponent<RadialMenuEntry>());
             }
@@ -164,7 +169,9 @@ public class CursorController : MonoBehaviour
             _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Melee;
             _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = GetButtonIcon(activePlayerUnit);
             _meleeButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = GetButtonName(activePlayerUnit);
+            _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 4;
             radialMenu.GetComponent<RadialMenu>().entries.Add(_meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>());
+
         }
 
         if (CheckDistance(_spellRange) && _tileController.detectedUnit != null)
@@ -173,6 +180,7 @@ public class CursorController : MonoBehaviour
             _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Spell;
             _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _spellIcon;
             _spellButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Spell";
+            _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 5;
             radialMenu.GetComponent<RadialMenu>().entries.Add(_spellButtonPrefabInstance.GetComponent<RadialMenuEntry>());
         }
 
@@ -186,7 +194,6 @@ public class CursorController : MonoBehaviour
         }
 
         _isRadialMenuOpen = true;
-        radialMenu.GetComponent<RadialMenu>().ArrangeButtons();
         PopulateButtonsList();
     }
 
@@ -238,6 +245,7 @@ public class CursorController : MonoBehaviour
     {
         Button[] buttons = radialMenu.GetComponentsInChildren<Button>();
         _actionButtons.AddRange(buttons);
+        radialMenu.GetComponent<RadialMenu>().ArrangeButtons();
     }
 
     public void ChangeCursorMode(RadialMenuEntry.ActionType state)

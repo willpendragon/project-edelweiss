@@ -7,7 +7,7 @@ public class TileShaderController : MonoBehaviour
     public float animationDuration = 2.0f; // Duration of the animation
     public MeshRenderer glowingTileColumn; // Reference to the glowing mesh
     public Ease animationEase = Ease.InOutQuad; // Easing type for the animation
-
+    private Tween fadeHeightTween;
 
     void Start()
     {
@@ -26,6 +26,29 @@ public class TileShaderController : MonoBehaviour
                 .SetEase(animationEase); // Apply easing to the animation
         }
     }
+
+    public void AnimateFadeHeightPulse(float minFadeHeight, float maxFadeHeight, float halfCycleDuration, Color glowColor)
+    {
+        if (glowingTileColumn != null)
+        {
+            // Set the initial glow color
+            glowingTileColumn.material.color = glowColor;
+
+            // Kill any existing tween
+            fadeHeightTween?.Kill();
+
+            // Start pulsating between min and max
+            fadeHeightTween = DOTween.To(
+                    () => glowingTileColumn.material.GetFloat("_FadeHeight"),
+                    x => glowingTileColumn.material.SetFloat("_FadeHeight", x),
+                    maxFadeHeight,
+                    halfCycleDuration
+                )
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
+        }
+    }
+
 
     public void AnimateFadeHeightError(float targetFadeHeight, float animationDuration, Color glowColor)
     {
@@ -57,5 +80,11 @@ public class TileShaderController : MonoBehaviour
     public void ResetTileFadeHeightAnimation(TileController tileToReset)
     {
         tileToReset.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
+    }
+    public void StopFadeHeightPulse()
+    {
+        fadeHeightTween?.Kill();
+        fadeHeightTween = null;
+        AnimateFadeHeight(0, 0, Color.white);
     }
 }

@@ -24,6 +24,7 @@ public class RadialMenuEntry : MonoBehaviour
     public Image icon;
 
     public ActionType actionType;
+    public int priority;
 
     public void SetLabel(string labelText)
     {

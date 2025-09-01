@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,39 +7,47 @@ public class RadialMenu : MonoBehaviour
     [SerializeField] public List<RadialMenuEntry> entries = new List<RadialMenuEntry>();
     [SerializeField] private float _radius = 300f;
 
-    void AddEntry(string actionLabel)
+    // Define fixed "slots" (clock positions in degrees)
+    private Dictionary<int, float> fixedAngles = new Dictionary<int, float>()
     {
-        GameObject actionEntry = Instantiate(_entryPrefab, transform);
-        RadialMenuEntry radialMenuEntry = actionEntry.GetComponent<RadialMenuEntry>();
-        radialMenuEntry.SetLabel(actionLabel);
-
-        entries.Add(radialMenuEntry);
-    }
-
-    public void Open()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            AddEntry("Button" + i.ToString());
-        }
-        ArrangeButtons();
-    }
+        {1, 90f},   // 3 o’clock
+        {2, 0f},    // 12 o’clock
+        {3, 270f},  // 9 o’clock
+        {4, 180f},  // 6 o’clock
+        {5, 45f},   // 1:30
+        {6, 135f},  // 4:30
+        {7, 225f},  // 7:30
+        {8, 315f},  // 10:30
+    };
 
     public void ArrangeButtons()
     {
-        float radiansOfSeparation = (Mathf.PI * 2 / entries.Count);
-        for (int i = 0; i < entries.Count; i++)
+        entries.Sort((a, b) => a.priority.CompareTo(b.priority));
+
+        foreach (RadialMenuEntry entry in entries)
         {
-            float x = Mathf.Sin(radiansOfSeparation * i) * _radius;
-            float y = Mathf.Cos(radiansOfSeparation * i) * _radius;
+            if (!fixedAngles.ContainsKey(entry.priority))
+            {
+                continue;
+            }
 
-            entries[i].GetComponent<RectTransform>().anchoredPosition = new Vector3(x, y, 0);
+            float angleDeg = fixedAngles[entry.priority];
+            float angleRad = angleDeg * Mathf.Deg2Rad;
 
+            float x = Mathf.Cos(angleRad) * _radius;
+            float y = Mathf.Sin(angleRad) * _radius;
+
+            entry.GetComponent<RectTransform>().anchoredPosition = new Vector3(x, y, 0);
         }
     }
 
     public void ClearButtonsList()
     {
+        foreach (var entry in entries)
+        {
+            if (entry != null)
+                Destroy(entry.gameObject);
+        }
         entries.Clear();
     }
 }
