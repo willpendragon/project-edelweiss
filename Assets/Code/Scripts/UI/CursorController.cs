@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -55,15 +56,15 @@ public class CursorController : MonoBehaviour
 
     private void OnEnable()
     {
-        TileController.OnDragCursorAcrossTile += RetrieveTileStatus;
-        TileController.OnEndDragCursorAcrossTile += CloseRadialMenu;
+        TileController.OnClickedOnTile += RetrieveTileStatus;
+        TileController.OnPointerAwayFromTile += CloseRadialMenu;
         MovePlayerAction.OnUnitMovedToTile += UpdateTilesVisualizer;
     }
 
     private void OnDisable()
     {
-        TileController.OnDragCursorAcrossTile -= RetrieveTileStatus;
-        TileController.OnEndDragCursorAcrossTile -= CloseRadialMenu;
+        TileController.OnClickedOnTile -= RetrieveTileStatus;
+        TileController.OnPointerAwayFromTile -= CloseRadialMenu;
         MovePlayerAction.OnUnitMovedToTile -= UpdateTilesVisualizer;
     }
 
@@ -74,16 +75,62 @@ public class CursorController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetMouseButtonDown(0))
         {
-            foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
+            // Shoot Raycasts
+            SortInteractedItem();
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            SortInteractedItemExit();
+        }
+    }
+    private void SortInteractedItemExit()
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = Input.mousePosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.CompareTag("ActionButton"))
             {
-                playerUnit.gameObject.tag = "ActivePlayerUnit";
+                result.gameObject.GetComponent<RadialMenuEntry>().FireAction();
+                Debug.Log("Found Action Button");
+                break;
+            }
+            else
+            {
+                CloseRadialMenu();
             }
         }
-        if (Input.GetMouseButtonDown(1))
+    }
+
+    public void SortInteractedItem()
+    {
+        Vector3 mousePosition = Input.mousePosition;
+        Ray rayOrigin = Camera.main.ScreenPointToRay(mousePosition);
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(rayOrigin, out hitInfo))
         {
-            CloseRadialMenu();
+            if (hitInfo.collider.gameObject.CompareTag("Tile"))
+            {
+                RetrieveTileStatus(hitInfo.collider.gameObject.GetComponent<TileController>());
+            }
+            else if (hitInfo.collider.gameObject.CompareTag("ActionButton"))
+            {
+                hitInfo.collider.gameObject.gameObject.GetComponent<RadialMenuEntry>().FireAction();
+                Debug.Log($"Hit: {hitInfo.collider.name}");
+            }
+            else
+            {
+                CloseRadialMenu();
+            }
         }
     }
 
