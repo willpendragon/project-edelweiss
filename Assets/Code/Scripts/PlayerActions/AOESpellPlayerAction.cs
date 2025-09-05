@@ -33,6 +33,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     public delegate void UsedSpell(string spellName, string casterName);
     public static event UsedSpell OnUsedSpell;
 
+    public delegate void NotEnoughMana(string message);
+    public static event NotEnoughMana OnNotEnoughMana;
+
     public delegate void UsedSingleTargetSpell();
     public static event UsedSingleTargetSpell OnUsedSingleTargetSpell;
 
@@ -83,7 +86,10 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         Unit spellTarget = targetTile.detectedUnit.GetComponent<Unit>();
 
         if (!manaPointsAvailable(activePlayerUnit.unitManaPoints, spell.manaPointsCost))
+        {
+            OnNotEnoughMana("Not enough Mana...");
             return;
+        }
 
         int damageToApply = CalculateSpellDamage(spell);
         spellTarget.TakeDamage(damageToApply);
@@ -102,7 +108,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     private void CastAOESpell(Spell spell, TileController targetTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-
         if (!manaPointsAvailable(activePlayerUnit.unitManaPoints, spell.manaPointsCost))
             return;
 
@@ -322,6 +327,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
     {
         if (unitManaPoints - spellPrice >= 0)
         {
+            OnNotEnoughMana("Not enough Mana...");
             return true;
         }
         else

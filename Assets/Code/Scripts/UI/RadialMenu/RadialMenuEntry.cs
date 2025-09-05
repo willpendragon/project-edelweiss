@@ -28,6 +28,9 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public ActionType actionType;
     public int priority;
 
+    public delegate void NoPointsNotification(string message);
+    public static event NoPointsNotification OnPointsDepleted;
+
     public void SetLabel(string labelText)
     {
         _actionLabel.text = labelText;
@@ -35,7 +38,15 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void FireAction()
     {
-        FindAnyObjectByType<CursorController>().ChangeCursorMode(actionType);
+        var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (activePlayerUnit.unitOpportunityPoints <= 0)
+        {
+            OnPointsDepleted("Not enough Energy...");
+        }
+        else
+        {
+            FindAnyObjectByType<CursorController>().ChangeCursorMode(actionType);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

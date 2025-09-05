@@ -37,6 +37,7 @@ public class CursorController : MonoBehaviour
     [SerializeField] private int _meleeRange = 2; // Fallback value
     [SerializeField] private int _spellRange = 3; // Fallback value
     [SerializeField] private TurnController _turnController;
+    [SerializeField] private Unit _targetedUnit;
 
     // Icons
     [SerializeField] private Sprite _moveIcon;
@@ -154,6 +155,12 @@ public class CursorController : MonoBehaviour
         radialMenu.position = screenPosition;
 
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
+
+        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("Enemy"))
+        {
+            _targetedUnit = _tileController.detectedUnit.GetComponent<Unit>();
+        }
+
         GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
         _runButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
         _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Run;
@@ -297,6 +304,7 @@ public class CursorController : MonoBehaviour
 
     public void ChangeCursorMode(RadialMenuEntry.ActionType state)
     {
+
         switch (state)
         {
             case RadialMenuEntry.ActionType.Move:
@@ -331,6 +339,9 @@ public class CursorController : MonoBehaviour
                 TurnController.Instance.RunFromBattle();
                 break;
         }
+        // Updating the Slider value
+        var slider = _targetedUnit.transform.GetComponentInChildren<Slider>();
+        slider.value = _targetedUnit.unitHealthPoints;
     }
 
     public void UpdateTilesVisualizer(TileController targetTile)

@@ -48,8 +48,10 @@ public class BattleInterface : MonoBehaviour
     private void OnEnable()
     {
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
+        RadialMenuEntry.OnPointsDepleted += SetEnergyNotification;
         PlaceCrystalPlayerAction.OnCaptureAttempt += SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell += SetSpellNameOnNotificationPanel;
+        AOESpellPlayerAction.OnNotEnoughMana += SetEnergyNotification;
         MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack += SetMeleeAttackOnNotificationPanel;
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetMeleeAttackOnNotificationPanel;
@@ -62,8 +64,10 @@ public class BattleInterface : MonoBehaviour
     private void OnDisable()
     {
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
+        RadialMenuEntry.OnPointsDepleted -= SetEnergyNotification;
         PlaceCrystalPlayerAction.OnCaptureAttempt -= SetDeityNotification;
         AOESpellPlayerAction.OnUsedSpell -= SetSpellNameOnNotificationPanel;
+        AOESpellPlayerAction.OnNotEnoughMana -= SetEnergyNotification;
         MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetMeleeAttackOnNotificationPanel;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetMeleeAttackOnNotificationPanel;
@@ -113,6 +117,13 @@ public class BattleInterface : MonoBehaviour
     {
         battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
         battlefieldTextNotifications.text = deityNotification;
+        StartCoroutine("ResetBattleFieldTextNotification");
+    }
+
+    public void SetEnergyNotification(string energyNotification)
+    {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
+        battlefieldTextNotifications.text = energyNotification;
         StartCoroutine("ResetBattleFieldTextNotification");
     }
 
