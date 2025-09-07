@@ -19,8 +19,11 @@ public class MovesCounter : MonoBehaviour
     private void Update()
     {
         _activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-        int op = _activePlayerUnit.GetComponent<Unit>().unitOpportunityPoints;
-        int maxOp = _activePlayerUnit.GetComponent<Unit>().unitTemplate.unitOpportunityPoints;
-        _remainingMoves.text = $"{op} / {maxOp}";
+        if (_activePlayerUnit != null)
+        {
+            int op = _activePlayerUnit.GetComponent<Unit>().unitOpportunityPoints;
+            int maxOp = _activePlayerUnit.GetComponent<Unit>().unitTemplate.unitOpportunityPoints;
+            _remainingMoves.text = $"{op} / {maxOp}";
+        }
     }
 }

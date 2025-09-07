@@ -39,7 +39,7 @@ public enum TileType
     Mirror,
     Triad
 }
-public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IEndDragHandler
+public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
 
     [Header("Gameplay Logic")]
@@ -67,7 +67,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     [Header("Cursor Visual")]
     public GameObject cursorPrefab; // Reference to the cursor prefab
     private GameObject cursorInstance; // Instance of the cursor prefab
-    GameObject _enemyUnitPanel;
 
     [SerializeField] string _actionButtonTag = "ActionButton";
 
@@ -86,35 +85,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public delegate void PointerAwayFromTile();
     public static event PointerAwayFromTile OnPointerAwayFromTile;
 
-    //public void OnPointerOver(PointerEventData eventData)
-    //{
-    //    bool foundAction = false;
-    //    List<RaycastResult> results = new List<RaycastResult>();
-    //    EventSystem.current.RaycastAll(eventData, results);
-
-    //    foreach (var result in results)
-    //    {
-    //        if (result.gameObject.CompareTag("ActionButton"))
-    //        {
-    //            foundAction = true;
-    //            result.gameObject.GetComponent<RadialMenuEntry>().FireAction();
-    //            Debug.Log("Found Action Button");
-    //            //OnEndDragCursorAcrossTile();
-    //            ApplyProfileChangesWrapper();
-    //            break;
-    //        }
-    //        else
-    //        {
-    //            Destroy(_enemyUnitPanel);
-    //        }
-    //    }
-
-    //    if (!foundAction)
-    //    {
-    //        OnEndDragCursorAcrossTile();
-    //        Debug.Log("Found no Action, closing menu");
-    //    }
-    //}
     void Start()
     {
         currentTileCurseStatus = TileCurseStatus.notCursed;
@@ -143,12 +113,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         }
         else if (detectedUnit.CompareTag("Enemy"))
         {
-            var battleUI = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").GetComponent<BattleInterface>();
-            _enemyUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, battleUI.battleDetails.transform);
-
-            _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
-            detectedUnit.GetComponent<Unit>().unitProfilePanel = _enemyUnitPanel;
-            _enemyUnitPanel.GetComponent<UnitProfileController>().ApplyProfileChanges(detectedUnit);
+            var unitSelection = FindAnyObjectByType<UnitSelectionController>();
+            unitSelection.SelectEnemy(detectedUnit.GetComponent<Unit>());
 
         }
         OnClickedOnTile(this);
@@ -204,16 +170,5 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().activeCharacterAttackPower.text = activePlayerUnit.unitAttackPower.ToString();
             activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().activeCharacterMagicPower.text = activePlayerUnit.unitMagicPower.ToString();
         }
-    }
-    public void OnEndDrag(PointerEventData eventData)
-    {
-
-    }
-
-    private void ApplyProfileChangesWrapper()
-    {
-        if (_enemyUnitPanel == null)
-            return;
-        _enemyUnitPanel.GetComponent<UnitProfileController>().ApplyProfileChanges(detectedUnit);
     }
 }

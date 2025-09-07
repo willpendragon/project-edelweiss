@@ -26,6 +26,7 @@ public class UnitSelectionController : MonoBehaviour
     [SerializeField] private Unit _activePlayerUnit;
     [SerializeField] private GameObject _selectionIcon;
     [SerializeField] private GameObject _selectedUnitPanel;
+    [SerializeField] private GameObject _enemyUnitPanel;
     [SerializeField] private List<Unit> _playerUnits;
 
     public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
@@ -103,12 +104,33 @@ public class UnitSelectionController : MonoBehaviour
     public void SpawnUnitInfoPanel(Unit playerUnit)
     {
         ClearExistingPanels();
-        _selectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+        var battleUI = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").GetComponent<BattleInterface>();
+        _selectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, battleUI.battleDetails.transform);
         _selectedUnitPanel.tag = "ActiveCharacterUnitProfile";
         _selectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
         playerUnit.unitProfilePanel = _selectedUnitPanel;
         FillPanelDetails(playerUnit);
 
+    }
+
+    public void SelectEnemy(Unit enemyUnit)
+    {
+        // Clear Existing Enemy Panels
+
+        GameObject[] existingInfoPanels = GameObject.FindGameObjectsWithTag("EnemyUnitProfile");
+        foreach (var existingPanel in existingInfoPanels)
+        {
+            Destroy(existingPanel);
+        }
+
+        var battleUI = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").GetComponent<BattleInterface>();
+        _enemyUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, battleUI.battleDetails.transform);
+        _enemyUnitPanel.tag = "EnemyUnitProfile";
+        _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
+        enemyUnit.unitProfilePanel = _enemyUnitPanel;
+        UnitProfileController unitProfileController = _enemyUnitPanel.GetComponent<UnitProfileController>();
+        unitProfileController.ApplyProfileChanges(enemyUnit.gameObject);
+        Debug.Log($"Spawned {_selectedUnitPanel} belonging to {enemyUnit.unitTemplate.unitName}");
     }
 
     private void ClearExistingPanels()

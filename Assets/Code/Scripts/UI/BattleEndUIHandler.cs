@@ -18,6 +18,7 @@ public class BattleEndUIHandler : MonoBehaviour
     [SerializeField] GameObject _battleInterfaceCanvasObject;
     [SerializeField] GameObject _battleDetailsPanelObject;
     [SerializeField] CanvasGroup _battleDetailsGroup;
+    [SerializeField] CanvasGroup _battleNotificationsGroup;
 
     [Header("UI Texts")]
     public TextMeshProUGUI battleEndMessageText;
@@ -58,6 +59,7 @@ public class BattleEndUIHandler : MonoBehaviour
     private void DeactivateBattleUI()
     {
         _battleDetailsGroup.alpha = 0;
+        _battleNotificationsGroup.alpha = 0;
         DeactivateUnitSelectionIcon();
         DeactivateStatusIcons();
 
