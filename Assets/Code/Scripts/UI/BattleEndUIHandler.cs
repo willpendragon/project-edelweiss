@@ -58,9 +58,10 @@ public class BattleEndUIHandler : MonoBehaviour
     private void DeactivateBattleUI()
     {
         _battleDetailsGroup.alpha = 0;
+        DeactivateUnitSelectionIcon();
+        DeactivateStatusIcons();
+
         //DeactivateUnitProfile();
-        //DeactivateUnitSelectionIcon();
-        //DeactivateStatusIcons();
         //DeactivateWaitIcons();
         //DeactivateBattleDetailsPanel();
         //Transform childTransform;
