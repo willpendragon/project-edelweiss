@@ -37,6 +37,7 @@ public class EnemyTurnManager : MonoBehaviour
     private void Start()
     {
         AddEnemiesToQueue();
+        deity = GameObject.FindGameObjectWithTag("Deity");
     }
     private void AddEnemiesToQueue()
     {

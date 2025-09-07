@@ -339,6 +339,9 @@ public class CursorController : MonoBehaviour
                 TurnController.Instance.RunFromBattle();
                 break;
         }
+
+        if (_targetedUnit == null)
+            return;
         // Updating the Enemy Slider value
         var slider = _targetedUnit.transform.GetComponentInChildren<Slider>();
         if (slider != null)
