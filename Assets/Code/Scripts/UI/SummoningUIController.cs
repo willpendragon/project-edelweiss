@@ -39,7 +39,7 @@ public class SummoningUIController : MonoBehaviour
     {
         if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype")
         {
-            spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
+            //spellMenuContainer = GameObject.FindGameObjectWithTag("MovesPanel").transform;
         }
     }
 

@@ -8,9 +8,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] Animator cameraAnimator;
     void Start()
     {
-        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
-        {
-            cameraAnimator.SetTrigger("DeityEntryCamera");
-        }
+        //if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
+        //{
+        //    cameraAnimator.SetTrigger("DeityEntryCamera");
+        //}
     }
 }

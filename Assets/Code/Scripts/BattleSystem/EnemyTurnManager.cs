@@ -38,11 +38,6 @@ public class EnemyTurnManager : MonoBehaviour
     {
         AddEnemiesToQueue();
     }
-    private void Update()
-    {
-        // Fix this, doesn't make any sense to be on Update 07012024.
-        deity = GameObject.FindGameObjectWithTag("Deity");
-    }
     private void AddEnemiesToQueue()
     {
         GameObject[] enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");

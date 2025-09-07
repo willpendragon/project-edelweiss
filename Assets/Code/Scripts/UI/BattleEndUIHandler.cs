@@ -17,6 +17,7 @@ public class BattleEndUIHandler : MonoBehaviour
     public Button returnButton;
     [SerializeField] GameObject _battleInterfaceCanvasObject;
     [SerializeField] GameObject _battleDetailsPanelObject;
+    [SerializeField] CanvasGroup _battleDetailsGroup;
 
     [Header("UI Texts")]
     public TextMeshProUGUI battleEndMessageText;
@@ -56,11 +57,12 @@ public class BattleEndUIHandler : MonoBehaviour
     }
     private void DeactivateBattleUI()
     {
-        DeactivateUnitProfile();
-        DeactivateUnitSelectionIcon();
-        DeactivateStatusIcons();
-        DeactivateWaitIcons();
-        DeactivateBattleDetailsPanel();
+        _battleDetailsGroup.alpha = 0;
+        //DeactivateUnitProfile();
+        //DeactivateUnitSelectionIcon();
+        //DeactivateStatusIcons();
+        //DeactivateWaitIcons();
+        //DeactivateBattleDetailsPanel();
         //Transform childTransform;
         //// Check if the child index exists
         //if (_battleInterfaceCanvasObject.transform.childCount > 1 && (childTransform = _battleInterfaceCanvasObject.transform.GetChild(1)) != null)

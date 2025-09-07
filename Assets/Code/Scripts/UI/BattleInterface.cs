@@ -16,10 +16,11 @@ public class BattleInterface : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] Image moveNamePanel;
     [SerializeField] RectTransform battlefieldNotificationsPanel;
-    [SerializeField] public GameObject movesContainer;
+    //[SerializeField] public GameObject movesContainer;
     [SerializeField] CanvasGroup fadePanel;
     public BattleMomentsScreenHelper battleMomentsScreenHelper;
     [SerializeField] RectTransform summonedUnitsInfoContainer;
+    public GameObject battleDetails;
 
     [Header("UI Texts")]
     [SerializeField] TextMeshProUGUI moveName;

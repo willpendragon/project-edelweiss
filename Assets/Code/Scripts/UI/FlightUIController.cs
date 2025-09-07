@@ -22,11 +22,11 @@ public class FlightUIController : MonoBehaviour
     {
         if (scene.name == "battle_prototype" || scene.name == "boss_battle_prototype")
         {
-            GameObject spellMenuGameObject = GameObject.FindGameObjectWithTag("MovesPanel");
-            if (spellMenuGameObject != null)
-            {
-                spellMenuContainer = spellMenuGameObject.transform;
-            }
+            //GameObject spellMenuGameObject = GameObject.FindGameObjectWithTag("MovesPanel");
+            //if (spellMenuGameObject != null)
+            //{
+            //    spellMenuContainer = spellMenuGameObject.transform;
+            //}
         }
     }
 

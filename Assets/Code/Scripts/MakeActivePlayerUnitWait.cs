@@ -22,7 +22,7 @@ public class MakeActivePlayerUnitWait : MonoBehaviour
             tile.currentPlayerAction = new SelectUnitPlayerAction();
         }
 
-        BattleInterface.Instance.movesContainer.transform.localScale = new Vector3(0, 0, 0);
+        //BattleInterface.Instance.movesContainer.transform.localScale = new Vector3(0, 0, 0);
 
         ResetTileControllersColours();
         ResetTileControllersGlow();

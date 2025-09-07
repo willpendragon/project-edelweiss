@@ -143,7 +143,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         }
         else if (detectedUnit.CompareTag("Enemy"))
         {
-            _enemyUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+            var battleUI = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").GetComponent<BattleInterface>();
+            _enemyUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, battleUI.battleDetails.transform);
+
             _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
             detectedUnit.GetComponent<Unit>().unitProfilePanel = _enemyUnitPanel;
             _enemyUnitPanel.GetComponent<UnitProfileController>().ApplyProfileChanges(detectedUnit);

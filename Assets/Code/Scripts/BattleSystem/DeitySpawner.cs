@@ -14,6 +14,7 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] BattleManager battleManager;
     [SerializeField] GameObject deityObelisk;
     [SerializeField] GameObject deityObeliskSpawningPoint;
+    [SerializeField] private EnemyTurnManager _enemyTurnManager;
 
     private GameObject deityHealthBarInstance;
 
@@ -59,9 +60,6 @@ public class DeitySpawner : MonoBehaviour
                 PopulateDeityHealthBar();
             }
         }
-
-
-
     }
     public void DeitySelector()
     {
@@ -130,14 +128,11 @@ public class DeitySpawner : MonoBehaviour
             unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
             GameObject deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
 
-            //Deity occupies multiple tiles
-            //int summoningRange = 1;
             GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
             firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-            //GameObject deityEnergyVFXPrefab = Resources.Load<GameObject>("DeityEnergy");
-            //GameObject deityEnergyVFXPrefabInstance = Instantiate(deityEnergyVFXPrefab, firstDeitySpawningTile.transform.position, Quaternion.identity);
             firstDeitySpawningTile.detectedUnit = unboundDeity;
             currentUnboundDeity = unboundDeity.GetComponent<Deity>();
+            _enemyTurnManager.deity = unboundDeity;
             Debug.Log("Deity occupies Tile");
         }
 

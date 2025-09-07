@@ -81,8 +81,7 @@ public class TurnController : MonoBehaviour
         StunnerEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         BossSimildeBehaviour.OnCheckPlayer += PlayerUnitsLifeCheck;
-        // Instead of subscribing to every single enemy, just move the call to the check
-        // inside the EnemyAgent class.
+        // Instead of subscribing to every single enemy, just move the call to the check inside the EnemyAgent class.
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnits;
         Deity.OnPlayerTurnSwap += RestorePlayerUnits;
         Unit.OnCheckGameOver += GameOverCheck;
@@ -170,20 +169,6 @@ public class TurnController : MonoBehaviour
             return false;
         else
             return true;
-
-
-        //// Check if all units are either dead, waiting, or faithless
-        //return playerUnitsOnBattlefield.All(unitObject =>
-        //{
-        //    Unit unit = unitObject.GetComponent<Unit>();
-        //    var unitLifeCondition = unit.currentUnitLifeCondition;
-        //    //var selectionStatus = unit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus;
-        //    var status = unit.GetComponent<UnitStatusController>().unitCurrentStatus;
-
-        //    return unitLifeCondition == Unit.UnitLifeCondition.unitDead
-        //        /*|| selectionStatus == UnitSelectionController.UnitSelectionStatus.unitWaiting*/
-        //        || status == UnitStatus.Faithless;
-        //});
     }
 
     public void PlayerUnitsLifeCheck()
