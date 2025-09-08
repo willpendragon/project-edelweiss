@@ -18,39 +18,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     public delegate void UsedMagnet();
     public static event UsedMagnet OnUsedMagnet;
 
-    public void Deselect()
-    {
-        selectionLimiter++;
-        ResetTileColours();
-        MoveInfoController.Instance.HideActionInfoPanel();
-
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        if (activePlayerUnit != null && activePlayerUnit.hasHookshot)
-        {
-            MagnetHelper magnetHelper = activePlayerUnit.gameObject.GetComponentInChildren<MagnetHelper>();
-            magnetHelper.DestroyMagnet();
-        }
-
-        if (savedSelectedTile != null)
-        {
-            foreach (var tile in GridManager.Instance.gridTileControllers)
-            {
-                tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-                tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
-            }
-        }
-
-        if (savedSelectedTile == null)
-        {
-            foreach (var tile in GridManager.Instance.gridTileControllers)
-            {
-                tile.currentPlayerAction = new SelectUnitPlayerAction();
-                tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
-            }
-            BattleInterface.Instance.DeactivateActionInfoPanel();
-        }
-    }
-
     public void Execute(TileController targetTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -83,21 +50,17 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
     public void ExecuteMagnet(TileController targetTile)
     {
-        Unit attacker = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        if (attacker == null || targetTile == null || targetTile.detectedUnit == null)
-            return;
+        var attacker = GetActivePlayerUnit();
+        if (attacker == null || targetTile?.detectedUnit == null) return;
 
-        Unit defender = targetTile.detectedUnit.GetComponent<Unit>();
-        if (defender == null || LookUpDeityComponent(defender))
-            return;
+        var defender = targetTile.detectedUnit.GetComponent<Unit>();
+        if (defender == null || LookUpDeityComponent(defender)) return;
 
         int magnetRange = 3;
         Vector2Int attackerPos = attacker.GetGridPosition();
         Vector2Int defenderPos = defender.GetGridPosition();
 
-        int distance = Mathf.Abs(defenderPos.x - attackerPos.x) + Mathf.Abs(defenderPos.y - attackerPos.y);
-        if (distance > magnetRange)
-            return;
+        if (GetManhattanDistance(attackerPos, defenderPos) > magnetRange) return;
 
         Vector2Int pullDirection = Vector2Int.zero;
         int deltaX = defenderPos.x - attackerPos.x;
@@ -108,19 +71,14 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         else
             pullDirection.y = (int)Mathf.Sign(deltaY);
 
-        if (defender.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
-        {
-            defender.currentUnitBuff = Unit.UnitBuff.Basic;
-            defender.GetComponentInChildren<MaskFeedbackHelper>()?.DeactivateMask();
-        }
+        RemoveInvulnerableMask(defender);
 
         attacker.GetComponentInChildren<MagnetHelper>()?.OrientMagnet(attacker, defender);
 
         AnimateConveyorTiles(attackerPos, defenderPos, pullDirection, attacker);
 
         Vector2Int newGridPos = attackerPos + pullDirection;
-        newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
-        newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
+        newGridPos = ClampGridPosition(newGridPos);
 
         TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
 
@@ -130,6 +88,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
 
             defender.MoveUnit(newGridPos.x, newGridPos.y, true);
+            MoveUnitToTile(defender, destinationTile);
 
             destinationTile.detectedUnit = defender.gameObject;
             defender.ownedTile = destinationTile;
@@ -140,8 +99,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         OnUsedMagnet?.Invoke();
         attacker.GetComponentInChildren<MagnetHelper>()?.DestroyMagnet();
     }
-
-
 
     public void AttemptKnockback(Unit attacker, Unit defender)
     {
@@ -157,8 +114,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         Vector2Int defenderPos = defender.GetGridPosition();
         Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
-        newGridPos.x = Mathf.Clamp(newGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
-        newGridPos.y = Mathf.Clamp(newGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
+        newGridPos = ClampGridPosition(newGridPos);
 
         TileController projectedTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
         if (projectedTile == null)
@@ -174,19 +130,11 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
 
             TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
-
-            destinationTile.detectedUnit = defender.gameObject;
-            defender.ownedTile = destinationTile;
-            defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
-
+            MoveUnitToTile(defender, destinationTile);
             destinationTile.tileShaderController.ResetTileFadeHeightAnimation(destinationTile);
         }
 
-        if (defender.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
-        {
-            defender.currentUnitBuff = Unit.UnitBuff.Basic;
-            defender.GetComponentInChildren<MaskFeedbackHelper>()?.DeactivateMask();
-        }
+        RemoveInvulnerableMask(defender);
 
         ResetTileColours();
     }
@@ -208,15 +156,9 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
 
         Vector2Int previewGridPos = defenderPos + (knockbackDirection * knockbackStrength);
-        previewGridPos.x = Mathf.Clamp(previewGridPos.x, 0, GridManager.Instance.gridHorizontalSize - 1);
-        previewGridPos.y = Mathf.Clamp(previewGridPos.y, 0, GridManager.Instance.gridVerticalSize - 1);
+        previewGridPos = ClampGridPosition(previewGridPos);
 
         TileController previewTile = GridManager.Instance.GetTileControllerInstance(previewGridPos.x, previewGridPos.y);
-
-        //if (previewTile != null && previewTile.currentSingleTileCondition != SingleTileCondition.occupied)
-        //{
-        //    previewTile.tileShaderController.AnimateFadeHeight(2.75f, 0.5f, Color.magenta);
-        //}
     }
 
     private bool IsKnockbackPossible(Unit activePlayerUnit, TileController targetTile)
@@ -296,5 +238,48 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
     private bool LookUpDeityComponent(Unit defenderUnit)
     {
         return defenderUnit.gameObject.GetComponent<Deity>() != null;
+    }
+
+    private void MoveUnitToTile(Unit unit, TileController destinationTile)
+    {
+        if (unit == null || destinationTile == null)
+            return;
+
+        // Update previous tile
+        if (unit.ownedTile != null)
+        {
+            unit.ownedTile.detectedUnit = null;
+            unit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+        }
+
+        // Update new tile
+        destinationTile.detectedUnit = unit.gameObject;
+        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+
+        // Update unit's reference
+        unit.ownedTile = destinationTile;
+    }
+
+    private Vector2Int ClampGridPosition(Vector2Int pos)
+    {
+        var grid = GridManager.Instance;
+        pos.x = Mathf.Clamp(pos.x, 0, grid.gridHorizontalSize - 1);
+        pos.y = Mathf.Clamp(pos.y, 0, grid.gridVerticalSize - 1);
+        return pos;
+    }
+
+    private Unit GetActivePlayerUnit() =>
+        GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
+
+    private int GetManhattanDistance(Vector2Int a, Vector2Int b) =>
+        Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+
+    private void RemoveInvulnerableMask(Unit defender)
+    {
+        if (defender.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
+        {
+            defender.currentUnitBuff = Unit.UnitBuff.Basic;
+            defender.GetComponentInChildren<MaskFeedbackHelper>()?.DeactivateMask();
+        }
     }
 }
