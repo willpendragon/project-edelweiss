@@ -48,6 +48,10 @@ public class ReachableTilesVisualizer : MonoBehaviour
         }
 
         Debug.Log($"Reachable tiles highlighted: {reachableTiles.Count}");
+
+        // Sort units to prevent visual overlap issues
+        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+
     }
 
     // Use BFS to find all reachable tiles within the player's movement range

@@ -9184,7 +9184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -10527,7 +10527,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -12219,7 +12219,7 @@ MonoBehaviour:
     - "Attack nearby enemies to knockback them.\r"
     - I'm trained to attack from a long distance.
     - I've heard killing enemies upsets some Deities...
-    - If we pray the Deities, we receive a blessing.
+    - If we pray to the Deities, we receive a blessing.
     - I wish I could relax and eat pastry...
   - portrait: {fileID: 226725293, guid: 2729732451864374d84851f9f566f3c5, type: 3}
     dialogues:
@@ -20188,7 +20188,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 130.33093, y: 130.33093, z: 130.33093}
+  m_LocalScale: {x: 20, y: 20, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911147375969266743}
@@ -20358,7 +20358,7 @@ Transform:
   m_GameObject: {fileID: 2853166123752632539}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 1625.8948, y: 899.495, z: -129.50626}
+  m_LocalPosition: {x: 1201.5192, y: 195.34607, z: -16.587658}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

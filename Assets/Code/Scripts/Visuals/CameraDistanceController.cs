@@ -10,6 +10,13 @@ public class CameraDistanceController : MonoBehaviour
     // Call this method whenever a unit moves.
     public void Start()
     {
+        SortUnitsWrapper();
+    }
+
+    IEnumerator SortUnitsWrapper()
+    {
+        // Using a coroutine to delay the sorting of units after units spawned.
+        yield return new WaitForSeconds(0.1f);
         SortUnits();
     }
 
@@ -28,12 +35,26 @@ public class CameraDistanceController : MonoBehaviour
             (Camera.main.transform.position - unit2.transform.position).sqrMagnitude
             .CompareTo((Camera.main.transform.position - unit1.transform.position).sqrMagnitude));
 
-        // Now that the list is sorted, assign sorting orders where the first unit in the list gets the smallest sorting order
-        // so it's rendered on top of others, and so on.
-        for (int i = 0; i < unitsOnBattlefield.Count; i++)
+        // Flatten all SpriteRenderers from all units into a single list
+        var allRenderers = unitsOnBattlefield
+            .SelectMany(unit => unit.GetComponentsInChildren<SpriteRenderer>())
+            .ToList();
+
+        // Assign sorting order to SpriteRenderers
+        for (int i = 0; i < allRenderers.Count; i++)
         {
-            if (unitsOnBattlefield[i].GetComponentInChildren<SpriteRenderer>() != null)
-                unitsOnBattlefield[i].GetComponentInChildren<SpriteRenderer>().sortingOrder = i;
+            allRenderers[i].sortingOrder = i;
+        }
+
+        // Flatten all Canvas components from all units into a single list
+        var allCanvases = unitsOnBattlefield
+            .SelectMany(unit => unit.GetComponentsInChildren<Canvas>())
+            .ToList();
+
+        // Assign sorting order to Canvases (optionally, you can use a different offset or order)
+        for (int i = 0; i < allCanvases.Count; i++)
+        {
+            allCanvases[i].sortingOrder = i;
         }
     }
 

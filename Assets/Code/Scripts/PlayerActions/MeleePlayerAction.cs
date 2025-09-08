@@ -258,6 +258,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
 
         // Update unit's reference
         unit.ownedTile = destinationTile;
+        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
     }
 
     private Vector2Int ClampGridPosition(Vector2Int pos)

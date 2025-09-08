@@ -40,6 +40,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         else
         {
             MoveEnemyToPlayerTarget(targetPlayerUnit, enemyAgent);
+            GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
         }
     }
 
