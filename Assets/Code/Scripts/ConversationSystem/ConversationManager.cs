@@ -8,11 +8,19 @@ public class ConversationManager : MonoBehaviour
 {
     public static ConversationManager Instance;
 
-    [SerializeField]
-    public List<ConversationData> conversations = new List<ConversationData>();
+    [SerializeField] public List<ConversationData> conversations = new List<ConversationData>();
+
+    private const string OVERWORLD_MAP = "overworld_map";
+    private string _lastUnlockedConversation;
+
+    public delegate void DialogueUnlocked(string title);
+    public static event DialogueUnlocked OnDialogueUnlocked;
 
     private void Awake()
     {
+        // Subscribes to the Scene Loaded Event
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         string currentSceneName = SceneManager.GetActiveScene().name;
 
         if (Instance == null)
@@ -29,6 +37,20 @@ public class ConversationManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        // Unsubscribe from the scene loaded event
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == OVERWORLD_MAP)
+        {
+            OnDialogueUnlocked(_lastUnlockedConversation);
+        }
+    }
+
     private void Start()
     {
         LoadUnlockedConversation();
@@ -42,6 +64,8 @@ public class ConversationManager : MonoBehaviour
             int randomIndex = Random.Range(0, lockedConvos.Count);
             lockedConvos[randomIndex].isUnlocked = true;
             Debug.Log($"Unlocked convo {lockedConvos[randomIndex].conversationID}");
+            // Show notification on UI
+            _lastUnlockedConversation = $"{lockedConvos[randomIndex].conversationID}";
             SaveUnlockedConversation();
         }
         else

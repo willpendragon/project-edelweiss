@@ -7,6 +7,7 @@ public class PauseMenuController : MonoBehaviour
     private bool isPaused = false; // Track menu state
     private RectTransform canvasTransform; // RectTransform reference
     private Tween currentTween; // To track the ongoing tween animation
+    [SerializeField] private CanvasGroup _mapCanvas;
 
     private void Start()
     {
@@ -49,7 +50,7 @@ public class PauseMenuController : MonoBehaviour
     private void PauseGame()
     {
         isPaused = true;
-
+        _mapCanvas.alpha = 0f;
         // Scale up the canvas and delay freezing the game
         currentTween = canvasTransform.DOScale(Vector3.one, transitionDuration)
             .SetEase(Ease.OutBack)
@@ -63,6 +64,7 @@ public class PauseMenuController : MonoBehaviour
 
     private void ResumeGame()
     {
+        _mapCanvas.alpha = 1f;
         // Resume the game immediately
         Time.timeScale = 1f;
 

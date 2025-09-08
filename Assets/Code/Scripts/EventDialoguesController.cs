@@ -10,11 +10,15 @@ public class EventDialoguesController : MonoBehaviour
     // DialogueSystem state is saved with PersistentDataManager and stored via PlayerPrefs.
     // To be replaced in the future with a dynamic, data-driven system.
 
+    // !!! IMPORTANT !!!
+    // 1) Remember to delete PlayerPrefs in Unity before testing dialogues.
+    // 2) Conversation strings must match the titles in the Dialogue System editor.
+
     [SerializeField] private KillBasedAchievement deityAnguanaAchievement;
     [SerializeField] private MoveBasedAchievement deityKingLaurinusAchievement;
 
-    [SerializeField] private string deityAnguanaUnlockConversation = "Deity Anguana Unlock Conversation";
-    [SerializeField] private string deityKingLaurinusUnlockConversation = "King Laurinus Unlock Conversation";
+    [SerializeField] private string deityAnguanaUnlockConversation = "Deity Anguana Unlock";
+    [SerializeField] private string deityKingLaurinusUnlockConversation = "King Laurinus Unlock";
 
     private const string DialogueDataKey = "DialogueSystem_SaveData";
 

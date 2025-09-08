@@ -16,6 +16,7 @@ public class DialogueController : MonoBehaviour
 
             switch (highestUnlockedLevel)
             {
+                // Use this to start dialogues in the Overworld Map corresponding to the completed node
                 case 1:
                     DialogueManager.StartConversation("After the Battle");
                     break;
