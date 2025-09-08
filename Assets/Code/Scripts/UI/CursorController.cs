@@ -55,6 +55,22 @@ public class CursorController : MonoBehaviour
 
     private List<Button> _actionButtons = new List<Button>();
 
+    private GameObject CreateActionButton(
+    RadialMenuEntry.ActionType actionType,
+    Sprite icon,
+    string label,
+    int priority = 0)
+    {
+        var button = Instantiate(actionButtonPrefab, radialMenu.transform);
+        var entry = button.GetComponent<RadialMenuEntry>();
+        entry.actionType = actionType;
+        entry.icon.sprite = icon;
+        entry.priority = priority;
+        button.GetComponentInChildren<TextMeshProUGUI>().text = label;
+        radialMenu.GetComponent<RadialMenu>().entries.Add(entry);
+        return button;
+    }
+
     private void OnEnable()
     {
         TileController.OnClickedOnTile += RetrieveTileStatus;
@@ -143,109 +159,70 @@ public class CursorController : MonoBehaviour
 
     public void OpenRadialMenu()
     {
-        if (_isRadialMenuOpen)
+        if (_isRadialMenuOpen
+            || (_tileController.detectedUnit != null && (
+                _tileController.detectedUnit.CompareTag("Player") ||
+                _tileController.detectedUnit.CompareTag("ActivePlayerUnit")))
+            || _turnController.currentTurn == TurnController.Turn.EnemyTurn)
             return;
-        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("Player"))
-            return;
-        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("ActivePlayerUnit"))
-            return;
-        if (_turnController.currentTurn == TurnController.Turn.EnemyTurn)
-            return;
-        Vector3 screenPosition = Camera.main.WorldToScreenPoint(_tileController.transform.position);
-        radialMenu.position = screenPosition;
 
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
+        // Cache references
+        var radialMenuComp = radialMenu.GetComponent<RadialMenu>();
+        var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
+        var gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+
+        // Set menu position
+        radialMenu.position = Camera.main.WorldToScreenPoint(_tileController.transform.position);
 
         if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("Enemy"))
-        {
             _targetedUnit = _tileController.detectedUnit.GetComponent<Unit>();
-        }
 
-        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-        _runButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-        _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Run;
-        _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _runIcon;
-        _runButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 3;
-        _runButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Escape from Battle";
-        radialMenu.GetComponent<RadialMenu>().entries.Add(_runButtonPrefabInstance.GetComponent<RadialMenuEntry>());
+        // Run button
+        _runButtonPrefabInstance = CreateActionButton(
+            RadialMenuEntry.ActionType.Run, _runIcon, "Escape from Battle", 3);
 
+        // Move button
         if (activePlayerUnit != null && CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit == null)
+            _moveButtonPrefabInstance = CreateActionButton(
+                RadialMenuEntry.ActionType.Move, _moveIcon, "Move", 1);
+
+        // Trap, Crystal, Summon
+        bool canPlaceHazard = CheckDistance(_hazardsLimit) && _tileController.detectedUnit == null;
+        if (canPlaceHazard)
         {
-            _moveButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-            _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Move;
-            _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _moveIcon;
-            _moveButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 1;
-            _moveButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Move";
-            radialMenu.GetComponent<RadialMenu>().entries.Add(_moveButtonPrefabInstance.GetComponent<RadialMenuEntry>());
-        }
+            var trapController = _tileController.GetComponentInChildren<TrapController>();
+            bool isTileFree = _tileController.currentSingleTileCondition == SingleTileCondition.free;
 
-        if (CheckDistance(_hazardsLimit) && _tileController.detectedUnit == null)
-        {
-            TrapController trapController = _tileController.GetComponentInChildren<TrapController>();
-            if (_tileController.currentSingleTileCondition == SingleTileCondition.free &&
-                trapController != null &&
-                trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active)
-            {
-                _trapButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-                _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Trap;
-                _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _trapIcon;
-                _trapButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 2;
-                _trapButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Trap";
-                radialMenu.GetComponent<RadialMenu>().entries.Add(_trapButtonPrefabInstance.GetComponent<RadialMenuEntry>());
-            }
+            if (isTileFree && trapController != null && trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active)
+                _trapButtonPrefabInstance = CreateActionButton(
+                    RadialMenuEntry.ActionType.Trap, _trapIcon, "Trap", 2);
 
-            if (_tileController.currentSingleTileCondition == SingleTileCondition.free &&
-                gameStatsManager.captureCrystalsCount > 0)
-            {
-                GameObject crystalButton = Instantiate(actionButtonPrefab, radialMenu.transform);
-                crystalButton.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Crystal;
-                crystalButton.GetComponent<RadialMenuEntry>().icon.sprite = _crystalIcon;
-                crystalButton.GetComponentInChildren<TextMeshProUGUI>().text = "Crystal";
-                radialMenu.GetComponent<RadialMenu>().entries.Add(crystalButton.GetComponent<RadialMenuEntry>());
-            }
+            if (isTileFree && gameStatsManager.captureCrystalsCount > 0)
+                CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Crystal");
 
-            if (_tileController.currentSingleTileCondition == SingleTileCondition.free &&
-                activePlayerUnit.linkedDeity != null &&
+            if (isTileFree && activePlayerUnit?.linkedDeity != null &&
                 GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController) <= 3)
-            {
-                GameObject summonButton = Instantiate(actionButtonPrefab, radialMenu.transform);
-                summonButton.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Summon;
-                summonButton.GetComponent<RadialMenuEntry>().icon.sprite = _summonIcon;
-                summonButton.GetComponentInChildren<TextMeshProUGUI>().text = "Summon";
-                radialMenu.GetComponent<RadialMenu>().entries.Add(summonButton.GetComponent<RadialMenuEntry>());
-            }
+                CreateActionButton(RadialMenuEntry.ActionType.Summon, _summonIcon, "Summon");
         }
 
-        if (CheckDistance(_meleeRange) && _tileController.detectedUnit != null)
+        // Melee/Magnet
+        bool canMelee = CheckDistance(_meleeRange) && _tileController.detectedUnit != null;
+        if (canMelee)
+            _meleeButtonPrefabInstance = CreateActionButton(
+                RadialMenuEntry.ActionType.Melee,
+                GetButtonIcon(activePlayerUnit),
+                GetButtonName(activePlayerUnit),
+                4);
 
-        {
-            _meleeButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-            _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Melee;
-            _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = GetButtonIcon(activePlayerUnit);
-            _meleeButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = GetButtonName(activePlayerUnit);
-            _meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 4;
-            radialMenu.GetComponent<RadialMenu>().entries.Add(_meleeButtonPrefabInstance.GetComponent<RadialMenuEntry>());
+        // Spell
+        bool canSpell = CheckDistance(_spellRange) && _tileController.detectedUnit != null;
+        if (canSpell)
+            _spellButtonPrefabInstance = CreateActionButton(
+                RadialMenuEntry.ActionType.Spell, _spellIcon, "Spell", 5);
 
-        }
-
-        if (CheckDistance(_spellRange) && _tileController.detectedUnit != null)
-        {
-            _spellButtonPrefabInstance = Instantiate(actionButtonPrefab, radialMenu.transform);
-            _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Spell;
-            _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().icon.sprite = _spellIcon;
-            _spellButtonPrefabInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Spell";
-            _spellButtonPrefabInstance.GetComponent<RadialMenuEntry>().priority = 5;
-            radialMenu.GetComponent<RadialMenu>().entries.Add(_spellButtonPrefabInstance.GetComponent<RadialMenuEntry>());
-        }
-
+        // Pray
         if (_tileController.currentSingleTileCondition == SingleTileCondition.occupiedByDeity)
-        {
-            GameObject prayButton = Instantiate(actionButtonPrefab, radialMenu.transform);
-            prayButton.GetComponent<RadialMenuEntry>().actionType = RadialMenuEntry.ActionType.Pray;
-            prayButton.GetComponent<RadialMenuEntry>().icon.sprite = _prayIcon;
-            prayButton.GetComponentInChildren<TextMeshProUGUI>().text = "Pray";
-            radialMenu.GetComponent<RadialMenu>().entries.Add(prayButton.GetComponent<RadialMenuEntry>());
-        }
+            CreateActionButton(RadialMenuEntry.ActionType.Pray, _prayIcon, "Pray");
 
         _isRadialMenuOpen = true;
         PopulateButtonsList();
