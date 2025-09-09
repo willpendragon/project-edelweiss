@@ -16,7 +16,6 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     public static event CheckPlayer OnCheckPlayer;
     public override void ExecuteBehavior(Deity deity)
     {
-
         deity.deityCry.Play();
         DOVirtual.DelayedCall(1.5f, () => SpreadCurse());
         TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();

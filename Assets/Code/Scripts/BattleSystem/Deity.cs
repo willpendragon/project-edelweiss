@@ -68,6 +68,9 @@ public class Deity : MonoBehaviour
         currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().SetDeity(this.gameObject);
         currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
         deityEnmityTracker = currentDeityEnmityTracker;
+
+        var enemyTurnManager = FindAnyObjectByType<EnemyTurnManager>();
+        enemyTurnManager.deity = this.gameObject;
     }
 
     //Retrieves the Deity Behavior from a compatible Scriptable Object added in the Inspector.
