@@ -198,7 +198,7 @@ public class CursorController : MonoBehaviour
                     RadialMenuEntry.ActionType.Trap, _trapIcon, "Trap", 2);
 
             if (isTileFree && gameStatsManager.captureCrystalsCount > 0)
-                CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Crystal");
+                CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Crystal", 4);
 
             if (isTileFree && activePlayerUnit?.linkedDeity != null &&
                 GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController) <= 3)
