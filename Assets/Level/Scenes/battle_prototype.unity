@@ -2786,7 +2786,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entryPrefab: {fileID: 3697401084752425904, guid: 163fe0ec09bf00b4ea589f61d2a8069d, type: 3}
   entries: []
-  _radius: 250
+  _radius: 105
 --- !u!114 &448129074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25598,7 +25598,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: SummoningController
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7580817271449919252, guid: 3b80dc0d97b8fb7439c23d6ada756ebb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

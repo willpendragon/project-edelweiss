@@ -179,7 +179,7 @@ public class CursorController : MonoBehaviour
 
         // Run button
         _runButtonPrefabInstance = CreateActionButton(
-            RadialMenuEntry.ActionType.Run, _runIcon, "Escape from Battle", 3);
+            RadialMenuEntry.ActionType.Run, _runIcon, "Escape", 3);
 
         // Move button
         if (activePlayerUnit != null && CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit == null)
