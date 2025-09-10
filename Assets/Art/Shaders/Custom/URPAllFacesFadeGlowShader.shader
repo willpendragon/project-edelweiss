@@ -16,7 +16,7 @@ Shader "Custom/URPAllFacesFadeGlowShader"
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
 
-            Blend SrcAlpha One
+            Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
 
             HLSLPROGRAM
