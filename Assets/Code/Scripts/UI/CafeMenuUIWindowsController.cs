@@ -17,6 +17,7 @@ public class CafeMenuUIWindowsController : MonoBehaviour
     public TextMeshProUGUI buttonText2;
     public TextMeshProUGUI buttonText3;
 
+    public CanvasGroup cafeMenuGroup;
 
     private void Start()
     {

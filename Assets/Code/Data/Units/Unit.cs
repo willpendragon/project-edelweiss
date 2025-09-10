@@ -1,10 +1,8 @@
-using FlatKit;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class HealthChangeEvent : UnityEvent<float> { }
@@ -152,12 +150,18 @@ public class Unit : MonoBehaviour
         // Invoke the event with the received damage before mitigation.
         OnTakenDamage.Invoke(receivedDamage);
         // Log the received and effective damage.
-        Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
 
-        if (bossFlag == true)
+        var slider = transform.GetComponentInChildren<Slider>();
+        if (slider != null)
         {
-            BossController currentBossController = GameObject.FindGameObjectWithTag("BossController")?.GetComponent<BossController>();
-            currentBossController.UpdateBossHealthBar(unitHealthPoints);
+            slider.value = unitHealthPoints;
+
+            Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
+
+            //if (bossFlag == true)
+            //{
+            //    BossController currentBossController = GameObject.FindGameObjectWithTag("BossController")?.GetComponent<BossController>();
+            //    currentBossController.UpdateBossHealthBar(unitHealthPoints);
         }
     }
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)

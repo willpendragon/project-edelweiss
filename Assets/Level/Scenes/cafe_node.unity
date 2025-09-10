@@ -542,6 +542,7 @@ GameObject:
   - component: {fileID: 191846818}
   - component: {fileID: 191846817}
   - component: {fileID: 191846816}
+  - component: {fileID: 191846820}
   m_Layer: 5
   m_Name: CafeMenuCanvas
   m_TagString: Untagged
@@ -638,6 +639,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &191846820
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191846815}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &194213430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4734,6 +4747,7 @@ MonoBehaviour:
   buttonText1: {fileID: 1692991385}
   buttonText2: {fileID: 270279037}
   buttonText3: {fileID: 966946405}
+  cafeMenuGroup: {fileID: 191846820}
 --- !u!1 &964384718
 GameObject:
   m_ObjectHideFlags: 0
@@ -10166,10 +10180,10 @@ MonoBehaviour:
     onConversationStart:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 191846815}
-          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_MethodName: SetActive
-          m_Mode: 6
+        - m_Target: {fileID: 2071948416}
+          m_TargetAssemblyTypeName: CloseMenuBehind, Assembly-CSharp
+          m_MethodName: HideCanvas
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -10193,10 +10207,10 @@ MonoBehaviour:
     onConversationEnd:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 191846815}
-          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_MethodName: SetActive
-          m_Mode: 6
+        - m_Target: {fileID: 2071948416}
+          m_TargetAssemblyTypeName: CloseMenuBehind, Assembly-CSharp
+          m_MethodName: ShowCanvas
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -10264,6 +10278,17 @@ MonoBehaviour:
     onDialogueSystemUnpause:
       m_PersistentCalls:
         m_Calls: []
+--- !u!114 &2071948416 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1690134561439836861, guid: 58ac37417e60e534f91138088a3e6f70, type: 3}
+  m_PrefabInstance: {fileID: 2071948412}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071948413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebec1cda2d48c4e4097eeded1fd8cfcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2092039866
 GameObject:
   m_ObjectHideFlags: 0

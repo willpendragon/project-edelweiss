@@ -254,7 +254,7 @@ Transform:
   m_GameObject: {fileID: 1107299823357419468}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.627, z: 0}
+  m_LocalPosition: {x: 0, y: 3.13, z: 0}
   m_LocalScale: {x: 6.8407, y: 6.8407, z: 6.8407}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -956,6 +956,7 @@ MonoBehaviour:
   _activePlayerUnit: {fileID: 0}
   _selectionIcon: {fileID: 0}
   _selectedUnitPanel: {fileID: 0}
+  _enemyUnitPanel: {fileID: 0}
   _playerUnits: []
 --- !u!114 &5410876119120275068
 MonoBehaviour:
@@ -6165,18 +6166,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6751378855700742064}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.70710707, w: 0.70710653}
+  m_LocalPosition: {x: 0, y: 0, z: -0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6745489177845238281}
   - {fileID: 2940107755604977513}
   m_Father: {fileID: 5009294011632168282}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.00069999695, y: 1.1261}
+  m_AnchoredPosition: {x: 0.03, y: 1.16}
   m_SizeDelta: {x: 1.1328, y: 2.1305}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &5064721884320627582

@@ -320,11 +320,11 @@ public class CursorController : MonoBehaviour
         if (_targetedUnit == null)
             return;
         // Updating the Enemy Slider value
-        var slider = _targetedUnit.transform.GetComponentInChildren<Slider>();
-        if (slider != null)
-        {
-            slider.value = _targetedUnit.unitHealthPoints;
-        }
+        //var slider = _targetedUnit.transform.GetComponentInChildren<Slider>();
+        //if (slider != null)
+        //{
+        //    slider.value = _targetedUnit.unitHealthPoints;
+        //}
     }
 
     public void UpdateTilesVisualizer(TileController targetTile)
