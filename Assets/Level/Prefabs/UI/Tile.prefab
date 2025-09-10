@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetFadeHeight: 2.75
   animationDuration: 0.5
-  glowingTileColumn: {fileID: 2110525702591554457}
+  glowingTileColumn: {fileID: 0}
   animationEase: 7
 --- !u!1 &5273139076148632550
 GameObject:
@@ -485,21 +485,25 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 5073b1c9a5e31a8429b4b6199f7396c8, type: 2}
+    - target: {fileID: 1392167960337012758, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
     - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.5
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.5
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
       propertyPath: m_LocalPosition.x
@@ -507,7 +511,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 22.5
+      value: 21.5
       objectReference: {fileID: 0}
     - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
       propertyPath: m_LocalPosition.z
@@ -541,16 +545,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
---- !u!23 &2110525702591554457 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1392167960337012757, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
-  m_PrefabInstance: {fileID: 1016668458443373452}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2110525702591554459 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
@@ -582,7 +585,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9101934754106659930, guid: 6b264cba8ac1eb5408f24797e7c634b0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.003
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9101934754106659930, guid: 6b264cba8ac1eb5408f24797e7c634b0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -634,15 +637,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9101934754106659931, guid: 6b264cba8ac1eb5408f24797e7c634b0, type: 3}
       propertyPath: m_Color.b
-      value: 0.43921322
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9101934754106659931, guid: 6b264cba8ac1eb5408f24797e7c634b0, type: 3}
       propertyPath: m_Color.g
-      value: 0.7381705
+      value: 0.6662315
       objectReference: {fileID: 0}
     - target: {fileID: 9101934754106659931, guid: 6b264cba8ac1eb5408f24797e7c634b0, type: 3}
       propertyPath: m_Color.r
-      value: 0.8867924
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9101934754106659931, guid: 6b264cba8ac1eb5408f24797e7c634b0, type: 3}
       propertyPath: m_SortingOrder
