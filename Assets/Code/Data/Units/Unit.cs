@@ -231,9 +231,9 @@ public class Unit : MonoBehaviour
             Vector3 worldPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate);
             Vector3 targetPosition = worldPosition + new Vector3(0, transform.localScale.y / 2, 0);
 
-            // The Unit moves to the next Tile.
-            float moveToTileDurationTime = 0.25f;
-            yield return StartCoroutine(MoveToPosition(targetPosition, moveToTileDurationTime)); // Adjust the duration as needed.
+            // Adjust this value to make the Unit's movement across tiles faster.
+            float moveToTileDurationTime = 0.15f;
+            yield return StartCoroutine(MoveToPosition(targetPosition, moveToTileDurationTime));
 
             // Update current grid coordinates
             currentXCoordinate = tile.tileXCoordinate;
