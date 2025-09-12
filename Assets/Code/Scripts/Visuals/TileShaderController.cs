@@ -15,17 +15,20 @@ public class TileShaderController : MonoBehaviour
         {
             Debug.LogError("Glowing Mesh not assigned.");
         }
+        glowingTileColumn.material.SetFloat("_GlowIntensity", 0f);
     }
 
     public void AnimateFadeHeight(float targetFadeHeight, float animationDuration, Color glowColor)
     {
         if (glowingTileColumn != null)
         {
-            glowingTileColumn.material.color = glowColor;
-            DOTween.To(() => glowingTileColumn.material.GetFloat("_FadeHeight"), x => glowingTileColumn.material.SetFloat("_FadeHeight", x), targetFadeHeight, animationDuration)
-                .SetEase(animationEase); // Apply easing to the animation
+            //glowingTileColumn.material.color = glowColor;
+            //DOTween.To(() => glowingTileColumn.material.GetFloat("_FadeHeight"), x => glowingTileColumn.material.SetFloat("_FadeHeight", x), targetFadeHeight, animationDuration)
+            //    .SetEase(animationEase); // Apply easing to the animation
+            glowingTileColumn.material.SetFloat("_GlowIntensity", 1f);
         }
     }
+
 
     public void AnimateFadeHeightPulse(float minFadeHeight, float maxFadeHeight, float halfCycleDuration, Color glowColor)
     {
@@ -79,7 +82,8 @@ public class TileShaderController : MonoBehaviour
 
     public void ResetTileFadeHeightAnimation(TileController tileToReset)
     {
-        tileToReset.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
+        glowingTileColumn.material.SetFloat("_GlowIntensity", 0f);
+        //tileToReset.tileShaderController.AnimateFadeHeight(0f, 0.2f, Color.white);
     }
     public void StopFadeHeightPulse()
     {

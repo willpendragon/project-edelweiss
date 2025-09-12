@@ -163,7 +163,7 @@ public class ReachableTilesVisualizer : MonoBehaviour
         foreach (TileController tile in reachableTiles)
         {
             // Reset the tile color for testing
-            tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
+            tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
         }
         reachableTiles.Clear(); // Clear the list
         Debug.Log("Cleared previous tile highlights.");

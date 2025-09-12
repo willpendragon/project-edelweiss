@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetFadeHeight: 2.75
   animationDuration: 0.5
-  glowingTileColumn: {fileID: 0}
+  glowingTileColumn: {fileID: 2110525702591554457}
   animationEase: 7
 --- !u!1 &5273139076148632550
 GameObject:
@@ -554,6 +554,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
+--- !u!23 &2110525702591554457 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1392167960337012757, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
+  m_PrefabInstance: {fileID: 1016668458443373452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2110525702591554459 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1392167960337012759, guid: 87847417bacef6b4dbdfdc0ff794bd14, type: 3}
