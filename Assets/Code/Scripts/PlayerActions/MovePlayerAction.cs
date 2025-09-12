@@ -28,12 +28,12 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction
 
         FreeTile(activePlayerUnit);
         ClaimTile(activePlayerUnit, targetTile);
-        HandleCameraSorting();
         SpendOpportunityPoints(activePlayerUnit);
         UpdateActivePlayerUnitProfile(activePlayerUnit);
         activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
         var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
         reachableTilesVisualizer.ClearReachableTiles(0, 0.5f, Color.white);
+        //HandleCameraSorting();
         //UpdatePathVisual(path);
         //GameObject.FindGameObjectWithTag("ReachableTilesVisualizer").GetComponent<ReachableTilesVisualizer>().ShowReachableTiles();
         OnUnitMovedToTile(targetTile);

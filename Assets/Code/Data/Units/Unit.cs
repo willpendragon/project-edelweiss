@@ -241,6 +241,7 @@ public class Unit : MonoBehaviour
             Debug.Log(tile.name);
             Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
         }
+        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
     }
 
     public bool CheckTileAvailability(int targetX, int targetY)

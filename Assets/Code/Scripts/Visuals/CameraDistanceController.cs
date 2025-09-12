@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraDistanceController : MonoBehaviour
@@ -10,13 +9,13 @@ public class CameraDistanceController : MonoBehaviour
     // Call this method whenever a unit moves.
     public void Start()
     {
-        SortUnitsWrapper();
+        StartCoroutine(SortUnitsWrapper());
     }
 
     IEnumerator SortUnitsWrapper()
     {
         // Using a coroutine to delay the sorting of units after units spawned.
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
         SortUnits();
     }
 

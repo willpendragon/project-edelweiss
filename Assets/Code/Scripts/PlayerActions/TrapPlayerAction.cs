@@ -33,7 +33,11 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction
         if (activePlayerUnit.unitManaPoints < trapCreationCost) return;
 
         trapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
-        Instantiate((GameObject)Resources.Load("TrapTileVFX"), targetTile.transform);
+        Transform tilePosition = targetTile.transform;
+        Vector3 offSet = new Vector3(0, 1f, 0);
+        Vector3 spawnPosition = targetTile.transform.position + offSet;
+        GameObject trapVFX = (GameObject)Resources.Load("TrapTileVFX");
+        Instantiate(trapVFX, spawnPosition, Quaternion.identity);
 
         activePlayerUnit.unitOpportunityPoints--;
 
