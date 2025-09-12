@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -317,8 +318,23 @@ public class CursorController : MonoBehaviour
                 break;
         }
 
+        var turnController = BattleManager.Instance.GetComponent<TurnController>();
+
+        bool allNoOpportunities = turnController.playerUnitsOnBattlefield
+            .Where(obj => obj != null)
+            .Select(obj => obj.GetComponent<Unit>())
+            .Where(unit => unit != null)
+            .All(unit => unit.unitOpportunityPoints <= 0);
+
+        if (allNoOpportunities)
+        {
+            var movesCounter = FindAnyObjectByType<MovesCounter>();
+            movesCounter.HighlightEndTurnButton();
+        }
+
         if (_targetedUnit == null)
             return;
+
         // Updating the Enemy Slider value
         //var slider = _targetedUnit.transform.GetComponentInChildren<Slider>();
         //if (slider != null)
