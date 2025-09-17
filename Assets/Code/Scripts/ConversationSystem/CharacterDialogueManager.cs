@@ -26,13 +26,23 @@ public class CharacterDialogueManager : MonoBehaviour
     public float scaleDuration = 0.5f;
     public Vector3 targetScale;
     public float displayDuration = 3f;       // Time for which the dialogue stays on screen
+    private bool _dialogueOpen;
 
     private System.Random localRandom;       // Local random instance for random selection
 
     private void Start()
     {
         localRandom = new System.Random(System.DateTime.Now.Millisecond);
+        _dialogueOpen = true;
         ShowRandomDialogue();
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && _dialogueOpen == true) // On mouse click, hide the dialogue
+        {
+            HideDialogue();
+        }
     }
 
     public void ShowRandomDialogue()
@@ -52,9 +62,6 @@ public class CharacterDialogueManager : MonoBehaviour
         // Animate the dialogue box to appear with a "juicy" effect
         dialogueBox.transform.DOScale(targetScale, scaleDuration).SetEase(Ease.OutBack);
         portraitImage.DOFade(1, fadeDuration).SetEase(Ease.InOutQuad); // Fade in the portrait
-
-        // Hide the dialogue after a set duration
-        Invoke("HideDialogue", displayDuration);
     }
 
     private void HideDialogue()
@@ -62,5 +69,7 @@ public class CharacterDialogueManager : MonoBehaviour
         // Animate the dialogue box and portrait to disappear
         dialogueBox.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
         portraitImage.DOFade(0, fadeDuration).SetEase(Ease.InOutQuad);
+        _dialogueOpen = false;
+        Destroy(this);
     }
 }
