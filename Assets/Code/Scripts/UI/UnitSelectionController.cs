@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using ProjectEdelweiss.Utils;
 
 public class UnitSelectionController : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class UnitSelectionController : MonoBehaviour
     public delegate void UnitTurnEnded();
     public static event UnitTurnEnded OnUnitTurnEnded;
 
+    private const int ATTACKABLE_TILE_RANGE = 2;
+
     public GameObject waitButton;
     public UnitSelectionStatus currentUnitSelectionStatus;
     public SpellUIController unitSpellUIController;
@@ -28,22 +31,27 @@ public class UnitSelectionController : MonoBehaviour
     [SerializeField] private GameObject _selectedUnitPanel;
     [SerializeField] private GameObject _enemyUnitPanel;
     [SerializeField] private List<Unit> _playerUnits;
+    [SerializeField] private List<TileController> _reachableEnemyTiles = new List<TileController>();
 
-    public const string reachableTilesVisualizer = "ReachableTilesVisualizer";
-    public const string ACTIVE_PLAYER_UNIT_ICON = "ActivePlayerCharacterSelectionIcon";
+    private BattleInterface _battleUI;
+    private GridMovementController _gridMovementController;
 
+    private void Awake()
+    {
+        _battleUI = GameObject.FindGameObjectWithTag(GameTags.BattleInterfaceCanvas)?.GetComponent<BattleInterface>();
+        _gridMovementController = GameObject.FindGameObjectWithTag(GameTags.GridMovementController)?.GetComponent<GridMovementController>();
+    }
 
     private void OnEnable()
     {
-        //UnitSelectionHelper.OnUnitSelected += SelectPlayerUnit;
+        MovePlayerAction.OnUnitMovedToTile += OutlineAttackableEnemiesWrapper;
     }
     private void OnDisable()
     {
-        //UnitSelectionHelper.OnUnitSelected -= SelectPlayerUnit;
+        MovePlayerAction.OnUnitMovedToTile -= OutlineAttackableEnemiesWrapper;
     }
     private void Start()
     {
-        //currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
         SetPlayerUnits();
     }
     private void SetPlayerUnits()
@@ -57,10 +65,11 @@ public class UnitSelectionController : MonoBehaviour
             || playerUnit.currentUnitPhase == Unit.UnitPhase.Waiting
             || playerUnit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless)
             return;
-        if (playerUnit.gameObject.tag == "Enemy" || playerUnit.gameObject.tag == "Deity")
+        if (playerUnit.gameObject.tag == GameTags.Enemy || playerUnit.gameObject.tag == GameTags.Deity)
             return;
         // Play Feedback for invalid selection. Include negative statuses as invalid as well (such as paralysis).
         // Add icons that convey the Player Unit status.
+        ResetEnemyReachableTiles();
         ClearPreviousSelection();
         SetAsActivePlayer(playerUnit);
         SpawnSelectionIcon(playerUnit.gameObject);
@@ -68,6 +77,45 @@ public class UnitSelectionController : MonoBehaviour
         PlaySelectionFeedback(playerUnit);
         var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
         reachableTilesVisualizer.ShowReachableTiles();
+
+        OutlineAttackableEnemies(playerUnit);
+    }
+    private void OutlineAttackableEnemiesWrapper(TileController tile)
+    {
+        OutlineAttackableEnemies(tile.detectedUnit.GetComponent<Unit>());
+    }
+
+    public void OutlineAttackableEnemies(Unit playerUnit)
+    {
+        ResetEnemyReachableTiles();
+        _reachableEnemyTiles.Clear();
+        // Outline Attackable Enemies
+        _reachableEnemyTiles = _gridMovementController.GetMultipleTiles(playerUnit.ownedTile, ATTACKABLE_TILE_RANGE);
+
+        foreach (var tile in _reachableEnemyTiles)
+        {
+            if (tile.detectedUnit != null && tile.detectedUnit.CompareTag(GameTags.Enemy))
+            {
+                var sprite = tile.detectedUnit.GetComponentInChildren<SpriteRenderer>();
+                sprite.material.SetFloat("_OutlineThickness", 1f);
+                tile.tileShaderController.EnemyTileFeedback(1f, 0.2f, Color.red);
+            }
+        }
+    }
+
+    public void ResetEnemyReachableTiles()
+    {
+        if (_reachableEnemyTiles.Count == 0)
+            return;
+        foreach (var tile in _reachableEnemyTiles)
+        {
+            if (tile.detectedUnit != null && tile.detectedUnit.CompareTag(GameTags.Enemy))
+            {
+                SpriteRenderer sprite = tile.detectedUnit.GetComponentInChildren<SpriteRenderer>();
+                sprite.material.SetFloat("_OutlineThickness", 0f);
+                tile.tileShaderController.ResetEnemyTileFeedback(0f, 0.2f, Color.white);
+            }
+        }
     }
 
     private void ClearPreviousSelection()
@@ -81,7 +129,7 @@ public class UnitSelectionController : MonoBehaviour
 
         foreach (var playerUnit in _playerUnits)
         {
-            playerUnit.tag = "Player";
+            playerUnit.tag = GameTags.Player;
         }
         Destroy(_selectionIcon);
         Destroy(_selectedUnitPanel);
@@ -89,14 +137,14 @@ public class UnitSelectionController : MonoBehaviour
 
     private void SetAsActivePlayer(Unit playerUnit)
     {
-        playerUnit.gameObject.tag = "ActivePlayerUnit";
+        playerUnit.gameObject.tag = GameTags.ActivePlayerUnit;
         _activePlayerUnit = playerUnit;
-        Debug.Log($"{playerUnit.unitTemplate.unitName} is now the ActivePlayerUnit");
+        Debug.Log($"{playerUnit.unitTemplate.unitName} is now the {GameTags.ActivePlayerUnit}");
     }
     public void SpawnSelectionIcon(GameObject playerUnit)
     {
         DestroySelectionIcons();
-        _selectionIcon = Instantiate(Resources.Load("PlayerCharacterSelectorIcon") as GameObject, playerUnit.gameObject.transform);
+        _selectionIcon = Instantiate(Resources.Load(GameTags.PlayerCharacterSelectorIcon) as GameObject, playerUnit.gameObject.transform);
         Vector3 playerSelectionInstanceOffset = new Vector3(0, 2.5f, 0);
         _selectionIcon.transform.localPosition += playerSelectionInstanceOffset;
     }
@@ -104,9 +152,8 @@ public class UnitSelectionController : MonoBehaviour
     public void SpawnUnitInfoPanel(Unit playerUnit)
     {
         ClearExistingPanels();
-        var battleUI = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").GetComponent<BattleInterface>();
-        _selectedUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, battleUI.battleDetails.transform);
-        _selectedUnitPanel.tag = "ActiveCharacterUnitProfile";
+        _selectedUnitPanel = Instantiate(Resources.Load(GameTags.CurrentlySelectedUnit) as GameObject, _battleUI.battleDetails.transform);
+        _selectedUnitPanel.tag = GameTags.ActiveCharacterUnitProfile;
         _selectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
         playerUnit.unitProfilePanel = _selectedUnitPanel;
         FillPanelDetails(playerUnit);
@@ -117,15 +164,14 @@ public class UnitSelectionController : MonoBehaviour
     {
         // Clear Existing Enemy Panels
 
-        GameObject[] existingInfoPanels = GameObject.FindGameObjectsWithTag("EnemyUnitProfile");
+        GameObject[] existingInfoPanels = GameObject.FindGameObjectsWithTag(GameTags.EnemyUnitProfile);
         foreach (var existingPanel in existingInfoPanels)
         {
             Destroy(existingPanel);
         }
 
-        var battleUI = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").GetComponent<BattleInterface>();
-        _enemyUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, battleUI.battleDetails.transform);
-        _enemyUnitPanel.tag = "EnemyUnitProfile";
+        _enemyUnitPanel = Instantiate(Resources.Load(GameTags.CurrentlySelectedUnit) as GameObject, _battleUI.battleDetails.transform);
+        _enemyUnitPanel.tag = GameTags.EnemyUnitProfile;
         _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
         enemyUnit.unitProfilePanel = _enemyUnitPanel;
         UnitProfileController unitProfileController = _enemyUnitPanel.GetComponent<UnitProfileController>();
@@ -135,7 +181,7 @@ public class UnitSelectionController : MonoBehaviour
 
     private void ClearExistingPanels()
     {
-        GameObject[] existingInfoPanels = GameObject.FindGameObjectsWithTag("ActiveCharacterUnitProfile");
+        GameObject[] existingInfoPanels = GameObject.FindGameObjectsWithTag(GameTags.ActiveCharacterUnitProfile);
         foreach (var existingPanel in existingInfoPanels)
         {
             Destroy(existingPanel);
@@ -159,39 +205,43 @@ public class UnitSelectionController : MonoBehaviour
     {
         DestroySelectionIcons();
         unitSpellUIController.ResetCharacterSpellsMenu();
-        this.gameObject.tag = "Player";
+        this.gameObject.tag = GameTags.Player;
         GridManager.Instance.currentPlayerUnit = null;
-        //currentUnitSelectionStatus = UnitSelectionStatus.unitDeselected;
     }
 
     public void GenerateWaitButton()
     {
         string sceneName = SceneManager.GetActiveScene().name;
-        if (unitSpellUIController != null && sceneName != "battle_tutorial")
+        if (unitSpellUIController != null && sceneName != GameTags.BattleTutorialScene)
         {
             GameObject newWaitButton = Instantiate(waitButton, unitSpellUIController.spellMenuContainer);
         }
     }
     public void StopPlayerParty()
     {
-        Debug.Log("Stopping Player party");
         DestroySelectionIcons();
         unitIconsController?.DisplayWaitingIcon();
         GridManager.Instance.currentPlayerUnit = null;
-        Destroy(GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile"));
+        ClearPanelsByTag(GameTags.ActiveCharacterUnitProfile);
         foreach (var unitGO in _playerUnits)
         {
             unitGO.GetComponent<Unit>().currentUnitPhase = Unit.UnitPhase.Waiting;
         }
-        OnUnitTurnEnded();
+        OnUnitTurnEnded?.Invoke();
     }
 
     private void DestroySelectionIcons()
     {
-        GameObject[] icons = GameObject.FindGameObjectsWithTag(ACTIVE_PLAYER_UNIT_ICON);
+        GameObject[] icons = GameObject.FindGameObjectsWithTag(GameTags.ActivePlayerUnitIcon);
         foreach (var icon in icons)
         {
             Destroy(icon);
         }
+    }
+
+    private void ClearPanelsByTag(string tag)
+    {
+        foreach (var panel in GameObject.FindGameObjectsWithTag(tag))
+            Destroy(panel);
     }
 }

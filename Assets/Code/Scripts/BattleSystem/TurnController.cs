@@ -81,7 +81,6 @@ public class TurnController : MonoBehaviour
         StunnerEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         BossSimildeBehaviour.OnCheckPlayer += PlayerUnitsLifeCheck;
-        // Instead of subscribing to every single enemy, just move the call to the check inside the EnemyAgent class.
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnits;
         Deity.OnPlayerTurnSwap += RestorePlayerUnits;
         Unit.OnCheckGameOver += GameOverCheck;
@@ -265,9 +264,7 @@ public class TurnController : MonoBehaviour
             TurnController.Instance.turnCounter++;
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
-            //playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
-
         }
         RestoreActivePlayerUnit();
         SetPlayerUnitsToActive();
@@ -296,6 +293,9 @@ public class TurnController : MonoBehaviour
         {
             unitSelection.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
             unitSelection.SpawnSelectionIcon(activePlayerUnit);
+            // Display the Attackable Enemies outline
+            var unitSelectionController = FindAnyObjectByType<UnitSelectionController>();
+            unitSelectionController.OutlineAttackableEnemies(activePlayerUnit.GetComponent<Unit>());
         }
     }
 

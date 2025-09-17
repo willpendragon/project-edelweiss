@@ -25,5 +25,8 @@ public class EndTurnButtonHelper : MonoBehaviour
         _unitSelectionController.StopPlayerParty();
         _endTurnButton.interactable = false;
 
+        // Clear Enemy Selection Tiles
+        var unitSelectionController = FindAnyObjectByType<UnitSelectionController>();
+        unitSelectionController.ResetEnemyReachableTiles();
     }
 }

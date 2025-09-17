@@ -86,6 +86,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         {
             defender.ownedTile.detectedUnit = null;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+            defender.ownedTile.tileShaderController.ResetEnemyTileFeedback(0, 0, Color.white);
 
             defender.MoveUnit(newGridPos.x, newGridPos.y, true);
             MoveUnitToTile(defender, destinationTile);
@@ -93,6 +94,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
             destinationTile.detectedUnit = defender.gameObject;
             defender.ownedTile = destinationTile;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+            destinationTile.tileShaderController.EnemyTileFeedback(1, 0.2f, Color.red);
             OnUsedMeleeAction?.Invoke("Magnet", attacker.unitTemplate.unitName);
         }
 
@@ -120,18 +122,18 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction
         if (projectedTile == null)
             return;
         if (projectedTile.detectedUnit != null)
-        {
             return;
-        }
 
         if (defender.MoveUnit(newGridPos.x, newGridPos.y, true) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             defender.ownedTile.detectedUnit = null;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+            defender.ownedTile.tileShaderController.ResetEnemyTileFeedback(0, 0, Color.white);
 
             TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
             MoveUnitToTile(defender, destinationTile);
             destinationTile.tileShaderController.ResetTileFadeHeightAnimation(destinationTile);
+            destinationTile.tileShaderController.EnemyTileFeedback(1, 0.2f, Color.red);
         }
 
         RemoveInvulnerableMask(defender);

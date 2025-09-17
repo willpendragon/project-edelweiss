@@ -157,11 +157,6 @@ public class Unit : MonoBehaviour
             slider.value = unitHealthPoints;
 
             Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
-
-            //if (bossFlag == true)
-            //{
-            //    BossController currentBossController = GameObject.FindGameObjectWithTag("BossController")?.GetComponent<BossController>();
-            //    currentBossController.UpdateBossHealthBar(unitHealthPoints);
         }
     }
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
@@ -276,7 +271,6 @@ public class Unit : MonoBehaviour
             if (unitSprite != null)
             {
                 // Play Fade Animation on Sprite.
-                //unitSprite.color = Color.black;
                 if (characterAnimator != null)
                 {
                     characterAnimator.SetTrigger("Die");
@@ -292,13 +286,13 @@ public class Unit : MonoBehaviour
                 meshRenderer.material.color = Color.black;
             }
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
-            Debug.Log("This Unit has died");
-
-            //unitSelectionController.currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitWaiting;
             Destroy(unitProfilePanel);
-            //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
             CheckEnemyDefeat();
+
+            // Reset TileController color
+            ownedTile.tileShaderController.ResetEnemyTileFeedback(0, 0, Color.white);
+
             OnCheckGameOver();
         }
     }
