@@ -11,11 +11,12 @@ public class CameraPan : MonoBehaviour
     public Vector2 panLimitZ; // Set the Z-axis boundaries
     public float margin = 10f; // Margin in pixels from the edge of the screen
     public Camera currentCamera;
+
     [SerializeField] private GameObject _enterCafePanelObject;
     [SerializeField] private GameObject _enterAltarPanelObject;
+    [SerializeField] private MapItemSelector _cafeSelector;
+    [SerializeField] private MapItemSelector _altarSelector;
     [SerializeField] OverworldMapGenerator overworldMapGenerator;
-
-    // Update is called once per frame
 
     void Update()
     {
@@ -31,36 +32,47 @@ public class CameraPan : MonoBehaviour
             pos.x -= panSpeed * Time.deltaTime;
             CloseBuildingMenu();
         }
-        //if (Input.mousePosition.y >= Screen.height - margin)
-        //{
-        //    pos.z += panSpeed * Time.deltaTime;
-        //}
-        //if (Input.mousePosition.y <= margin)
-        //{
-        //    pos.z -= panSpeed * Time.deltaTime;
-        //}
 
         // Clamp the camera position to the boundaries
         pos.x = Mathf.Clamp(pos.x, panLimitX.x, panLimitX.y);
         pos.z = Mathf.Clamp(pos.z, panLimitZ.x, panLimitZ.y);
-        //// Adjust for your camera's orientation if it's not aligned with the XZ plane
+        //// Adjust for camera's orientation if it's not aligned with the XZ plane
         pos.y = Mathf.Clamp(pos.y, panLimitY.x, panLimitY.y);
 
         transform.position = pos;
 
     }
-
-    private void CloseBuildingMenu()
-    {
-        _enterAltarPanelObject.SetActive(false);
-        _enterCafePanelObject.SetActive(false);
-    }
-
     void Start()
     {
         float horizontalNodePosition = overworldMapGenerator.currentMapNodeTransform.position.x;
         Vector3 camPosition = currentCamera.transform.position;
         camPosition.x = horizontalNodePosition;
         currentCamera.transform.position = camPosition;
+    }
+
+    // Quick methods to close any buildings panel when the camera is panned - should be moved to its own class later
+
+    private void CloseBuildingMenu()
+    {
+        if (_enterAltarPanelObject.activeSelf)
+        {
+            CloseAltarPanel();
+        }
+        if (_enterCafePanelObject.activeSelf)
+        {
+            CloseCafePanel();
+        }
+    }
+
+    private void CloseCafePanel()
+    {
+        _enterCafePanelObject.SetActive(false);
+        _cafeSelector.DeselectItem();
+    }
+
+    private void CloseAltarPanel()
+    {
+        _enterAltarPanelObject.SetActive(false);
+        _altarSelector.DeselectItem();
     }
 }
