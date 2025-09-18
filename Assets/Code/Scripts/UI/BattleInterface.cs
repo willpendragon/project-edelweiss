@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using System;
 
 public class BattleInterface : MonoBehaviour
 {
@@ -55,6 +56,7 @@ public class BattleInterface : MonoBehaviour
         AOESpellPlayerAction.OnNotEnoughMana += SetEnergyNotification;
         MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack += SetMeleeAttackOnNotificationPanel;
+        BumperEnemyBehavior.OnMovementDisabled += SetMovementDisableNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetMeleeAttackOnNotificationPanel;
         MoonPhaseController.OnMoonPhaseSwitch += SetMoonNotification;
         MoonPhaseController.OnMoonPhaseBuffActivation += SetMoonNotification;
@@ -71,6 +73,7 @@ public class BattleInterface : MonoBehaviour
         AOESpellPlayerAction.OnNotEnoughMana -= SetEnergyNotification;
         MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetMeleeAttackOnNotificationPanel;
+        BumperEnemyBehavior.OnMovementDisabled -= SetMovementDisableNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetMeleeAttackOnNotificationPanel;
         MoonPhaseController.OnMoonPhaseSwitch -= SetMoonNotification;
         MoonPhaseController.OnMoonPhaseBuffActivation -= SetMoonNotification;
@@ -118,6 +121,13 @@ public class BattleInterface : MonoBehaviour
     {
         battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
         battlefieldTextNotifications.text = deityNotification;
+        StartCoroutine("ResetBattleFieldTextNotification");
+    }
+
+    private void SetMovementDisableNotification(string message)
+    {
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
+        battlefieldTextNotifications.text = message;
         StartCoroutine("ResetBattleFieldTextNotification");
     }
 

@@ -159,7 +159,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
         // Currently this EFFECT works just like the Stun behaviour, but with a different icon.
         // Should retrieve the secondary effect dynamically from the Spell properties.
         PlayFrozenFeedback(spellTarget);
-        Debug.Log("The Target is now Stun and unable to move");
+        Debug.Log("The Target is now Frozen and unable to move");
     }
 
     private void PlaySpellFeedback(Unit activePlayerUnit, Unit spellTarget, Spell spell)
@@ -350,7 +350,21 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction
 
         if (targetUnit.GetComponentInChildren<SpriteRenderer>() != null)
         {
-            targetUnit.GetComponentInChildren<SpriteRenderer>().material.color = Color.blue;
+            targetUnit.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+            var animator = targetUnit.GetComponentInChildren<Animator>();
+            animator.SetTrigger("Frozen");
+        }
+
+        // Spawn Frozen Cube
+        GameObject frozenCubePrefab = Resources.Load<GameObject>("FrozenCube");
+        if (frozenCubePrefab != null)
+        {
+            GameObject frozenCube = Instantiate(frozenCubePrefab, targetUnit.transform);
+            frozenCube.transform.localPosition = new Vector3(0f, 0.5f, 0f);
+        }
+        else
+        {
+            Debug.LogWarning("FrozenCube prefab not found in Resources.");
         }
     }
 }

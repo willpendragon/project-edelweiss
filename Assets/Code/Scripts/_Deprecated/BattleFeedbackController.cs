@@ -78,12 +78,23 @@ public class BattleFeedbackController : MonoBehaviour
         if (unitAnimator != null)
         {
             unitAnimator.SetTrigger("Die");
+            DeleteExistingVFX();
         }
 
         if (PlayDeathVFX != null)
         {
             deathDisappearAnimationVFX = Instantiate(deathDisappearAnimationVFX, gameObject.transform);
             deathDisappearAnimationVFX.GetComponent<Animator>().SetTrigger("TriggerDeathVFX");
+        }
+    }
+
+    private void DeleteExistingVFX()
+    {
+        // Destroy status VFX after the Unit's death (example: Frozen Cube)
+        var VFX = gameObject.GetComponentInChildren<StatusVFX>();
+        if (VFX != null)
+        {
+            VFX.DestroyVFX();
         }
     }
 

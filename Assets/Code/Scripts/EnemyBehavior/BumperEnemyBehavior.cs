@@ -15,12 +15,21 @@ public class BumperEnemyBehavior : EnemyBehavior
     public delegate void BumperEnemyAttack(string attackName, string attackerName);
     public static event BumperEnemyAttack OnBumperEnemyAttack;
 
+    public delegate void MovementDisabled(string message);
+    public static event MovementDisabled OnMovementDisabled;
+
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
         if (enemyAgent.gameObject.tag == "DeadEnemy" ||
             enemyAgent.GetComponentInParent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             Debug.Log("Enemy is dead and cannot act.");
+            return;
+        }
+
+        if (enemyAgent.GetComponentInParent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.stun)
+        {
+            OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} is trapped in ice...");
             return;
         }
 
@@ -70,6 +79,7 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     private void PerformAttack(Unit enemyUnit, EnemyAgent enemyAgent, Unit targetPlayerUnit)
     {
+
         float baseDamage = enemyUnit.unitMeleeAttackBaseDamage;
         float proximityModifier = 1.5f;
         float finalDamage = baseDamage;
