@@ -37,6 +37,7 @@ public class CafeMenuUIController : MonoBehaviour
     [SerializeField] TextMeshProUGUI notificationTexts;
     [SerializeField] GameObject loveIconPrefab;
     [SerializeField] Transform loveIconPrefabTransform;
+    [SerializeField] GameObject _feedButton;
 
     private FoodShelfItem selectedFoodItem;  // The currently selected food item
 
@@ -211,39 +212,15 @@ public class CafeMenuUIController : MonoBehaviour
                 characterProfileSmallControllers.Add(characterProfile);
 
                 // Create and configure the feed button for this character
-                GameObject feedCharacterButtonGO = new GameObject("CharacterFeedButton");
-                RectTransform rectTransform = feedCharacterButtonGO.AddComponent<RectTransform>();
-                rectTransform.SetParent(characterProfile.transform, false);
-                rectTransform.sizeDelta = new Vector2(128, 32);
-
-                Image buttonImage = feedCharacterButtonGO.AddComponent<Image>();
-                Button feedCharacterButton = feedCharacterButtonGO.AddComponent<Button>();
-
-                GameObject textGO = new GameObject("ButtonText");
-                RectTransform textRectTransform = textGO.AddComponent<RectTransform>();
-                textRectTransform.SetParent(feedCharacterButtonGO.transform, false);
-                textRectTransform.anchorMin = Vector2.zero;
-                textRectTransform.anchorMax = Vector2.one;
-                textRectTransform.sizeDelta = Vector2.zero;
-
-                TextMeshProUGUI textMeshPro = textGO.AddComponent<TextMeshProUGUI>();
-                textMeshPro.text = "Feed";
-                textMeshPro.fontSize = 24;
-                textMeshPro.alignment = TextAlignmentOptions.Center;
-                textMeshPro.color = Color.black;
-
-                ColorBlock colors = feedCharacterButton.colors;
-                colors.normalColor = Color.white;
-                colors.highlightedColor = new Color(0.8f, 0.8f, 0.8f, 1);
-                colors.pressedColor = new Color(0.6f, 0.6f, 0.6f, 1);
-                feedCharacterButton.colors = colors;
+                GameObject feedCharacterButton = Instantiate(_feedButton, characterProfile.transform);
+                var button = feedCharacterButton.GetComponent<Button>();
 
                 // Add the onClick listener for feeding the character
                 Unit characterUnit = profileController.referenceUnit;  // Capture the reference to avoid closure issues
-                feedCharacterButton.onClick.AddListener(() => OnCharacterClicked(characterUnit));
+                button.onClick.AddListener(() => OnCharacterClicked(characterUnit));
 
-                feedCharacterButton.enabled = false;  // Disable initially; can be enabled when an item is selected
-                feedPlayerCharactersButtons.Add(feedCharacterButton);
+                button.enabled = false;  // Disable initially; can be enabled when an item is selected
+                feedPlayerCharactersButtons.Add(button);
             }
         }
     }
