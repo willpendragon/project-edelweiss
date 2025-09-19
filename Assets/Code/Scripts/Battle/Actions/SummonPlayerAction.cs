@@ -29,9 +29,9 @@ public class SummonPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
             deityLimiter--;
 
-            string prayLeftMouseButtonInstructionsText = "LMB - Select/Confirm Summon for Praying";
-            string prayRightMouseButtonInstructionsText = "-";
-            InstructionsPanelController.Instance.UpdateInstructions(prayLeftMouseButtonInstructionsText, prayRightMouseButtonInstructionsText);
+            //string prayLeftMouseButtonInstructionsText = "LMB - Select/Confirm Summon for Praying";
+            //string prayRightMouseButtonInstructionsText = "-";
+            //InstructionsPanelController.Instance.UpdateInstructions(prayLeftMouseButtonInstructionsText, prayRightMouseButtonInstructionsText);
         }
     }
 

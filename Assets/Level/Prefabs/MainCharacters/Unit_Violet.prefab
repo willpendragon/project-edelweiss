@@ -504,6 +504,7 @@ GameObject:
   - component: {fileID: 4700625991820656510}
   - component: {fileID: 9217921648549351112}
   - component: {fileID: 854758691417023306}
+  - component: {fileID: 2395186664946030866}
   m_Layer: 8
   m_Name: BubbleSphere
   m_TagString: Untagged
@@ -613,6 +614,19 @@ MonoBehaviour:
   animationDuration: 2
   glowingTileColumn: {fileID: 4700625991820656510}
   animationEase: 7
+--- !u!114 &2395186664946030866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2707437566052378449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6df7f0698002dba46abb9f2eb4e56dfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buffMesh: {fileID: 4700625991820656510}
 --- !u!1 &5959858009669788163
 GameObject:
   m_ObjectHideFlags: 0

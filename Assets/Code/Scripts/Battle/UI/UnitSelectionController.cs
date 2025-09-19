@@ -84,12 +84,11 @@ public class UnitSelectionController : MonoBehaviour
     {
         OutlineAttackableEnemies(tile.detectedUnit.GetComponent<Unit>());
     }
-
     public void OutlineAttackableEnemies(Unit playerUnit)
     {
         ResetEnemyReachableTiles();
         _reachableEnemyTiles.Clear();
-        // Outline Attackable Enemies
+
         _reachableEnemyTiles = _gridMovementController.GetMultipleTiles(playerUnit.ownedTile, ATTACKABLE_TILE_RANGE);
 
         foreach (var tile in _reachableEnemyTiles)
@@ -97,8 +96,11 @@ public class UnitSelectionController : MonoBehaviour
             if (tile.detectedUnit != null && tile.detectedUnit.CompareTag(GameTags.Enemy))
             {
                 var sprite = tile.detectedUnit.GetComponentInChildren<SpriteRenderer>();
-                sprite.material.SetFloat("_OutlineThickness", 1f);
-                tile.tileShaderController.EnemyTileFeedback(1f, 0.2f, Color.red);
+                if (sprite != null)
+                {
+                    sprite.material.SetFloat("_OutlineThickness", 1f);
+                    tile.tileShaderController.EnemyTileFeedback(1f, 0.2f, Color.red);
+                }
             }
         }
     }
@@ -107,13 +109,17 @@ public class UnitSelectionController : MonoBehaviour
     {
         if (_reachableEnemyTiles.Count == 0)
             return;
+
         foreach (var tile in _reachableEnemyTiles)
         {
             if (tile.detectedUnit != null && tile.detectedUnit.CompareTag(GameTags.Enemy))
             {
                 SpriteRenderer sprite = tile.detectedUnit.GetComponentInChildren<SpriteRenderer>();
-                sprite.material.SetFloat("_OutlineThickness", 0f);
-                tile.tileShaderController.ResetEnemyTileFeedback(0f, 0.2f, Color.white);
+                if (sprite != null)
+                {
+                    sprite.material.SetFloat("_OutlineThickness", 0f);
+                    tile.tileShaderController.ResetEnemyTileFeedback(0f, 0.2f, Color.white);
+                }
             }
         }
     }
