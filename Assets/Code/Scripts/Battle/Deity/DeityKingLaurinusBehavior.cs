@@ -32,47 +32,60 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         AttackPlayerUnits(deity);
         AttackEnemyUnits(deity);
         BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
-        //OnUsedSpecialAttack?.Invoke("Cursed Garden", "King Laurinus");
     }
 
     private void SpreadCurse()
     {
+        var allTiles = GridManager.Instance.gridTileControllers;
+
+        // Check if all tiles are already cursed
+        bool allCursed = allTiles.All(t => t.currentTileCurseStatus == TileCurseStatus.cursed);
+
+        if (allCursed)
+        {
+            BattleInterface.Instance.SetDeityNotification("King Laurinus's Curse is complete");
+            return;
+        }
+
         TileController[] gridTiles = ExtractRandomTiles();
         foreach (var tile in gridTiles)
         {
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
             Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
-            BattleInterface.Instance.SetDeityNotification("King Laurinus's Curse spreads");
         }
-    }
 
+        BattleInterface.Instance.SetDeityNotification("King Laurinus's Curse spreads");
+    }
 
     // Extracts a number of random tiles. Laurinus will curse these random tiles.
     private TileController[] ExtractRandomTiles()
     {
-        int randomCursedTileminRange = 20;
+        int randomCursedTileMinRange = 20;
         int maxCursedTileRangeMaxRange = 30;
 
-        int cursedTileNumber = UnityEngine.Random.Range(randomCursedTileminRange, maxCursedTileRangeMaxRange);
+        int cursedTileNumber = UnityEngine.Random.Range(randomCursedTileMinRange, maxCursedTileRangeMaxRange);
 
-        // Ensure the GridManager instance and tiles array are properly initialized
         if (GridManager.Instance == null || GridManager.Instance.gridTileControllers == null)
         {
             throw new InvalidOperationException("GridManager instance or gridTileControllers array is not initialized.");
         }
 
-        // Ensure there are at least 5 tiles to extract
-        if (GridManager.Instance.gridTileControllers.Length < cursedTileNumber)
+        // Filter only non-cursed tiles
+        var nonCursedTiles = GridManager.Instance.gridTileControllers
+            .Where(t => t.currentTileCurseStatus != TileCurseStatus.cursed)
+            .ToList();
+
+        if (nonCursedTiles.Count < cursedTileNumber)
         {
-            throw new InvalidOperationException("Not enough tiles to extract 5 random ones.");
+            cursedTileNumber = nonCursedTiles.Count; // Adjust to max available
         }
 
-        // Use LINQ to randomly order the tiles and take the first 5
-        return GridManager.Instance.gridTileControllers
-            .OrderBy(t => Guid.NewGuid())
+        return nonCursedTiles
+            .OrderBy(t => Guid.NewGuid()) // Randomize
             .Take(cursedTileNumber)
             .ToArray();
     }
+
     private void AttackPlayerUnits(Deity deity)
     {
         float enmity = BattleManager.Instance.deity.enmity;
@@ -123,7 +136,6 @@ public class DeityKingLaurinusBehavior : DeityBehavior
                 unit.OnTakenDamage.Invoke(scaledDamage);
             }
         }
-
         Debug.Log("King Laurinus used its special attack on Enemies");
     }
 }
