@@ -20,6 +20,9 @@ public class BattleFlowController : MonoBehaviour
 
     public delegate void BattleEnd(string battleEndMessage);
     public static event BattleEnd OnBattleEnd;
+
+    public delegate void BattleEndDialogueUnlock();
+    public static event BattleEndDialogueUnlock OnBattleEndDialogueUnlock;
     private void Awake()
     {
         if (Instance == null)
@@ -58,7 +61,8 @@ public class BattleFlowController : MonoBehaviour
             }
         }
         BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(receivedWarFunds);
-        ConversationManager.Instance.UnlockRandomConversation();
+        OnBattleEndDialogueUnlock();
+        //ConversationManager.Instance.UnlockRandomConversation();
         Debug.Log("Rolled Convo Unlock");
         UpdateBattleEndUIPanel(receivedWarFunds);
     }
@@ -76,7 +80,7 @@ public class BattleFlowController : MonoBehaviour
         // I can move this in the Battle Manager
         ResetTags();
         DeactivateActivePlayerUnitPanel();
-        OnResetUnitUI();
+        //OnResetUnitUI();
         summonResetHelper.ResetSummonTemporaryBuffs();
     }
     public void ResetTags()

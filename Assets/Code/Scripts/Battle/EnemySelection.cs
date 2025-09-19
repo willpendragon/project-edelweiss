@@ -5,7 +5,7 @@ public class EnemySelection : MonoBehaviour
 {
     public GameObject[] enemySelection;
     public GridManager gridManager;
-    public List<EnemyType> EnemyTypeIds;
+    //public List<EnemyType> EnemyTypeIds;
     public List<Vector2> EnemyCoordinates;
     public EnemyPartyData enemyParty;
     public int levelNumber;

@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPlayerAction
+namespace Edelweiss.Core
+
 {
-    //public void Select(TileController selectedTile);
-    public void Execute(TileController tile);
-    //public void Deselect();
+    public interface IPlayerAction<T>
+    {
+        //public void Select(TileController selectedTile);
+        public void Execute(T target);
+        //public void Deselect();
+
+    }
 
 }
