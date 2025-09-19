@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static TurnController;
 using static Unit;
@@ -28,7 +26,7 @@ public class BattleFlowController : MonoBehaviour
         if (Instance == null)
             Instance = this;
         else
-            Destroy(gameObject); // Prevent duplicates
+            Destroy(gameObject);
     }
 
     private void Start()
@@ -37,12 +35,11 @@ public class BattleFlowController : MonoBehaviour
     }
     public void PlayerPartyVictorySequence(string battleEndPanelMessage, float receivedWarFunds)
     {
-        // Execute the sequence of events firing when the Player Party wins the battle.
+        // Execute after Player victory sequence.
         OnBattleEnd("Victory");
         BattleManager.Instance.PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
         battleManager.UnlockNextLevel();
-        Debug.Log("Enemy Party was defeated");
 
         foreach (var player in TurnController.Instance.playerUnitsOnBattlefield)
         {
@@ -57,13 +54,10 @@ public class BattleFlowController : MonoBehaviour
                 enemiesKilledInCurrentBattle++;
                 // Increases enemy kill counter for UI display.
                 gameStatsManager.enemiesKilled++;
-                Debug.Log("Adding enemies to kill count");
             }
         }
         BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(receivedWarFunds);
         OnBattleEndDialogueUnlock();
-        //ConversationManager.Instance.UnlockRandomConversation();
-        Debug.Log("Rolled Convo Unlock");
         UpdateBattleEndUIPanel(receivedWarFunds);
     }
     public void PlayerPartyDefeatSequence()
@@ -72,7 +66,6 @@ public class BattleFlowController : MonoBehaviour
         OnBattleEnd("Defeat");
         BattleManager.Instance.PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
-        Debug.Log("Player Party was defeated");
     }
 
     public void ResetBattleToInitialStatus()
@@ -80,7 +73,6 @@ public class BattleFlowController : MonoBehaviour
         // I can move this in the Battle Manager
         ResetTags();
         DeactivateActivePlayerUnitPanel();
-        //OnResetUnitUI();
         summonResetHelper.ResetSummonTemporaryBuffs();
     }
     public void ResetTags()
