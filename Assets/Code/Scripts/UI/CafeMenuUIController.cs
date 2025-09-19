@@ -171,6 +171,11 @@ public class CafeMenuUIController : MonoBehaviour
     }
     public void GenerateCharacterList()
     {
+        if (GameManager.Instance == null || GameManager.Instance.playerPartyMembersInstances == null)
+        {
+            Debug.LogWarning("GameManager or playerPartyMembersInstances is null. Cannot generate character list.");
+            return;
+        }
         // Clear the list to ensure it doesn’t contain outdated references
         characterProfileSmallControllers.Clear();
 
