@@ -330,11 +330,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8642592451490499264}
   - component: {fileID: 5048801818827486388}
-  - component: {fileID: 5027015947622485375}
-  - component: {fileID: 3379728500558068914}
   - component: {fileID: 7598564458177837309}
   - component: {fileID: 1424958496577049021}
-  - component: {fileID: 8871339074937983577}
   - component: {fileID: 2548214092052109539}
   - component: {fileID: 746262690384450006}
   - component: {fileID: 5305908522002828429}
@@ -464,33 +461,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5027015947622485375
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8642592451490499134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1802ea89f3831e94998ba7ffd64c3f9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3379728500558068914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8642592451490499134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1364625b023ee2a4b895f39866368285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spellCastingController: {fileID: 0}
-  spellButtonPrefab: {fileID: 6278539958340940975, guid: dcdb643eb9d225d4bbd83e3998662618, type: 3}
-  spellMenuContainer: {fileID: 0}
 --- !u!114 &7598564458177837309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -522,22 +492,6 @@ MonoBehaviour:
   coinsRewardPool: 0
   experienceRewardPool: 0
   multiKillCounter: 0
---- !u!114 &8871339074937983577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8642592451490499134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5db9d0403ea7d24dbc5797da3569e5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  summonButtonPrefab: {fileID: 6278539958340940975, guid: 6716af5b85582f142b22ded5945da45a, type: 3}
-  spellMenuContainer: {fileID: 0}
-  currentButton: {fileID: 0}
-  currentSummonPhase: 0
 --- !u!114 &2548214092052109539
 MonoBehaviour:
   m_ObjectHideFlags: 0

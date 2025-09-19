@@ -737,7 +737,6 @@ GameObject:
   - component: {fileID: 5009294011632168282}
   - component: {fileID: 5009294011632168285}
   - component: {fileID: 5009294011632168283}
-  - component: {fileID: 7714452247050051452}
   - component: {fileID: 3031252642805861247}
   - component: {fileID: 361118017173477511}
   - component: {fileID: 2788514426886983777}
@@ -816,18 +815,6 @@ MonoBehaviour:
   opportunityCounter: {fileID: 0}
   receivedDamageCounter: {fileID: 0}
   unitStunStatusIcon: {fileID: 3406946445924013396, guid: e9adfb87616477e4784c4a1060a542fd, type: 3}
---- !u!114 &7714452247050051452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5009294011632168286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36537da3c27d54e4889f7162982ddbba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3031252642805861247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -950,7 +937,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waitButton: {fileID: 0}
   currentUnitSelectionStatus: 1
-  unitSpellUIController: {fileID: 0}
   unitSprite: {fileID: 5090446047043621278}
   unitIconsController: {fileID: 0}
   _activePlayerUnit: {fileID: 0}

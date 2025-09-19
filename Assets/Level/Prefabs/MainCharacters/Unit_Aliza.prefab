@@ -116,17 +116,13 @@ GameObject:
   m_Component:
   - component: {fileID: 452031790448863200}
   - component: {fileID: 4009798023604197780}
-  - component: {fileID: 3780442932800135263}
-  - component: {fileID: 452031789749913624}
   - component: {fileID: 6804547558390777160}
   - component: {fileID: 992189169463386825}
   - component: {fileID: 878605096084481255}
   - component: {fileID: 6743903757700210417}
   - component: {fileID: 140287813762198916}
   - component: {fileID: 140287813762198917}
-  - component: {fileID: 140287813762198918}
   - component: {fileID: 7889034144590482301}
-  - component: {fileID: -769267829670441750}
   - component: {fileID: 6278929137907918091}
   - component: {fileID: 8130161269669623750}
   - component: {fileID: 6934393671442508757}
@@ -262,33 +258,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3780442932800135263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1802ea89f3831e94998ba7ffd64c3f9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &452031789749913624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1364625b023ee2a4b895f39866368285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spellCastingController: {fileID: 0}
-  spellButtonPrefab: {fileID: 6278539958340940975, guid: dcdb643eb9d225d4bbd83e3998662618, type: 3}
-  spellMenuContainer: {fileID: 0}
 --- !u!114 &6804547558390777160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,22 +347,6 @@ MonoBehaviour:
   trapButtonPrefab: {fileID: 6278539958340940975, guid: 04aff51fc7590564a83c6cbfb9a5ef71, type: 3}
   spellMenuContainer: {fileID: 0}
   trapTileSelectionIsActive: 0
---- !u!114 &140287813762198918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5db9d0403ea7d24dbc5797da3569e5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  summonButtonPrefab: {fileID: 6278539958340940975, guid: 6716af5b85582f142b22ded5945da45a, type: 3}
-  spellMenuContainer: {fileID: 0}
-  currentButton: {fileID: 0}
-  currentSummonPhase: 0
 --- !u!114 &7889034144590482301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,19 +363,6 @@ MonoBehaviour:
   unitDamageCounterAnimator: {fileID: 1448325259824279509}
   unitBuffCounter: {fileID: 2727636683082458962}
   unitBuffCounterAnimator: {fileID: 1280362001867397068}
---- !u!114 &-769267829670441750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 132e6435001ef844988a4af33b482c63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  runButtonPrefab: {fileID: 9137205279756630114, guid: 03315caf41aff3b4c9ea9f91d2a2183d, type: 3}
 --- !u!114 &6278929137907918091
 MonoBehaviour:
   m_ObjectHideFlags: 0
