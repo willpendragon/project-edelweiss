@@ -89,8 +89,8 @@ public class BattleFlowController : MonoBehaviour
     public void UpdateBattleEndUIPanel(float warFunds)
     {
         // It should be handled by UI behaviour.
-        battleEndUIHandler.battleEndEnemiesKilledText.text = enemiesKilledInCurrentBattle.ToString();
-        battleEndUIHandler.battleEndWarFundsGainedText.text = warFunds.ToString();
-        battleEndUIHandler.battleEndCrystalObtainedText.text = battleManager.captureCrystalsRewardPool.ToString();
+        battleEndUIHandler.battleEndEnemiesKilledText.text = $"Enemies Killed<space=60>{enemiesKilledInCurrentBattle}";
+        battleEndUIHandler.battleEndWarFundsGainedText.text = $"War Funds Gained<space=20>{warFunds}<space=30><voffset=10><sprite=0></voffset>";
+        battleEndUIHandler.battleEndCrystalObtainedText.text = $"Capture Crystals<space=20>{battleManager.captureCrystalsRewardPool}<space=30><voffset=10><sprite=0></voffset>";
     }
 }
