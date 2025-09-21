@@ -72,7 +72,6 @@ public class GameStatsManager : MonoBehaviour
     }
     public void LoadCharacterData()
     {
-        Debug.Log("Loading Player Character's Data");
         GameObject[] playerUnits = null;
         if (TurnController.Instance != null)
         {
@@ -134,7 +133,7 @@ public class GameStatsManager : MonoBehaviour
         if (gameSaveData != null)
         {
             unlockedPuzzleKeys = gameSaveData.resourceData.puzzleLevelKeys;
-            Debug.Log("Loading the number of unlocked Keys");
+            Debug.Log($"Loaded Keys: {unlockedPuzzleKeys}");
         }
     }
     public void SaveUnlockedKeys(int unlockedKeys)

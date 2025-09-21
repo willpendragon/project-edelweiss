@@ -109,7 +109,6 @@ public class GridManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Generating Grid Map from MapData");
         foreach (var tileData in currentMapData.tilePositions)
         {
             Vector3 tilePosition = new Vector3(tileData.position.x * (1 + inBetweenTilesXOffset), 0, tileData.position.y * (1 + inBetweenTilesYOffset));
@@ -129,8 +128,7 @@ public class GridManager : MonoBehaviour
                 Debug.LogWarning("Duplicate key found when adding GameObject to dictionary!");
             }
         }
-
-        Debug.Log("Dictionary Count: " + gridMapDictionary.Count);
+        //Debug.Log("Dictionary Count: " + gridMapDictionary.Count);
     }
 
     private void ClearGridMap()

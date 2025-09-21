@@ -22,16 +22,16 @@ public class PauseMenuController : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    private void Update()
-    {
-        // Toggle pause menu on pressing ESC
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            TogglePauseMenu();
-        }
-    }
+    //private void Update()
+    //{
+    //    // Toggle pause menu on pressing ESC
+    //    if (Input.GetKeyDown(KeyCode.Escape))
+    //    {
+    //        TogglePauseMenu();
+    //    }
+    //}
 
-    private void TogglePauseMenu()
+    public void TogglePauseMenu()
     {
         // Ensure no animation is interrupted
         if (currentTween != null && currentTween.IsActive() && !currentTween.IsComplete())
