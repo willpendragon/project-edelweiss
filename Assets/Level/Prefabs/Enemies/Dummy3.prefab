@@ -118,6 +118,14 @@ PrefabInstance:
       propertyPath: fieldPrize
       value: 
       objectReference: {fileID: 11400000, guid: 27cb5a7026d37d84692fa4ea27970834, type: 2}
+    - target: {fileID: 2055579028622872174, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2055579028622872174, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2788514426886983777, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitSprite
       value: 

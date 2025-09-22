@@ -29,7 +29,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2450
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -41,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ReflectionCubemap:
-        m_Texture: {fileID: 8900000, guid: 24cc07848d76cce42a1c32d0a7b2bed8, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -62,19 +62,19 @@ Material:
     - _AlphaCutoff: 0.5
     - _DirectionalCat: 1
     - _FogCat: 1
-    - _Metallic: 0.724
+    - _Metallic: 0.93
     - _NoiseCat: 1
     - _NoiseIntensity: 0
     - _NoiseScale: 6
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RainbowIntensity: 0.083
+    - _RainbowIntensity: 0.43
     - _ReflectionIntensity: 1
     - _SkyboxCat: 1
-    - _Smoothness: 0.863
+    - _Smoothness: 0.597
     - _VertexIntensity: 0
     m_Colors:
-    - _BaseColor: {r: 0.095884636, g: 0.4916081, b: 0.7584905, a: 1}
+    - _BaseColor: {r: 0, g: 0.059195995, b: 1, a: 1}
     - _Color: {r: 1, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _NoiseSpeed: {r: 0.5, g: 0.5, b: 0, a: 0}

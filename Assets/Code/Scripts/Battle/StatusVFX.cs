@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class StatusVFX : MonoBehaviour
 {
-
     public void DestroyVFX()
     {
         Destroy(gameObject);
