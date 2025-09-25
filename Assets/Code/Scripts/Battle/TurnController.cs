@@ -292,7 +292,7 @@ public class TurnController : MonoBehaviour
         if (activePlayerUnit != null)
         {
             unitSelection.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
-            unitSelection.SpawnSelectionIcon(activePlayerUnit);
+            //unitSelection.SpawnSelectionIcon(activePlayerUnit);
             // Display the Attackable Enemies outline
             var unitSelectionController = FindAnyObjectByType<UnitSelectionController>();
             unitSelectionController.OutlineAttackableEnemies(activePlayerUnit.GetComponent<Unit>());

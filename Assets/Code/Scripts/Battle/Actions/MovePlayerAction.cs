@@ -51,6 +51,9 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         activePlayerUnit.ownedTile.detectedUnit = null;
         activePlayerUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+        // Reset tile color
+        activePlayerUnit.ownedTile.tileShaderController.SetTileToMoveRangeColor();
+        activePlayerUnit.ownedTile.tileShaderController.ResetTileGlowIntensity();
     }
     private void ClaimTile(Unit activePlayerUnit, TileController tile)
     {

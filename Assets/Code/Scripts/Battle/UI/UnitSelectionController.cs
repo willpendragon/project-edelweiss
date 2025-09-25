@@ -72,7 +72,8 @@ public class UnitSelectionController : MonoBehaviour
         ResetEnemyReachableTiles();
         ClearPreviousSelection();
         SetAsActivePlayer(playerUnit);
-        SpawnSelectionIcon(playerUnit.gameObject);
+        //SpawnSelectionIcon(playerUnit.gameObject);
+        ChangeActivePlayerUnitTile(playerUnit);
         SpawnUnitInfoPanel(playerUnit);
         PlaySelectionFeedback(playerUnit);
         var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
@@ -80,6 +81,12 @@ public class UnitSelectionController : MonoBehaviour
 
         OutlineAttackableEnemies(playerUnit);
     }
+    private void ChangeActivePlayerUnitTile(Unit playerUnit)
+    {
+        var tile = playerUnit.ownedTile;
+        tile.tileShaderController.SetTileColor(1f, Color.green);
+    }
+
     private void OutlineAttackableEnemiesWrapper(TileController tile)
     {
         OutlineAttackableEnemies(tile.detectedUnit.GetComponent<Unit>());
@@ -126,18 +133,22 @@ public class UnitSelectionController : MonoBehaviour
 
     private void ClearPreviousSelection()
     {
-        if (_selectionIcon == null)
-            return;
+        //if (_selectionIcon == null)
+        //    return;
         if (_selectedUnitPanel == null)
             return;
         if (_activePlayerUnit == null)
             return;
 
+        // Reset tile color
+        _activePlayerUnit.ownedTile.tileShaderController.SetTileToMoveRangeColor();
+        _activePlayerUnit.ownedTile.tileShaderController.ResetTileGlowIntensity();
+
         foreach (var playerUnit in _playerUnits)
         {
             playerUnit.tag = GameTags.Player;
         }
-        Destroy(_selectionIcon);
+        //Destroy(_selectionIcon);
         Destroy(_selectedUnitPanel);
     }
 

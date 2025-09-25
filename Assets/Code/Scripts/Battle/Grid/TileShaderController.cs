@@ -17,10 +17,9 @@ public class TileShaderController : MonoBehaviour
             Debug.LogError("Glowing Mesh not assigned.");
         }
         glowingTileColumn.material.SetFloat("_GlowIntensity", 0f);
-        SetTileMoveRangeColor();
+        SetTileToMoveRangeColor();
     }
-
-    private void SetTileMoveRangeColor()
+    public void SetTileToMoveRangeColor()
     {
         Color myColor;
         if (ColorUtility.TryParseHtmlString(TILE_MOVEMENT_RANGE_COLOR, out myColor))
@@ -35,6 +34,20 @@ public class TileShaderController : MonoBehaviour
         {
             glowingTileColumn.material.SetFloat("_GlowIntensity", 1f);
         }
+    }
+    public void SetTileColor(float glowIntensity, Color glowColor)
+    {
+        if (glowingTileColumn == null)
+            return;
+        glowingTileColumn.material.SetFloat("_GlowIntensity", glowIntensity);
+        glowingTileColumn.material.color = glowColor;
+    }
+
+    public void ResetTileGlowIntensity()
+    {
+        if (glowingTileColumn == null)
+            return;
+        glowingTileColumn.material.SetFloat("_GlowIntensity", 0f);
     }
 
     public void EnemyTileFeedback(float targetFadeHeight, float animationDuration, Color glowColor)
@@ -51,7 +64,7 @@ public class TileShaderController : MonoBehaviour
         if (glowingTileColumn != null)
         {
             glowingTileColumn.material.SetFloat("_GlowIntensity", 0f);
-            SetTileMoveRangeColor();
+            SetTileToMoveRangeColor();
         }
     }
 

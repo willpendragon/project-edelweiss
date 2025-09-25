@@ -237,6 +237,11 @@ public class Unit : MonoBehaviour
             Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
         }
         GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+        // Show Active PlayerUnit Tile color
+        if (gameObject.CompareTag("ActivePlayerUnit"))
+        {
+            ownedTile.tileShaderController.SetTileColor(1f, Color.green);
+        }
     }
 
     public bool CheckTileAvailability(int targetX, int targetY)
