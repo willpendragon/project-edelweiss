@@ -116,6 +116,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (detectedUnit != null && detectedUnit.CompareTag("ActivePlayerUnit"))
+            return;
+
         // Show and position the cursor over the tile at Y = 0.57.
         if (cursorInstance != null)
         {

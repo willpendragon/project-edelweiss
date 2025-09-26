@@ -32,6 +32,8 @@ public class UnitSelectionController : MonoBehaviour
     [SerializeField] private GameObject _enemyUnitPanel;
     [SerializeField] private List<Unit> _playerUnits;
     [SerializeField] private List<TileController> _reachableEnemyTiles = new List<TileController>();
+    [SerializeField] private GameObject _selectedTile;
+    public GameObject selectedTileInstance;
 
     private BattleInterface _battleUI;
     private GridMovementController _gridMovementController;
@@ -81,10 +83,15 @@ public class UnitSelectionController : MonoBehaviour
 
         OutlineAttackableEnemies(playerUnit);
     }
-    private void ChangeActivePlayerUnitTile(Unit playerUnit)
+    public void ChangeActivePlayerUnitTile(Unit playerUnit)
     {
+        // Feedback to identify the currently selected Player Unit.
         var tile = playerUnit.ownedTile;
         tile.tileShaderController.SetTileColor(1f, Color.green);
+        // Display the selected player unit cursor on the tile.
+        selectedTileInstance = Instantiate(_selectedTile, playerUnit.ownedTile.transform);
+        Vector3 selectedTileInstanceOffset = new Vector3(0, 20.5f, 0);
+        selectedTileInstance.transform.localPosition += selectedTileInstanceOffset;
     }
 
     private void OutlineAttackableEnemiesWrapper(TileController tile)
@@ -148,7 +155,12 @@ public class UnitSelectionController : MonoBehaviour
         {
             playerUnit.tag = GameTags.Player;
         }
-        //Destroy(_selectionIcon);
+
+        if (selectedTileInstance != null)
+        {
+            Destroy(selectedTileInstance);
+        }
+
         Destroy(_selectedUnitPanel);
     }
 
