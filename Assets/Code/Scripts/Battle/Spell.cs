@@ -6,9 +6,9 @@ public enum SpellAlignment
 {
     Fire,
     Water,
-    Dark,
+    Ice,
     Spark,
-    Light
+    Lightning
 }
 public enum SpellType
 {

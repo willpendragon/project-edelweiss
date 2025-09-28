@@ -22,8 +22,7 @@ public class DeityEnmityTrackerController : MonoBehaviour
     }
     public void UpdateDeityEnmityTracker()
     {
-        deityEnmityPointsCounter.text = deity.enmity.ToString();
-        Debug.Log("Updated Enmity Tracker");
+        //deityEnmityPointsCounter.text = deity.enmity.ToString();
         PlayEnmityIconFeedback();
     }
     public void PlayEnmityIconFeedback()

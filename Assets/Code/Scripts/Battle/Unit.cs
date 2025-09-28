@@ -240,7 +240,8 @@ public class Unit : MonoBehaviour
         // Show Active PlayerUnit Tile color
         if (gameObject.CompareTag("ActivePlayerUnit"))
         {
-            ownedTile.tileShaderController.SetTileColor(1f, Color.green);
+            var unitSelection = FindAnyObjectByType<UnitSelectionController>();
+            unitSelection.ChangeActivePlayerUnitTile(this);
         }
     }
 
