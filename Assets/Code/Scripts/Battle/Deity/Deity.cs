@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -24,6 +23,7 @@ public class Deity : MonoBehaviour
     public float deitySpecialAttackPower;
     public float summoningPrice = 50;
     public float deityPrayerPower;
+    [SerializeField] private float _maxEnmity = 10;
     //public float deityPrayerPowerThreshold;
 
     [Header("Visuals")]
@@ -33,6 +33,7 @@ public class Deity : MonoBehaviour
     public GameObject deityEnmityTracker;
     public Sprite deityPortrait;
     public GameObject deityHealthBar;
+    [SerializeField] DeityEnmityTrackerController enmityTracker;
 
     public AudioSource deityCry;
 
@@ -49,6 +50,8 @@ public class Deity : MonoBehaviour
     public delegate void DeitySpawn(GameObject deity);
     public static event DeitySpawn OnDeitySpawn;
 
+    [SerializeField] private Slider _enmityBar;
+
     private void OnEnable()
     {
         EnemyTurnManager.OnDeityTurn += DeityBehaviour;
@@ -64,13 +67,18 @@ public class Deity : MonoBehaviour
         //OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
 
         //Finds the Turn Tracker Details Panel where to instance the Deity Enmity Tracker
-        GameObject currentDeityEnmityTracker = GameObject.FindGameObjectWithTag("DeityEnmityCounter");
-        currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().SetDeity(this.gameObject);
-        currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
-        deityEnmityTracker = currentDeityEnmityTracker;
+        //GameObject currentDeityEnmityTracker = GameObject.FindGameObjectWithTag("DeityEnmityCounter");
+        //currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().SetDeity(this.gameObject);
+        //currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
+        //deityEnmityTracker = currentDeityEnmityTracker;
 
         var enemyTurnManager = FindAnyObjectByType<EnemyTurnManager>();
         enemyTurnManager.deity = this.gameObject;
+        // Set Enmity Bar value
+        _enmityBar.maxValue = _maxEnmity;
+        _enmityBar.value = enmity;
+
+        UpdateSinSystemDisplay();
     }
 
     //Retrieves the Deity Behavior from a compatible Scriptable Object added in the Inspector.
@@ -86,10 +94,23 @@ public class Deity : MonoBehaviour
         deityHealthBar.GetComponentInChildren<TextMeshProUGUI>().text = deityUnitComponent.unitHealthPoints.ToString();
     }
 
+    public void UpdateDeityEnmitySlider()
+    {
+        _enmityBar.value = enmity;
+    }
+
+    public void UpdateSinSystemDisplay()
+    {
+        var sinSystemDisplay = FindAnyObjectByType<SinSystemDisplay>();
+        string deityName = transform.GetComponent<Unit>().unitTemplate.unitName;
+        sinSystemDisplay.DisplaySinfulMoves(deityName, hatedSpellAlignments[0].ToString());
+    }
+
     public bool PerformDeityEnmityCheck()
     {
-        if (enmity >= enmityThreshold)
+        if (enmity >= _maxEnmity)
         {
+            //enmityTracker.PlayEnmityIconFeedback();
             //Deity Attacks
             return true;
         }
