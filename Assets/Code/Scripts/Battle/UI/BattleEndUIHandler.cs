@@ -54,6 +54,7 @@ public class BattleEndUIHandler : MonoBehaviour
     IEnumerator DisplayBattleEndResultsScreen()
     {
         yield return new WaitForSeconds(battleEndResultsScreenDelay);
+        // Change to Canvas and use CanvasGroup
         battleEndResultsScreen.transform.localScale = new Vector3(1, 1, 1);
     }
     private void DeactivateBattleUI()
