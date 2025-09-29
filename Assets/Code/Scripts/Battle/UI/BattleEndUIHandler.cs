@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.IO;
-using System;
 
 public class BattleEndUIHandler : MonoBehaviour
 {
@@ -12,13 +11,13 @@ public class BattleEndUIHandler : MonoBehaviour
     [SerializeField] float battleEndResultsScreenDelay;
 
     [Header("UI Visuals")]
-    public Image battleEndResultsScreen;
     public RectTransform battlefieldNotificationsContainer;
     public Button returnButton;
     [SerializeField] GameObject _battleInterfaceCanvasObject;
     [SerializeField] GameObject _battleDetailsPanelObject;
     [SerializeField] CanvasGroup _battleDetailsGroup;
     [SerializeField] CanvasGroup _battleNotificationsGroup;
+    [SerializeField] CanvasGroup _battleEndScreenGroup;
 
     [Header("UI Texts")]
     public TextMeshProUGUI battleEndMessageText;
@@ -41,6 +40,12 @@ public class BattleEndUIHandler : MonoBehaviour
         TurnController.OnBattleEnd -= DisplayBattleEndScreen;
         PlaceCrystalPlayerAction.OnBattleEndCapturedDeity -= DisplayBattleEndScreen;
     }
+
+    private void Start()
+    {
+        _battleEndScreenGroup.alpha = 0;
+        _battleEndScreenGroup.blocksRaycasts = false;
+    }
     private void DisplayBattleEndScreen(string battleEndMessage)
     {
         battleEndMessageText.text = battleEndMessage;
@@ -55,7 +60,8 @@ public class BattleEndUIHandler : MonoBehaviour
     {
         yield return new WaitForSeconds(battleEndResultsScreenDelay);
         // Change to Canvas and use CanvasGroup
-        battleEndResultsScreen.transform.localScale = new Vector3(1, 1, 1);
+        _battleEndScreenGroup.alpha = 1;
+        _battleEndScreenGroup.blocksRaycasts = true;
     }
     private void DeactivateBattleUI()
     {
