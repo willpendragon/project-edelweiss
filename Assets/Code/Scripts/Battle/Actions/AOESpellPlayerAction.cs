@@ -305,9 +305,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             // This number should be retrieved dynamically instead.
             float enmityIncrease = 2.5f;
             unboundDeity.enmity += enmityIncrease;
-            //unboundDeity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
             unboundDeity.UpdateDeityEnmitySlider();
-            Debug.Log("Hated Alignment. Deity becomes angrier");
         }
     }
     public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)

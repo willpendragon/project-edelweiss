@@ -97,6 +97,7 @@ public class Deity : MonoBehaviour
     public void UpdateDeityEnmitySlider()
     {
         _enmityBar.value = enmity;
+        enmityTracker.PlayEnmityIconFeedback();
     }
 
     public void UpdateSinSystemDisplay()
@@ -110,7 +111,6 @@ public class Deity : MonoBehaviour
     {
         if (enmity >= _maxEnmity)
         {
-            //enmityTracker.PlayEnmityIconFeedback();
             //Deity Attacks
             return true;
         }

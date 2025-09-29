@@ -12,8 +12,8 @@ public class OverworldMapUIController : MonoBehaviour
     void Start()
     {
         gameStatsManager.warFunds.ToString();
-        crystalsCounter.text = $"Crystals   <voffset=10><sprite=0></voffset> {gameStatsManager.captureCrystalsCount}";
-        warFundsCounter.text = $"War Funds   <voffset=10><sprite=0></voffset> {gameStatsManager.warFunds}";
+        crystalsCounter.text = $"Tributes <sprite=98> {gameStatsManager.captureCrystalsCount}";
+        warFundsCounter.text = $"War Funds <sprite=93> {gameStatsManager.warFunds}";
         locationInfoPanel?.SetActive(false);
     }
 }

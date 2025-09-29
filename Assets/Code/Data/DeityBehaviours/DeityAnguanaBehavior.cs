@@ -54,7 +54,7 @@ public class DeityAnguanaBehavior : DeityBehavior
         }
 
         deity.enmity = 0;
-        deity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
+        //deity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
     }
 
     private void MoveDeityToRandomTile(Deity deity)

@@ -1082,7 +1082,7 @@ PrefabInstance:
     - target: {fileID: 2075754267078489236, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
       propertyPath: enmityIconRect
       value: 
-      objectReference: {fileID: 7328774742262639208}
+      objectReference: {fileID: 946834624073133745}
     - target: {fileID: 3428948116850998954, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1196,6 +1196,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
+--- !u!224 &946834624073133745 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5116316756300135027, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
+  m_PrefabInstance: {fileID: 5342144272500954306}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4969434186105916154 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1069008947488759352, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}

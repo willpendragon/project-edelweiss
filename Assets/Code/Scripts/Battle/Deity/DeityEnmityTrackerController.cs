@@ -20,33 +20,46 @@ public class DeityEnmityTrackerController : MonoBehaviour
     {
         deity = deityGO.GetComponent<Deity>();
     }
-    public void UpdateDeityEnmityTracker()
-    {
-        //deityEnmityPointsCounter.text = deity.enmity.ToString();
-        PlayEnmityIconFeedback();
-    }
+    //public void UpdateDeityEnmityTracker()
+    //{
+    //    //deityEnmityPointsCounter.text = deity.enmity.ToString();
+    //    PlayEnmityIconFeedback();
+    //}
     public void PlayEnmityIconFeedback()
     {
         // Kill any existing animations to prevent stacking
         DOTween.Kill(enmityIconRect);
 
-        // Reset to default scale
-        enmityIconRect.localScale = Vector3.one * 0.328135f;
+        // Store original scale
+        Vector3 originalScale = enmityIconRect.localScale;
+
+        // Scale pop factor (1.6x of current size)
+        float scaleFactor = 1.6f;
+        Vector3 targetScale = originalScale * scaleFactor;
+
+        // Use a proportion of the icon's height for jump power
+        float iconHeight = enmityIconRect.rect.height * originalScale.y;
+        float jumpPower = iconHeight * 0.5f; // 50% of height (adjust as needed)
+
+        // Reset to original scale (optional if already set)
+        enmityIconRect.localScale = originalScale;
 
         // Pop and bounce
-        enmityIconRect.DOScale(enmityIconRect.localScale * 1.6f, 0.15f)
+        enmityIconRect.DOScale(targetScale, 0.15f)
             .SetEase(Ease.OutBack)
             .OnComplete(() =>
             {
-                enmityIconRect.DOScale(Vector3.one * 0.328135f, 0.2f).SetEase(Ease.InOutSine);
+                enmityIconRect.DOScale(originalScale, 0.2f)
+                    .SetEase(Ease.InOutSine);
             });
 
         // Twitchy vertical jump
         enmityIconRect.DOJumpAnchorPos(
             enmityIconRect.anchoredPosition,
-            12f, // jump power
-            2,   // jumps
+            jumpPower,
+            2, // number of jumps
             0.35f
         ).SetEase(Ease.OutQuad);
+
     }
 }
