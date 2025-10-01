@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using System;
 
 public class DeitySpawner : MonoBehaviour
 {
@@ -28,30 +29,33 @@ public class DeitySpawner : MonoBehaviour
     {
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
-            string sceneName = SceneManager.GetActiveScene().name;
+            //string sceneName = SceneManager.GetActiveScene().name;
 
             // This behaviour allows to spawn Tomodachick as a Deity in the Tutorial Battle.
-            if (sceneName == "battle_tutorial")
-            {
-                GameObject spawningDeity = spawnableDeities[0];
-                GameObject deityOnBattlefield = Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
+            //if (sceneName == "battle_tutorial")
+            //{
+            //    GameObject spawningDeity = spawnableDeities[0];
+            //    GameObject deityOnBattlefield = Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
 
-                BattleManager.Instance.deity = deityOnBattlefield.GetComponent<Deity>();
-            }
-            else
-            {
-                int deityRollMinRange = 0;
-                int deityRollMaxRange = 7;
-                var deityRoll = localRandom.Next(deityRollMinRange, deityRollMaxRange);
+            //}
+            //else
+            //{
+            int deityRollMinRange = 0;
+            int deityRollMaxRange = 7;
+            var deityRoll = localRandom.Next(deityRollMinRange, deityRollMaxRange);
 
-                int deityRollFirstThreshold = 3;
-                int deityRollSecondThreshold = 6;
-                if (deityRoll >= deityRollFirstThreshold && deityRoll <= deityRollSecondThreshold)
-                {
-                    DeitySelector();
-                    Debug.Log("Rolled Deity arrival on battlefield");
-                }
+            int deityRollFirstThreshold = 3;
+            int deityRollSecondThreshold = 6;
+            if (deityRoll >= deityRollFirstThreshold && deityRoll <= deityRollSecondThreshold)
+            {
+                DeitySelector();
             }
+
+            // Hides the Deity Health Bar when not necessary.
+            if (BattleManager.Instance.deity == null)
+                return;
+            var healthBar = BattleManager.Instance.deity.GetComponentInChildren<DeityHealthBar>();
+            healthBar.HideHealthBar();
         }
         else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
@@ -141,7 +145,7 @@ public class DeitySpawner : MonoBehaviour
             Destroy(enemy);
         }
         unboundDeity.gameObject.tag = "Enemy";
-        CreateDeityHealthBar(unboundDeity);
+        //CreateDeityHealthBar(unboundDeity);
     }
 
     void CreateDeityHealthBar(GameObject spawnedUnboundDeity)

@@ -91,7 +91,7 @@ public class Deity : MonoBehaviour
     {
         Unit deityUnitComponent = GetComponentInChildren<Unit>();
         deityHealthBar.GetComponentInChildren<Slider>().value = deityUnitComponent.unitHealthPoints;
-        deityHealthBar.GetComponentInChildren<TextMeshProUGUI>().text = deityUnitComponent.unitHealthPoints.ToString();
+        //deityHealthBar.GetComponentInChildren<TextMeshProUGUI>().text = deityUnitComponent.unitHealthPoints.ToString();
     }
 
     public void UpdateDeityEnmitySlider()

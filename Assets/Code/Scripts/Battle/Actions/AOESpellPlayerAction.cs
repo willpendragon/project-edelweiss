@@ -93,7 +93,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         int damageToApply = CalculateSpellDamage(spell);
         spellTarget.TakeDamage(damageToApply);
 
-        if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun)
+        // Only spawm the Frozen VFX if the Enemy has HP left after the attack
+        if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun && spellTarget.unitHealthPoints > 0)
             TriggerSecondaryEffect(spellTarget);
 
         PlaySpellFeedback(activePlayerUnit, spellTarget, spell);
