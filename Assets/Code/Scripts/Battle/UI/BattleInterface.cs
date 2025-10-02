@@ -119,8 +119,11 @@ public class BattleInterface : MonoBehaviour
     }
     public void SetDeityNotification(string deityNotification)
     {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
         battlefieldTextNotifications.text = deityNotification;
+
+        DOTween.Sequence()
+            .AppendInterval(1.5f) // Delay before showing
+            .AppendCallback(() => battlefieldNotificationsPanel.transform.localScale = Vector3.one);
         StartCoroutine("ResetBattleFieldTextNotification");
     }
 

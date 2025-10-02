@@ -17,7 +17,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
     public delegate void CaptureAttempt(string captureResult);
     public static event CaptureAttempt OnCaptureAttempt;
 
-    private const string FAILED_CAPTURE_MESSAGE = "The capture attempt failed...";
+    private const string FAILED_CAPTURE_MESSAGE = "The binding attempt failed.";
     private const string ACTIVE_PLAYER_UNIT = "ActivePlayerUnit";
 
     public void Select(TileController selectedTile)
@@ -55,9 +55,10 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
         }
 
         AnimateCrystal(captureCrystalInstance, targetTile.transform.position);
+
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlayPlaceCrystalSFX.Invoke();
 
-        if (AttemptCapture())
+        if (AttemptCapture()) // Attempt capture is successful
         {
             Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
             OnBattleEndCapturedDeity?.Invoke("Deity was Captured");
@@ -80,12 +81,40 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
     private void AnimateCrystal(GameObject captureCrystalInstance, Vector3 currentSavedTilePosition)
     {
+        Deity deity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
+
+        Vector3 startPos = captureCrystalInstance.transform.position;
+        Vector3 endPos = deity.transform.position;
+
+        var energyLine = captureCrystalInstance.GetComponentInChildren<LineRenderer>();
+        energyLine.positionCount = 2;
+        energyLine.SetPosition(0, startPos);
+        energyLine.SetPosition(1, endPos);
+        energyLine.enabled = false; // Start hidden
+
         captureCrystalInstance.transform.localScale = Vector3.zero;
+
         Sequence crystalSequence = DOTween.Sequence();
-        crystalSequence.Append(captureCrystalInstance.transform.DOMoveY(currentSavedTilePosition.y + 2, 0.5f).SetEase(Ease.OutQuad));
-        crystalSequence.Append(captureCrystalInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 1f).SetEase(Ease.OutQuad))
-                       .Join(captureCrystalInstance.transform.DOMoveY(currentSavedTilePosition.y, 1f).SetEase(Ease.OutQuad));
-        crystalSequence.Append(captureCrystalInstance.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutQuad));
+
+        // Enlarge crystal (showing it)
+        crystalSequence.Append(
+            captureCrystalInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.6f).SetEase(Ease.OutBack)
+        );
+
+        // Show LineRenderer
+        crystalSequence.AppendCallback(() => energyLine.enabled = true);
+
+        // Keep line for a short duration
+        crystalSequence.AppendInterval(0.7f);
+
+        // Hide line
+        crystalSequence.AppendCallback(() => energyLine.enabled = false);
+
+        // Shrink (disappear) crystal
+        crystalSequence.Append(
+            captureCrystalInstance.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack)
+        );
+
         crystalSequence.Play();
     }
 
