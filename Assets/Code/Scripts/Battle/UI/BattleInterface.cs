@@ -58,10 +58,10 @@ public class BattleInterface : MonoBehaviour
         BumperEnemyBehavior.OnBumperEnemyAttack += SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnMovementDisabled += SetMovementDisableNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetMeleeAttackOnNotificationPanel;
-        MoonPhaseController.OnMoonPhaseSwitch += SetMoonNotification;
-        MoonPhaseController.OnMoonPhaseBuffActivation += SetMoonNotification;
-        MirrorController.OnMirrorAttack += SetMirrorNotification;
-        BossSimildeBehaviour.OnBossEnemyAttack += SetMeleeAttackOnNotificationPanel;
+        //MoonPhaseController.OnMoonPhaseSwitch += SetMoonNotification;
+        //MoonPhaseController.OnMoonPhaseBuffActivation += SetMoonNotification;
+        //MirrorController.OnMirrorAttack += SetMirrorNotification;
+        //BossSimildeBehaviour.OnBossEnemyAttack += SetMeleeAttackOnNotificationPanel;
         SelectUnitPlayerAction.OnFaithlessCharacter += SetFaithlessCharacterNotification;
     }
     private void OnDisable()
@@ -75,10 +75,10 @@ public class BattleInterface : MonoBehaviour
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetMeleeAttackOnNotificationPanel;
         BumperEnemyBehavior.OnMovementDisabled -= SetMovementDisableNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetMeleeAttackOnNotificationPanel;
-        MoonPhaseController.OnMoonPhaseSwitch -= SetMoonNotification;
-        MoonPhaseController.OnMoonPhaseBuffActivation -= SetMoonNotification;
-        MirrorController.OnMirrorAttack -= SetMirrorNotification;
-        BossSimildeBehaviour.OnBossEnemyAttack -= SetMeleeAttackOnNotificationPanel;
+        //MoonPhaseController.OnMoonPhaseSwitch -= SetMoonNotification;
+        //MoonPhaseController.OnMoonPhaseBuffActivation -= SetMoonNotification;
+        //MirrorController.OnMirrorAttack -= SetMirrorNotification;
+        //BossSimildeBehaviour.OnBossEnemyAttack -= SetMeleeAttackOnNotificationPanel;
         SelectUnitPlayerAction.OnFaithlessCharacter -= SetFaithlessCharacterNotification;
     }
     private void Start()
@@ -100,65 +100,38 @@ public class BattleInterface : MonoBehaviour
 
     public void SetSpellNameOnNotificationPanel(string spellName, string casterName)
     {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
-        battlefieldTextNotifications.text = casterName + " used " + spellName;
-        StartCoroutine("ResetBattleFieldTextNotification");
+        ShowNotification($"{casterName} used {spellName}");
     }
 
     public void SetSummonEffectNameOnNotificationPanel(string summonName, string unitName)
     {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
-        battlefieldTextNotifications.text = summonName + " blessed " + unitName;
-        StartCoroutine("ResetBattleFieldTextNotification");
+        ShowNotification($"{summonName} blessed {unitName}");
     }
     public void SetMeleeAttackOnNotificationPanel(string meleeAttack, string attackerName)
     {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
-        battlefieldTextNotifications.text = attackerName + " used " + meleeAttack;
-        StartCoroutine("ResetBattleFieldTextNotification");
+        ShowNotification($"{attackerName} used {meleeAttack}");
     }
     public void SetDeityNotification(string deityNotification)
     {
-        battlefieldTextNotifications.text = deityNotification;
-
+        ShowNotification(deityNotification);
         DOTween.Sequence()
-            .AppendInterval(1.5f) // Delay before showing
+            .AppendInterval(0.5f)
             .AppendCallback(() => battlefieldNotificationsPanel.transform.localScale = Vector3.one);
-        StartCoroutine("ResetBattleFieldTextNotification");
     }
 
     private void SetMovementDisableNotification(string message)
     {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
-        battlefieldTextNotifications.text = message;
-        StartCoroutine("ResetBattleFieldTextNotification");
+        ShowNotification(message);
     }
 
     public void SetEnergyNotification(string energyNotification)
     {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
-        battlefieldTextNotifications.text = energyNotification;
-        StartCoroutine("ResetBattleFieldTextNotification");
-    }
-
-    public void SetMoonNotification(string moonNotification)
-    {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
-        battlefieldTextNotifications.text = moonNotification;
-        StartCoroutine("ResetBattleFieldTextNotification");
-    }
-    public void SetMirrorNotification(string mirrorNotification)
-    {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
-        battlefieldTextNotifications.text = mirrorNotification;
-        StartCoroutine("ResetBattleFieldTextNotification");
+        ShowNotification(energyNotification);
     }
 
     public void SetFaithlessCharacterNotification(string faithlessCharacterNotification)
     {
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(1, 1, 1);
-        battlefieldTextNotifications.text = faithlessCharacterNotification;
-        StartCoroutine("ResetBattleFieldTextNotification");
+        ShowNotification(faithlessCharacterNotification);
     }
     IEnumerator ResetBattleFieldTextNotification()
     {
@@ -182,4 +155,20 @@ public class BattleInterface : MonoBehaviour
     {
         OnDeselectPlayerAction();
     }
+
+    private void ShowNotification(string message)
+    {
+        battlefieldNotificationsPanel.transform.localScale = Vector3.one;
+        battlefieldTextNotifications.text = message;
+        StartCoroutine(ResetBattleFieldTextNotification());
+    }
+
+    //public void SetMoonNotification(string moonNotification)
+    //{
+    //    ShowNotification(moonNotification);
+    //}
+    //public void SetMirrorNotification(string mirrorNotification)
+    //{
+    //    ShowNotification(mirrorNotification);
+    //}
 }

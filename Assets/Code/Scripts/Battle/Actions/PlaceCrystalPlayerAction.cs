@@ -98,14 +98,14 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
         // Enlarge crystal (showing it)
         crystalSequence.Append(
-            captureCrystalInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.6f).SetEase(Ease.OutBack)
+            captureCrystalInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.4f).SetEase(Ease.OutBack)
         );
 
         // Show LineRenderer
         crystalSequence.AppendCallback(() => energyLine.enabled = true);
 
         // Keep line for a short duration
-        crystalSequence.AppendInterval(0.7f);
+        crystalSequence.AppendInterval(0.3f);
 
         // Hide line
         crystalSequence.AppendCallback(() => energyLine.enabled = false);
