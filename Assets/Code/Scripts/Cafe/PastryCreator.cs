@@ -35,6 +35,7 @@ public class PastryCreator : MonoBehaviour
         if (recipe.CanCraft(ingredientInventory))
         {
             ingredientInventory.ConsumeIngredients(recipe);
+            ingredientInventory.AddBakedItem(recipe.resultItem);
             Debug.Log($"Crafted {recipe.resultItem.itemFoodName}");
             RefreshUI();
         }

@@ -5,6 +5,14 @@ using UnityEngine;
 public class Inventory : ScriptableObject
 {
     public List<InventoryEntry> items = new List<InventoryEntry>();
+    [SerializeField] private List<FoodInventoryEntry> bakedItems = new List<FoodInventoryEntry>();
+
+    [System.Serializable]
+    public struct FoodInventoryEntry
+    {
+        public ItemFood item;
+        public int quantity;
+    }
 
     public void Add(Ingredient ingredient, int amount = 1)
     {
@@ -19,7 +27,6 @@ public class Inventory : ScriptableObject
             items.Add(new InventoryEntry { ingredient = ingredient, quantity = amount });
         }
     }
-
     public bool HasIngredient(Ingredient ingredient, int requiredAmount = 1)
     {
         var entry = items.Find(e => e.ingredient == ingredient);
@@ -78,6 +85,39 @@ public class Inventory : ScriptableObject
                 return;
             }
         }
+    }
+
+    public void AddBakedItem(ItemFood food, int amount = 1)
+    {
+        for (int i = 0; i < bakedItems.Count; i++)
+        {
+            if (bakedItems[i].item == food)
+            {
+                bakedItems[i] = new FoodInventoryEntry
+                {
+                    item = food,
+                    quantity = bakedItems[i].quantity + amount
+                };
+                return;
+            }
+        }
+
+        bakedItems.Add(new FoodInventoryEntry { item = food, quantity = amount });
+    }
+
+    public int GetBakedItemQuantity(ItemFood food)
+    {
+        foreach (var entry in bakedItems)
+        {
+            if (entry.item == food)
+                return entry.quantity;
+        }
+        return 0;
+    }
+
+    public List<FoodInventoryEntry> GetAllBakedItems()
+    {
+        return bakedItems;
     }
 
 
