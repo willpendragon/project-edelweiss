@@ -119,6 +119,4 @@ public class Inventory : ScriptableObject
     {
         return bakedItems;
     }
-
-
 }

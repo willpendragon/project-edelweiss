@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Inventory;
 
 public class CafeMenuUIController : MonoBehaviour
 {
@@ -19,7 +20,9 @@ public class CafeMenuUIController : MonoBehaviour
     public GameObject foodItemsContainer;
     public GameObject characterProfilesContainer;
 
-    public List<ItemFood> itemFoodList;
+    //public List<ItemFood> itemFoodList;
+    [SerializeField] List<FoodInventoryEntry> bakedItems;
+
     public GameObject itemFoodPrefab;
     public GameObject characterProfilesPrefab;
 
@@ -84,6 +87,10 @@ public class CafeMenuUIController : MonoBehaviour
 
             // Show purchase notification
             notificationTexts.text = $"{selectedItem.itemFoodName} purchased!";
+
+            // Remove baked item and update the food list
+            RemoveBakedItem(selectedItem);
+            GenerateFoodList();
         }
         else
         {
@@ -96,6 +103,29 @@ public class CafeMenuUIController : MonoBehaviour
         confirmPurchasePopup.SetActive(false);  // Hide the popup
     }
 
+    public void RemoveBakedItem(ItemFood item, int amount = 1)
+    {
+        for (int i = 0; i < bakedItems.Count; i++)
+        {
+            if (bakedItems[i].item == item)
+            {
+                int newQty = bakedItems[i].quantity - amount;
+                if (newQty <= 0)
+                {
+                    bakedItems.RemoveAt(i);
+                }
+                else
+                {
+                    bakedItems[i] = new FoodInventoryEntry
+                    {
+                        item = item,
+                        quantity = newQty
+                    };
+                }
+                return;
+            }
+        }
+    }
     public void CancelPurchase()
     {
         // Reset selected item and hide the popup
@@ -103,30 +133,40 @@ public class CafeMenuUIController : MonoBehaviour
         selectedItemPrice = 0;
         confirmPurchasePopup.SetActive(false);
     }
-    void GenerateFoodList()
+
+    public void GenerateFoodList()
     {
-        foreach (var food in itemFoodList)
+        foreach (Transform child in foodItemsContainer.transform)
         {
+            Destroy(child.gameObject);
+        }
+
+        bakedItems = PersistentInventoryManager.CurrentInventory.GetAllBakedItems();
+
+        foreach (var entry in bakedItems)
+        {
+            if (entry.quantity <= 0)
+                continue;
+
             GameObject foodItem = Instantiate(itemFoodPrefab, foodItemsContainer.transform);
-            foodItem.GetComponent<Image>().sprite = food.foodIcon;
+            foodItem.GetComponent<Image>().sprite = entry.item.foodIcon;
             Button itemFoodButton = foodItem.GetComponentInChildren<Button>();
 
-            // Update to open the confirmation popup instead of purchasing directly
-            itemFoodButton.onClick.AddListener(() => OnItemClicked(food, food.itemFoodPrice));
+            itemFoodButton.onClick.AddListener(() => OnItemClicked(entry.item, entry.item.itemFoodPrice));
 
-            // Get all TextMeshPro components in children
             TextMeshProUGUI[] texts = itemFoodButton.GetComponentsInChildren<TextMeshProUGUI>();
-
             if (texts.Length >= 6)
             {
-                texts[1].text = food.itemFoodPrice.ToString();
-                texts[2].text = food.itemFoodName;
-                texts[3].text = FoodTypeLabel(food);
-                texts[4].text = food.recoveryAmount.ToString();
-                texts[5].text = food.itemFoodDescription;
+                texts[0].text = $"x{entry.quantity}";
+                texts[1].text = entry.item.itemFoodPrice.ToString();
+                texts[2].text = entry.item.itemFoodName;
+                texts[3].text = FoodTypeLabel(entry.item);
+                texts[4].text = entry.item.recoveryAmount.ToString();
+                texts[5].text = entry.item.itemFoodDescription;
             }
         }
     }
+
     public string FoodTypeLabel(ItemFood food)
     {
         string foodTypeLabel;

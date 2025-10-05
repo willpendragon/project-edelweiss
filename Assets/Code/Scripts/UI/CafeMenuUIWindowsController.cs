@@ -34,7 +34,7 @@ public class CafeMenuUIWindowsController : MonoBehaviour
         // Add click listeners to buttons.
         button1.onClick.AddListener(() => ToggleMenu(menu1, buttonText1, "Café Menu"));
         button2.onClick.AddListener(() => ToggleMenu(menu2, buttonText2, "Conversations"));
-        button3.onClick.AddListener(() => ToggleMenu(menu3, buttonText3, "Deity Hunting Board"));
+        button3.onClick.AddListener(() => ToggleMenu(menu3, buttonText3, "Deity Hunting Board")); // Actually Opens Pastry making menu.
     }
 
     private void ToggleMenu(GameObject menu, TextMeshProUGUI buttonText, string menuName)
@@ -50,6 +50,8 @@ public class CafeMenuUIWindowsController : MonoBehaviour
                 menu3.SetActive(false);
                 buttonText2.text = "Open Conversations";
                 buttonText3.text = "Open Deity Hunting Menu";
+                var cafeMenu = FindAnyObjectByType<CafeMenuUIController>();
+                cafeMenu.GenerateFoodList();
             }
             else if (menu == menu2)
             {

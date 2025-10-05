@@ -50,6 +50,7 @@ public class BattleRewardsController : MonoBehaviour
                 return 1;
         }
     }
+
     public void resetMultiKillCounter()
     {
         StartCoroutine("ExecuteReset");
