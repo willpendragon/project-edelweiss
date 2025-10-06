@@ -499,7 +499,6 @@ GameObject:
   - component: {fileID: 5009294011632168283}
   - component: {fileID: 3031252642805861247}
   - component: {fileID: 361118017173477511}
-  - component: {fileID: 2788514426886983777}
   - component: {fileID: 5410876119120275068}
   - component: {fileID: 7127888063209652432}
   - component: {fileID: 975513701372675069}
@@ -525,6 +524,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4391587821364999017}
   - {fileID: 3572011279993702773}
   - {fileID: 1625225759964626475}
   - {fileID: 7245119660369947535}
@@ -594,7 +594,7 @@ MonoBehaviour:
   currentYCoordinate: 0
   startingXCoordinate: 0
   startingYCoordinate: 0
-  unitSelectionController: {fileID: 2788514426886983777}
+  unitSelectionController: {fileID: 0}
   ownedTile: {fileID: 0}
   unitHealthPoints: 0
   unitMaxHealthPoints: 0
@@ -683,28 +683,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   unitCurrentStatus: 1
---- !u!114 &2788514426886983777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5009294011632168286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ea15ee3f60ec9a46b47097f03cb5504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waitButton: {fileID: 0}
-  currentUnitSelectionStatus: 1
-  unitSprite: {fileID: 5090446047043621278}
-  unitIconsController: {fileID: 0}
-  _activePlayerUnit: {fileID: 0}
-  _selectionIcon: {fileID: 0}
-  _selectedUnitPanel: {fileID: 0}
-  _enemyUnitPanel: {fileID: 0}
-  _playerUnits: []
-  _reachableEnemyTiles: []
 --- !u!114 &5410876119120275068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5772,6 +5750,51 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &7392225505704115208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4391587821364999017}
+  - component: {fileID: 5298568588194978315}
+  m_Layer: 0
+  m_Name: LootController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4391587821364999017
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392225505704115208}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5009294011632168282}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5298568588194978315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7392225505704115208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d3e6c81bf19a7e44aa070daf8ba8a54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ingredient: {fileID: 11400000, guid: 3ae0dd2009124d549b2f2de3e0233db7, type: 2}
 --- !u!1 &8206487594655206302
 GameObject:
   m_ObjectHideFlags: 0
