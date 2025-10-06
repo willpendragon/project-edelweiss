@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameStatsManager : MonoBehaviour
@@ -8,7 +10,10 @@ public class GameStatsManager : MonoBehaviour
     public int timesSingleTargetSpellWasUsed;
     public int captureCrystalsCount;
     public int unlockedPuzzleKeys;
+    public Inventory inventory;
     [SerializeField] FaithController faithController;
+
+    [SerializeField] private List<Ingredient> allIngredientPrototypes;
 
     private CharacterData characterData;
 
@@ -20,14 +25,27 @@ public class GameStatsManager : MonoBehaviour
         LoadCaptureCrystalsCount();
         LoadUnlockedKeys();
     }
-    public void Start()
+    void Start()
     {
         LoadCharacterData();
+
+        // Load ingredients AFTER PersistentInventoryManager has initialized
+        StartCoroutine(DelayedLoadIngredients());
+
         if (faithController != null)
         {
             faithController.DecreaseFaithPoints();
         }
     }
+
+    IEnumerator DelayedLoadIngredients()
+    {
+        // Wait until the CurrentInventory is initialized
+        yield return new WaitUntil(() => PersistentInventoryManager.CurrentInventory != null);
+
+        LoadIngredients(allIngredientPrototypes);
+    }
+
     public void SaveCharacterData()
     {
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
@@ -117,6 +135,7 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Saved War Funds: {newWarFunds}");
         }
     }
+
     public void SaveSpentWarFunds(float spentWarFunds)
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -201,4 +220,21 @@ public class GameStatsManager : MonoBehaviour
 
         SaveStateManager.SaveGame(saveData);
     }
+    public void SaveIngredients()
+    {
+        SaveStateManager.saveData.savedInventory = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
+        SaveStateManager.SaveGame(SaveStateManager.saveData);
+        Debug.Log("Saved ingredients to GameSaveData.");
+    }
+
+    public void LoadIngredients(List<Ingredient> allIngredientPrototypes)
+    {
+        PersistentInventoryManager.FromSaveData(
+            SaveStateManager.saveData.savedInventory,
+            PersistentInventoryManager.CurrentInventory,
+            allIngredientPrototypes
+        );
+        Debug.Log("Loaded ingredients into runtime inventory.");
+    }
+
 }

@@ -41,6 +41,8 @@ public class BattleFlowController : MonoBehaviour
         ResetBattleToInitialStatus();
         battleManager.UnlockNextLevel();
 
+        // Loops through each of the Party Units and Applies the rewards (experience, coins).
+
         foreach (var player in TurnController.Instance.playerUnitsOnBattlefield)
         {
             player.GetComponent<BattleRewardsController>().ApplyRewardsToThisUnit();
@@ -56,6 +58,22 @@ public class BattleFlowController : MonoBehaviour
                 gameStatsManager.enemiesKilled++;
             }
         }
+        // Add Ingredients to Persistent Inventory
+        foreach (var player in TurnController.Instance.playerUnitsOnBattlefield)
+        {
+            var rewards = player.GetComponent<BattleRewardsController>();
+            foreach (var ingredient in rewards.ingredients)
+            {
+                PersistentInventoryManager.CurrentInventory.Add(ingredient);
+            }
+            rewards.ingredients.Clear();
+        }
+
+        foreach (var entry in PersistentInventoryManager.CurrentInventory.items)
+        {
+            Debug.Log($"{entry.ingredient.name} x{entry.quantity}");
+        }
+
         BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(receivedWarFunds);
         OnBattleEndDialogueUnlock();
         UpdateBattleEndUIPanel(receivedWarFunds);

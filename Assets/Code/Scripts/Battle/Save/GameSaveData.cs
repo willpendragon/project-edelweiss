@@ -13,7 +13,10 @@ public class GameSaveData
 
     public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
     public List<ConversationData> unlockedConversations = new List<ConversationData>();
+
+    public List<IngredientSaveEntry> savedInventory = new List<IngredientSaveEntry>();
 }
+
 
 [System.Serializable]
 public class CharacterData
@@ -40,6 +43,13 @@ public class ResourceData
     public float experiencePointsReward;
     public int captureCrystalsCount;
     public int puzzleLevelKeys;
+}
+
+[System.Serializable]
+public class IngredientSaveEntry
+{
+    public string ingredientName; // or a unique ID
+    public int quantity;
 }
 
 [System.Serializable]

@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13d34038b8ea2d74a89b020a4f4a22bd, type: 3}
   m_Name: PlayerInventory
   m_EditorClassIdentifier: 
-  items:
-  - ingredient: {fileID: 11400000, guid: 3ae0dd2009124d549b2f2de3e0233db7, type: 2}
-    quantity: 10
-  - ingredient: {fileID: 11400000, guid: d3b681fd6a7b2e64089920d2b79b28d4, type: 2}
-    quantity: 10
-  - ingredient: {fileID: 11400000, guid: 3cc29c652b49f8e408bda80ffde41ff3, type: 2}
-    quantity: 10
-  bakedItems: []
+  items: []
+  bakedItems:
+  - item: {fileID: 0}
+    quantity: 0

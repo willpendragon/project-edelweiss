@@ -29,9 +29,18 @@ public class Inventory : ScriptableObject
     }
     public bool HasIngredient(Ingredient ingredient, int requiredAmount = 1)
     {
-        var entry = items.Find(e => e.ingredient == ingredient);
-        return entry.ingredient != null && entry.quantity >= requiredAmount;
+        var entry = items.Find(e => e.ingredient.name == ingredient.name);
+        if (entry.ingredient == null)
+        {
+            Debug.Log($"[HasIngredient] ingredient {ingredient.name} not found in inventory list");
+            return false;
+        }
+        Debug.Log($"[HasIngredient] found {ingredient.name} with qty {entry.quantity}, needed {requiredAmount}");
+        return entry.quantity >= requiredAmount;
     }
+
+
+
 
     public void Remove(Ingredient ingredient, int amount = 1)
     {

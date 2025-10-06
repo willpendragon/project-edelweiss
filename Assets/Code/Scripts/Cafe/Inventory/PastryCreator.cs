@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 public class PastryCreator : MonoBehaviour
@@ -7,18 +8,35 @@ public class PastryCreator : MonoBehaviour
     [SerializeField] private List<Recipe> allRecipes;
     [SerializeField] private Transform recipeListParent;
     [SerializeField] private GameObject recipeUIPrefab;
+    [SerializeField] private List<Ingredient> allIngredientPrototypes; // assign in Inspector
 
-    void Start()
+    private IEnumerator Start()
     {
+        yield return new WaitUntil(() => PersistentInventoryManager.CurrentInventory != null);
+
+        // Debug allIngredientPrototypes
+        Debug.Log($"[PastryCreator] Ingredient prototypes loaded: {allIngredientPrototypes.Count}");
+        foreach (var i in allIngredientPrototypes)
+        {
+            Debug.Log($"[PastryCreator] Prototype: {i.name}");
+        }
+
+        PersistentInventoryManager.ReloadInventory(allIngredientPrototypes);
+
+        Debug.Log("[PastryCreator] Inventory reloaded, now refreshing UI...");
+        Debug.Log($"[PastryCreator] Inventory now contains: {PersistentInventoryManager.CurrentInventory.items.Count} items");
+
         RefreshUI();
     }
+
     public void RefreshUI()
     {
-        // Clear existing UI
         foreach (Transform child in recipeListParent)
             Destroy(child.gameObject);
 
         var inventory = PersistentInventoryManager.CurrentInventory;
+
+        Debug.Log($"[PastryCreator] Refreshing UI — items in inventory: {inventory.items.Count}");
 
         foreach (var recipe in allRecipes)
         {
@@ -39,6 +57,7 @@ public class PastryCreator : MonoBehaviour
             inventory.ConsumeIngredients(recipe);
             inventory.AddBakedItem(recipe.resultItem);
             Debug.Log("Crafted: " + recipe.resultItem.itemFoodName);
+            RefreshUI(); // Refresh after crafting
         }
         else
         {

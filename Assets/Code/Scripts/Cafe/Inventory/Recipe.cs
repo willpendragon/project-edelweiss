@@ -11,7 +11,6 @@ public class Recipe : ScriptableObject
         public int quantity = 1;
     }
 
-
     public string recipeName;
     public string recipeDescription;
 
@@ -21,12 +20,17 @@ public class Recipe : ScriptableObject
     public bool IsUnlocked = false;
     public bool CanCraft(Inventory inventory)
     {
-        foreach (var entry in ingredients)
-        {
-            if (!inventory.HasIngredient(entry.ingredient, entry.quantity))
-                return false;
-        }
-        return true;
-    }
+        bool allMet = true;
 
+        foreach (var requirement in ingredients)
+        {
+            bool hasEnough = inventory.HasIngredient(requirement.ingredient, requirement.quantity);
+            Debug.Log($"[CanCraft] Checking: {requirement.ingredient.name}, required: {requirement.quantity}, has: {hasEnough}");
+
+            if (!hasEnough)
+                allMet = false;
+        }
+
+        return allMet;
+    }
 }

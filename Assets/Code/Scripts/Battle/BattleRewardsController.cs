@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using static TurnController;
 public class BattleRewardsController : MonoBehaviour
@@ -6,6 +7,7 @@ public class BattleRewardsController : MonoBehaviour
     public float coinsRewardPool;
     public float experienceRewardPool;
     public int multiKillCounter;
+    public List<Ingredient> ingredients;
     public void AddCoinsRewardToCoinsRewardPool(float coinsRewardToAdd)
     {
         coinsRewardPool += coinsRewardToAdd;
@@ -13,6 +15,11 @@ public class BattleRewardsController : MonoBehaviour
     public void AddExperienceRewardToExperienceRewardPool(float experienceRewardToAdd)
     {
         experienceRewardPool += experienceRewardToAdd;
+    }
+
+    public void AddTemporaryLoot(Ingredient ingredient)
+    {
+        ingredients.Add(ingredient);
     }
     public void ApplyRewardsToThisUnit()
     {
@@ -30,8 +37,11 @@ public class BattleRewardsController : MonoBehaviour
         gameStatsManager.SaveWarFunds(warFunds);
         gameStatsManager.SaveUsedSingleTargetSpells();
         gameStatsManager.SaveCaptureCrystalsCount();
-        Debug.Log("Saving Character Stats Data");
+
+        // Saves the Looted Ingredients
+        gameStatsManager.SaveIngredients();
     }
+
     public void IncreaseMultiKillCounter(int newKill)
     {
         multiKillCounter += newKill;

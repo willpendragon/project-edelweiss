@@ -310,6 +310,7 @@ public class Unit : MonoBehaviour
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
         if (activePlayerUnit != null)
         {
+            // After an Enemy dies, retrieve the Rewards from it.
             CheckBattleRewards(activePlayerUnit);
         }
         if (ownedTile != null)
@@ -328,9 +329,20 @@ public class Unit : MonoBehaviour
         int multiKillMultiplier = battleRewardsController.CalculateMultiKillCounter();
         coinsReward = CalculateCoinsReward() * multiKillMultiplier;
         battleRewardsController.resetMultiKillCounter();
+        // Applies the rewards to the Pool. The rewards have NOT been looted yet.
         battleRewardsController.AddCoinsRewardToCoinsRewardPool(coinsReward);
         battleRewardsController.AddExperienceRewardToExperienceRewardPool(experiencePointsReward);
         SpawnPrize();
+
+        // Enemy Ingredient Loot
+
+        var enemyLoot = transform.GetComponentInChildren<EnemyLoot>();
+        Ingredient lootedItem = enemyLoot.RollLootChance();
+        if (lootedItem != null)
+        {
+            // Add Ingredient to temporary Loot
+            battleRewardsController.AddTemporaryLoot(lootedItem);
+        }
     }
 
     private void SpawnPrize()
