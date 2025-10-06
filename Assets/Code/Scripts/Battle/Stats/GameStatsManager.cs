@@ -222,9 +222,30 @@ public class GameStatsManager : MonoBehaviour
     }
     public void SaveIngredients()
     {
-        SaveStateManager.saveData.savedInventory = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
+        var currentInventoryData = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
+        var savedInventory = SaveStateManager.saveData.savedInventory;
+
+        // Merge or add new ingredients
+        foreach (var newEntry in currentInventoryData)
+        {
+            var existingEntry = savedInventory.Find(e => e.ingredientName == newEntry.ingredientName);
+
+            if (existingEntry != null)
+            {
+                existingEntry.quantity += newEntry.quantity;
+            }
+            else
+            {
+                savedInventory.Add(new IngredientSaveEntry
+                {
+                    ingredientName = newEntry.ingredientName,
+                    quantity = newEntry.quantity
+                });
+            }
+        }
+
+        SaveStateManager.saveData.savedInventory = savedInventory;
         SaveStateManager.SaveGame(SaveStateManager.saveData);
-        Debug.Log("Saved ingredients to GameSaveData.");
     }
 
     public void LoadIngredients(List<Ingredient> allIngredientPrototypes)
