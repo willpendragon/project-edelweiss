@@ -337,6 +337,8 @@ public class Unit : MonoBehaviour
         // Enemy Ingredient Loot
 
         var enemyLoot = transform.GetComponentInChildren<EnemyLoot>();
+        if (enemyLoot == null)
+            return;
         Ingredient lootedItem = enemyLoot.RollLootChance();
         if (lootedItem != null)
         {
