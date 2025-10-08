@@ -5,8 +5,7 @@ using UnityEngine.UI;
 public class MapNodeInfoPanelController : MonoBehaviour
 {
     [SerializeField] GameObject mapNodeGameObject;
-    [SerializeField] TextMeshProUGUI minPoolSizeText;
-    [SerializeField] TextMeshProUGUI maxPoolSizeText;
+    [SerializeField] TextMeshProUGUI poolSize;
     [SerializeField] GameObject mapNodeInfoPanelCanvas;
     [SerializeField] GameObject[] enemyPoolPredictionsGameObject;
     [SerializeField] Sprite enemyIcon1;
@@ -18,8 +17,7 @@ public class MapNodeInfoPanelController : MonoBehaviour
     {
         EnemySelection mapNodeEnemySelection = mapNodeGameObject.GetComponent<EnemySelection>();
 
-        minPoolSizeText.text = mapNodeEnemySelection.enemyParty.minEnemyPoolSize.ToString();
-        maxPoolSizeText.text = mapNodeEnemySelection.enemyParty.maxEnemyPoolSize.ToString();
+        poolSize.text = $"The Enemy Party in this battle will contain a number of foes between {mapNodeEnemySelection.enemyParty.minEnemyPoolSize} and {mapNodeEnemySelection.enemyParty.maxEnemyPoolSize}.";
 
         for (int i = 0; i < enemyPoolPredictionsGameObject.Length; i++)
         {
