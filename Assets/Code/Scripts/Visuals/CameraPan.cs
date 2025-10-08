@@ -1,7 +1,11 @@
+using ExternPropertyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraPan : MonoBehaviour
 {
@@ -17,6 +21,8 @@ public class CameraPan : MonoBehaviour
     [SerializeField] private MapItemSelector _cafeSelector;
     [SerializeField] private MapItemSelector _altarSelector;
     [SerializeField] OverworldMapGenerator overworldMapGenerator;
+    [SerializeField] private Image _leftArrow;
+    [SerializeField] private Image _rightArrow;
 
     void Update()
     {
@@ -26,22 +32,44 @@ public class CameraPan : MonoBehaviour
         {
             pos.x += panSpeed * Time.deltaTime;
             CloseBuildingMenu();
+            SetLeftArrowTransparency(0.5f);
+            SetRightArrowTransparency(1f);
         }
-        if (Input.mousePosition.x <= margin)
+        else if (Input.mousePosition.x <= margin)
         {
             pos.x -= panSpeed * Time.deltaTime;
             CloseBuildingMenu();
+            SetLeftArrowTransparency(1f);
+            SetRightArrowTransparency(0.5f);
+        }
+        else
+        {
+            SetLeftArrowTransparency(0.2f);
+            SetRightArrowTransparency(0.2f);
         }
 
         // Clamp the camera position to the boundaries
         pos.x = Mathf.Clamp(pos.x, panLimitX.x, panLimitX.y);
         pos.z = Mathf.Clamp(pos.z, panLimitZ.x, panLimitZ.y);
-        //// Adjust for camera's orientation if it's not aligned with the XZ plane
+        // Adjust for camera's orientation if it's not aligned with the XZ plane
         pos.y = Mathf.Clamp(pos.y, panLimitY.x, panLimitY.y);
 
         transform.position = pos;
-
     }
+    private void SetLeftArrowTransparency(float transparency)
+    {
+        Color leftArrowColor = _leftArrow.color;
+        leftArrowColor.a = transparency;
+        _leftArrow.color = leftArrowColor;
+    }
+
+    private void SetRightArrowTransparency(float transparency)
+    {
+        Color rightArrowColor = _rightArrow.color;
+        rightArrowColor.a = transparency;
+        _rightArrow.color = rightArrowColor;
+    }
+
     void Start()
     {
         float horizontalNodePosition = overworldMapGenerator.currentMapNodeTransform.position.x;

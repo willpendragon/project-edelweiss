@@ -23,7 +23,7 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     public TextMeshProUGUI footerMarqueeText;
     [SerializeField] string buildingDescription;
 
-    [SerializeField] string footerMarqueeTutorialText = $"Drag the Mouse to explore the Map. Click on Buildings to access a location";
+    string footerMarqueeTutorialText = $"Move the Mouse LEFT and RIGHT to explore the Map. Click on a BUILDING to access it.";
 
     private SelectionStatus currentStatus = SelectionStatus.Deselected;
 
