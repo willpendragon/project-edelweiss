@@ -3,7 +3,12 @@ guid: 5d065ef2be353d642a22a34f6b72ee5e
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DeityObeliskMaterial
+    second: {fileID: 2100000, guid: d13fc66822c14fc45836c9bfffe095f7, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -67,7 +72,7 @@ ModelImporter:
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
     strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60

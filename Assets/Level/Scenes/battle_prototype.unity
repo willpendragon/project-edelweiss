@@ -11588,7 +11588,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.14, y: 0, z: 9.39}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -13183,7 +13183,9 @@ MonoBehaviour:
   timesSingleTargetSpellWasUsed: 0
   captureCrystalsCount: 0
   unlockedPuzzleKeys: 0
+  inventory: {fileID: 0}
   faithController: {fileID: 2349456376735431951}
+  allIngredientPrototypes: []
 --- !u!4 &402340613465858688
 Transform:
   m_ObjectHideFlags: 0
@@ -19648,7 +19650,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 20.825794, y: 20.825794, z: 20.825794}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911147375969266743}
@@ -19724,6 +19726,7 @@ MonoBehaviour:
   coinsRewardPool: 0
   experienceRewardPool: 0
   multiKillCounter: 0
+  ingredients: []
 --- !u!1 &5224302896361170730
 GameObject:
   m_ObjectHideFlags: 0
@@ -19818,7 +19821,7 @@ Transform:
   m_GameObject: {fileID: 2853166123752632539}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 7.7, y: 24.96, z: -36.29}
+  m_LocalPosition: {x: 27.633137, y: 5.4826975, z: 14.073521}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
