@@ -1,8 +1,9 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MapNodeInfoPanelController : MonoBehaviour
+public class MapNodeInfoPanelController : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] GameObject mapNodeGameObject;
     [SerializeField] TextMeshProUGUI poolSize;
@@ -12,6 +13,7 @@ public class MapNodeInfoPanelController : MonoBehaviour
     [SerializeField] Sprite enemyIcon2;
     [SerializeField] Sprite enemyIcon3;
     [SerializeField] Sprite defaultIcon;
+    [SerializeField] MapNodeController _mapNodeController;
 
     private void Start()
     {
@@ -24,8 +26,11 @@ public class MapNodeInfoPanelController : MonoBehaviour
 
             if (i < mapNodeEnemySelection.enemyParty.enemyWeights.Count)
             {
-                // Assign enemy type text if within range
-                enemyPoolPredictionsGameObject[i].GetComponentInChildren<TextMeshProUGUI>().text = mapNodeEnemySelection.enemyParty.enemyWeights[i].weight.ToString().ToUpper();
+                // Display Enemy Weights
+                var enemyPredictionsText = enemyPoolPredictionsGameObject[i].GetComponentInChildren<TextMeshProUGUI>();
+                enemyPredictionsText.text = $"Encounter Chance: {mapNodeEnemySelection.enemyParty.enemyWeights[i].weight}";
+
+                // Retrieve Enemy Type
                 string enemyType = mapNodeEnemySelection.enemyParty.enemyWeights[i].enemyType.ToString();
                 enemyPoolPredictionsGameObject[i].GetComponent<Image>().sprite = SetEnemyIcon(enemyType);
             }
@@ -51,5 +56,15 @@ public class MapNodeInfoPanelController : MonoBehaviour
             default:
                 return defaultIcon;
         }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ResumeGame();
+    }
+
+    public void ResumeGame()
+    {
+        _mapNodeController.CloseLocationEnterPanel();
     }
 }

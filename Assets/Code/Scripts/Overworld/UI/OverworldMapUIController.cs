@@ -8,6 +8,7 @@ public class OverworldMapUIController : MonoBehaviour
     [SerializeField] TextMeshProUGUI warFundsCounter;
     [SerializeField] TextMeshProUGUI crystalsCounter;
     [SerializeField] GameObject locationInfoPanel;
+    [SerializeField] CanvasGroup _arrows;
     public GameStatsManager gameStatsManager;
     void Start()
     {
@@ -15,5 +16,10 @@ public class OverworldMapUIController : MonoBehaviour
         crystalsCounter.text = $"Tributes <sprite=98> {gameStatsManager.captureCrystalsCount}";
         warFundsCounter.text = $"War Funds <sprite=93> {gameStatsManager.warFunds}";
         locationInfoPanel?.SetActive(false);
+    }
+
+    public void SetArrowsVisibility(float alpha)
+    {
+        _arrows.alpha = alpha;
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -72,6 +71,17 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     {
         activateEnterMenuPanelGO.SetActive(true);
         overworldMapCanvas.GetComponent<GraphicRaycaster>().enabled = true;
+        ToggleCameraPan(false);
+    }
+
+    public void ToggleCameraPan(bool cameraPanIsActive)
+    {
+        var cameraPanScripts = FindObjectsByType<CameraPan>(FindObjectsSortMode.None);
+
+        foreach (var cameraPanScript in cameraPanScripts)
+        {
+            cameraPanScript.panIsActive = cameraPanIsActive;
+        }
     }
 
     private void SelectItem()

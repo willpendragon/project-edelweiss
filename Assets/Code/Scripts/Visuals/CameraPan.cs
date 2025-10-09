@@ -23,9 +23,12 @@ public class CameraPan : MonoBehaviour
     [SerializeField] OverworldMapGenerator overworldMapGenerator;
     [SerializeField] private Image _leftArrow;
     [SerializeField] private Image _rightArrow;
+    public bool panIsActive;
 
     void Update()
     {
+        if (panIsActive == false)
+            return;
         Vector3 pos = transform.position;
 
         if (Input.mousePosition.x >= Screen.width - margin)
@@ -76,6 +79,7 @@ public class CameraPan : MonoBehaviour
         Vector3 camPosition = currentCamera.transform.position;
         camPosition.x = horizontalNodePosition;
         currentCamera.transform.position = camPosition;
+        panIsActive = true;
     }
 
     // Quick methods to close any buildings panel when the camera is panned - should be moved to its own class later
