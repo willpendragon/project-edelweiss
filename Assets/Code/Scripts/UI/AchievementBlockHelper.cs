@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 using TMPro;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class AchievementBlockHelper : MonoBehaviour
 {
@@ -10,13 +11,36 @@ public class AchievementBlockHelper : MonoBehaviour
     [SerializeField] TextMeshProUGUI spawnableDeityNameText;
     [SerializeField] TextMeshProUGUI requirementNumberText;
     [SerializeField] TextMeshProUGUI achievementProgressText;
+    [SerializeField] Slider _slider;
+    [SerializeField] const string COMPLETE = "Complete";
 
     public void PopulateTexts(string achievementName, string achievementDescription, string spawnableDeityName, string achievementRequirement, string achievementProgress)
     {
         achievementNameText.text = achievementName;
         achievementDescriptionText.text = achievementDescription;
         spawnableDeityNameText.text = spawnableDeityName;
-        requirementNumberText.text = achievementRequirement;
-        achievementProgressText.text = achievementProgress;
+
+        achievementProgressText.text = $"{achievementProgress} / {achievementRequirement}";
+        UpdateSlider(achievementRequirement, achievementProgress);
+        SetCompletionText(achievementRequirement, achievementProgress);
+    }
+
+    private void SetCompletionText(string achievementRequirement, string achievementProgress)
+    {
+        int requirementInt = int.Parse(achievementRequirement);
+        int progressInt = int.Parse(achievementProgress);
+        if (requirementInt <= progressInt)
+        {
+            achievementProgressText.text = COMPLETE;
+        }
+    }
+
+    public void UpdateSlider(string achievementRequirement, string achievementProgress)
+    {
+        int requirementInt = int.Parse(achievementRequirement);
+        int progressInt = int.Parse(achievementProgress);
+        _slider.minValue = 0;
+        _slider.maxValue = requirementInt;
+        _slider.value = progressInt;
     }
 }
