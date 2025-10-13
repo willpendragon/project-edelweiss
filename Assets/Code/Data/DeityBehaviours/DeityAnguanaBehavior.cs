@@ -14,6 +14,9 @@ public class DeityAnguanaBehavior : DeityBehavior
 
     public override void ExecuteBehavior(Deity deity)
     {
+        if (deity.currentDeityStatus == Deity.DeityStatus.Summoned)
+            return;
+
         BattleManager battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
 
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)

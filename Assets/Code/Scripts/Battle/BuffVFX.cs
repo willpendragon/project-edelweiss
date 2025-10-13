@@ -8,7 +8,18 @@ public class BuffVFX : MonoBehaviour
         // Shows the protective Summon Buff - prototype basic logic
         if (_buffMesh == null)
             return;
+
         _buffMesh.material.SetFloat("_GlowIntensity", 1f);
         _buffMesh.material.SetFloat("_FadeHeight", 5f);
+    }
+
+    public void HideVFX()
+    {
+        // Hides the protective Summon Buff - prototype basic logic
+        if (_buffMesh == null)
+            return;
+
+        _buffMesh.material.SetFloat("_GlowIntensity", 0f);
+        _buffMesh.material.SetFloat("_FadeHeight", 0f);
     }
 }

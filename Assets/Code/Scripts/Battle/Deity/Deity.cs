@@ -6,6 +6,12 @@ using UnityEngine.UI;
 [System.Serializable]
 public class Deity : MonoBehaviour
 {
+    public enum DeityStatus
+    {
+        Standard,
+        Summoned
+    }
+
     [Header("Gameplay Logic")]
     public string Id = System.Guid.NewGuid().ToString();
     public float enmity;
@@ -37,6 +43,8 @@ public class Deity : MonoBehaviour
 
     public AudioSource deityCry;
 
+    public DeityStatus currentDeityStatus = DeityStatus.Standard;
+
 
     public delegate void DeityNotificationUpdate(string deityNotificationText);
     public static event DeityNotificationUpdate OnDeityNotificationUpdate;
@@ -64,13 +72,6 @@ public class Deity : MonoBehaviour
     public void Start()
     {
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
-        //OnDeityNotificationUpdate("The Deity is watching over the Battlefield");
-
-        //Finds the Turn Tracker Details Panel where to instance the Deity Enmity Tracker
-        //GameObject currentDeityEnmityTracker = GameObject.FindGameObjectWithTag("DeityEnmityCounter");
-        //currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().SetDeity(this.gameObject);
-        //currentDeityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
-        //deityEnmityTracker = currentDeityEnmityTracker;
 
         var enemyTurnManager = FindAnyObjectByType<EnemyTurnManager>();
         enemyTurnManager.deity = this.gameObject;
@@ -81,7 +82,7 @@ public class Deity : MonoBehaviour
         UpdateSinSystemDisplay();
     }
 
-    //Retrieves the Deity Behavior from a compatible Scriptable Object added in the Inspector.
+    // Retrieves the Deity Behavior from a compatible Scriptable Object added in the Inspector.
     public void DeityBehaviour(string deityText)
     {
         deityBehavior.ExecuteBehavior(this);
@@ -91,7 +92,6 @@ public class Deity : MonoBehaviour
     {
         Unit deityUnitComponent = GetComponentInChildren<Unit>();
         deityHealthBar.GetComponentInChildren<Slider>().value = deityUnitComponent.unitHealthPoints;
-        //deityHealthBar.GetComponentInChildren<TextMeshProUGUI>().text = deityUnitComponent.unitHealthPoints.ToString();
     }
 
     public void UpdateDeityEnmitySlider()
@@ -115,7 +115,6 @@ public class Deity : MonoBehaviour
             return true;
         }
         else
-
         {
             //Deity doesn't Attack
             return false;
