@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static TurnController;
 using static Unit;
@@ -11,6 +13,7 @@ public class BattleFlowController : MonoBehaviour
     [SerializeField] private GameStatsManager gameStatsManager;
     [SerializeField] private BattleEndUIHandler battleEndUIHandler;
     [SerializeField] private SummonResetHelper summonResetHelper;
+    [SerializeField] private List<string> _lootedIngredients;
     public int enemiesKilledInCurrentBattle;
 
     public delegate void ResetUnitUI();
@@ -71,7 +74,8 @@ public class BattleFlowController : MonoBehaviour
 
         foreach (var entry in PersistentInventoryManager.CurrentInventory.items)
         {
-            Debug.Log($"{entry.ingredient.name} x{entry.quantity}");
+            string ingredientDetails = $"{entry.ingredient.name} x{entry.quantity}";
+            _lootedIngredients.Add(ingredientDetails);
         }
 
         BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(receivedWarFunds);
@@ -110,6 +114,10 @@ public class BattleFlowController : MonoBehaviour
         battleEndUIHandler.battleEndEnemiesKilledText.text = $"Enemies Killed<space=60>{enemiesKilledInCurrentBattle}";
         battleEndUIHandler.battleEndWarFundsGainedText.text = $"War Funds Gained<space=20>{warFunds}<space=30><sprite=93>";
         battleEndUIHandler.battleEndCrystalObtainedText.text = $"Tributes<space=20>{battleManager.captureCrystalsRewardPool}<space=30><sprite=98>";
+
+        string ingredientNames = string.Join(",", _lootedIngredients);
+        battleEndUIHandler.battleEndIngredients.text = ingredientNames;
+
         //battleEndUIHandler.battleEndCrystalObtainedText.text = $"Capture Crystals<space=20>{battleManager.captureCrystalsRewardPool}<space=30><voffset=10><sprite=0></voffset>";
     }
 }
