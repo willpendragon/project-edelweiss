@@ -21,7 +21,8 @@ public class CafeMenuUIController : MonoBehaviour
     public GameObject characterProfilesContainer;
 
     //public List<ItemFood> itemFoodList;
-    [SerializeField] List<FoodInventoryEntry> bakedItems;
+    public List<FoodInventoryEntry> bakedItems;
+    [SerializeField] SaveBakedItemsHelper _saveBakedItemsHelper;
 
     public GameObject itemFoodPrefab;
     public GameObject characterProfilesPrefab;
@@ -90,6 +91,10 @@ public class CafeMenuUIController : MonoBehaviour
 
             // Remove baked item and update the food list
             RemoveBakedItem(selectedItem);
+            _saveBakedItemsHelper.SaveBakedItems();
+
+            // Save the War Funds amount after spending.
+            gameStatsManager.SaveSpentWarFunds(selectedItemPrice);
             GenerateFoodList();
         }
         else

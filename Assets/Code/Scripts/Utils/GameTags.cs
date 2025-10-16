@@ -15,5 +15,6 @@ namespace ProjectEdelweiss.Utils
         public const string PlayerCharacterSelectorIcon = "PlayerCharacterSelectorIcon";
         public const string CurrentlySelectedUnit = "CurrentlySelectedUnit";
         public const string BattleTutorialScene = "battle_tutorial";
+        public const string GAME_STATS_MANAGER = "GameStatsManager";
     }
 }

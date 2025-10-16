@@ -15,8 +15,8 @@ public class GameSaveData
     public List<ConversationData> unlockedConversations = new List<ConversationData>();
 
     public List<IngredientSaveEntry> savedInventory = new List<IngredientSaveEntry>();
+    public List<BakedItemsData> bakedItems = new List<BakedItemsData>();
 }
-
 
 [System.Serializable]
 public class CharacterData
@@ -49,6 +49,13 @@ public class ResourceData
 public class IngredientSaveEntry
 {
     public string ingredientName; // or a unique ID
+    public int quantity;
+}
+
+[System.Serializable]
+public class BakedItemsData
+{
+    public string pastryName; // or a unique ID
     public int quantity;
 }
 

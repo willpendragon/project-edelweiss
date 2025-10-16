@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using ProjectEdelweiss.Utils;
 
 public class PastryCreator : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PastryCreator : MonoBehaviour
     [SerializeField] private Transform recipeListParent;
     [SerializeField] private GameObject recipeUIPrefab;
     [SerializeField] private List<Ingredient> allIngredientPrototypes; // assign in Inspector
+    [SerializeField] InventoryDisplayHelper _inventoryDisplayHelper;
 
     private IEnumerator Start()
     {
@@ -58,6 +60,11 @@ public class PastryCreator : MonoBehaviour
             inventory.AddBakedItem(recipe.resultItem);
             Debug.Log("Crafted: " + recipe.resultItem.itemFoodName);
             RefreshUI(); // Refresh after crafting
+
+            // Save the ingredients count
+            GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(GameTags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
+            gameStatsManager.SaveIngredientsAfterBaking();
+            _inventoryDisplayHelper.RefreshInventoryDisplay();
         }
         else
         {

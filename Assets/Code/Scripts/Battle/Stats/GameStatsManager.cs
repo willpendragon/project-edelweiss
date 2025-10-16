@@ -248,6 +248,29 @@ public class GameStatsManager : MonoBehaviour
         SaveStateManager.SaveGame(SaveStateManager.saveData);
     }
 
+    public void SaveIngredientsAfterBaking()
+    {
+        var currentInventoryData = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
+
+        // Create a fresh list that matches exactly what's in memory.
+        List<IngredientSaveEntry> newSavedInventory = new List<IngredientSaveEntry>();
+
+        foreach (var entry in currentInventoryData)
+        {
+            newSavedInventory.Add(new IngredientSaveEntry
+            {
+                ingredientName = entry.ingredientName,
+                quantity = entry.quantity
+            });
+        }
+
+        SaveStateManager.saveData.savedInventory = newSavedInventory;
+
+        SaveStateManager.SaveGame(SaveStateManager.saveData);
+
+        Debug.Log($"[SaveIngredients] Inventory saved ({newSavedInventory.Count} ingredients).");
+    }
+
     public void LoadIngredients(List<Ingredient> allIngredientPrototypes)
     {
         PersistentInventoryManager.FromSaveData(
