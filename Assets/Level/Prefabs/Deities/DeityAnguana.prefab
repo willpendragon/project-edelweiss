@@ -869,6 +869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _deityHealthBar: {fileID: 8919306051592802486}
+  _deityEnmityBar: {fileID: 9206596008399748642}
 --- !u!1 &8938295738399768809
 GameObject:
   m_ObjectHideFlags: 0
@@ -1393,5 +1394,10 @@ MonoBehaviour:
 --- !u!224 &7328774742262639208 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3428948116850998954, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
+  m_PrefabInstance: {fileID: 5342144272500954306}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &9206596008399748642 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 3884211342839425760, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
   m_PrefabInstance: {fileID: 5342144272500954306}
   m_PrefabAsset: {fileID: 0}

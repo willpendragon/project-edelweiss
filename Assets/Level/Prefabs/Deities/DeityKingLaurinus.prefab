@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _deityHealthBar: {fileID: 2273671415719517102}
+  _deityEnmityBar: {fileID: 3258309649783106104}
 --- !u!1 &3193659577510601186
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,8 +319,8 @@ MonoBehaviour:
   startingYCoordinate: 9
   unitSelectionController: {fileID: 0}
   ownedTile: {fileID: 0}
-  unitHealthPoints: 1500
-  unitMaxHealthPoints: 1500
+  unitHealthPoints: 500
+  unitMaxHealthPoints: 500
   unitOpportunityPoints: 0
   unitFaithPoints: 0
   unitManaPoints: 0
@@ -963,7 +964,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 272764660443325715, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
       propertyPath: m_Name
-      value: Canvas
+      value: EnmityBar
       objectReference: {fileID: 0}
     - target: {fileID: 3428948116850998954, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
       propertyPath: m_Pivot.x
@@ -1100,6 +1101,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &3258309649783106104 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 3884211342839425760, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
+  m_PrefabInstance: {fileID: 1788117068318507224}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3983074170854833778 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3428948116850998954, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2732896966519241849}
   - component: {fileID: 4575324931048161679}
   - component: {fileID: 2075754267078489236}
+  - component: {fileID: 3884211342839425760}
   m_Layer: 8
   m_Name: EnmityBar
   m_TagString: Untagged
@@ -95,6 +96,18 @@ MonoBehaviour:
   deityEnmityPointsCounter: {fileID: 0}
   deity: {fileID: 0}
   enmityIconRect: {fileID: 5116316756300135027}
+--- !u!225 &3884211342839425760
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272764660443325715}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1011548379019993122
 GameObject:
   m_ObjectHideFlags: 0
