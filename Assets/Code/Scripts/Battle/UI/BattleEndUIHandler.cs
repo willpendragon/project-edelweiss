@@ -26,6 +26,8 @@ public class BattleEndUIHandler : MonoBehaviour
     public TextMeshProUGUI battleEndWarFundsGainedText;
     public TextMeshProUGUI battleEndEnemiesKilledText;
     public TextMeshProUGUI battleEndCrystalObtainedText;
+    public TextMeshProUGUI battleEndIngredients;
+
 
     private string saveFilePath;
 
