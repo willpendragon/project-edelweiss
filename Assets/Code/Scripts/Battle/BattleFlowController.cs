@@ -115,7 +115,7 @@ public class BattleFlowController : MonoBehaviour
         battleEndUIHandler.battleEndWarFundsGainedText.text = $"War Funds Gained<space=20>{warFunds}<space=30><sprite=93>";
         battleEndUIHandler.battleEndCrystalObtainedText.text = $"Tributes<space=20>{battleManager.captureCrystalsRewardPool}<space=30><sprite=98>";
 
-        string ingredientNames = string.Join(",", _lootedIngredients);
+        string ingredientNames = string.Join("\n", _lootedIngredients);
         battleEndUIHandler.battleEndIngredients.text = ingredientNames;
 
         //battleEndUIHandler.battleEndCrystalObtainedText.text = $"Capture Crystals<space=20>{battleManager.captureCrystalsRewardPool}<space=30><voffset=10><sprite=0></voffset>";

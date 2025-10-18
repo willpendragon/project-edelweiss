@@ -19,7 +19,7 @@ public class InventoryDisplayHelper : MonoBehaviour
         {
             string inventoryEntry = $"{entry.ingredient.name} x{entry.quantity}";
             _inventoryEntries.Add(inventoryEntry);
-            string inventoryList = string.Join(",", _inventoryEntries);
+            string inventoryList = string.Join("\n", _inventoryEntries);
             _inventoryText.text = inventoryList;
         }
         if (_inventoryEntries.Count == 0)
