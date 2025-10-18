@@ -1,90 +1,64 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CafeMenuUIWindowsController : MonoBehaviour
 {
-    public GameObject menu1;
-    public GameObject menu2;
-    public GameObject menu3;
-
-    public Button button1;
-    public Button button2;
-    public Button button3;
-
-    public TextMeshProUGUI buttonText1;
-    public TextMeshProUGUI buttonText2;
-    public TextMeshProUGUI buttonText3;
-
+    public CanvasGroup[] cafeMenus; // Assign in inspector
+    public Button[] buttons; // Assign in inspector
     public CanvasGroup cafeMenuGroup;
 
     public const string PASTRY_SHOP = "Pastry Shop";
     public const string DIALOGUES = "Dialogues";
     public const string PASTRY_CRAFTING = "Pastry Crafting";
 
-
     private void Start()
     {
-        // Initialize both menus to be closed.
-        menu1.SetActive(false);
-        menu2.SetActive(false);
-        menu3.SetActive(false);
+        // Hide all menus at the start
+        for (int i = 0; i < cafeMenus.Length; i++)
+        {
+            SetMenuVisible(i, false);
+        }
 
-        // Set initial button texts.
-        buttonText1.text = PASTRY_SHOP;
-        buttonText2.text = DIALOGUES;
-        buttonText3.text = PASTRY_CRAFTING;
-
-        // Add click listeners to buttons.
-        button1.onClick.AddListener(() => ToggleMenu(menu1, buttonText1, PASTRY_SHOP));
-        button2.onClick.AddListener(() => ToggleMenu(menu2, buttonText2, DIALOGUES));
-        button3.onClick.AddListener(() => ToggleMenu(menu3, buttonText3, PASTRY_CRAFTING)); // Actually Opens Pastry making menu.
+        // Setup button listeners without repetition
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            int index = i; // Capture index for lambda
+            buttons[i].onClick.RemoveAllListeners();
+            buttons[i].onClick.AddListener(() => ToggleMenu(index));
+        }
     }
 
-    private void ToggleMenu(GameObject menu, TextMeshProUGUI buttonText, string menuName)
+    public void ToggleMenu(int menuIndex)
     {
-        bool isMenuOpen = menu.activeSelf;
+        bool isMenuOpen = cafeMenus[menuIndex].alpha > 0.5f;
 
-        // Close the other menu if this one is going to be opened
+        // Close other menus if this one is going to be opened
         if (!isMenuOpen)
         {
-            if (menu == menu1)
+            for (int i = 0; i < cafeMenus.Length; i++)
             {
-                menu2.SetActive(false);
-                menu3.SetActive(false);
-                buttonText2.text = DIALOGUES;
-                buttonText3.text = PASTRY_CRAFTING;
+                if (i != menuIndex)
+                {
+                    SetMenuVisible(i, false);
+                }
+            }
+            // Special case for menu1 (Pastry Shop)
+            if (menuIndex == 0)
+            {
                 var cafeMenu = FindAnyObjectByType<CafeMenuUIController>();
                 cafeMenu.GenerateFoodList();
-            }
-            else if (menu == menu2)
-            {
-                menu1.SetActive(false);
-                menu3.SetActive(false);
-                buttonText1.text = PASTRY_SHOP;
-                buttonText3.text = PASTRY_CRAFTING;
-            }
-            else if (menu == menu3)
-            {
-                menu1.SetActive(false);
-                menu2.SetActive(false);
-                buttonText1.text = PASTRY_SHOP;
-                buttonText2.text = DIALOGUES;
             }
         }
 
         // Toggle the current menu.
-        menu.SetActive(!isMenuOpen);
+        SetMenuVisible(menuIndex, !isMenuOpen);
+    }
 
-        // Update the button text based on the menu state.
-        if (menu.activeSelf)
-        {
-            buttonText.text = "Close " + menuName;
-        }
-        else
-        {
-            buttonText.text = "Open " + menuName;
-        }
+    private void SetMenuVisible(int index, bool visible)
+    {
+        cafeMenus[index].alpha = visible ? 1f : 0f;
+        cafeMenus[index].interactable = visible;
+        cafeMenus[index].blocksRaycasts = visible;
     }
 }

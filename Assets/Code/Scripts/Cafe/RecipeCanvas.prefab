@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1024, y: 256}
+  m_AnchoredPosition: {x: -2.278595, y: 2.4291992}
+  m_SizeDelta: {x: 839.6824, y: 171.7879}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1035632982278004469
 CanvasRenderer:
@@ -170,7 +170,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 512, y: 1080}
+  m_SizeDelta: {x: 512, y: 970}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &114743007445784013
 CanvasRenderer:
@@ -271,8 +271,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1024, y: 256}
+  m_AnchoredPosition: {x: 29.5361, y: 112.9062}
+  m_SizeDelta: {x: 898.9141, y: 205.2065}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &3885237902625875137
 CanvasRenderer:
@@ -302,7 +302,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: d05a34055acb24c4b9dca885efed1a9d, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -535,6 +535,7 @@ GameObject:
   - component: {fileID: 4780865284359770198}
   - component: {fileID: 9047308755535948791}
   - component: {fileID: 6971833668881199704}
+  - component: {fileID: 8806397130199468426}
   m_Layer: 5
   m_Name: RecipeCanvas
   m_TagString: Untagged
@@ -641,3 +642,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inventoryEntries: []
   _inventoryText: {fileID: 374109409184690258}
+--- !u!225 &8806397130199468426
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9151731818176377634}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

@@ -1,10 +1,11 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class CloseMenuBehind : MonoBehaviour
 {
-    [SerializeField] private CafeMenuUIWindowsController _cafeMenu;
+    [SerializeField] private CafeMenuUIWindowsController _cafeMenuWindowsController;
+    [SerializeField] private CanvasGroup[] _cafeMenus;
     private const string CAFE_SCENE_NAME = "cafe_node";
+
 
     private void Awake()
     {
@@ -17,23 +18,26 @@ public class CloseMenuBehind : MonoBehaviour
     }
     public void ShowCanvas()
     {
-        if (_cafeMenu == null)
+        if (_cafeMenus.Length == 0)
             return;
-
-        _cafeMenu.cafeMenuGroup.alpha = 1;
+        // Shows only the Dialogue tab.
+        _cafeMenus[1].alpha = 1;
     }
     public void HideCanvas()
     {
-        if (_cafeMenu == null)
+        if (_cafeMenus.Length == 0)
             return;
-
-        _cafeMenu.cafeMenuGroup.alpha = 0;
+        foreach (var menu in _cafeMenus)
+        {
+            menu.alpha = 0;
+        }
     }
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == CAFE_SCENE_NAME)
         {
-            _cafeMenu = FindAnyObjectByType<CafeMenuUIWindowsController>();
+            _cafeMenuWindowsController = FindAnyObjectByType<CafeMenuUIWindowsController>();
+            _cafeMenus = _cafeMenuWindowsController.cafeMenus;
         }
     }
 }
