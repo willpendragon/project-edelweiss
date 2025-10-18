@@ -18,8 +18,7 @@ public class AchievementBlockHelper : MonoBehaviour
     {
         achievementNameText.text = achievementName;
         achievementDescriptionText.text = achievementDescription;
-        spawnableDeityNameText.text = spawnableDeityName;
-
+        spawnableDeityNameText.text = $"Unlockable Deity: {spawnableDeityName}";
         achievementProgressText.text = $"{achievementProgress} / {achievementRequirement}";
         UpdateSlider(achievementRequirement, achievementProgress);
         SetCompletionText(achievementRequirement, achievementProgress);
