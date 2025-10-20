@@ -126,6 +126,14 @@ PrefabInstance:
       propertyPath: keyPrizeThreshold
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2055579028622872174, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2055579028622872174, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitType
       value: 1
@@ -278,6 +286,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9200487149715040493, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: _ingredient
+      value: 
+      objectReference: {fileID: 11400000, guid: d3b681fd6a7b2e64089920d2b79b28d4, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 4166987097090433852, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}

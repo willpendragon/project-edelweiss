@@ -5794,7 +5794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3e6c81bf19a7e44aa070daf8ba8a54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ingredient: {fileID: 11400000, guid: 3ae0dd2009124d549b2f2de3e0233db7, type: 2}
+  _ingredient: {fileID: 11400000, guid: d3b681fd6a7b2e64089920d2b79b28d4, type: 2}
 --- !u!1 &8206487594655206302
 GameObject:
   m_ObjectHideFlags: 0
@@ -6394,16 +6394,24 @@ PrefabInstance:
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+      propertyPath: m_fontSize
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+      objectReference: {fileID: 11400000, guid: c84dcfc3c914cc6458ed1e2aae896a63, type: 2}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_fontColor.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_fontColor.r
@@ -6412,10 +6420,14 @@ PrefabInstance:
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+      objectReference: {fileID: -2533100021414680547, guid: c84dcfc3c914cc6458ed1e2aae896a63, type: 2}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_enableAutoSizing
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_hasFontAssetChanged

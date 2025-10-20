@@ -403,11 +403,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5045170542123633648}
   - {fileID: 5248880408692259192}
   - {fileID: 3572011279993702773}
   - {fileID: 7245119660369947535}
   - {fileID: 4725298335932251841}
-  - {fileID: 5045170542123633648}
   - {fileID: 7098631775829537441}
   - {fileID: 1983363406324134480}
   - {fileID: 3664886708510239878}
@@ -6079,16 +6079,24 @@ PrefabInstance:
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
+      propertyPath: m_fontSize
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+      objectReference: {fileID: 11400000, guid: c84dcfc3c914cc6458ed1e2aae896a63, type: 2}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_fontColor.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_fontColor.r
@@ -6097,7 +6105,7 @@ PrefabInstance:
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
+      objectReference: {fileID: -2533100021414680547, guid: c84dcfc3c914cc6458ed1e2aae896a63, type: 2}
     - target: {fileID: 5667337174593791683, guid: 765e4e29da231a241bd813e767250f33, type: 3}
       propertyPath: m_enableAutoSizing
       value: 1
