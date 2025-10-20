@@ -239,17 +239,11 @@ public class CafeMenuUIController : MonoBehaviour
 
                 TextMeshProUGUI[] characterTexts = characterProfile.GetComponentsInChildren<TextMeshProUGUI>();
 
-                if (characterTexts.Length >= 5)
+                if (characterTexts.Length >= 3)
                 {
                     characterTexts[0].text = partyMember.unitTemplate.unitName;
-                    characterTexts[1].text = "HP";
-                    characterTexts[2].text = partyMember.unitHealthPoints.ToString();
-                    characterTexts[3].text = "/";
-                    characterTexts[4].text = partyMember.unitMaxHealthPoints.ToString();
-                    characterTexts[5].text = "MP";
-                    characterTexts[6].text = partyMember.unitManaPoints.ToString();
-                    characterTexts[7].text = "/";
-                    characterTexts[8].text = partyMember.unitMaxManaPoints.ToString();
+                    characterTexts[1].text = $"HP {partyMember.unitHealthPoints} / {partyMember.unitMaxHealthPoints}";
+                    characterTexts[2].text = $"MP {partyMember.unitManaPoints} / {partyMember.unitMaxManaPoints}";
                 }
 
                 // Add the profile to the list of small controllers
