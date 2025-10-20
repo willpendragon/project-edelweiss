@@ -20,7 +20,7 @@ public class PastryCreator : MonoBehaviour
         Debug.Log($"[PastryCreator] Ingredient prototypes loaded: {allIngredientPrototypes.Count}");
         foreach (var i in allIngredientPrototypes)
         {
-            Debug.Log($"[PastryCreator] Prototype: {i.name}");
+            Debug.Log($"[PastryCreator] Prototype: {i.ingredientName}");
         }
 
         PersistentInventoryManager.ReloadInventory(allIngredientPrototypes);

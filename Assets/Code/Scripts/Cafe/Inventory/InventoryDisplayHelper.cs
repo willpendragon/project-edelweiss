@@ -17,7 +17,7 @@ public class InventoryDisplayHelper : MonoBehaviour
         _inventoryEntries.Clear();
         foreach (var entry in PersistentInventoryManager.CurrentInventory.items)
         {
-            string inventoryEntry = $"{entry.ingredient.name} x{entry.quantity}";
+            string inventoryEntry = $"{entry.ingredient.ingredientName} x{entry.quantity}";
             _inventoryEntries.Add(inventoryEntry);
             string inventoryList = string.Join("\n", _inventoryEntries);
             _inventoryText.text = inventoryList;

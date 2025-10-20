@@ -74,7 +74,7 @@ public class BattleFlowController : MonoBehaviour
 
         foreach (var entry in PersistentInventoryManager.CurrentInventory.items)
         {
-            string ingredientDetails = $"{entry.ingredient.name} x{entry.quantity}";
+            string ingredientDetails = $"{entry.ingredient.ingredientName} x{entry.quantity}";
             _lootedIngredients.Add(ingredientDetails);
         }
 
