@@ -3,14 +3,16 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using ProjectEdelweiss.Utils;
+using System;
 
 public class PastryCreator : MonoBehaviour
 {
     [SerializeField] private List<Recipe> allRecipes;
     [SerializeField] private Transform recipeListParent;
     [SerializeField] private GameObject recipeUIPrefab;
-    [SerializeField] private List<Ingredient> allIngredientPrototypes; // assign in Inspector
+    [SerializeField] private List<Ingredient> allIngredientPrototypes;
     [SerializeField] InventoryDisplayHelper _inventoryDisplayHelper;
+    [SerializeField] private PastryFeedbackController _pastryFeedbackController;
 
     private IEnumerator Start()
     {
@@ -58,6 +60,7 @@ public class PastryCreator : MonoBehaviour
         {
             inventory.ConsumeIngredients(recipe);
             inventory.AddBakedItem(recipe.resultItem);
+            _pastryFeedbackController.CookingFeedback(recipe);
             Debug.Log("Crafted: " + recipe.resultItem.itemFoodName);
             RefreshUI(); // Refresh after crafting
 
