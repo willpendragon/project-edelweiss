@@ -35,8 +35,6 @@ public class FieldPrizeController : MonoBehaviour
 
         GameObject prizeVisualPrefab = selectedPrizeType == FieldPrizeType.Upgrade ? fieldPrizeVisuals : keyVisuals;
         SpawnPrize(fieldPrizeTile, prizeSpawnPosition, prizeVisualPrefab);
-
-        Debug.Log($"Spawned {selectedPrizeType}.");
     }
     public bool RollFieldPrizeChance()
     {

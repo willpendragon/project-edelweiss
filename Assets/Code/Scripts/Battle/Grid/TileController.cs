@@ -79,6 +79,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public delegate void PointerAwayFromTile();
     public static event PointerAwayFromTile OnPointerAwayFromTile;
 
+    public delegate void PrizeCollected();
+    public static event PrizeCollected OnPrizeCollected;
+
     void Start()
     {
         currentTileCurseStatus = TileCurseStatus.notCursed;
@@ -155,8 +158,9 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 Debug.Log("Added Key to Game Stats Manager and saved to game state");
             }
             UpdateCombatValues();
+            OnPrizeCollected();
             Destroy(fieldPrizeController.gameObject);
-            Debug.Log("Applied Power Up");
+            // Display Prize Collected Feedback
         }
     }
     private void UpdateCombatValues()
