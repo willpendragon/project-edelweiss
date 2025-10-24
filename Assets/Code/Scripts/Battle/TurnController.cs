@@ -301,7 +301,6 @@ public class TurnController : MonoBehaviour
     public void RunFromBattle()
     {
         OnBattleEnd("Fleed");
-        BattleManager.Instance.PlayCameraBattleEndAnimation();
         BattleFlowController.Instance.ResetBattleToInitialStatus();
         BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(warFunds);
         BattleFlowController.Instance.UpdateBattleEndUIPanel(warFunds);

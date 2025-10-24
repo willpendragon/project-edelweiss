@@ -40,7 +40,6 @@ public class BattleFlowController : MonoBehaviour
     {
         // Execute after Player victory sequence.
         OnBattleEnd("Victory");
-        BattleManager.Instance.PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
         battleManager.UnlockNextLevel();
 
@@ -86,7 +85,6 @@ public class BattleFlowController : MonoBehaviour
     {
         // This is the sequence of events firing when the Player Party loses the battle.
         OnBattleEnd("Defeat");
-        BattleManager.Instance.PlayCameraBattleEndAnimation();
         ResetBattleToInitialStatus();
     }
 

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.IO;
+using DG.Tweening;
 
 public class BattleEndUIHandler : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class BattleEndUIHandler : MonoBehaviour
     [SerializeField] CanvasGroup _battleNotificationsGroup;
     [SerializeField] CanvasGroup _battleEndScreenGroup;
     [SerializeField] CanvasGroup _battleUpgradesGroup;
+    [SerializeField] CanvasGroup _fadeCanvasGroup;
+    [SerializeField] CursorController _cursor;
 
     [Header("UI Texts")]
     public TextMeshProUGUI battleEndMessageText;
@@ -57,14 +60,17 @@ public class BattleEndUIHandler : MonoBehaviour
             ChangeReturnButton();
         }
         DeactivateBattleUI();
+        _fadeCanvasGroup.DOFade(1, 0.5f);
         StartCoroutine("DisplayBattleEndResultsScreen");
     }
     IEnumerator DisplayBattleEndResultsScreen()
     {
         yield return new WaitForSeconds(battleEndResultsScreenDelay);
-        // Change to Canvas and use CanvasGroup
+        _fadeCanvasGroup.DOFade(0, 0.5f);
         _battleEndScreenGroup.alpha = 1;
         _battleEndScreenGroup.blocksRaycasts = true;
+        // Play camera animation.
+        BattleManager.Instance.PlayCameraBattleEndAnimation();
     }
     private void DeactivateBattleUI()
     {
@@ -73,29 +79,9 @@ public class BattleEndUIHandler : MonoBehaviour
         _battleUpgradesGroup.alpha = 0;
         DeactivateUnitSelectionIcon();
         DeactivateStatusIcons();
-
-        //DeactivateUnitProfile();
-        //DeactivateWaitIcons();
-        //DeactivateBattleDetailsPanel();
-        //Transform childTransform;
-        //// Check if the child index exists
-        //if (_battleInterfaceCanvasObject.transform.childCount > 1 && (childTransform = _battleInterfaceCanvasObject.transform.GetChild(1)) != null)
-        //{
-        //    childTransform.gameObject.SetActive(false);
-        //}
+        // Deactivate the radial menu.
+        _cursor.enabled = false;
     }
-
-    private void DeactivateBattleDetailsPanel()
-    {
-        _battleDetailsPanelObject.SetActive(false);
-    }
-
-    private void DeactivateUnitProfile()
-    {
-        var existingInfoPanel = GameObject.FindGameObjectWithTag("ActiveCharacterUnitProfile");
-        Destroy(existingInfoPanel);
-    }
-
     private void DeactivateUnitSelectionIcon()
     {
         GameObject[] selectionCursors = GameObject.FindGameObjectsWithTag("ActivePlayerCharacterSelectionIcon");
@@ -109,16 +95,6 @@ public class BattleEndUIHandler : MonoBehaviour
         foreach (var statusIcon in GridManager.Instance.statusIcons)
         {
             Destroy(statusIcon);
-        }
-    }
-    private void DeactivateWaitIcons()
-    {
-        TurnController turnController = BattleManager.Instance?.GetComponent<TurnController>();
-        GameObject[] playerUnitsOnBattlefield = turnController?.playerUnitsOnBattlefield;
-
-        foreach (var playerUnit in playerUnitsOnBattlefield)
-        {
-            playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
         }
     }
     private void ChangeReturnButton()
