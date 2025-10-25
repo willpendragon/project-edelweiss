@@ -40,6 +40,8 @@ public class CursorController : MonoBehaviour
     [SerializeField] private TurnController _turnController;
     [SerializeField] private Unit _targetedUnit;
 
+    public Unit TargetedUnit => _targetedUnit;
+
     // Icons
     [SerializeField] private Sprite _moveIcon;
     [SerializeField] private Sprite _meleeIcon;
@@ -167,6 +169,7 @@ public class CursorController : MonoBehaviour
             || _turnController.currentTurn == TurnController.Turn.EnemyTurn)
             return;
 
+
         // Cache references
         var radialMenuComp = radialMenu.GetComponent<RadialMenu>();
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
@@ -177,6 +180,13 @@ public class CursorController : MonoBehaviour
 
         if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("Enemy"))
             _targetedUnit = _tileController.detectedUnit.GetComponent<Unit>();
+
+        // Display Enemy Unit Info (where applicable).
+        var unitSelection = FindAnyObjectByType<UnitSelectionController>();
+        if (_targetedUnit != null)
+        {
+            unitSelection.SelectEnemy(_targetedUnit);
+        }
 
         // Run button
         _runButtonPrefabInstance = CreateActionButton(
@@ -209,12 +219,14 @@ public class CursorController : MonoBehaviour
         // Melee/Magnet
         bool canMelee = CheckDistance(_meleeRange) && _tileController.detectedUnit != null;
         if (canMelee)
+        {
             _meleeButtonPrefabInstance = CreateActionButton(
                 RadialMenuEntry.ActionType.Melee,
                 GetButtonIcon(activePlayerUnit),
                 GetButtonName(activePlayerUnit),
                 4);
-
+            DisplayHelp();
+        }
         // Spell
         bool canSpell = CheckDistance(_spellRange) && _tileController.detectedUnit != null;
         if (canSpell)
@@ -236,6 +248,12 @@ public class CursorController : MonoBehaviour
         _actionButtons.Clear();
         _isRadialMenuOpen = false;
         radialMenu.GetComponent<RadialMenu>().ClearButtonsList();
+
+    }
+
+    public void DisplayHelp()
+    {
+        Debug.Log($"Tip - Targeted Unit Name: {_targetedUnit}");
     }
 
     private void DestroyButtons()
@@ -278,6 +296,7 @@ public class CursorController : MonoBehaviour
 
     public void ChangeCursorMode(RadialMenuEntry.ActionType state)
     {
+        bool skipDestroyPanels = false;
 
         switch (state)
         {
@@ -288,10 +307,12 @@ public class CursorController : MonoBehaviour
             case RadialMenuEntry.ActionType.Melee:
                 _tileController.currentPlayerAction = new MeleePlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
+                skipDestroyPanels = true;
                 break;
             case RadialMenuEntry.ActionType.Spell:
                 _tileController.currentPlayerAction = new AOESpellPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
+                skipDestroyPanels |= true;
                 break;
             case RadialMenuEntry.ActionType.Trap:
                 _tileController.currentPlayerAction = new TrapPlayerAction();
@@ -305,14 +326,30 @@ public class CursorController : MonoBehaviour
                 _tileController.currentPlayerAction = new SummonPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 break;
-            case RadialMenuEntry.ActionType.Pray:
-                _tileController.currentPlayerAction = new PrayPlayerAction();
-                _tileController.currentPlayerAction.Execute(_tileController);
-                break;
+            //case RadialMenuEntry.ActionType.Pray:
+            //    _tileController.currentPlayerAction = new PrayPlayerAction();
+            //    _tileController.currentPlayerAction.Execute(_tileController);
+            //    break;
             case RadialMenuEntry.ActionType.Run:
                 TurnController.Instance.RunFromBattle();
+                DestroyEnemyInfoPanels();
                 break;
         }
+
+        if (skipDestroyPanels == false)
+            DestroyEnemyInfoPanels();
+
+        if (_targetedUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+        {
+            // Destroy Enemy Info Panels.
+            DestroyEnemyInfoPanels();
+        }
+        else
+        {
+            // Update Enemy Info Panels.
+            UpdateEnemyInfoPanels();
+        }
+
 
         var turnController = BattleManager.Instance.GetComponent<TurnController>();
 
@@ -347,5 +384,25 @@ public class CursorController : MonoBehaviour
             return distance <= limit;
         }
         else return false;
+    }
+
+    private void DestroyEnemyInfoPanels()
+    {
+        var enemyPanels = GameObject.FindGameObjectsWithTag("EnemyUnitProfile");
+
+        foreach (var enemyPanel in enemyPanels)
+        {
+            Destroy(enemyPanel);
+        }
+    }
+
+    private void UpdateEnemyInfoPanels()
+    {
+        var enemyPanels = GameObject.FindGameObjectsWithTag("EnemyUnitProfile");
+
+        foreach (var enemyPanel in enemyPanels)
+        {
+            enemyPanel.GetComponent<UnitProfileController>().UpdateTargetedUnitProfile(_targetedUnit);
+        }
     }
 }

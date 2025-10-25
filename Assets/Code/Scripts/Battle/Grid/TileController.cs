@@ -110,8 +110,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         }
         else if (detectedUnit.CompareTag("Enemy"))
         {
-            var unitSelection = FindAnyObjectByType<UnitSelectionController>();
-            unitSelection.SelectEnemy(detectedUnit.GetComponent<Unit>());
 
         }
         OnClickedOnTile(this);

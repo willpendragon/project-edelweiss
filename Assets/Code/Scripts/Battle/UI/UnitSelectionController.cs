@@ -168,6 +168,15 @@ public class UnitSelectionController : MonoBehaviour
         playerUnit.gameObject.tag = GameTags.ActivePlayerUnit;
         _activePlayerUnit = playerUnit;
         Debug.Log($"{playerUnit.unitTemplate.unitName} is now the {GameTags.ActivePlayerUnit}");
+
+        // Destroy Enemy Info Panels
+        var enemyPanels = GameObject.FindGameObjectsWithTag("EnemyUnitProfile");
+
+        foreach (var enemyPanel in enemyPanels)
+        {
+            // Destroy Enemy Info Panels.
+            Destroy(enemyPanel);
+        }
     }
     public void SpawnSelectionIcon(GameObject playerUnit)
     {
@@ -190,13 +199,10 @@ public class UnitSelectionController : MonoBehaviour
 
     public void SelectEnemy(Unit enemyUnit)
     {
+        if (enemyUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+            return;
         // Clear Existing Enemy Panels
-
-        GameObject[] existingInfoPanels = GameObject.FindGameObjectsWithTag(GameTags.EnemyUnitProfile);
-        foreach (var existingPanel in existingInfoPanels)
-        {
-            Destroy(existingPanel);
-        }
+        ClearPanelsByTag(GameTags.EnemyUnitProfile);
 
         _enemyUnitPanel = Instantiate(Resources.Load(GameTags.CurrentlySelectedUnit) as GameObject, _battleUI.battleDetails.transform);
         _enemyUnitPanel.tag = GameTags.EnemyUnitProfile;
@@ -242,6 +248,7 @@ public class UnitSelectionController : MonoBehaviour
         unitIconsController?.DisplayWaitingIcon();
         GridManager.Instance.currentPlayerUnit = null;
         ClearPanelsByTag(GameTags.ActiveCharacterUnitProfile);
+        ClearPanelsByTag(GameTags.EnemyUnitProfile);
         foreach (var unitGO in _playerUnits)
         {
             unitGO.GetComponent<Unit>().currentUnitPhase = Unit.UnitPhase.Waiting;
