@@ -57,7 +57,6 @@ public class BattleInterface : MonoBehaviour
         BumperEnemyBehavior.OnBumperEnemyAttack += SetBattleNotification;
         BumperEnemyBehavior.OnMovementDisabled += SetBattleNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetBattleNotification;
-        DeityBehavior.OnUsedAttack += SetBattleNotification;
     }
 
     private void UnsubscribeBattleNotifications()
@@ -70,7 +69,6 @@ public class BattleInterface : MonoBehaviour
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetBattleNotification;
         BumperEnemyBehavior.OnMovementDisabled -= SetBattleNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetBattleNotification;
-        DeityBehavior.OnUsedAttack -= SetBattleNotification;
     }
 
     private void OnEnable()
