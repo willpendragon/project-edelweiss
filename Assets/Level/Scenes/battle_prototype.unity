@@ -1511,6 +1511,8 @@ MonoBehaviour:
   currentUnitSelectionStatus: 0
   unitSprite: {fileID: 0}
   unitIconsController: {fileID: 0}
+  selectedTileInstance: {fileID: 0}
+  tileVisualizer: {fileID: 7444878605507934041}
   _activePlayerUnit: {fileID: 0}
   _selectionIcon: {fileID: 0}
   _selectedUnitPanel: {fileID: 0}
@@ -1518,7 +1520,6 @@ MonoBehaviour:
   _playerUnits: []
   _reachableEnemyTiles: []
   _selectedTile: {fileID: 6300565905878205111, guid: 63e6f1fef46b21c42a2cb780377c0dd6, type: 3}
-  selectedTileInstance: {fileID: 0}
 --- !u!4 &209913983
 Transform:
   m_ObjectHideFlags: 0
@@ -25377,6 +25378,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f24b7241192251f46a676b39b4706955, type: 3}
+--- !u!114 &7444878605507934041 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3704534190451688801, guid: f24b7241192251f46a676b39b4706955, type: 3}
+  m_PrefabInstance: {fileID: 7444878605507934040}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ebc00d23ab89bc49a1ddc7612575067, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7540968563065365740
 GameObject:
   m_ObjectHideFlags: 0
