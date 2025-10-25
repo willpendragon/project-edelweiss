@@ -27,7 +27,7 @@ public class DeityAnguanaBehavior : DeityBehavior
             }
             else
             {
-                DOVirtual.DelayedCall(1f, () => BattleInterface.Instance.SetDeityNotification("Deity Anguana placidly looks around"));
+                DOVirtual.DelayedCall(1f, () => BattleInterface.Instance.SetDeityNotification($"Deity {deityName} placidly looks around"));
             }
         }
         else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
@@ -42,7 +42,7 @@ public class DeityAnguanaBehavior : DeityBehavior
 
     public void Attack(Deity deity)
     {
-        BattleInterface.Instance.SetSpellNameOnNotificationPanel(attackName, deityName);
+        BattleInterface.Instance.SetDeityNotification($"Deity {deityName} used {attackName}");
         deity.deityCry.Play();
 
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
@@ -57,14 +57,13 @@ public class DeityAnguanaBehavior : DeityBehavior
         }
 
         deity.enmity = 0;
-        //deity.deityEnmityTracker.GetComponent<DeityEnmityTrackerController>().UpdateDeityEnmityTracker();
     }
 
     private void MoveDeityToRandomTile(Deity deity)
     {
         if (localRandom == null)
         {
-            localRandom = new System.Random(); // No seed = fresh randomness each run
+            localRandom = new System.Random(); // No seed to guarantee fresh randomness at each run.
         }
 
         List<Vector2Int> tileCoordinates = GridManager.Instance.GetExistingTileCoordinates();
@@ -88,7 +87,7 @@ public class DeityAnguanaBehavior : DeityBehavior
 
         MoveDeityToTile(deity, randomTile);
 
-        Debug.Log($"Anguana magically moved to: ({randomTile.tileXCoordinate}, {randomTile.tileYCoordinate})");
+        Debug.Log($"Anguana moved to: ({randomTile.tileXCoordinate}, {randomTile.tileYCoordinate})");
     }
 
     private void MoveDeityToTile(Deity deity, TileController destinationTile)
