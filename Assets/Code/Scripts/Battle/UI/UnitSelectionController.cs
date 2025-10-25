@@ -23,9 +23,11 @@ public class UnitSelectionController : MonoBehaviour
 
     public GameObject waitButton;
     public UnitSelectionStatus currentUnitSelectionStatus;
-    //public SpellUIController unitSpellUIController;
     public SpriteRenderer unitSprite;
     public UnitIconsController unitIconsController;
+    public GameObject selectedTileInstance;
+    public ReachableTilesVisualizer tileVisualizer;
+
     [SerializeField] private Unit _activePlayerUnit;
     [SerializeField] private GameObject _selectionIcon;
     [SerializeField] private GameObject _selectedUnitPanel;
@@ -33,7 +35,6 @@ public class UnitSelectionController : MonoBehaviour
     [SerializeField] private List<Unit> _playerUnits;
     [SerializeField] private List<TileController> _reachableEnemyTiles = new List<TileController>();
     [SerializeField] private GameObject _selectedTile;
-    public GameObject selectedTileInstance;
 
     private BattleInterface _battleUI;
     private GridMovementController _gridMovementController;
@@ -140,8 +141,6 @@ public class UnitSelectionController : MonoBehaviour
 
     private void ClearPreviousSelection()
     {
-        //if (_selectionIcon == null)
-        //    return;
         if (_selectedUnitPanel == null)
             return;
         if (_activePlayerUnit == null)
@@ -233,19 +232,10 @@ public class UnitSelectionController : MonoBehaviour
     public void ResetUnitSelection()
     {
         DestroySelectionIcons();
-        //unitSpellUIController.ResetCharacterSpellsMenu();
         this.gameObject.tag = GameTags.Player;
         GridManager.Instance.currentPlayerUnit = null;
     }
 
-    public void GenerateWaitButton()
-    {
-        string sceneName = SceneManager.GetActiveScene().name;
-        //if (unitSpellUIController != null && sceneName != GameTags.BattleTutorialScene)
-        //{
-        //    GameObject newWaitButton = Instantiate(waitButton, unitSpellUIController.spellMenuContainer);
-        //}
-    }
     public void StopPlayerParty()
     {
         DestroySelectionIcons();
@@ -257,6 +247,8 @@ public class UnitSelectionController : MonoBehaviour
             unitGO.GetComponent<Unit>().currentUnitPhase = Unit.UnitPhase.Waiting;
         }
         OnUnitTurnEnded?.Invoke();
+        // Hides the tiles where the Active Player Unit could move to.
+        tileVisualizer.ClearReachableTiles(0, 0.2f, Color.white);
     }
 
     private void DestroySelectionIcons()

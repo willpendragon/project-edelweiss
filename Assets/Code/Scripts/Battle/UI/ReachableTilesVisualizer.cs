@@ -11,16 +11,6 @@ public class ReachableTilesVisualizer : MonoBehaviour
 
     private Unit activePlayerUnit;
 
-    //void Update()
-    //{
-    //    // Detect if the E key is pressed
-    //    if (Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        Debug.Log("E key pressed, showing reachable tiles.");
-    //        ShowReachableTiles();
-    //    }
-    //}
-
     // Function to find and highlight reachable tiles
     public void ShowReachableTiles()
     {
@@ -46,12 +36,10 @@ public class ReachableTilesVisualizer : MonoBehaviour
             // Change the color of the tile directly for testing
             tile.tileShaderController.AnimateFadeHeight(1f, 0.2f, Color.cyan);
         }
-
         Debug.Log($"Reachable tiles highlighted: {reachableTiles.Count}");
 
         // Sort units to prevent visual overlap issues
         GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
-
     }
 
     // Use BFS to find all reachable tiles within the player's movement range
@@ -102,7 +90,6 @@ public class ReachableTilesVisualizer : MonoBehaviour
 
         return reachableTiles;
     }
-
 
     private List<TileController> GetTargetableTiles(Unit unit, int range)
     {

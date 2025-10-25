@@ -269,7 +269,7 @@ public class TurnController : MonoBehaviour
         RestoreActivePlayerUnit();
         SetPlayerUnitsToActive();
 
-        // Try to find the End Turn button and enable it, if it exists
+        // Try to find the End Turn button and enable it, if it exists.
         GameObject endTurnButtonObject = GameObject.FindGameObjectWithTag(Tags.END_TURN_BUTTON);
         if (endTurnButtonObject != null)
         {
@@ -289,13 +289,15 @@ public class TurnController : MonoBehaviour
     {
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag(Tags.ACTIVE_PLAYER_UNIT);
         var unitSelection = FindAnyObjectByType<UnitSelectionController>();
-        if (activePlayerUnit != null)
-        {
-            unitSelection.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
-            // Display the Attackable Enemies outline
-            var unitSelectionController = FindAnyObjectByType<UnitSelectionController>();
-            unitSelectionController.OutlineAttackableEnemies(activePlayerUnit.GetComponent<Unit>());
-        }
+
+        if (activePlayerUnit == null)
+            return;
+
+        unitSelection.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
+        // Display the Attackable Enemies outline.
+        unitSelection.OutlineAttackableEnemies(activePlayerUnit.GetComponent<Unit>());
+        // Display the tiles reachable by the Active Player Unit.
+        unitSelection.tileVisualizer.ShowReachableTiles();
     }
 
     public void RunFromBattle()
