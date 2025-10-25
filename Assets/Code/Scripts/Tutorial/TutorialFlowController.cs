@@ -46,23 +46,23 @@ public class TutorialFlowController : MonoBehaviour
     // Add a class that inhibits the possibility to click for the Player
     private void OnEnable()
     {
-        MovePlayerAction.OnUnitMovedToTile += CompleteMovementActionTutorial;
-        MeleePlayerAction.OnUsedMeleeAction += CompleteMeleeActionTutorial;
-        AOESpellPlayerAction.OnUsedSpell += CompleteSpellActionTutorial;
-        AOESpellPlayerAction.OnUsedSpell += UpsetTomodachick;
-        MeleePlayerAction.OnUsedMagnet += CompleteMagnetTutorial;
-        TrapPlayerAction.OnTrapPlaced += CompleteTrapActionTutorial;
-        TrapController.OnTrapAction += CompleteBattleTutorial;
+        //MovePlayerAction.OnUnitMovedToTile += CompleteMovementActionTutorial;
+        //MeleePlayerAction.OnUsedMeleeAction += CompleteMeleeActionTutorial;
+        //AOESpellPlayerAction.OnUsedSpell += CompleteSpellActionTutorial;
+        //AOESpellPlayerAction.OnUsedSpell += UpsetTomodachick;
+        //MeleePlayerAction.OnUsedMagnet += CompleteMagnetTutorial;
+        //TrapPlayerAction.OnTrapPlaced += CompleteTrapActionTutorial;
+        //TrapController.OnTrapAction += CompleteBattleTutorial;
     }
     private void OnDisable()
     {
-        MovePlayerAction.OnUnitMovedToTile -= CompleteMovementActionTutorial;
-        MeleePlayerAction.OnUsedMeleeAction -= CompleteMeleeActionTutorial;
-        AOESpellPlayerAction.OnUsedSpell -= CompleteSpellActionTutorial;
-        AOESpellPlayerAction.OnUsedSpell -= UpsetTomodachick;
-        MeleePlayerAction.OnUsedMagnet -= CompleteMagnetTutorial;
-        TrapPlayerAction.OnTrapPlaced -= CompleteTrapActionTutorial;
-        TrapController.OnTrapAction -= CompleteBattleTutorial;
+        //MovePlayerAction.OnUnitMovedToTile -= CompleteMovementActionTutorial;
+        //MeleePlayerAction.OnUsedMeleeAction -= CompleteMeleeActionTutorial;
+        //AOESpellPlayerAction.OnUsedSpell -= CompleteSpellActionTutorial;
+        //AOESpellPlayerAction.OnUsedSpell -= UpsetTomodachick;
+        //MeleePlayerAction.OnUsedMagnet -= CompleteMagnetTutorial;
+        //TrapPlayerAction.OnTrapPlaced -= CompleteTrapActionTutorial;
+        //TrapController.OnTrapAction -= CompleteBattleTutorial;
     }
 
     private void Start()

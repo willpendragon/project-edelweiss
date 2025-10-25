@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Edelweiss.Core;
-using System.Collections;
 
 public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
@@ -10,6 +9,9 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
     public TileController savedSelectedTile;
     public delegate void UnitMovedToTile(TileController tileController);
     public static event UnitMovedToTile OnUnitMovedToTile;
+
+    public delegate void UnitNegativeStatus(string notification);
+    public static event UnitNegativeStatus OnUnitNegativeStatus;
 
     public void Execute(TileController targetTile)
     {
@@ -19,7 +21,10 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         if (activePlayerUnit.unitOpportunityPoints <= 0)
             return;
         if (UnitHasNegativeStatus(activePlayerUnit) == true)
+        {
+            OnUnitNegativeStatus($"{activePlayerUnit.unitTemplate.unitName} is unable to move");
             return;
+        }
         activePlayerUnit.MoveUnit(targetTile.tileXCoordinate, targetTile.tileYCoordinate, false);
 
         GridManager.Instance.tileSelectionPermitted = true;

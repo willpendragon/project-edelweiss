@@ -29,10 +29,10 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     public delegate void DeselectedSpell();
     public static event DeselectedSpell OnDeselectedSpell;
 
-    public delegate void UsedSpell(string spellName, string casterName);
+    public delegate void UsedSpell(string notification);
     public static event UsedSpell OnUsedSpell;
 
-    public delegate void NotEnoughMana(string message);
+    public delegate void NotEnoughMana(string notification);
     public static event NotEnoughMana OnNotEnoughMana;
 
     public delegate void UsedSingleTargetSpell();
@@ -118,7 +118,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         activePlayerUnit.SpendManaPoints(spell.manaPointsCost);
         UpdateActivePlayerUnitMana(activePlayerUnit);
 
-        OnUsedSpell?.Invoke(spell.spellName, activePlayerUnit.unitTemplate.unitName);
+        OnUsedSpell?.Invoke($"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}");
 
         foreach (var tile in affectedTiles)
         {
@@ -166,12 +166,13 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
         // Used Spell notification appears on the Battle Interface
-        OnUsedSpell(spell.spellName, activePlayerUnit.unitTemplate.unitName);
+        OnUsedSpell($"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}");
+
         if (_criticalHit == true)
         {
             OnSpellCriticalHit();
         }
-        //UnitProfilesController.Instance.UpdateEnemyUnitPanel(spellTarget.gameObject);
+
         PlayVFX(spell.spellVFX, spellTarget.ownedTile, spell.spellVFXOffset);
     }
 
@@ -184,57 +185,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         int damageToApply = baseDamage * (IsCritical(spell) ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100) : 1);
         return damageToApply;
     }
-
-    //private void CastAOESpell(Spell spell)
-    //{
-    //    Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-
-    //    activePlayerUnit.unitOpportunityPoints--;
-    //    activePlayerUnit.SpendManaPoints(spell.manaPointsCost);
-    //    UpdateActivePlayerUnitMana(activePlayerUnit);
-
-    //    if (CheckTargetTileValidity(savedSelectedTile) == false)
-    //        return;
-
-    //    // Used Spell notification appears on the Battle Interface
-    //    OnUsedSpell?.Invoke(spell.spellName, activePlayerUnit.unitTemplate.unitName);
-
-    //    foreach (var tile in GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>().GetMultipleTiles(savedSelectedTile, aoeRange))
-    //    {
-    //        if (tile.detectedUnit == null || tile.detectedUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
-    //        {
-    //            Debug.Log("No Unit found or found Unit has died. Can't apply damage");
-    //        }
-    //        else if (tile.detectedUnit.tag == "Enemy")
-    //        {
-    //            PlayVFX(spell.spellVFX, tile, spell.spellVFXOffset);
-    //            activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
-
-    //            // If the Spell is a Critical Hit, sends an event to display the Battle Callout
-    //            if (IsCritical(spell))
-    //            {
-    //                OnSpellCriticalHit();
-    //            }
-
-    //            //tile.detectedUnit.GetComponent<Unit>().TakeDamage(damageToApply);
-
-    //            DeityEnmityCheck();
-    //        }
-    //    }
-
-    //    PlayVFX(spell.spellVFX, savedSelectedTile, spell.spellVFXOffset);
-    //}
-    //private void CastFormationSpell(Spell spell)
-
-    //{
-    //    if (savedSelectedTile.detectedUnit == null && savedSelectedTile.currentSingleTileCondition == SingleTileCondition.free)
-    //    {
-    //        // Imbue the Tile with Sacred Triad Power.
-    //        savedSelectedTile.tileType = TileType.Triad;
-    //        savedSelectedTile.tileShaderController.AnimateFadeHeight(3, 0.1f, Color.cyan);
-    //        Debug.Log(savedSelectedTile + "imbued with Sacred Triad Power");
-    //    }
-    //}
 
     private bool IsCritical(Spell spell)
     {

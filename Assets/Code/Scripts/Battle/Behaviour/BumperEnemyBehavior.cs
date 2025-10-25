@@ -12,10 +12,10 @@ public class BumperEnemyBehavior : EnemyBehavior
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
 
-    public delegate void BumperEnemyAttack(string attackName, string attackerName);
+    public delegate void BumperEnemyAttack(string notification);
     public static event BumperEnemyAttack OnBumperEnemyAttack;
 
-    public delegate void MovementDisabled(string message);
+    public delegate void MovementDisabled(string notification);
     public static event MovementDisabled OnMovementDisabled;
 
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
@@ -95,10 +95,8 @@ public class BumperEnemyBehavior : EnemyBehavior
         enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>()
             .PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
 
-        OnBumperEnemyAttack?.Invoke("Bump", enemyUnit.unitTemplate.unitName);
+        OnBumperEnemyAttack?.Invoke($"{enemyUnit.unitTemplate.unitName} used Bump");
         OnCheckPlayer?.Invoke();
-
-        Debug.Log($"Enemy attacked {targetPlayerUnit.unitTemplate.unitName} for {finalDamage} damage.");
     }
 
     public void MoveEnemyToPlayerTarget(Unit defenderPlayerUnit, EnemyAgent enemyAttacker)
@@ -130,13 +128,6 @@ public class BumperEnemyBehavior : EnemyBehavior
         }
 
         TileController destinationTile = limitedPath.Last();
-
-        // Commenting out the destination tile abort check temporarily for testing purposes.
-        // if (destinationTile == targetTile)
-        // {
-        //     Debug.LogError("Final destination is still the target player's tile. Aborting movement.");
-        //     return;
-        // }
 
         if (destinationTile == null || destinationTile.currentSingleTileCondition != SingleTileCondition.free || destinationTile.detectedUnit != null)
         {

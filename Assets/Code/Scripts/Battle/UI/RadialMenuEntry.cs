@@ -28,7 +28,7 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public ActionType actionType;
     public int priority;
 
-    public delegate void NoPointsNotification(string message);
+    public delegate void NoPointsNotification(string notification);
     public static event NoPointsNotification OnPointsDepleted;
 
     public void SetLabel(string labelText)

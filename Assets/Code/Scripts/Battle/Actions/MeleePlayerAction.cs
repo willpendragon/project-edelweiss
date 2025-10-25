@@ -13,7 +13,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
     public Vector2Int knockbackDirection;
     public int knockbackStrength = 2;
 
-    public delegate void UsedMeleeAction(string moveName, string attackerName);
+    public delegate void UsedMeleeAction(string notification);
     public static event UsedMeleeAction OnUsedMeleeAction;
 
     public delegate void UsedMagnet();
@@ -45,7 +45,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         activePlayerUnit.unitOpportunityPoints--;
         UpdateActivePlayerUnitProfile(activePlayerUnit);
 
-        OnUsedMeleeAction("Melee Attack", activePlayerUnit.unitTemplate.unitName);
+        OnUsedMeleeAction($"{activePlayerUnit.unitTemplate.unitName} used Melee Attack");
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, defender);
     }
 
@@ -96,7 +96,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
             defender.ownedTile = destinationTile;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
             destinationTile.tileShaderController.EnemyTileFeedback(1, 0.2f, Color.red);
-            OnUsedMeleeAction?.Invoke("Magnet", attacker.unitTemplate.unitName);
+            OnUsedMeleeAction?.Invoke($"{attacker.unitTemplate.unitName} used Magnet");
         }
 
         OnUsedMagnet?.Invoke();

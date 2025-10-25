@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -30,7 +29,7 @@ public class DeityFeedbackController : MonoBehaviour
     {
 
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-        BattleInterface.Instance.SetSpellNameOnNotificationPanel("Prayer", activePlayerUnit.transform.gameObject.GetComponent<Unit>().unitTemplate.unitName);
+        BattleInterface.Instance.SetBattleNotification($"{activePlayerUnit.transform.gameObject.GetComponent<Unit>().unitTemplate.unitName} used Prayer");
 
         float yOffset = 3.5f;
 
@@ -38,32 +37,8 @@ public class DeityFeedbackController : MonoBehaviour
         Vector3 unitPrayingVFXPosition = activePlayerUnit.transform.position + new Vector3(0, yOffset, 0);
 
         GameObject unitPrayingVFX = Instantiate(Resources.Load<GameObject>("UnitPrayingVFX"), unitPrayingVFXPosition, Quaternion.identity);
-        //unitPrayingVFX.GetComponent<Animator>().SetTrigger("unitIsPraying");
         float unitPrayingVFXDestroyCountdown = 1.03f;
         Destroy(unitPrayingVFX, unitPrayingVFXDestroyCountdown);
-
-        //float playerUnitPrayerDuration = 1.5f;
-        //float postExposureReduction = -1.8f;
-
-        //if (!battleLevelVolume.profile.TryGet<ColorAdjustments>(out colorAdjustments))
-        //{
-        //    return;
-        //}
-        //ChangeLevelPostExposure(postExposureReduction, playerUnitPrayerDuration);
-
-
-        //// Spawn Player Spotlight
-        //GameObject unitSpotLightInstance = Instantiate(unitSpotLight, activePlayerUnit.transform);
-
-        //// Activate Prayer VFX
-        //GameObject prayingVFXInstance = Instantiate(prayingVFX, activePlayerUnit.transform);
-
-        ////Destroy Player Spotlight and Prayer VFX Instances
-
-        //Destroy(unitSpotLightInstance, playerUnitPrayerDuration);
-        //Destroy(prayingVFXInstance, playerUnitPrayerDuration);
-
-        //StartCoroutine(RestoreLighting(playerUnitPrayerDuration));
     }
 
     private void ChangeLevelPostExposure(float postExposureReduction, float playerUnitPrayerDuration)
@@ -88,8 +63,6 @@ public class DeityFeedbackController : MonoBehaviour
 
         GameObject prayingDeityVFXInstance = Instantiate(prayingVFX, linkedDeity.transform);
         Destroy(prayingDeityVFXInstance, timeToRestore);
-
-
     }
 }
 

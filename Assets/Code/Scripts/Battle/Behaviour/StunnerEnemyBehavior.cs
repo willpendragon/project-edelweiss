@@ -12,7 +12,7 @@ public class StunnerEnemyBehavior : EnemyBehavior
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
 
-    public delegate void StunnerEnemyAttack(string attackName, string attackerName);
+    public delegate void StunnerEnemyAttack(string notification);
     public static event StunnerEnemyAttack OnStunnerEnemyAttack;
 
     [SerializeField] private GameObject attackVFXAnimator;
@@ -21,34 +21,30 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
-        if (enemyAgent.gameObject.tag != "DeadEnemy" && enemyAgent.gameObject.GetComponentInParent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+        Unit enemyUnit = enemyAgent.gameObject.GetComponentInParent<Unit>();
+        Unit targetUnit = SelectTargetUnit();
+
+        if (enemyAgent.gameObject.CompareTag("DeadEnemy") && enemyUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
-            Unit enemyUnit = enemyAgent.gameObject.GetComponentInParent<Unit>();
-            Unit targetUnit = SelectTargetUnit();
-            if (targetUnit != null)
-            {
-                if (CheckDistanceFromTarget(targetUnit, enemyUnit) && EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
-                {
-                    StunAbility(targetUnit);
-                    Debug.Log("Stun Ability Chance Roll Successful");
-                }
-                else
-                {
-                    OnStunnerEnemyAttack("Failed Stun", "Godling");
-                }
-            }
-            else
-            {
-                Debug.Log("No valid target available. Passing turn.");
-                // Optionally trigger an event here if other systems need to respond to a turn pass
-                OnCheckPlayer?.Invoke(); // Assuming OnCheckPlayer might be repurposed for notifying pass turn
-            }
-            opportunity -= 1;
+            OnCheckPlayer?.Invoke();
+            return;
+        }
+        if (targetUnit == null)
+        {
+            OnCheckPlayer?.Invoke();
+            return;
+        }
+
+        // Stun Ability triggering formula.
+        if (CheckDistanceFromTarget(targetUnit, enemyUnit) && EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
+        {
+            StunAbility(targetUnit, enemyUnit);
         }
         else
         {
-            Debug.Log("Enemy Unit is dead and can't attack anymore");
+            OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} failed the attack");
         }
+        opportunity -= 1;
     }
 
     bool CheckDistanceFromTarget(Unit targetUnit, Unit enemyUnit)
@@ -67,7 +63,6 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
     public int EnemyMoveRoll()
     {
-        Debug.Log("Rolling Enemy move");
         int enemyMoveRoll = localRandom.Next(minEnemyMoveRollRange, maxEnemyMoveRollRange);
         return enemyMoveRoll;
     }
@@ -85,15 +80,12 @@ public class StunnerEnemyBehavior : EnemyBehavior
         return unitWithHighestHP;
     }
 
-    public void StunAbility(Unit targetUnit)
+    public void StunAbility(Unit targetUnit, Unit enemyUnit)
     {
-        OnStunnerEnemyAttack("Stun", "Godling");
-
+        OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} used Stun attack");
         targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
         targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
         PlayStunFeedback(targetUnit);
-
-        Debug.Log("Stunner Enemy Behaviour");
     }
 
     private void PlayStunFeedback(Unit targetUnit)

@@ -17,7 +17,6 @@ public class BattleInterface : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] Image moveNamePanel;
     [SerializeField] RectTransform battlefieldNotificationsPanel;
-    //[SerializeField] public GameObject movesContainer;
     [SerializeField] CanvasGroup fadePanel;
     public BattleMomentsScreenHelper battleMomentsScreenHelper;
     [SerializeField] RectTransform summonedUnitsInfoContainer;
@@ -47,69 +46,74 @@ public class BattleInterface : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    private void SubscribeBattleNotifications()
+    {
+        RadialMenuEntry.OnPointsDepleted += SetBattleNotification;
+        MovePlayerAction.OnUnitNegativeStatus += SetBattleNotification;
+        AOESpellPlayerAction.OnUsedSpell += SetBattleNotification;
+        AOESpellPlayerAction.OnNotEnoughMana += SetBattleNotification;
+        MeleePlayerAction.OnUsedMeleeAction += SetBattleNotification;
+        BumperEnemyBehavior.OnBumperEnemyAttack += SetBattleNotification;
+        BumperEnemyBehavior.OnMovementDisabled += SetBattleNotification;
+        StunnerEnemyBehavior.OnStunnerEnemyAttack += SetBattleNotification;
+        DeityBehavior.OnUsedAttack += SetBattleNotification;
+    }
+
+    private void UnsubscribeBattleNotifications()
+    {
+        RadialMenuEntry.OnPointsDepleted -= SetBattleNotification;
+        MovePlayerAction.OnUnitNegativeStatus -= SetBattleNotification;
+        AOESpellPlayerAction.OnUsedSpell -= SetBattleNotification;
+        AOESpellPlayerAction.OnNotEnoughMana -= SetBattleNotification;
+        MeleePlayerAction.OnUsedMeleeAction -= SetBattleNotification;
+        BumperEnemyBehavior.OnBumperEnemyAttack -= SetBattleNotification;
+        BumperEnemyBehavior.OnMovementDisabled -= SetBattleNotification;
+        StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetBattleNotification;
+        DeityBehavior.OnUsedAttack -= SetBattleNotification;
+    }
+
     private void OnEnable()
     {
         Deity.OnDeityNotificationUpdate += SetDeityNotification;
-        RadialMenuEntry.OnPointsDepleted += SetEnergyNotification;
         PlaceCrystalPlayerAction.OnCaptureAttempt += SetDeityNotification;
-        AOESpellPlayerAction.OnUsedSpell += SetSpellNameOnNotificationPanel;
-        AOESpellPlayerAction.OnNotEnoughMana += SetEnergyNotification;
-        MeleePlayerAction.OnUsedMeleeAction += SetMeleeAttackOnNotificationPanel;
-        BumperEnemyBehavior.OnBumperEnemyAttack += SetMeleeAttackOnNotificationPanel;
-        BumperEnemyBehavior.OnMovementDisabled += SetMovementDisableNotification;
-        StunnerEnemyBehavior.OnStunnerEnemyAttack += SetMeleeAttackOnNotificationPanel;
-        //MoonPhaseController.OnMoonPhaseSwitch += SetMoonNotification;
-        //MoonPhaseController.OnMoonPhaseBuffActivation += SetMoonNotification;
-        //MirrorController.OnMirrorAttack += SetMirrorNotification;
-        //BossSimildeBehaviour.OnBossEnemyAttack += SetMeleeAttackOnNotificationPanel;
         SelectUnitPlayerAction.OnFaithlessCharacter += SetFaithlessCharacterNotification;
+        SubscribeBattleNotifications();
     }
     private void OnDisable()
     {
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
-        RadialMenuEntry.OnPointsDepleted -= SetEnergyNotification;
         PlaceCrystalPlayerAction.OnCaptureAttempt -= SetDeityNotification;
-        AOESpellPlayerAction.OnUsedSpell -= SetSpellNameOnNotificationPanel;
-        AOESpellPlayerAction.OnNotEnoughMana -= SetEnergyNotification;
-        MeleePlayerAction.OnUsedMeleeAction -= SetMeleeAttackOnNotificationPanel;
-        BumperEnemyBehavior.OnBumperEnemyAttack -= SetMeleeAttackOnNotificationPanel;
-        BumperEnemyBehavior.OnMovementDisabled -= SetMovementDisableNotification;
-        StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetMeleeAttackOnNotificationPanel;
-        //MoonPhaseController.OnMoonPhaseSwitch -= SetMoonNotification;
-        //MoonPhaseController.OnMoonPhaseBuffActivation -= SetMoonNotification;
-        //MirrorController.OnMirrorAttack -= SetMirrorNotification;
-        //BossSimildeBehaviour.OnBossEnemyAttack -= SetMeleeAttackOnNotificationPanel;
         SelectUnitPlayerAction.OnFaithlessCharacter -= SetFaithlessCharacterNotification;
-    }
-    private void Start()
-    {
-        FadeIn();
-    }
-    public void FadeIn()
-    {
-        float duration = 0.5f;
-        if (fadePanel != null)
-        {
-            // Animate the CanvasGroup alpha to 0 (fully transparent)
-            fadePanel.DOFade(0, duration);
-
-            fadePanel.interactable = false;
-            fadePanel.blocksRaycasts = false;
-        }
+        UnsubscribeBattleNotifications();
     }
 
-    public void SetSpellNameOnNotificationPanel(string spellName, string casterName)
+    // Add Fade In using FadeCanvas
+
+    //private void Start()
+    //{
+    //    FadeIn();
+    //}
+    //public void FadeIn()
+    //{
+    //    float duration = 0.5f;
+    //    if (fadePanel != null)
+    //    {
+    //        fadePanel.DOFade(0, duration);
+
+    //        fadePanel.interactable = false;
+    //        fadePanel.blocksRaycasts = false;
+    //    }
+    //}
+
+    public void SetBattleNotification(string actionNotification)
     {
-        ShowNotification($"{casterName} used {spellName}");
+        ShowNotification(actionNotification);
     }
 
     public void SetSummonEffectNameOnNotificationPanel(string summonName, string unitName)
     {
         ShowNotification($"{summonName} blessed {unitName}");
-    }
-    public void SetMeleeAttackOnNotificationPanel(string meleeAttack, string attackerName)
-    {
-        ShowNotification($"{attackerName} used {meleeAttack}");
     }
     public void SetDeityNotification(string deityNotification)
     {
@@ -119,25 +123,11 @@ public class BattleInterface : MonoBehaviour
             .AppendCallback(() => battlefieldNotificationsPanel.transform.localScale = Vector3.one);
     }
 
-    private void SetMovementDisableNotification(string message)
-    {
-        ShowNotification(message);
-    }
-
-    public void SetEnergyNotification(string energyNotification)
-    {
-        ShowNotification(energyNotification);
-    }
-
     public void SetFaithlessCharacterNotification(string faithlessCharacterNotification)
     {
         ShowNotification(faithlessCharacterNotification);
     }
-    IEnumerator ResetBattleFieldTextNotification()
-    {
-        yield return new WaitForSeconds(battlefieldNotificationsPanelDurationTime);
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(0, 0, 0);
-    }
+
     public void CreateUISummonInfoPanel(GameObject deityGameObject)
     {
         float deityPrayerBuffThreshold = deityGameObject.GetComponent<Deity>().deityPrayerBuff.deityPrayerBuffThreshold;
@@ -162,13 +152,9 @@ public class BattleInterface : MonoBehaviour
         battlefieldTextNotifications.text = message;
         StartCoroutine(ResetBattleFieldTextNotification());
     }
-
-    //public void SetMoonNotification(string moonNotification)
-    //{
-    //    ShowNotification(moonNotification);
-    //}
-    //public void SetMirrorNotification(string mirrorNotification)
-    //{
-    //    ShowNotification(mirrorNotification);
-    //}
+    IEnumerator ResetBattleFieldTextNotification()
+    {
+        yield return new WaitForSeconds(battlefieldNotificationsPanelDurationTime);
+        battlefieldNotificationsPanel.transform.localScale = new Vector3(0, 0, 0);
+    }
 }
