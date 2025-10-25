@@ -15,6 +15,9 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public void Execute(TileController targetTile)
     {
+        if (targetTile.tileCurrentFieldPrize != null)
+            return;
+
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         if (activePlayerUnit == null) return;
 
