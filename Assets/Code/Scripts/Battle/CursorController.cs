@@ -221,10 +221,6 @@ public class CursorController : MonoBehaviour
             _spellButtonPrefabInstance = CreateActionButton(
                 RadialMenuEntry.ActionType.Spell, _spellIcon, "Spell", 5);
 
-        //// Pray
-        //if (_tileController.currentSingleTileCondition == SingleTileCondition.occupiedByDeity)
-        //    CreateActionButton(RadialMenuEntry.ActionType.Pray, _prayIcon, "Pray");
-
         _isRadialMenuOpen = true;
         PopulateButtonsList();
     }
@@ -334,13 +330,6 @@ public class CursorController : MonoBehaviour
 
         if (_targetedUnit == null)
             return;
-
-        // Updating the Enemy Slider value
-        //var slider = _targetedUnit.transform.GetComponentInChildren<Slider>();
-        //if (slider != null)
-        //{
-        //    slider.value = _targetedUnit.unitHealthPoints;
-        //}
     }
 
     public void UpdateTilesVisualizer(TileController targetTile)

@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using static SelectUnitPlayerAction;
 using Edelweiss.Core;
 
 public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction<TileController>
@@ -140,8 +139,6 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction<TileControlle
             GridManager.Instance.AOESelectionPermitted = true;
             Debug.Log("Global Deselection Executed");
         }
-
-        //selectedUnit.GetComponent<Unit>().ownedTile.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         GameObject.FindGameObjectWithTag(reachableTilesVisualizer).GetComponent<ReachableTilesVisualizer>().ClearReachableTiles(0, 0.2f, Color.white);
     }
     public void Execute(TileController targetTile)
@@ -178,10 +175,6 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction<TileControlle
             newCurrentlySelectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
             detectedUnit.GetComponent<Unit>().unitProfilePanel = newCurrentlySelectedUnitPanel;
 
-            // The newly spawned Unit Profile Panel becomes the Detected Unit Profile Panel.
-            //OnClickedTileWithUnit(detectedUnit);
-            Debug.Log("Clicked on a Tile with Unit standing on it");
-
             // If the Unit is a Player Unit, it becomes the Active Player Unit in the GridManager.
             GridManager.Instance.currentPlayerUnit = detectedUnit;
             GridManager.Instance.tileSelectionPermitted = true;
@@ -195,27 +188,27 @@ public class SelectUnitPlayerAction : MonoBehaviour, IPlayerAction<TileControlle
 
     private void GenerateActionMenu(GameObject detectedUnit)
     {
-        // Gameplay and Spells Buttons generation.
-        GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
-        movesContainer.transform.localScale = new Vector3(0.9521077f, 0.9521077f, 0.9521077f);
+        //// Gameplay and Spells Buttons generation.
+        //GameObject movesContainer = GameObject.FindGameObjectWithTag("MovesContainer");
+        //movesContainer.transform.localScale = new Vector3(0.9521077f, 0.9521077f, 0.9521077f);
 
         detectedUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitSelected;
-        detectedUnit.GetComponent<UnitSelectionController>().GenerateWaitButton();
+        //detectedUnit.GetComponent<UnitSelectionController>().GenerateWaitButton();
         //detectedUnit.GetComponent<MoveUIController>().AddMoveButton();
         //detectedUnit.GetComponent<MeleeUIController>().AddMeleeButton();
         //detectedUnit.GetComponent<SpellUIController>().PopulateCharacterSpellsMenu(detectedUnit);
         //detectedUnit.GetComponent<TrapTileUIController>().AddTrapButton();
         //detectedUnit.GetComponent<FlightUIController>().AddRunButton();
 
-        if (detectedUnit.GetComponent<Unit>().linkedDeity != null)
-        {
-            //detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
-        }
+        //if (detectedUnit.GetComponent<Unit>().linkedDeity != null)
+        //{
+        //    //detectedUnit.GetComponent<SummoningUIController>().AddSummonButton();
+        //}
 
-        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
-        {
-            //detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
-        }
+        //if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
+        //{
+        //    //detectedUnit.GetComponent<CapsuleCrystalUIController>().AddPlaceCaptureCrystalButton();
+        //}
     }
 
     public void ResetCharacterSpellsMenu()
