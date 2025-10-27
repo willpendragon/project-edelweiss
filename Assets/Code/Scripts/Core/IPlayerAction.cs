@@ -7,10 +7,6 @@ namespace Edelweiss.Core
 {
     public interface IPlayerAction<T>
     {
-        //public void Select(TileController selectedTile);
         public void Execute(T target);
-        //public void Deselect();
-
     }
-
 }
