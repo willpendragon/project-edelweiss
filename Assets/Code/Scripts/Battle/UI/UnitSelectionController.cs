@@ -114,7 +114,7 @@ public class UnitSelectionController : MonoBehaviour
                 if (sprite != null)
                 {
                     sprite.material.SetFloat("_OutlineThickness", 1f);
-                    tile.tileShaderController.EnemyTileFeedback(1f, 0.2f, Color.red);
+                    tile.tileShaderController.EnemyTileFeedback();
                 }
             }
         }
@@ -133,7 +133,7 @@ public class UnitSelectionController : MonoBehaviour
                 if (sprite != null)
                 {
                     sprite.material.SetFloat("_OutlineThickness", 0f);
-                    tile.tileShaderController.ResetEnemyTileFeedback(0f, 0.2f, Color.white);
+                    tile.tileShaderController.ResetEnemyTileFeedback();
                 }
             }
         }
@@ -147,8 +147,7 @@ public class UnitSelectionController : MonoBehaviour
             return;
 
         // Reset tile color
-        _activePlayerUnit.ownedTile.tileShaderController.SetTileToMoveRangeColor();
-        _activePlayerUnit.ownedTile.tileShaderController.ResetTileGlowIntensity();
+        GridManager.Instance.ClearTileColors();
 
         foreach (var playerUnit in _playerUnits)
         {
@@ -170,7 +169,7 @@ public class UnitSelectionController : MonoBehaviour
         Debug.Log($"{playerUnit.unitTemplate.unitName} is now the {GameTags.ActivePlayerUnit}");
 
         // Destroy Enemy Info Panels
-        var enemyPanels = GameObject.FindGameObjectsWithTag("EnemyUnitProfile");
+        var enemyPanels = GameObject.FindGameObjectsWithTag(GameTags.EnemyUnitProfile);
 
         foreach (var enemyPanel in enemyPanels)
         {
@@ -255,7 +254,7 @@ public class UnitSelectionController : MonoBehaviour
         }
         OnUnitTurnEnded?.Invoke();
         // Hides the tiles where the Active Player Unit could move to.
-        tileVisualizer.ClearReachableTiles(0, 0.2f, Color.white);
+        //tileVisualizer.ClearReachableTiles();
     }
 
     private void DestroySelectionIcons()

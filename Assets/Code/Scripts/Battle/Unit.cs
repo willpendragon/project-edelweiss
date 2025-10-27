@@ -296,9 +296,10 @@ public class Unit : MonoBehaviour
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
             CheckEnemyDefeat();
 
-            // Reset TileController color
-            ownedTile.tileShaderController.ResetEnemyTileFeedback(0, 0, Color.white);
-
+            // Reset TileController color to Movement Range.
+            // This assumes that a tile occupied by dead enemy is always in the Movement Range (vertical slice only).
+            ownedTile.tileShaderController.SetTileToMoveRangeColor();
+            ownedTile.tileShaderController.SetTileGlowIntensity(1f);
             OnCheckGameOver();
         }
     }

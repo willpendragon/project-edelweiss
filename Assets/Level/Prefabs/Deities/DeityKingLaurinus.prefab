@@ -288,7 +288,7 @@ MonoBehaviour:
   deitySpecialAttackPower: 25
   summoningPrice: 50
   deityPrayerPower: 0
-  _maxEnmity: 10
+  _maxEnmity: 3
   deityAttackNotification: {fileID: 0}
   battleInterface: {fileID: 0}
   deityAttackVFX: {fileID: 7005278960792100175, guid: a718b9300d9d5e645918850cfa72fec1, type: 3}
@@ -297,6 +297,7 @@ MonoBehaviour:
   deityHealthBar: {fileID: 9084105364506028735}
   enmityTracker: {fileID: 296715848075637836}
   deityCry: {fileID: 3413119085260301697}
+  currentDeityStatus: 0
   _enmityBar: {fileID: 1586756935564664544}
 --- !u!114 &1219321713655519419
 MonoBehaviour:

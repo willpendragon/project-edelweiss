@@ -1,40 +1,37 @@
+using ProjectEdelweiss.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ReachableTilesVisualizer : MonoBehaviour
 {
     public List<TileController> reachableTiles = new List<TileController>(); // Track reachable tiles
-    public Color highlightColor = Color.green; // Color for highlighting tiles
-    public Color defaultTileColor = Color.blue; // Default color for tiles
-
-    public const string activePlayerUnitTag = "ActivePlayerUnit";
-
-    private Unit activePlayerUnit;
+    private Unit _activePlayerUnit;
 
     // Function to find and highlight reachable tiles
     public void ShowReachableTiles()
     {
         // Get the active player unit
-        activePlayerUnit = GameObject.FindGameObjectWithTag(activePlayerUnitTag).GetComponent<Unit>();
+        _activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit).GetComponent<Unit>();
 
-        if (activePlayerUnit == null)
+        if (_activePlayerUnit == null)
         {
             Debug.LogError("No active player unit found!");
             return;
         }
 
         // Clear any previous tile highlights
-        ClearReachableTiles(0, 0.2f, Color.white);
+        ClearReachableTiles();
 
         // Get all reachable tiles within movement range
-        reachableTiles = GetReachableTiles(activePlayerUnit);
+        reachableTiles = GetReachableTiles(_activePlayerUnit);
 
         // Highlight each reachable tile
         foreach (TileController tile in reachableTiles)
         {
             Debug.Log($"Highlighting tile at: {tile.tileXCoordinate}, {tile.tileYCoordinate}");
             // Change the color of the tile directly for testing
-            tile.tileShaderController.AnimateFadeHeight(1f, 0.2f, Color.cyan);
+            tile.tileShaderController.SetTileToMoveRangeColor();
+            tile.tileShaderController.SetTileGlowIntensity(1f);
         }
         Debug.Log($"Reachable tiles highlighted: {reachableTiles.Count}");
 
@@ -131,13 +128,13 @@ public class ReachableTilesVisualizer : MonoBehaviour
 
     public void ShowTargetableTiles(Unit unit, int range, Color highlightColor)
     {
-        ClearReachableTiles(0, 0.2f, Color.white);
+        ClearReachableTiles();
 
         reachableTiles = GetTargetableTiles(unit, range);
 
         foreach (TileController tile in reachableTiles)
         {
-            tile.tileShaderController.AnimateFadeHeight(1f, 0.5f, highlightColor);
+            tile.tileShaderController.SetTileGlowIntensity(1f);
         }
 
         Debug.Log($"Targetable tiles highlighted: {reachableTiles.Count}");
@@ -145,12 +142,13 @@ public class ReachableTilesVisualizer : MonoBehaviour
 
 
     // Clear the visual effect from previously highlighted tiles
-    public void ClearReachableTiles(float targetFadeHeight, float animationDuration, Color glowColor)
+    public void ClearReachableTiles()
     {
+        GetReachableTiles(_activePlayerUnit);
         foreach (TileController tile in reachableTiles)
         {
-            // Reset the tile color for testing
-            tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
+            // Reset the tile color
+            tile.tileShaderController.SetTileGlowIntensity(0f);
         }
         reachableTiles.Clear(); // Clear the list
         Debug.Log("Cleared previous tile highlights.");

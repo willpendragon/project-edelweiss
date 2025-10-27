@@ -106,8 +106,7 @@ public class SummonedUnitInfoPanelHelper : MonoBehaviour
     {
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
-            tile.tileShaderController.AnimateFadeHeight(0, 0.2f, Color.white);
-            Debug.Log("Reset Tile Glow");
+            tile.tileShaderController.SetTileGlowIntensity(0f);
             if (tile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity)
             {
                 tile.currentSingleTileCondition = SingleTileCondition.free;

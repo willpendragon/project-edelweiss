@@ -29,7 +29,6 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             targetTile.currentSingleTileCondition != SingleTileCondition.free ||
             trapController.currentTrapActivationStatus == TrapController.TrapActivationStatus.active)
         {
-            targetTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
             return;
         }
 
