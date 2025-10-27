@@ -29,7 +29,7 @@ public class Deity : MonoBehaviour
     public float deitySpecialAttackPower;
     public float summoningPrice = 50;
     public float deityPrayerPower;
-    [SerializeField] private float _maxEnmity = 10;
+    public float _maxEnmity = 10;
     //public float deityPrayerPowerThreshold;
 
     [Header("Visuals")]
