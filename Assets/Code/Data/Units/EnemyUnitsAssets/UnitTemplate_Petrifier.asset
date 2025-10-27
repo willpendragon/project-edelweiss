@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9bf9d7c58a60514f82f4e8516356b1b, type: 3}
-  m_Name: UnitTemplate_StunnerGodling
+  m_Name: UnitTemplate_Petrifier
   m_EditorClassIdentifier: 
   unitName: Petrifier
   unitHealthPoints: 25
@@ -28,7 +28,7 @@ MonoBehaviour:
   coinsRewardRange: {x: 10, y: 15}
   unitExperiencePointsReward: 300
   unitPortrait: {fileID: 538467941, guid: c01ed040a0c74b84ab40743d1bdc6763, type: 3}
-  unitMiniPortrait: {fileID: 0}
+  unitMiniPortrait: {fileID: 538467941, guid: c01ed040a0c74b84ab40743d1bdc6763, type: 3}
   unitCalloutPortrait: {fileID: 0}
   unitCriticalHitVoice: {fileID: 0}
   enemyPersonality: 0

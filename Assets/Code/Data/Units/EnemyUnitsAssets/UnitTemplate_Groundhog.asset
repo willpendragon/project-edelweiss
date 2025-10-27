@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9bf9d7c58a60514f82f4e8516356b1b, type: 3}
-  m_Name: UnitTemplate_BumperGodling
+  m_Name: UnitTemplate_Groundhog
   m_EditorClassIdentifier: 
-  unitName: Godling
-  unitHealthPoints: 30
-  unitMaxHealthPoints: 30
+  unitName: Groundhog
+  unitHealthPoints: 60
+  unitMaxHealthPoints: 60
   unitManaPoints: 0
   unitMaxManaPoints: 0
-  unitOpportunityPoints: 2
+  unitOpportunityPoints: 3
   unitFaithPoints: 0
-  unitMovemementLimit: 3
-  unitShieldPoints: 5
-  meleeAttackPower: 20
+  unitMovemementLimit: 10
+  unitShieldPoints: 10
+  meleeAttackPower: 35
   unitMagicPower: 0
-  unitMeleeAttackBaseDamage: 2
+  unitMeleeAttackBaseDamage: 5
   spellsList: []
-  coinsRewardRange: {x: 5, y: 10}
+  coinsRewardRange: {x: 15, y: 25}
   unitExperiencePointsReward: 300
-  unitPortrait: {fileID: 783314933, guid: c01ed040a0c74b84ab40743d1bdc6763, type: 3}
-  unitMiniPortrait: {fileID: 0}
+  unitPortrait: {fileID: -143611127, guid: c01ed040a0c74b84ab40743d1bdc6763, type: 3}
+  unitMiniPortrait: {fileID: -143611127, guid: c01ed040a0c74b84ab40743d1bdc6763, type: 3}
   unitCalloutPortrait: {fileID: 0}
   unitCriticalHitVoice: {fileID: 0}
   enemyPersonality: 0
