@@ -229,19 +229,19 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public void Deselect()
     {
-        selectionLimiter++;
-        GridManager.Instance.AOESelectionPermitted = true;
-        if (_savedSelectedTile == null)
-            return;
-        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-        foreach (var tile in gridMovementController.GetMultipleTiles(_savedSelectedTile, aoeRange))
-        {
-            tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-            tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
-            Debug.Log("Deselecting AOE Range");
-        }
-        OnDeselectedSpell();
-        //UnitProfilesController.Instance.DestroyEnemyUnitPanel();
+        //selectionLimiter++;
+        //GridManager.Instance.AOESelectionPermitted = true;
+        //if (_savedSelectedTile == null)
+        //    return;
+        //GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
+        //foreach (var tile in gridMovementController.GetMultipleTiles(_savedSelectedTile, aoeRange))
+        //{
+        //    tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
+        //    tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
+        //    Debug.Log("Deselecting AOE Range");
+        //}
+        //OnDeselectedSpell();
+        ////UnitProfilesController.Instance.DestroyEnemyUnitPanel();
     }
     public void DeityEnmityCheck(SpellAlignment spellAlignment)
     {
