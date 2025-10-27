@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,10 +10,8 @@ public class MapNodeInfoPanelController : MonoBehaviour, IPointerClickHandler
     [SerializeField] TextMeshProUGUI poolSize;
     [SerializeField] GameObject mapNodeInfoPanelCanvas;
     [SerializeField] GameObject[] enemyPoolPredictionsGameObject;
-    [SerializeField] Sprite enemyIcon1;
-    [SerializeField] Sprite enemyIcon2;
-    [SerializeField] Sprite enemyIcon3;
     [SerializeField] Sprite defaultIcon;
+    [SerializeField] List<UnitTemplate> _enemyUnits; // Remember to add all of the possible Enemy SOs in the Inspector.
     [SerializeField] MapNodeController _mapNodeController;
 
     private void Start()
@@ -48,11 +47,13 @@ public class MapNodeInfoPanelController : MonoBehaviour, IPointerClickHandler
         switch (enemyId)
         {
             case "dummy1":
-                return enemyIcon1;
+                return _enemyUnits[0].unitPortrait;
             case "dummy2":
-                return enemyIcon2;
+                return _enemyUnits[1].unitPortrait;
             case "dummy3":
-                return enemyIcon3;
+                return _enemyUnits[2].unitPortrait;
+            case "Wildermann":
+                return _enemyUnits[3].unitPortrait;
             default:
                 return defaultIcon;
         }
