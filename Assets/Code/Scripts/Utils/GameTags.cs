@@ -16,5 +16,8 @@ namespace ProjectEdelweiss.Utils
         public const string CurrentlySelectedUnit = "CurrentlySelectedUnit";
         public const string BattleTutorialScene = "battle_tutorial";
         public const string GAME_STATS_MANAGER = "GameStatsManager";
+        public const string DEITY_SPAWNER = "DeitySpawner";
+        public const string BATTLE_MANAGER = "BattleManager";
+        public const string END_TURN_BUTTON = "EndTurnButton";
     }
 }
