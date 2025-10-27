@@ -54,6 +54,7 @@ public class BattleInterface : MonoBehaviour
         AOESpellPlayerAction.OnUsedSpell += SetBattleNotification;
         AOESpellPlayerAction.OnNotEnoughMana += SetBattleNotification;
         MeleePlayerAction.OnUsedMeleeAction += SetBattleNotification;
+        PlaceCrystalPlayerAction.OnPlaceCrystal += SetBattleNotification;
         BumperEnemyBehavior.OnBumperEnemyAttack += SetBattleNotification;
         BumperEnemyBehavior.OnMovementDisabled += SetBattleNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetBattleNotification;
@@ -66,6 +67,7 @@ public class BattleInterface : MonoBehaviour
         AOESpellPlayerAction.OnUsedSpell -= SetBattleNotification;
         AOESpellPlayerAction.OnNotEnoughMana -= SetBattleNotification;
         MeleePlayerAction.OnUsedMeleeAction -= SetBattleNotification;
+        PlaceCrystalPlayerAction.OnPlaceCrystal -= SetBattleNotification;
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetBattleNotification;
         BumperEnemyBehavior.OnMovementDisabled -= SetBattleNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetBattleNotification;

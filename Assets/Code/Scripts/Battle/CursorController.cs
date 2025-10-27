@@ -248,7 +248,6 @@ public class CursorController : MonoBehaviour
         _actionButtons.Clear();
         _isRadialMenuOpen = false;
         radialMenu.GetComponent<RadialMenu>().ClearButtonsList();
-
     }
 
     public void DisplayHelp()
@@ -339,7 +338,7 @@ public class CursorController : MonoBehaviour
         if (skipDestroyPanels == false)
             DestroyEnemyInfoPanels();
 
-        if (_targetedUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+        if (_targetedUnit?.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             // Destroy Enemy Info Panels.
             DestroyEnemyInfoPanels();
