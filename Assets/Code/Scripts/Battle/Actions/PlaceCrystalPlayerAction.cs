@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using Edelweiss.Core;
+using ProjectEdelweiss.Utils;
 
 public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
@@ -16,9 +17,10 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
     public static event BattleEndCapturedDeity OnBattleEndCapturedDeity;
     public delegate void CaptureAttempt(string captureResult);
     public static event CaptureAttempt OnCaptureAttempt;
+    public delegate void PlaceCrystal(string notification);
+    public static event PlaceCrystal OnPlaceCrystal;
 
     private const string FAILED_CAPTURE_MESSAGE = "The binding attempt failed.";
-    private const string ACTIVE_PLAYER_UNIT = "ActivePlayerUnit";
 
     public void Select(TileController selectedTile)
     {
@@ -26,8 +28,16 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
     public void Execute(TileController targetTile)
     {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag(ACTIVE_PLAYER_UNIT).GetComponent<Unit>();
-        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
+        // Prevents to place a Crystal outside a Deity Battle.
+        var battleTypeController = FindAnyObjectByType<BattleTypeController>();
+        if (battleTypeController.currentBattleType != BattleTypeController.BattleType.BattleWithDeity)
+        {
+            OnPlaceCrystal($"No need to use this now...");
+            return;
+        }
+
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit).GetComponent<Unit>();
+        GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(GameTags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
 
         if (activePlayerUnit == null || gameStatsManager == null) return;
 
@@ -44,26 +54,16 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
         GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, targetTile.transform.position, Quaternion.identity);
 
-        GameObject[] playerUISpellButtons = GameObject.FindGameObjectsWithTag("PlayerUISpellButton");
-        foreach (var playerUISpellButton in playerUISpellButtons)
-        {
-            CapsuleCrystalCounterHandler handler = playerUISpellButton.GetComponent<CapsuleCrystalCounterHandler>();
-            if (handler != null)
-            {
-                handler.UpdateCapsuleCounterText();
-            }
-        }
-
         AnimateCrystal(captureCrystalInstance, targetTile.transform.position);
 
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlayPlaceCrystalSFX.Invoke();
 
         if (AttemptCapture()) // Attempt capture is successful
         {
-            Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
+            Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag(GameTags.DEITY_SPAWNER).GetComponent<DeitySpawner>().currentUnboundDeity;
             OnBattleEndCapturedDeity?.Invoke("Deity was Captured");
 
-            TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
+            TurnController turnController = GameObject.FindGameObjectWithTag(GameTags.BATTLE_MANAGER).GetComponent<TurnController>();
             BattleFlowController.Instance.ResetTags();
             BattleManager.Instance.UnlockNextLevel();
             gameStatsManager.SaveCaptureCrystalsCount();
@@ -81,7 +81,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
     private void AnimateCrystal(GameObject captureCrystalInstance, Vector3 currentSavedTilePosition)
     {
-        Deity deity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
+        Deity deity = GameObject.FindGameObjectWithTag(GameTags.DEITY_SPAWNER).GetComponent<DeitySpawner>().currentUnboundDeity;
 
         Vector3 startPos = captureCrystalInstance.transform.position;
         Vector3 endPos = deity.transform.position;
@@ -124,7 +124,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
     private bool AttemptCapture()
     {
-        Deity deity = GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().currentUnboundDeity;
+        Deity deity = GameObject.FindGameObjectWithTag(GameTags.DEITY_SPAWNER).GetComponent<DeitySpawner>().currentUnboundDeity;
         if (deity == null)
         {
             return false;
