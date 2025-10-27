@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -25,6 +26,7 @@ public class GridManager : MonoBehaviour
     public bool AOESelectionPermitted = true;
 
     public TileController[] gridTileControllers;
+    public List<TileShaderController> _tileShaderControllers;
 
     private Dictionary<PositionKey, TileController> gridMapDictionary = new Dictionary<PositionKey, TileController>();
     public GridMovementController gridMovementController;
@@ -47,25 +49,26 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] UnitSetupController unitSetupController;
 
-    private void Update()
-    {
-        // Test for Multi-Map Dungeon Setup.
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            GenerateGridMapFromData(puzzleMapData);
-            unitSetupController.SetUnitsInitialPositionOnGrid();
-            gridTileControllers = GameObject.FindObjectsOfType<TileController>();
-            RefreshGridTileControllers();
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            GenerateGridMapFromData(currentMapData);
-            unitSetupController.SetUnitsInitialPositionOnGrid();
-            gridTileControllers = GameObject.FindObjectsOfType<TileController>();
-            RefreshGridTileControllers();
-        }
+    // Test for Multi-Map Dungeon Setup.
 
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.E))
+    //    {
+    //        GenerateGridMapFromData(puzzleMapData);
+    //        unitSetupController.SetUnitsInitialPositionOnGrid();
+    //        gridTileControllers = GameObject.FindObjectsOfType<TileController>();
+    //        RefreshGridTileControllers();
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.S))
+    //    {
+    //        GenerateGridMapFromData(currentMapData);
+    //        unitSetupController.SetUnitsInitialPositionOnGrid();
+    //        gridTileControllers = GameObject.FindObjectsOfType<TileController>();
+    //        RefreshGridTileControllers();
+    //    }
+
+    //}
     private void Awake()
     {
         if (Instance == null)
@@ -98,7 +101,19 @@ public class GridManager : MonoBehaviour
         {
             OnSpawnActivationPlatforms.Invoke();
         }
+        // Cache Tile Shaders controllers
+        SetTileShaderControllers();
     }
+
+    private void SetTileShaderControllers()
+    {
+        foreach (var tile in gridTileControllers)
+        {
+            var tileShader = tile.tileShaderController;
+            _tileShaderControllers.Add(tileShader);
+        }
+    }
+
     public void GenerateGridMapFromData(MapData currentMapData)
     {
         ClearGridMap();
@@ -237,8 +252,6 @@ public class GridManager : MonoBehaviour
     public void RemoveTrapSelection()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        //TrapTileUIController trapTileUIController = activePlayerUnit.GetComponent<TrapTileUIController>();
-        //trapTileUIController.trapTileSelectionIsActive = true;
 
         foreach (var tile in gridTileControllers)
         {
@@ -258,6 +271,15 @@ public class GridManager : MonoBehaviour
         if (lineRendererInstance != null)
         {
             lineRendererInstance.positionCount = 0;
+        }
+    }
+
+    public void ClearTileColors()
+    {
+        // Not ideal performance-wise, consider refactor.
+        foreach (var tileShader in _tileShaderControllers)
+        {
+            tileShader.SetTileGlowIntensity(0f);
         }
     }
 }

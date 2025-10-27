@@ -38,7 +38,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         UpdateActivePlayerUnitProfile(activePlayerUnit);
         activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
         var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
-        reachableTilesVisualizer.ClearReachableTiles(0, 0.5f, Color.white);
+        reachableTilesVisualizer.ClearReachableTiles();
 
         OnUnitMovedToTile(targetTile);
     }
@@ -58,7 +58,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         activePlayerUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
         // Reset tile color
         activePlayerUnit.ownedTile.tileShaderController.SetTileToMoveRangeColor();
-        activePlayerUnit.ownedTile.tileShaderController.ResetTileGlowIntensity();
+        activePlayerUnit.ownedTile.tileShaderController.SetTileGlowIntensity(0f);
         // Destroy the Active Player Unit tile indicator
         var unitSelection = FindAnyObjectByType<UnitSelectionController>();
         Destroy(unitSelection.selectedTileInstance);
@@ -68,10 +68,6 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         activePlayerUnit.ownedTile = tile;
         activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
     }
-    private void HandleCameraSorting()
-    {
-        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
-    }
     private void SpendOpportunityPoints(Unit activePlayerUnit)
     {
         activePlayerUnit.unitOpportunityPoints--;
@@ -80,22 +76,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
     }
-    private void UpdatePathVisual(List<TileController> path)
-    {
-        LineRenderer lineRenderer = GridManager.Instance.GetLineRenderer();
-        if (lineRenderer != null)
-        {
-            Vector3[] pathPoints = path.Select(tile => GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate) + new Vector3(0, 0.7f, 0)).ToArray(); // May be necessary to adjust Y to avoid z-fighting.
-            lineRenderer.positionCount = pathPoints.Length;
-            lineRenderer.SetPositions(pathPoints);
-            lineRenderer.startWidth = 0.25f;
-            lineRenderer.endWidth = 0.25f;
-        }
-        else
-        {
-            Debug.LogError("LineRenderer not initialized.");
-        }
-    }
+
     public string FindAnimationTrigger(Unit activePlayerUnit, TileController destinationTile)
     {
         if (activePlayerUnit.ownedTile.transform.localPosition.x > destinationTile.transform.localPosition.x)

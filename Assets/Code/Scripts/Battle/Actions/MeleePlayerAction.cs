@@ -47,6 +47,8 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
         OnUsedMeleeAction($"{activePlayerUnit.unitTemplate.unitName} used Melee Attack");
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, defender);
+        // After executing a Melee Attack, resets the Enemy initial tile (typically, shows the Movement Range - must take into account other cases in the future).
+        targetTile.tileShaderController.SetTileGlowIntensity(1f);
     }
 
     public void ExecuteMagnet(TileController targetTile)
@@ -87,7 +89,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         {
             defender.ownedTile.detectedUnit = null;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-            defender.ownedTile.tileShaderController.ResetEnemyTileFeedback(0, 0, Color.white);
+            defender.ownedTile.tileShaderController.ResetEnemyTileFeedback();
 
             defender.MoveUnit(newGridPos.x, newGridPos.y, true);
             MoveUnitToTile(defender, destinationTile);
@@ -95,7 +97,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
             destinationTile.detectedUnit = defender.gameObject;
             defender.ownedTile = destinationTile;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
-            destinationTile.tileShaderController.EnemyTileFeedback(1, 0.2f, Color.red);
+            destinationTile.tileShaderController.EnemyTileFeedback();
             OnUsedMeleeAction?.Invoke($"{attacker.unitTemplate.unitName} used Magnet");
         }
 
@@ -129,12 +131,12 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         {
             defender.ownedTile.detectedUnit = null;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-            defender.ownedTile.tileShaderController.ResetEnemyTileFeedback(0, 0, Color.white);
+            defender.ownedTile.tileShaderController.ResetEnemyTileFeedback();
 
             TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
             MoveUnitToTile(defender, destinationTile);
-            destinationTile.tileShaderController.ResetTileFadeHeightAnimation(destinationTile);
-            destinationTile.tileShaderController.EnemyTileFeedback(1, 0.2f, Color.red);
+            // If the Enemy it's still alive, the Enemy Tile Feedback (Red Tile) should still be present.
+            destinationTile.tileShaderController.EnemyTileFeedback();
         }
 
         RemoveInvulnerableMask(defender);
@@ -176,7 +178,6 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         int distance = gridMovementController.GetDistance(activePlayerUnit.ownedTile, targetTile);
         if (distance > meleeRange)
         {
-            targetTile.tileShaderController.AnimateFadeHeightError(2.75f, 0.5f, Color.red);
             return false;
         }
         return true;

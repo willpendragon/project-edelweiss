@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using ProjectEdelweiss.Utils;
 
 public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    public Vector2Int knockbackDirection;
+    public int knockbackStrength = 2;
+    [SerializeField] private Color _originalTileColor;
+    [SerializeField] private TileController _knockbackTile;
 
     public enum ActionType
     {
@@ -52,10 +55,79 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerEnter(PointerEventData eventData)
     {
         transform.DOScale(1.5f, 0.5f);
-    }
 
+        // Display Knockback Preview.
+        if (actionType != ActionType.Melee)
+            return;
+
+        DisplayKnockbackPreview();
+    }
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (_knockbackTile == null)
+            return;
         transform.DOScale(1f, 0.5f);
+        // Reset Knockback Preview (where applicable).
+        _knockbackTile.tileShaderController.SetTileColor(1f, _originalTileColor);
+        _knockbackTile = null;
+    }
+
+    private void DisplayKnockbackPreview()
+    {
+        var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
+        var cursor = FindAnyObjectByType<CursorController>();
+        Debug.Log($"Melee Targeting: {cursor.TargetedUnit}");
+
+        if (!IsKnockbackPossible(activePlayerUnit.GetComponent<Unit>(), cursor.TargetedUnit.ownedTile))
+            return;
+        var enemyTile = cursor.TargetedUnit.ownedTile;
+        //if (_knockbackTile = null)
+        //    return;
+        // Calculate the Knockback direction.
+        _knockbackTile = CalculateKnockback(activePlayerUnit.GetComponent<Unit>(), cursor.TargetedUnit);
+        // Retrieve the current Tile Color
+        _originalTileColor = _knockbackTile.tileShaderController.RetrieveCurrentTileColor();
+        // Highlight the possible knockback destination tile
+        _knockbackTile.tileShaderController.SetTileColor(1f, Color.yellow);
+    }
+
+    // Should be moved into a separate class.
+    private TileController CalculateKnockback(Unit attacker, Unit defender)
+    {
+        Vector2Int attackerPos = attacker.GetGridPosition();
+        Vector2Int defenderPos = defender.GetGridPosition();
+
+        int deltaX = attackerPos.x - defenderPos.x;
+        int deltaY = attackerPos.y - defenderPos.y;
+
+        knockbackDirection = Vector2Int.zero;
+        if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
+            knockbackDirection.x = -(int)Mathf.Sign(deltaX);
+        else
+            knockbackDirection.y = -(int)Mathf.Sign(deltaY);
+
+        knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
+
+        Vector2Int previewGridPos = defenderPos + (knockbackDirection * knockbackStrength);
+        previewGridPos = ClampGridPosition(previewGridPos);
+
+        TileController previewTile = GridManager.Instance.GetTileControllerInstance(previewGridPos.x, previewGridPos.y);
+        return previewTile;
+    }
+    // Should be moved into a separate class.
+
+    private bool IsKnockbackPossible(Unit activePlayerUnit, TileController targetTile)
+    {
+        DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
+        return distanceController.CheckDistance(activePlayerUnit.ownedTile, targetTile);
+    }
+    // Should be moved into a separate class.
+
+    private Vector2Int ClampGridPosition(Vector2Int pos)
+    {
+        var grid = GridManager.Instance;
+        pos.x = Mathf.Clamp(pos.x, 0, grid.gridHorizontalSize - 1);
+        pos.y = Mathf.Clamp(pos.y, 0, grid.gridVerticalSize - 1);
+        return pos;
     }
 }
