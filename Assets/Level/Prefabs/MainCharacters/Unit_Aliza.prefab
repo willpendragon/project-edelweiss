@@ -118,15 +118,10 @@ GameObject:
   - component: {fileID: 4009798023604197780}
   - component: {fileID: 6804547558390777160}
   - component: {fileID: 992189169463386825}
-  - component: {fileID: 878605096084481255}
-  - component: {fileID: 6743903757700210417}
-  - component: {fileID: 140287813762198916}
-  - component: {fileID: 140287813762198917}
   - component: {fileID: 7889034144590482301}
   - component: {fileID: 6278929137907918091}
   - component: {fileID: 8130161269669623750}
   - component: {fileID: 6934393671442508757}
-  - component: {fileID: 327769825012564967}
   - component: {fileID: 6071415634128480783}
   m_Layer: 0
   m_Name: Unit_Aliza
@@ -290,64 +285,6 @@ MonoBehaviour:
   experienceRewardPool: 0
   multiKillCounter: 0
   ingredients: []
---- !u!114 &878605096084481255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52e41d2df2be214aab74e1dd3f4ea2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meleeButtonPrefab: {fileID: 6278539958340940975, guid: 455fe5ab8a5327245991fc70b69cae35, type: 3}
-  spellMenuContainer: {fileID: 0}
---- !u!114 &6743903757700210417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 446a8e1e399ce444c9766cba7cad4ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveButtonPrefab: {fileID: 6278539958340940975, guid: d5dd23d0e8c3dcd409bc6af0caf1dcad, type: 3}
-  spellMenuContainer: {fileID: 0}
---- !u!114 &140287813762198916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7731ee1e76bea894fbfbb8d46a516003, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  capsuleCrystalButtonPrefab: {fileID: 6278539958340940975, guid: ade54f554509c584fa3e9faddae3fbbe, type: 3}
-  spellMenuContainer: {fileID: 0}
---- !u!114 &140287813762198917
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c6d695c0f4b54d43ad8675aa2455a71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  trapTileController: {fileID: 0}
-  trapButtonPrefab: {fileID: 6278539958340940975, guid: 04aff51fc7590564a83c6cbfb9a5ef71, type: 3}
-  spellMenuContainer: {fileID: 0}
-  trapTileSelectionIsActive: 0
 --- !u!114 &7889034144590482301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -552,27 +489,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!65 &327769825012564967
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 452031790448863006}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 1.0178313, y: 1.7576332, z: 0.15279886}
-  m_Center: {x: 0.22718067, y: 1.0364244, z: -0.017898992}
 --- !u!114 &6071415634128480783
 MonoBehaviour:
   m_ObjectHideFlags: 0
