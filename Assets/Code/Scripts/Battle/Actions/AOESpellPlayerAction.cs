@@ -1,7 +1,8 @@
+using Edelweiss.Core;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
-using Edelweiss.Core;
 
 public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
@@ -13,14 +14,12 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     }
 
     public Unit currentTarget;
-    //public TileController savedSelectedTile;
     public int selectionLimiter = 1;
     public Deity unboundDeity;
     private SpellMode spellMode;
 
     private int aoeRange = 1;
     private bool _criticalHit;
-    private TileController _savedSelectedTile;
 
 
     public delegate void SelectedSpell();
@@ -45,14 +44,16 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     public UnityEvent playSpellVFX;
     public void Execute(TileController targetTile)
     {
-        Debug.Log("Executing Spell");
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
         if (!CheckTargetTileValidity(targetTile))
             return;
 
-        if (activePlayerUnit.unitManaPoints <= 0 || activePlayerUnit.unitOpportunityPoints <= 0)
+        if (activePlayerUnit.unitManaPoints <= 0)
+        {
+            OnNotEnoughMana("Not enough Mana...");
             return;
+        }
 
         Spell spell = activePlayerUnit.unitTemplate.spellsList[0];
         SetSpellType(spell);
@@ -151,6 +152,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     private void TriggerSecondaryEffect(Unit spellTarget)
     {
+        if (spellTarget.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
+            return;
         if (spellTarget.unitStatusController == null)
             return;
         if (spellTarget.unitStatusController.unitCurrentStatus == UnitStatus.stun)
@@ -159,7 +162,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         // Currently this EFFECT works just like the Stun behaviour, but with a different icon.
         // Should retrieve the secondary effect dynamically from the Spell properties.
         PlayFrozenFeedback(spellTarget);
-        Debug.Log("The Target is now Frozen and unable to move");
     }
 
     private void PlaySpellFeedback(Unit activePlayerUnit, Unit spellTarget, Spell spell)
@@ -229,19 +231,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public void Deselect()
     {
-        //selectionLimiter++;
-        //GridManager.Instance.AOESelectionPermitted = true;
-        //if (_savedSelectedTile == null)
-        //    return;
-        //GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-        //foreach (var tile in gridMovementController.GetMultipleTiles(_savedSelectedTile, aoeRange))
-        //{
-        //    tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-        //    tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
-        //    Debug.Log("Deselecting AOE Range");
-        //}
-        //OnDeselectedSpell();
-        ////UnitProfilesController.Instance.DestroyEnemyUnitPanel();
     }
     public void DeityEnmityCheck(SpellAlignment spellAlignment)
     {
@@ -297,11 +286,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         float stunVFXDestroyCountdown = 1.5f;
         Destroy(stunVFX, stunVFXDestroyCountdown);
 
-        if (targetUnit.GetComponentInChildren<SpriteRenderer>() != null)
+        if (targetUnit.characterAnimator != null)
         {
-            targetUnit.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
-            var animator = targetUnit.GetComponentInChildren<Animator>();
-            animator.SetTrigger("Frozen");
+            targetUnit.characterAnimator.SetTrigger("Frozen");
         }
 
         // Spawn Frozen Cube
