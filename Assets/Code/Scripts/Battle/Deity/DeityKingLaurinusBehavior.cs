@@ -1,28 +1,26 @@
-using System.Linq;
-using System;
-using UnityEngine;
 using DG.Tweening;
+using System;
+using System.Linq;
+using UnityEngine;
+using static DeityKingLaurinusBehavior;
 
 [CreateAssetMenu(fileName = "KingLaurinusBehavior", menuName = "DeityBehavior/KingLaurinus")]
 public class DeityKingLaurinusBehavior : DeityBehavior
 {
-    public delegate void UsedSpecialAttack(string moveName, string attackerName);
-    public static event UsedSpecialAttack OnUsedSpecialAttack;
-
     public int attackExecutionThreshold = 2;
     private int lastAttackTurn = -1;
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
+
+    private string deityName = "King Laurinus";
+
     public override void ExecuteBehavior(Deity deity)
     {
         deity.deityCry.Play();
         DOVirtual.DelayedCall(1.5f, () => SpreadCurse());
         TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
-        if ((turnController.turnCounter - lastAttackTurn) >= attackExecutionThreshold)
-        {
-            DOVirtual.DelayedCall(3f, () => Attack(deity));
-        }
+        DOVirtual.DelayedCall(3f, () => Attack(deity));
     }
 
     private void Attack(Deity deity)
@@ -31,7 +29,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         lastAttackTurn = turnController.turnCounter;
         AttackPlayerUnits(deity);
         AttackEnemyUnits(deity);
-        BattleInterface.Instance.SetSpellNameOnNotificationPanel("Cursed Garden", "King Laurinus");
+        BattleInterface.Instance.SetDeityNotification($"Deity {deityName} activated Cursed Garden");
     }
 
     private void SpreadCurse()
@@ -43,7 +41,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
 
         if (allCursed)
         {
-            BattleInterface.Instance.SetDeityNotification("King Laurinus's Curse is complete");
+            BattleInterface.Instance.SetDeityNotification($"Deity {deityName}'s Curse is complete");
             return;
         }
 
@@ -54,7 +52,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
         }
 
-        BattleInterface.Instance.SetDeityNotification("King Laurinus's Curse spreads");
+        BattleInterface.Instance.SetDeityNotification($"Deity {deityName}'s Curse spreads");
     }
 
     // Extracts a number of random tiles. Laurinus will curse these random tiles.
@@ -89,6 +87,8 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     private void AttackPlayerUnits(Deity deity)
     {
         float enmity = BattleManager.Instance.deity.enmity;
+        if (enmity < BattleManager.Instance.deity._maxEnmity)
+            return;
         float scaledDamage = deity.deitySpecialAttackPower + (enmity * 0.5f);
 
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("PlayerPartyController")
@@ -116,6 +116,9 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     private void AttackEnemyUnits(Deity deity)
     {
         float enmity = BattleManager.Instance.deity.enmity;
+        if (enmity < BattleManager.Instance.deity._maxEnmity)
+            return;
+
         float scaledDamage = deity.deitySpecialAttackPower + (enmity * 0.5f);
 
         GameObject[] enemyUnits = BattleManager.Instance.enemiesOnBattlefield;
