@@ -31,16 +31,9 @@ public class AltarDeityUnitProfileController : MonoBehaviour
         buffAmountSlider.value = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
         buffType.text = healingBehavior.deityBuffName;
 
-        buffAmountCounter.text = healingBehavior.bubbleBuffShieldPointsIncreaseAmount.ToString();
-
-        //if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.AttackPower)
-        //{
-        //    buffType.text = "Attack Buff";
-        //}
-        //else if (deity.deityPrayerBuff.currentAffectedStat == DeityPrayerBuff.AffectedStat.MagicPower)
-        //{
-        //    buffType.text = "Magic Buff";
-        //}
+        //buffAmountCounter.text = healingBehavior.bubbleBuffShieldPointsIncreaseAmount.ToString();
+        // Using the buff's description as a temporary solution.
+        buffAmountCounter.text = healingBehavior.deityBuffDescription;
 
         deityUnitPortrait.sprite = deityUnit.unitTemplate.unitPortrait;
         linkedUnitPortrait.sprite = RetrieveLinkedUnitSmallPortrait(deity);

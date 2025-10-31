@@ -7,12 +7,12 @@ public class EndTurnButtonHelper : MonoBehaviour
 {
     [SerializeField] private UnitSelectionController _unitSelectionController;
     [SerializeField] private Button _endTurnButton;
+    [SerializeField] private TurnController _turnController;
     public void EndTurnViaButton()
     {
-        TurnController turnController = BattleManager.Instance?.GetComponent<TurnController>();
-        turnController.DecideTurn();
+        _turnController.DecideTurn();
 
-        if (turnController.currentTurn == Turn.EnemyTurn)
+        if (_turnController.currentTurn == Turn.EnemyTurn)
             return;
         if (_unitSelectionController == null || _endTurnButton == null)
             return;

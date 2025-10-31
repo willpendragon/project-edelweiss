@@ -17,16 +17,24 @@ public class AltarPlayerUnitProfileController : MonoBehaviour
     [SerializeField] TextMeshProUGUI playerUnitAttackPowerTextValue;
     [SerializeField] TextMeshProUGUI playerUnitMagicPowerTextValue;
 
-
     [Header("Playable Character Details")]
     [SerializeField] TextMeshProUGUI playerUnitName;
     public TextMeshProUGUI linkedDeityName;
     [SerializeField] Image playerUnitMiniPortrait;
+    public Image _linkedDeityPortrait;
 
     [SerializeField] Button selectPlayerButton;
+    public Unit ownerUnit;
 
     private Unit selectedPlayerUnit;
     public string playerId;
+
+    public void SelectPlayerUnit()
+    {
+        Debug.Log("SelectedPlayerUnit");
+        DeityAltarController deityAltarController = GameObject.FindGameObjectWithTag("DeityAltarController").GetComponent<DeityAltarController>();
+        deityAltarController.SetCurrentSelectedUnit(selectedPlayerUnit, this.gameObject);
+    }
 
     public void PopulatePlayerUnitProfile(Unit playerUnit)
     {
@@ -72,10 +80,14 @@ public class AltarPlayerUnitProfileController : MonoBehaviour
         if (playerUnitMagicPowerSlider != null) playerUnitMagicPowerSlider.value = playerUnit.unitMagicPower;
     }
 
-    public void SelectPlayerUnit()
+    public void UpdatePlayerUnitLinkedDeityPortrait(Deity deity)
     {
-        Debug.Log("SelectedPlayerUnit");
-        DeityAltarController deityAltarController = GameObject.FindGameObjectWithTag("DeityAltarController").GetComponent<DeityAltarController>();
-        deityAltarController.SetCurrentSelectedUnit(selectedPlayerUnit, this.gameObject);
+        Debug.Log($"{deity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait}");
+        _linkedDeityPortrait.sprite = deity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
+    }
+
+    public void ResetPlayerUnitLinkedDeityPortrait()
+    {
+        _linkedDeityPortrait.sprite = null;
     }
 }
