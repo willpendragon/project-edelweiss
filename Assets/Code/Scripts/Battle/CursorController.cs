@@ -34,9 +34,9 @@ public class CursorController : MonoBehaviour
     [SerializeField] private GameObject _runButtonPrefabInstance;
     [SerializeField] RectTransform radialMenu;
     [SerializeField] private TileController _tileController;
-    [SerializeField] private int _hazardsLimit = 1;
-    [SerializeField] private int _meleeRange = 2; // Fallback value
-    [SerializeField] private int _spellRange = 3; // Fallback value
+    private int _hazardsLimit = 1;
+    private int _meleeRange = 2; // Fallback value
+    private int _spellRange = 3; // Fallback value
     [SerializeField] private TurnController _turnController;
     [SerializeField] private Unit _targetedUnit;
 
@@ -52,7 +52,6 @@ public class CursorController : MonoBehaviour
     [SerializeField] private Sprite _summonIcon;
     [SerializeField] private Sprite _prayIcon;
     [SerializeField] private Sprite _magnetIcon;
-
 
     private bool _isRadialMenuOpen;
 
@@ -349,10 +348,7 @@ public class CursorController : MonoBehaviour
             UpdateEnemyInfoPanels();
         }
 
-
-        var turnController = BattleManager.Instance.GetComponent<TurnController>();
-
-        bool allNoOpportunities = turnController.playerUnitsOnBattlefield
+        bool allNoOpportunities = _turnController.playerUnitsOnBattlefield
             .Where(obj => obj != null)
             .Select(obj => obj.GetComponent<Unit>())
             .Where(unit => unit != null)

@@ -12,6 +12,7 @@ public class GameStatsManager : MonoBehaviour
     public int unlockedPuzzleKeys;
     public Inventory inventory;
     [SerializeField] FaithController faithController;
+    [SerializeField] TurnController _turnController;
 
     [SerializeField] private List<Ingredient> allIngredientPrototypes;
 
@@ -48,7 +49,7 @@ public class GameStatsManager : MonoBehaviour
 
     public void SaveCharacterData()
     {
-        GameObject[] playerUnits = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<TurnController>().playerUnitsOnBattlefield;
+        GameObject[] playerUnits = _turnController.playerUnitsOnBattlefield;
         GameSaveData characterSaveData = SaveStateManager.saveData;
 
         foreach (var playerUnit in playerUnits)
