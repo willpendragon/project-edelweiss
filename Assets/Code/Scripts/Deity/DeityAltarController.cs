@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor.Rendering;
+using System;
 public class DeityAltarController : MonoBehaviour
 {
 
@@ -12,7 +14,8 @@ public class DeityAltarController : MonoBehaviour
     Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
 
     [Header("UI")]
-    [SerializeField] RectTransform playerPartyMembembersContainer;
+    [SerializeField] DeityListUIController _deityListUIController;
+    [SerializeField] RectTransform playerPartyMembersContainer;
     [SerializeField] RectTransform capturedDeitiesContainer;
     [SerializeField] GameObject playerUnitImageGO;
     [SerializeField] GameObject deityImageGO;
@@ -23,7 +26,7 @@ public class DeityAltarController : MonoBehaviour
     [SerializeField] GameObject deityProfileGO;
     private GameObject selectedPlayerUnitProfileGO;
     [SerializeField] Image fadePanel;
-    List<GameObject> playerUnitsProfiles = new List<GameObject>();
+    [SerializeField] List<GameObject> playerUnitsProfiles = new List<GameObject>();
 
     [Header("Visuals")]
     [SerializeField] Transform deitySpot;
@@ -32,10 +35,21 @@ public class DeityAltarController : MonoBehaviour
     {
         GameManager.Instance.ApplyDeityLinks();
         List<Unit> playerPartyMemberInstances = GameManager.Instance.playerPartyMembersInstances;
+
+        // Creates a Player Profile in the Deity Altar for each party member.
         foreach (var playerUnit in playerPartyMemberInstances)
         {
-            GameObject newPlayerUnitProfileInstance = Instantiate(playerUnitProfileGO, playerPartyMembembersContainer);
-            newPlayerUnitProfileInstance.GetComponent<AltarPlayerUnitProfileController>().PopulatePlayerUnitProfile(playerUnit);
+            GameObject newPlayerUnitProfileInstance = Instantiate(playerUnitProfileGO, playerPartyMembersContainer);
+            var playerProfileController = newPlayerUnitProfileInstance.GetComponent<AltarPlayerUnitProfileController>();
+
+            playerProfileController.PopulatePlayerUnitProfile(playerUnit);
+            playerProfileController.ownerUnit = playerUnit;
+            if (playerUnit.linkedDeity != null)
+            {
+                playerProfileController.UpdatePlayerUnitLinkedDeityPortrait(playerUnit.linkedDeity);
+                // Instiate Deity Profile in the List
+                _deityListUIController.AddDeityProfile(playerUnit.linkedDeity);
+            }
             playerUnitsProfiles.Add(newPlayerUnitProfileInstance);
         }
 
@@ -122,6 +136,8 @@ public class DeityAltarController : MonoBehaviour
             {
                 summoningBuffController.RemoveLinkedDeityPermanentBuff(playerUnit);
                 UpdatePlayerUnitProfile(playerUnit);
+                ResetPlayerUnitDeityPortrait(selectedPlayerUnit);
+
             }
         }
 
@@ -148,6 +164,8 @@ public class DeityAltarController : MonoBehaviour
             GameManager.Instance.ApplyDeityLinks();
             summoningBuffController.ApplyLinkedDeityPermanentBuff(selectedPlayerUnit);
             UpdatePlayerUnitProfile(selectedPlayerUnit);
+            var altarProfileController = selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>();
+            altarProfileController.UpdatePlayerUnitLinkedDeityPortrait(deity);
 
             SaveStateManager.SaveGame(saveData);
             Debug.Log("Deity successfully assigned to Unit.");
@@ -165,6 +183,19 @@ public class DeityAltarController : MonoBehaviour
             Debug.Log("Unable to connect Unit to the Deity. This Unit is already connected to this Deity");
         }
     }
+
+    private void ResetPlayerUnitDeityPortrait(Unit selectedPlayerUnit)
+    {
+        foreach (var playerUnitProfile in playerUnitsProfiles)
+        {
+            var altarProfileController = playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>();
+            if (altarProfileController.playerId != selectedPlayerUnit.Id)
+            {
+                altarProfileController.ResetPlayerUnitLinkedDeityPortrait();
+            }
+        }
+    }
+
     public void PlayLinkAnimation(Unit selectedPlayerUnit, Deity deity)
     {
         Sprite selectedPlayerUnitPortrait = selectedPlayerUnit.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
@@ -176,9 +207,10 @@ public class DeityAltarController : MonoBehaviour
     {
         foreach (var playerUnitProfile in playerUnitsProfiles)
         {
-            if (playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().playerId == unit.Id)
+            var altarProfileController = playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>();
+            if (altarProfileController.playerId == unit.Id)
             {
-                playerUnitProfile.GetComponent<AltarPlayerUnitProfileController>().UpdatePlayerUnitProfile(unit);
+                altarProfileController.UpdatePlayerUnitProfile(unit);
             }
         }
     }
