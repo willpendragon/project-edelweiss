@@ -21,7 +21,6 @@ public class UnitSelectionController : MonoBehaviour
 
     private const int ATTACKABLE_TILE_RANGE = 2;
 
-    public GameObject waitButton;
     public UnitSelectionStatus currentUnitSelectionStatus;
     public SpriteRenderer unitSprite;
     public UnitIconsController unitIconsController;
