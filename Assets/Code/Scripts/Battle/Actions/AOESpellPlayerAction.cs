@@ -1,4 +1,5 @@
 using Edelweiss.Core;
+using ProjectEdelweiss.Utils;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -234,12 +235,14 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     }
     public void DeityEnmityCheck(SpellAlignment spellAlignment)
     {
-        if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<EnemyTurnManager>().deity == null)
+        var enemyTurnManager = GameObject.FindGameObjectWithTag(GameTags.ENEMY_TURN_MANAGER).GetComponent<EnemyTurnManager>();
+        if (enemyTurnManager.deity == null)
             return;
-        // Look for the Unbound Deity on the Battlefield.
-        unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<EnemyTurnManager>().deity.GetComponent<Deity>();
-        // Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments.
 
+        // Look for the Unbound Deity on the Battlefield.
+        unboundDeity = enemyTurnManager.deity.GetComponent<Deity>();
+
+        // Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments.
         if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
         {
             // This number should be retrieved dynamically instead.
