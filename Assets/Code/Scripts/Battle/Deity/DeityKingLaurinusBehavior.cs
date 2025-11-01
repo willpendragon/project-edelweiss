@@ -7,11 +7,11 @@ using static DeityKingLaurinusBehavior;
 [CreateAssetMenu(fileName = "KingLaurinusBehavior", menuName = "DeityBehavior/KingLaurinus")]
 public class DeityKingLaurinusBehavior : DeityBehavior
 {
-    public int attackExecutionThreshold = 2;
-    private int lastAttackTurn = -1;
-
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
+
+    public delegate void UsedCursedGarden(Deity deity);
+    public static event UsedCursedGarden OnUsedCursedGarden;
 
     private string deityName = "King Laurinus";
 
@@ -19,17 +19,26 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     {
         deity.deityCry.Play();
         DOVirtual.DelayedCall(1.5f, () => SpreadCurse());
-        TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
         DOVirtual.DelayedCall(3f, () => Attack(deity));
+
+        Debug.Assert(deity == BattleManager.Instance.deity, "Mismatch: Passed-in deity is not the one in BattleManager");
     }
 
     private void Attack(Deity deity)
     {
-        TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
-        lastAttackTurn = turnController.turnCounter;
-        AttackPlayerUnits(deity);
-        AttackEnemyUnits(deity);
-        BattleInterface.Instance.SetDeityNotification($"Deity {deityName} activated Cursed Garden");
+        float enmity = BattleManager.Instance.deity.enmity;
+        if (enmity >= BattleManager.Instance.deity._maxEnmity)
+
+        {
+            AttackPlayerUnits(deity, enmity);
+            AttackEnemyUnits(deity, enmity);
+            BattleInterface.Instance.SetDeityNotification($"Deity {deityName} activated Cursed Garden");
+            // Reset Enmity
+            BattleManager.Instance.deity.enmity = 0;
+            BattleManager.Instance.deity.UpdateDeityEnmitySlider();
+            // Show Cursed Garden Callout
+            OnUsedCursedGarden(deity);
+        }
     }
 
     private void SpreadCurse()
@@ -84,11 +93,8 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             .ToArray();
     }
 
-    private void AttackPlayerUnits(Deity deity)
+    private void AttackPlayerUnits(Deity deity, float enmity)
     {
-        float enmity = BattleManager.Instance.deity.enmity;
-        if (enmity < BattleManager.Instance.deity._maxEnmity)
-            return;
         float scaledDamage = deity.deitySpecialAttackPower + (enmity * 0.5f);
 
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("PlayerPartyController")
@@ -113,12 +119,8 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             }
         }
     }
-    private void AttackEnemyUnits(Deity deity)
+    private void AttackEnemyUnits(Deity deity, float enmity)
     {
-        float enmity = BattleManager.Instance.deity.enmity;
-        if (enmity < BattleManager.Instance.deity._maxEnmity)
-            return;
-
         float scaledDamage = deity.deitySpecialAttackPower + (enmity * 0.5f);
 
         GameObject[] enemyUnits = BattleManager.Instance.enemiesOnBattlefield;
