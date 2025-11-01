@@ -1,35 +1,56 @@
-using PixelCrushers.DialogueSystem;
-using System.Collections;
-using System.Collections.Generic;
+using ProjectEdelweiss.Utils;
+using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BattleCalloutsController : MonoBehaviour
 {
     public void OnEnable()
     {
         AOESpellPlayerAction.OnSpellCriticalHit += ShowCriticalHitCallout;
+        DeityKingLaurinusBehavior.OnUsedCursedGarden += ShowDeityAttackCallout;
     }
 
     public void OnDisable()
     {
         AOESpellPlayerAction.OnSpellCriticalHit -= ShowCriticalHitCallout;
+        DeityKingLaurinusBehavior.OnUsedCursedGarden -= ShowDeityAttackCallout;
     }
 
     public void ShowCriticalHitCallout()
     {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
-        if (activePlayerUnit != null)
-        {
-            GameObject battleCalloutInstance = Instantiate(activePlayerUnit.unitTemplate.unitCalloutPortrait, this.gameObject.transform);
-            battleCalloutInstance.GetComponentInChildren<Animator>().SetTrigger("ShowUnitCallout");
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit)?.GetComponent<Unit>();
+        if (activePlayerUnit == null)
+            return;
 
-            GameObject criticalHitVoiceSFX = Instantiate(activePlayerUnit.unitTemplate.unitCriticalHitVoice, Camera.main.transform);
+        if (activePlayerUnit.unitTemplate.unitCalloutPortrait == null)
+            return;
 
-            float battleCalloutDuration = 1f;
+        GameObject battleCalloutInstance = Instantiate(activePlayerUnit.unitTemplate.unitCalloutPortrait, this.gameObject.transform);
+        battleCalloutInstance.GetComponentInChildren<Animator>().SetTrigger(GameTags.SHOW_UNIT_CALLOUT);
+        float battleCalloutDuration = 1f;
+        Destroy(battleCalloutInstance, battleCalloutDuration);
+        SFXHelper(activePlayerUnit);
+    }
 
-            Destroy(battleCalloutInstance, battleCalloutDuration);
-            Destroy(battleCalloutInstance, activePlayerUnit.unitTemplate.unitCriticalHitVoice.GetComponent<AudioSource>().clip.length);
-        }
+    public void ShowDeityAttackCallout(Unit deityUnit)
+    {
+        if (deityUnit == null)
+            return;
+        if (deityUnit.unitTemplate.unitCalloutPortrait == null)
+            return;
+        GameObject battleCalloutInstance = Instantiate(deityUnit.unitTemplate.unitCalloutPortrait, this.gameObject.transform);
+        battleCalloutInstance.GetComponentInChildren<Animator>().SetTrigger(GameTags.SHOW_UNIT_CALLOUT);
+        float battleCalloutDuration = 1f;
+        Destroy(battleCalloutInstance, battleCalloutDuration);
+        SFXHelper(deityUnit);
+    }
+
+    private void SFXHelper(Unit unit)
+    {
+        // Add a dedicated SFX for the Deity in Inspector, currently using placeholder.
+        if (unit.unitTemplate.unitCriticalHitVoice == null)
+            return;
+        GameObject criticalHitVoiceSFX = Instantiate(unit.unitTemplate.unitCriticalHitVoice, Camera.main.transform);
+        Destroy(criticalHitVoiceSFX, unit.unitTemplate.unitCriticalHitVoice.GetComponent<AudioSource>().clip.length);
     }
 }
