@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using ProjectEdelweiss.Utils;
 
 public class DeityEnmityTrackerController : MonoBehaviour
 {
@@ -52,11 +53,11 @@ public class DeityEnmityTrackerController : MonoBehaviour
 
     public void PlayFullBarFeedback()
     {
-        _enmityBarVFX.SetTrigger("FullBar");
+        _enmityBarVFX.SetTrigger(GameTags.FULL_ENMITY_BAR);
     }
 
     public void StopFullBarFeedback()
     {
-        _enmityBarVFX.SetTrigger("ResetBar");
+        _enmityBarVFX.SetTrigger(GameTags.RESET_ENMITY_BAR);
     }
 }

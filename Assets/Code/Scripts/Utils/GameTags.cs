@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace ProjectEdelweiss.Utils
 {
     public static class GameTags
@@ -23,5 +25,7 @@ namespace ProjectEdelweiss.Utils
 
         // Animation Triggers
         public const string SHOW_UNIT_CALLOUT = "ShowUnitCallout";
+        public const string FULL_ENMITY_BAR = "FullBar";
+        public const string RESET_ENMITY_BAR = "ResetBar"
     }
 }
