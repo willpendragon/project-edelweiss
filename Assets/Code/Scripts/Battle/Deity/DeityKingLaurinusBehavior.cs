@@ -29,7 +29,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         {
             AttackPlayerUnits(deity, enmity);
             AttackEnemyUnits(deity, enmity);
-            //BattleInterface.Instance.SetDeityNotification($"Deity {deityName} used Cursed Garden");
+            BattleInterface.Instance.SetDeityNotification($"Deity {deityName} used Cursed Garden");
             // Reset the Deity's enmity.
             BattleManager.Instance.deity.enmity = 0;
             BattleManager.Instance.deity.UpdateDeityEnmitySlider();
@@ -120,15 +120,15 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             }
         }
 
-        // Display Laurinus' Cursed Garden Callout only if at least one Player Unit has been hit.
-        if (totalDamage > 0)
-        {
-            DisplayAttackCallout(scaledDamage, deity);
-        }
+        DisplayAttackCallout(deity);
 
+        //// Display Laurinus' Cursed Garden Callout only if at least one Player Unit has been hit.
+        //if (totalDamage > 0)
+        //{
+        //}
     }
 
-    private void DisplayAttackCallout(float scaledDamage, Deity deity)
+    private void DisplayAttackCallout(Deity deity)
     {
         Unit deityUnit = deity.GetComponent<Unit>();
         OnUsedCursedGarden(deityUnit);
