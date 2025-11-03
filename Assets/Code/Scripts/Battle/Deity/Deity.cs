@@ -29,7 +29,7 @@ public class Deity : MonoBehaviour
     public float deitySpecialAttackPower;
     public float summoningPrice = 50;
     public float deityPrayerPower;
-    public float _maxEnmity = 10;
+    public float _maxEnmity;
     //public float deityPrayerPowerThreshold;
 
     [Header("Visuals")]
@@ -98,6 +98,15 @@ public class Deity : MonoBehaviour
     {
         _enmityBar.value = enmity;
         enmityTracker.PlayEnmityIconFeedback();
+        if (_enmityBar.value >= _maxEnmity)
+        {
+            enmityTracker.PlayFullBarFeedback();
+        }
+
+        else if (_enmityBar.value == 0)
+        {
+            enmityTracker.StopFullBarFeedback();
+        }
     }
 
     public void UpdateSinSystemDisplay()
