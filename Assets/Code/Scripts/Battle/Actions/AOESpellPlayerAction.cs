@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
@@ -40,6 +41,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public delegate void SpellCriticalHit();
     public static event SpellCriticalHit OnSpellCriticalHit;
+
+    public delegate void DeityAngered();
+    public static event DeityAngered OnDeityAngered;
 
 
     public UnityEvent playSpellVFX;
@@ -249,8 +253,19 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             float enmityIncrease = 2.5f;
             unboundDeity.enmity += enmityIncrease;
             unboundDeity.UpdateDeityEnmitySlider();
+            TriggeredFeedback();
         }
     }
+
+    private void TriggeredFeedback()
+    {
+        // Display Triggered Deity feedback
+        if (unboundDeity.enmity >= unboundDeity._maxEnmity)
+        {
+            OnDeityAngered();
+        }
+    }
+
     public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
     {
         activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
