@@ -608,6 +608,7 @@ MonoBehaviour:
   deityEnmityPointsCounter: {fileID: 93799586}
   deity: {fileID: 0}
   enmityIconRect: {fileID: 0}
+  _enmityBarVFX: {fileID: 0}
 --- !u!114 &93799586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1765,6 +1766,7 @@ MonoBehaviour:
   deityEnmityPointsCounter: {fileID: 352462112}
   deity: {fileID: 0}
   enmityIconRect: {fileID: 0}
+  _enmityBarVFX: {fileID: 0}
 --- !u!114 &352462112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2406,6 +2408,110 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c04471de983a3854c83d61a19b189729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _angeredDeityCallout: {fileID: 0}
+  _globalVolume: {fileID: 0}
+  _calloutCanvas: {fileID: 0}
+--- !u!1 &478547257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 478547261}
+  - component: {fileID: 478547260}
+  - component: {fileID: 478547259}
+  - component: {fileID: 478547258}
+  m_Layer: 0
+  m_Name: CalloutUICanvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &478547258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478547257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &478547259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478547257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!223 &478547260
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478547257}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 1
+  m_TargetDisplay: 0
+--- !u!224 &478547261
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478547257}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!1001 &487090847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5018,6 +5124,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 739257339}
   m_CullTransparentMesh: 1
+--- !u!1 &763620769
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 763620770}
+  - component: {fileID: 763620771}
+  m_Layer: 0
+  m_Name: CalloutUIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &763620770
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763620769}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &763620771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763620769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c04471de983a3854c83d61a19b189729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _angeredDeityCallout: {fileID: 3138224175913867863, guid: 84f8cc6338a83394399b6b81795096c9, type: 3}
+  _globalVolume: {fileID: 1709264537}
+  _calloutCanvas: {fileID: 478547260}
 --- !u!1 &766386419
 GameObject:
   m_ObjectHideFlags: 0
@@ -5783,6 +5936,7 @@ MonoBehaviour:
   deityEnmityPointsCounter: {fileID: 844786227}
   deity: {fileID: 0}
   enmityIconRect: {fileID: 0}
+  _enmityBarVFX: {fileID: 0}
 --- !u!114 &844786227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7073,6 +7227,7 @@ MonoBehaviour:
   deityEnmityPointsCounter: {fileID: 1108736598}
   deity: {fileID: 0}
   enmityIconRect: {fileID: 0}
+  _enmityBarVFX: {fileID: 0}
 --- !u!114 &1108736598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8522,63 +8677,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1303276211}
   m_CullTransparentMesh: 1
---- !u!1 &1304938122
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1304938123}
-  - component: {fileID: 1304938125}
-  - component: {fileID: 1304938126}
-  m_Layer: 5
-  m_Name: BattleCalloutsScreen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1304938123
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1304938122}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.783679, y: 2.783679, z: 2.783679}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2048962583}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1304938125
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1304938122}
-  m_CullTransparentMesh: 1
---- !u!114 &1304938126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1304938122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c04471de983a3854c83d61a19b189729, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1311479546
 GameObject:
   m_ObjectHideFlags: 0
@@ -9825,6 +9923,7 @@ MonoBehaviour:
   deityEnmityPointsCounter: {fileID: 1616585738}
   deity: {fileID: 0}
   enmityIconRect: {fileID: 0}
+  _enmityBarVFX: {fileID: 0}
 --- !u!114 &1616585738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12506,7 +12605,6 @@ RectTransform:
   - {fileID: 845029038}
   - {fileID: 529186302}
   - {fileID: 463913748}
-  - {fileID: 1304938123}
   - {fileID: 936415925}
   - {fileID: 2029499020}
   - {fileID: 622376890}
@@ -13392,6 +13490,7 @@ MonoBehaviour:
   deityEnmityPointsCounter: {fileID: 2109849438}
   deity: {fileID: 0}
   enmityIconRect: {fileID: 0}
+  _enmityBarVFX: {fileID: 0}
 --- !u!114 &2109849438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20262,7 +20361,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 2626.7852, y: 2626.7852, z: 2626.7852}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911147375969266743}
@@ -20400,7 +20499,7 @@ Transform:
   m_GameObject: {fileID: 2853166123752632539}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 7.7, y: 24.96, z: -36.29}
+  m_LocalPosition: {x: 1264.2079, y: 34.78796, z: -2638.719}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -30799,6 +30898,7 @@ SceneRoots:
   - {fileID: 582521118}
   - {fileID: 2087881138}
   - {fileID: 1886200377}
+  - {fileID: 763620770}
   - {fileID: 209913983}
   - {fileID: 1793862866}
   - {fileID: 680308533}
@@ -30807,10 +30907,11 @@ SceneRoots:
   - {fileID: 2052432107}
   - {fileID: 709168684}
   - {fileID: 767884333}
-  - {fileID: 49703614}
   - {fileID: 1346473503}
+  - {fileID: 478547261}
   - {fileID: 1270049038}
   - {fileID: 1046919713}
+  - {fileID: 49703614}
   - {fileID: 152913183}
   - {fileID: 635873451}
   - {fileID: 8600830393609414017}
