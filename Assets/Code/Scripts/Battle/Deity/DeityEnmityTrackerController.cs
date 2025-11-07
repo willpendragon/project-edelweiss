@@ -1,30 +1,19 @@
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using ProjectEdelweiss.Utils;
 
 public class DeityEnmityTrackerController : MonoBehaviour
 {
-    public void OnEnable()
-    {
-        //SpellcastingController.OnCastedSpellTypeHatedbyDeity += UpdateDeityEnmityTracker;
-    }
-    public void OnDisable()
-    {
-        //SpellcastingController.OnCastedSpellTypeHatedbyDeity -= UpdateDeityEnmityTracker;
-    }
-
     public TextMeshProUGUI deityEnmityPointsCounter;
     public Deity deity;
     [SerializeField] RectTransform enmityIconRect;
+    [SerializeField] Animator _enmityBarVFX;
     public void SetDeity(GameObject deityGO)
     {
         deity = deityGO.GetComponent<Deity>();
     }
-    //public void UpdateDeityEnmityTracker()
-    //{
-    //    //deityEnmityPointsCounter.text = deity.enmity.ToString();
-    //    PlayEnmityIconFeedback();
-    //}
+
     public void PlayEnmityIconFeedback()
     {
         // Kill any existing animations to prevent stacking
@@ -60,6 +49,15 @@ public class DeityEnmityTrackerController : MonoBehaviour
             2, // number of jumps
             0.35f
         ).SetEase(Ease.OutQuad);
+    }
 
+    public void PlayFullBarFeedback()
+    {
+        _enmityBarVFX.SetTrigger(GameTags.FULL_ENMITY_BAR);
+    }
+
+    public void StopFullBarFeedback()
+    {
+        _enmityBarVFX.SetTrigger(GameTags.RESET_ENMITY_BAR);
     }
 }

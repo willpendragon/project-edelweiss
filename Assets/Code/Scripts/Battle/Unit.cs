@@ -137,15 +137,14 @@ public class Unit : MonoBehaviour
 
     public void TakeDamage(float receivedDamage)
     {
+        if (currentUnitBuff == UnitBuff.InvulnerableMask)
+            return;
+
         // Calculate the effective damage after considering the shield points.
         float effectiveDamage = CalculateEffectiveDamage(receivedDamage, unitShieldPoints);
 
         // Apply the effective damage to health points.
-
-        if (currentUnitBuff != UnitBuff.InvulnerableMask)
-        {
-            HealthPoints -= effectiveDamage;
-        }
+        HealthPoints -= effectiveDamage;
 
         // Invoke the event with the received damage before mitigation.
         OnTakenDamage.Invoke(receivedDamage);

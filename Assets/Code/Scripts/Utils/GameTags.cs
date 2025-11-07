@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace ProjectEdelweiss.Utils
 {
     public static class GameTags
@@ -19,5 +21,11 @@ namespace ProjectEdelweiss.Utils
         public const string DEITY_SPAWNER = "DeitySpawner";
         public const string BATTLE_MANAGER = "BattleManager";
         public const string END_TURN_BUTTON = "EndTurnButton";
+        public const string ENEMY_TURN_MANAGER = "EnemyTurnManager";
+
+        // Animation Triggers
+        public const string SHOW_UNIT_CALLOUT = "ShowUnitCallout";
+        public const string FULL_ENMITY_BAR = "FullBar";
+        public const string RESET_ENMITY_BAR = "ResetBar";
     }
 }

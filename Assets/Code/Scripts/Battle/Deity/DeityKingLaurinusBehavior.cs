@@ -7,8 +7,8 @@ using static DeityKingLaurinusBehavior;
 [CreateAssetMenu(fileName = "KingLaurinusBehavior", menuName = "DeityBehavior/KingLaurinus")]
 public class DeityKingLaurinusBehavior : DeityBehavior
 {
-    public int attackExecutionThreshold = 2;
-    private int lastAttackTurn = -1;
+    public delegate void UsedCursedGarden(Unit deityUnit);
+    public static event UsedCursedGarden OnUsedCursedGarden;
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
@@ -19,17 +19,25 @@ public class DeityKingLaurinusBehavior : DeityBehavior
     {
         deity.deityCry.Play();
         DOVirtual.DelayedCall(1.5f, () => SpreadCurse());
-        TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
-        DOVirtual.DelayedCall(3f, () => Attack(deity));
+        DOVirtual.DelayedCall(3f, () => AttemptAttack(deity));
     }
 
-    private void Attack(Deity deity)
+    private void AttemptAttack(Deity deity)
     {
-        TurnController turnController = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<TurnController>();
-        lastAttackTurn = turnController.turnCounter;
-        AttackPlayerUnits(deity);
-        AttackEnemyUnits(deity);
-        BattleInterface.Instance.SetDeityNotification($"Deity {deityName} activated Cursed Garden");
+        float enmity = BattleManager.Instance.deity.enmity;
+        if (enmity >= BattleManager.Instance.deity._maxEnmity)
+        {
+            AttackPlayerUnits(deity, enmity);
+            AttackEnemyUnits(deity, enmity);
+            BattleInterface.Instance.SetDeityNotification($"Deity {deityName} used Cursed Garden");
+            // Reset the Deity's enmity.
+            BattleManager.Instance.deity.enmity = 0;
+            BattleManager.Instance.deity.UpdateDeityEnmitySlider();
+        }
+        else
+        {
+            Debug.Log($"{enmity} - {BattleManager.Instance.deity._maxEnmity}");
+        }
     }
 
     private void SpreadCurse()
@@ -41,7 +49,7 @@ public class DeityKingLaurinusBehavior : DeityBehavior
 
         if (allCursed)
         {
-            BattleInterface.Instance.SetDeityNotification($"Deity {deityName}'s Curse is complete");
+            BattleInterface.Instance.SetDeityNotification($"Deity {deityName}'s cursed the entire field.");
             return;
         }
 
@@ -51,7 +59,6 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
             Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
         }
-
         BattleInterface.Instance.SetDeityNotification($"Deity {deityName}'s Curse spreads");
     }
 
@@ -84,16 +91,15 @@ public class DeityKingLaurinusBehavior : DeityBehavior
             .ToArray();
     }
 
-    private void AttackPlayerUnits(Deity deity)
+    private void AttackPlayerUnits(Deity deity, float enmity)
     {
-        float enmity = BattleManager.Instance.deity.enmity;
-        if (enmity < BattleManager.Instance.deity._maxEnmity)
-            return;
         float scaledDamage = deity.deitySpecialAttackPower + (enmity * 0.5f);
 
         GameObject[] playerUnits = GameObject.FindGameObjectWithTag("PlayerPartyController")
             .GetComponent<PlayerPartyController>()
             .playerUnitsOnBattlefield;
+
+        float totalDamage = 0f;
 
         foreach (var playerUnit in playerUnits)
         {
@@ -110,15 +116,26 @@ public class DeityKingLaurinusBehavior : DeityBehavior
                 unit.TakeDamage(scaledDamage);
                 unit.OnTakenDamage.Invoke(scaledDamage);
                 OnCheckPlayer?.Invoke();
+                totalDamage += scaledDamage;
             }
         }
-    }
-    private void AttackEnemyUnits(Deity deity)
-    {
-        float enmity = BattleManager.Instance.deity.enmity;
-        if (enmity < BattleManager.Instance.deity._maxEnmity)
-            return;
 
+        DisplayAttackCallout(deity);
+
+        //// Display Laurinus' Cursed Garden Callout only if at least one Player Unit has been hit.
+        //if (totalDamage > 0)
+        //{
+        //}
+    }
+
+    private void DisplayAttackCallout(Deity deity)
+    {
+        Unit deityUnit = deity.GetComponent<Unit>();
+        OnUsedCursedGarden(deityUnit);
+    }
+
+    private void AttackEnemyUnits(Deity deity, float enmity)
+    {
         float scaledDamage = deity.deitySpecialAttackPower + (enmity * 0.5f);
 
         GameObject[] enemyUnits = BattleManager.Instance.enemiesOnBattlefield;

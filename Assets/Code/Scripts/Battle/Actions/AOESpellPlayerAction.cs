@@ -1,7 +1,10 @@
+using Edelweiss.Core;
+using ProjectEdelweiss.Utils;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
-using Edelweiss.Core;
+using UnityEngine.Rendering;
 
 public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
@@ -13,14 +16,12 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     }
 
     public Unit currentTarget;
-    //public TileController savedSelectedTile;
     public int selectionLimiter = 1;
     public Deity unboundDeity;
     private SpellMode spellMode;
 
     private int aoeRange = 1;
     private bool _criticalHit;
-    private TileController _savedSelectedTile;
 
 
     public delegate void SelectedSpell();
@@ -41,18 +42,23 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     public delegate void SpellCriticalHit();
     public static event SpellCriticalHit OnSpellCriticalHit;
 
+    public delegate void DeityAngered();
+    public static event DeityAngered OnDeityAngered;
+
 
     public UnityEvent playSpellVFX;
     public void Execute(TileController targetTile)
     {
-        Debug.Log("Executing Spell");
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
         if (!CheckTargetTileValidity(targetTile))
             return;
 
-        if (activePlayerUnit.unitManaPoints <= 0 || activePlayerUnit.unitOpportunityPoints <= 0)
+        if (activePlayerUnit.unitManaPoints <= 0)
+        {
+            OnNotEnoughMana("Not enough Mana...");
             return;
+        }
 
         Spell spell = activePlayerUnit.unitTemplate.spellsList[0];
         SetSpellType(spell);
@@ -151,6 +157,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     private void TriggerSecondaryEffect(Unit spellTarget)
     {
+        if (spellTarget.currentUnitBuff == Unit.UnitBuff.InvulnerableMask)
+            return;
         if (spellTarget.unitStatusController == null)
             return;
         if (spellTarget.unitStatusController.unitCurrentStatus == UnitStatus.stun)
@@ -159,7 +167,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         // Currently this EFFECT works just like the Stun behaviour, but with a different icon.
         // Should retrieve the secondary effect dynamically from the Spell properties.
         PlayFrozenFeedback(spellTarget);
-        Debug.Log("The Target is now Frozen and unable to move");
     }
 
     private void PlaySpellFeedback(Unit activePlayerUnit, Unit spellTarget, Spell spell)
@@ -229,36 +236,36 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public void Deselect()
     {
-        //selectionLimiter++;
-        //GridManager.Instance.AOESelectionPermitted = true;
-        //if (_savedSelectedTile == null)
-        //    return;
-        //GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-        //foreach (var tile in gridMovementController.GetMultipleTiles(_savedSelectedTile, aoeRange))
-        //{
-        //    tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
-        //    tile.tileShaderController.ResetTileFadeHeightAnimation(tile);
-        //    Debug.Log("Deselecting AOE Range");
-        //}
-        //OnDeselectedSpell();
-        ////UnitProfilesController.Instance.DestroyEnemyUnitPanel();
     }
     public void DeityEnmityCheck(SpellAlignment spellAlignment)
     {
-        if (GameObject.FindGameObjectWithTag("BattleManager").GetComponent<EnemyTurnManager>().deity == null)
+        var enemyTurnManager = GameObject.FindGameObjectWithTag(GameTags.ENEMY_TURN_MANAGER).GetComponent<EnemyTurnManager>();
+        if (enemyTurnManager.deity == null)
             return;
-        // Look for the Unbound Deity on the Battlefield.
-        unboundDeity = GameObject.FindGameObjectWithTag("BattleManager").GetComponentInChildren<EnemyTurnManager>().deity.GetComponent<Deity>();
-        // Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments.
 
+        // Look for the Unbound Deity on the Battlefield.
+        unboundDeity = enemyTurnManager.deity.GetComponent<Deity>();
+
+        // Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments.
         if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
         {
             // This number should be retrieved dynamically instead.
             float enmityIncrease = 2.5f;
             unboundDeity.enmity += enmityIncrease;
             unboundDeity.UpdateDeityEnmitySlider();
+            TriggeredFeedback();
         }
     }
+
+    private void TriggeredFeedback()
+    {
+        // Display Triggered Deity feedback
+        if (unboundDeity.enmity >= unboundDeity._maxEnmity)
+        {
+            OnDeityAngered();
+        }
+    }
+
     public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
     {
         activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
@@ -297,11 +304,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         float stunVFXDestroyCountdown = 1.5f;
         Destroy(stunVFX, stunVFXDestroyCountdown);
 
-        if (targetUnit.GetComponentInChildren<SpriteRenderer>() != null)
+        if (targetUnit.characterAnimator != null)
         {
-            targetUnit.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
-            var animator = targetUnit.GetComponentInChildren<Animator>();
-            animator.SetTrigger("Frozen");
+            targetUnit.characterAnimator.SetTrigger("Frozen");
         }
 
         // Spawn Frozen Cube
