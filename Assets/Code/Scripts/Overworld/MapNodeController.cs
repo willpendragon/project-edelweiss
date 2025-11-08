@@ -8,6 +8,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     [SerializeField] CanvasGroup _locationCanvas;
     [SerializeField] CanvasGroup _iconCanvas;
     [SerializeField] private OverworldMapUIController _mapMenuController;
+    [SerializeField] private int _dayCost = 1; // The time entering this node subtracts adds to the Calendar.
 
     public enum LockStatus
     {
@@ -91,6 +92,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         Time.timeScale = 1f;
         enemySelection.SelectMapNode();
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
+        OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(_dayCost);
     }
 
     private void SetOverworldUIVisibility(float alpha)

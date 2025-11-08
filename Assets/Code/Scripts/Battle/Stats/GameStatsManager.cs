@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameStatsManager : MonoBehaviour
 
 {
+    public int currentDay;
     public int enemiesKilled;
     public float warFunds;
     public int timesSingleTargetSpellWasUsed;
@@ -20,6 +21,7 @@ public class GameStatsManager : MonoBehaviour
 
     public void Awake()
     {
+        //LoadCalendarData();
         LoadWarFunds();
         LoadEnemiesKilled();
         LoadUsedSingleTargetSpells();
@@ -30,7 +32,7 @@ public class GameStatsManager : MonoBehaviour
     {
         LoadCharacterData();
 
-        // Load ingredients AFTER PersistentInventoryManager has initialized
+        // Load ingredients AFTER PersistentInventoryManager has been initialized.
         StartCoroutine(DelayedLoadIngredients());
 
         if (faithController != null)
@@ -124,6 +126,27 @@ public class GameStatsManager : MonoBehaviour
         {
             warFunds = resourceSaveData.resourceData.warFunds;
             Debug.Log($"Loaded War Funds: {warFunds}");
+        }
+    }
+
+    public void LoadCalendarData()
+    {
+        GameSaveData calendarSaveData = SaveStateManager.saveData;
+        if (calendarSaveData != null && calendarSaveData.calendarData != null)
+        {
+            currentDay = calendarSaveData.calendarData.currentDay;
+            Debug.Log($"Loaded Current Day: {currentDay}");
+        }
+    }
+
+    public void SaveCalendarData(int daysPassed)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.calendarData != null)
+        {
+            gameSaveData.calendarData.currentDay += daysPassed;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Days Passed: {daysPassed}");
         }
     }
     public void SaveWarFunds(float newWarFunds)

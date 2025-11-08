@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 
@@ -8,14 +9,21 @@ public class GameSaveData
     public int highestUnlockedLevel;
     public int timesSingleTargetSpellWasUsed;
 
-    public List<CharacterData> characterData = new List<CharacterData>();
+    public CalendarData calendarData = new CalendarData();
     public ResourceData resourceData = new ResourceData();
 
+    public List<CharacterData> characterData = new List<CharacterData>();
     public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
     public List<ConversationData> unlockedConversations = new List<ConversationData>();
-
     public List<IngredientSaveEntry> savedInventory = new List<IngredientSaveEntry>();
     public List<BakedItemsData> bakedItems = new List<BakedItemsData>();
+}
+
+[System.Serializable]
+
+public class CalendarData
+{
+    public int currentDay;
 }
 
 [System.Serializable]
@@ -37,7 +45,6 @@ public class CharacterData
 [System.Serializable]
 
 public class ResourceData
-
 {
     public float warFunds;
     public float experiencePointsReward;
@@ -48,14 +55,14 @@ public class ResourceData
 [System.Serializable]
 public class IngredientSaveEntry
 {
-    public string ingredientName; // or a unique ID
+    public string ingredientName;
     public int quantity;
 }
 
 [System.Serializable]
 public class BakedItemsData
 {
-    public string pastryName; // or a unique ID
+    public string pastryName;
     public int quantity;
 }
 
@@ -66,7 +73,7 @@ public class ConversationData
     public bool isUnlocked;
     public bool isRead;
 
-    // Constructor with ID and unlocked status
+    // Constructor with ID and unlocked status.
     public ConversationData(string id, bool unlocked, bool read)
     {
         conversationID = id;
@@ -74,4 +81,3 @@ public class ConversationData
         isRead = read;
     }
 }
-
