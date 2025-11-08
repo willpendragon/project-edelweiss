@@ -46,8 +46,7 @@ public class CafeMenuUIWindowsController : MonoBehaviour
             // Special case for menu1 (Pastry Shop)
             if (menuIndex == 0)
             {
-                var cafeMenu = FindAnyObjectByType<CafeMenuUIController>();
-                cafeMenu.GenerateFoodList();
+                CafeMenuUIController.Instance.FoodListUIController.GenerateFoodList();
             }
         }
 

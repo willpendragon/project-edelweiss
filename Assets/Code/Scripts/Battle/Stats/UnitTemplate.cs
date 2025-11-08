@@ -17,10 +17,10 @@ public class UnitTemplate : ScriptableObject
     public int unitOpportunityPoints;
     public int unitFaithPoints;
     public int unitMovemementLimit;
-
     public int unitShieldPoints;
     public float meleeAttackPower;
     public float unitMagicPower;
+    public int unitMaxFoodSlots;
 
     public float unitMeleeAttackBaseDamage;
 

@@ -59,6 +59,7 @@ public class Unit : MonoBehaviour
     public float unitManaPoints;
     public float unitMaxManaPoints;
     public float unitShieldPoints;
+    public int unitFoodSlots;
 
     [Header("Progression System Stats")]
 
@@ -95,7 +96,6 @@ public class Unit : MonoBehaviour
     public GameObject unitProfilePanel;
     public SpriteRenderer unitSprite;
     public Animator characterAnimator;
-
 
     public delegate void CheckGameOver();
     public static event CheckGameOver OnCheckGameOver;
@@ -408,7 +408,7 @@ public class Unit : MonoBehaviour
         unitMagicPower = unitTemplate.unitMagicPower;
         unitMovementLimit = unitTemplate.unitMovemementLimit;
         unitMeleeAttackBaseDamage = unitTemplate.unitMeleeAttackBaseDamage;
-
+        unitFoodSlots = unitTemplate.unitMaxFoodSlots;
         currentUnitLifeCondition = UnitLifeCondition.unitAlive;
 
         experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
