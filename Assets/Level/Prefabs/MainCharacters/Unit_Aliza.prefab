@@ -188,6 +188,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
+  unitFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}
@@ -668,7 +669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87639c806a4e932448098881ceed0612, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  miniMagnetPrefab: {fileID: 5417596867150616210, guid: 28c1e6ff3b9ebb74f8bc63e9e8830684, type: 3}
+  miniMagnetPrefab: {fileID: 7402799880006249386, guid: 28c1e6ff3b9ebb74f8bc63e9e8830684, type: 3}
   tileConveyorOverlayPrefab: {fileID: 3371528311032163851, guid: 4b4d438afaee876479bb7ac20083cb30, type: 3}
 --- !u!1 &5959858009669788163
 GameObject:
