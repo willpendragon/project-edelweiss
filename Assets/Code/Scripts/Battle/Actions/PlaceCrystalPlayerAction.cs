@@ -71,7 +71,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
             string activePlayerUnitId = activePlayerUnit.GetComponent<Unit>().Id;
 
             CreateDictionaryEntry(capturedUnboundDeity, activePlayerUnitId);
-            GameManager.Instance.ApplyDeityLinks();
+            GameManager.Instance.DeityLinkManager.ApplyDeityLinks();
         }
         else
         {
