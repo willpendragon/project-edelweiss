@@ -350,6 +350,7 @@ GameObject:
   - component: {fileID: 4718937785285233454}
   - component: {fileID: 7201058756695911675}
   - component: {fileID: 215596603867129638}
+  - component: {fileID: 428836703105806431}
   m_Layer: 0
   m_Name: Unit_Edel
   m_TagString: Player
@@ -416,6 +417,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
+  unitFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}
@@ -716,6 +718,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &428836703105806431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8642592451490499134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b684168b2c551034ca2e31e5650bd993, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitReference: {fileID: 5048801818827486388}
 --- !u!1001 &319199133720096052
 PrefabInstance:
   m_ObjectHideFlags: 0
