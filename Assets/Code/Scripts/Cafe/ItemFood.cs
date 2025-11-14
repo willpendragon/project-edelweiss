@@ -8,15 +8,20 @@ public enum ItemFoodType
     ManaRecovery,
     FaithRecovery
 }
+
+// Buff Alignment - prototype names.
+
+
 [CreateAssetMenu(fileName = "ItemFood", menuName = "Items/Food", order = 1)]
 
 public class ItemFood : ScriptableObject
-
 {
+    public ItemFoodType itemFoodType;
+    public FoodBuff foodBuff;
+
     public string itemFoodName;
     public string itemFoodDescription;
     public float itemFoodPrice;
     public float recoveryAmount;
-    public ItemFoodType itemFoodType;
     public Sprite foodIcon;
 }

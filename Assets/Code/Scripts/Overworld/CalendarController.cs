@@ -27,6 +27,7 @@ public class CalendarController : MonoBehaviour
     {
         _daysCounter += days;
         UpdateCurrentDayText();
+        GameManager.Instance.BuffManager.UpdateBuffs(days);
         // Save the Current Day.
         _gameStatsManager.SaveCalendarData(days);
     }

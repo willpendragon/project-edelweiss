@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13abacb2f534ff34dbea42f20c42b229, type: 3}
   m_Name: Eclair_HP_Recovery
   m_EditorClassIdentifier: 
+  itemFoodType: 0
+  foodBuff: {fileID: 11400000, guid: 3c0090512360ec94b95ee53ca98b03b3, type: 2}
   itemFoodName: Eclair
   itemFoodDescription: "An old recipe from Rozenbaum B\xE4ckerei passed down through
     generations. A typical dessert to add some sweetness to long, dark wintery nights."
   itemFoodPrice: 50
   recoveryAmount: 30
-  itemFoodType: 0
   foodIcon: {fileID: 21300000, guid: edd0b97b475b15842a6de3b5e5f485a4, type: 3}

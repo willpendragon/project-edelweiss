@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,7 +16,7 @@ public class CafeMenuUIController : MonoBehaviour
     public Transform foodShelfContainer;             // Container where items will be displayed after purchase
     public GameObject foodShelfItemPrefab;           // Prefab for displaying each item on the Food Shelf
 
-    [SerializeField] private ItemFood selectedItem;                   // Currently selected item for purchase
+    [SerializeField] private ItemFood selectedItem;  // Currently selected item for purchase
     private float selectedItemPrice;                 // Price of the selected item
 
     public List<FoodInventoryEntry> bakedItems;
@@ -31,13 +32,17 @@ public class CafeMenuUIController : MonoBehaviour
     [SerializeField] Transform loveIconPrefabTransform;
     [SerializeField] private FoodListUIController _foodListUIController;
     [SerializeField] private CharacterListUIController _characterListUIController;
+
+    [SerializeField] private PastrySlotUIController _pastrySlotUIController;
+    [SerializeField] private FeedingController _feedingController;
+
     [SerializeField] private CafeSaveManager _cafeSaveManager;
-    [SerializeField] private PastrySlotController _pastrySlotController;
+
 
     private FoodShelfItem selectedFoodItem;  // The currently selected food item
 
     public FoodListUIController FoodListUIController => _foodListUIController;
-    public PastrySlotController PastrySlotController => _pastrySlotController;
+    public PastrySlotUIController PastrySlotController => _pastrySlotUIController;
 
     private void Awake()
     {
@@ -187,107 +192,35 @@ public class CafeMenuUIController : MonoBehaviour
         notificationTexts.text = $"Selected {foodItem.item.itemFoodName} for feeding. Choose a character.";
     }
 
-    public bool FeedCharacter(ref ItemFood foodItem, Unit fedUnit)
+    public void FeedCharacter(ref ItemFood foodItem, Unit fedUnit)
     {
-        // Destroy existing Pastry Slots panels.
-
-        // Instantiate Pastry Slots Panel for the corresponding Unit.
-        //GameObject newPastrySlotsPanel = Instantiate(_pastrySlotsObject, _pastrySlotsCanvas.transform);
-
-        // Fill the Pastry Slots Panel with the eaten pastries history for that character.
-
-        if (fedUnit.unitFoodSlots == fedUnit.unitTemplate.unitMaxFoodSlots)
+        if (_feedingController.HandleFeeding(foodItem, fedUnit))
         {
-            notificationTexts.text = $"{fedUnit.unitTemplate.unitName} is not hungry!";
-            return false;
-        }
-
-        bool itemUsed = false;
-
-        if (foodItem.itemFoodType == ItemFoodType.HPRecovery)
-        {
-            if (fedUnit.unitHealthPoints < fedUnit.unitMaxHealthPoints)
-            {
-                fedUnit.unitHealthPoints += foodItem.recoveryAmount;
-                if (fedUnit.unitHealthPoints > fedUnit.unitMaxHealthPoints)
-                {
-                    fedUnit.unitHealthPoints = fedUnit.unitMaxHealthPoints;
-                }
-                itemUsed = true;
-            }
-        }
-        else if (foodItem.itemFoodType == ItemFoodType.ManaRecovery)
-        {
-            if (fedUnit.unitManaPoints < fedUnit.unitMaxManaPoints)
-            {
-                fedUnit.unitManaPoints += foodItem.recoveryAmount;
-                if (fedUnit.unitManaPoints > fedUnit.unitMaxManaPoints)
-                {
-                    fedUnit.unitManaPoints = fedUnit.unitMaxManaPoints;
-                }
-                itemUsed = true;
-            }
-        }
-
-        else if (foodItem.itemFoodType == ItemFoodType.FaithRecovery)
-        {
-            if (fedUnit.unitFaithPoints >= 0)
-            {
-                fedUnit.unitFaithPoints += (int)foodItem.recoveryAmount;
-                itemUsed = true;
-            }
-        }
-        if (itemUsed)
-        {
-            notificationTexts.text = $"{fedUnit.unitTemplate.unitName} recovered {foodItem.recoveryAmount} {(foodItem.itemFoodType == ItemFoodType.HPRecovery ? "HP" : "MP")}!";
+            // This sequence triggers only when the character was actually fed.
+            _pastrySlotUIController.DestroyExistingSlotsPanel();
             _characterListUIController.UpdateCharacterStatsCounter(fedUnit);
             _cafeSaveManager.SaveRestoredCharacterStats();
+            // Move "love" feedback in another class
             GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
             Destroy(loveIconPrefabInstance, 1);
-            // Fill one food slot.
+            // Fill one food slot. Should use an helper class on the Unit.
             fedUnit.unitFoodSlots += 1;
-            // Spend War Funds and Update Counter
+            // Spend War Funds and Update Counter. Should use a dedicated class for spending.
             gameStatsManager.warFunds -= selectedItemPrice;
             UpdateWarFundsCounter();
 
-            // Add the food to the list of eaten Pastry for the corresponding character.
-            _pastrySlotController.TrackEatenFood(fedUnit, foodItem);
-            // Update the Pastry Slots for the corresponding Character.
-            //newPastrySlotsPanel.GetComponent<PastrySlotsPanelHelper>().UpdatePastrySlots();
-            // Save the list of eaten Pastry.
+            _pastrySlotUIController.CreatePastrySlotsPanel(fedUnit, foodItem);
         }
-        else
-        {
-            notificationTexts.text = $"{fedUnit.unitTemplate.unitName} is already at full {(foodItem.itemFoodType == ItemFoodType.HPRecovery ? "HP" : "MP")}!";
-        }
-
-        return itemUsed; // Return whether the item was used successfully
     }
 
+    public void HandleNotifications(string message)
+    {
+        notificationTexts.text = message;
+    }
     IEnumerator ClearNotificationText(GameObject currentEmoticon)
     {
         float clearNotificationWaitingTime = 1.5f;
         yield return new WaitForSeconds(clearNotificationWaitingTime);
         notificationTexts.text = "";
     }
-    //private void AddItemToFoodShelf(ItemFood item)
-    //{
-    //    // Check if the item is already on the Food Shelf
-    //    foreach (Transform child in foodShelfContainer)
-    //    {
-    //        FoodShelfItem shelfItem = child.GetComponent<FoodShelfItem>();
-    //        if (shelfItem != null && shelfItem.item == item)
-    //        {
-    //            // If the item already exists, increase the quantity
-    //            shelfItem.IncreaseQuantity();
-    //            return;
-    //        }
-    //    }
-    //    // If item is not already on the shelf, create a new shelf item
-    //    GameObject foodShelfItem = Instantiate(foodShelfItemPrefab, foodShelfContainer);
-    //    FoodShelfItem shelfItemComponent = foodShelfItem.GetComponent<FoodShelfItem>();
-
-    //    // Set item details using ScriptableObject data
-    //    shelfItemComponent.SetItem(item);
-    //}
 }
