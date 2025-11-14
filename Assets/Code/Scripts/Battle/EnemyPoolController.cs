@@ -44,12 +44,12 @@ public class EnemyPoolController : MonoBehaviour
         }
     }
 
-    void SpawnEnemies()
+    private void SpawnEnemies()
     {
-        for (int i = 0; i < GameManager.Instance.currentEnemySelectionIds.Count; i++)
+        for (int i = 0; i < GameManager.Instance.EnemyPartyManager.currentEnemySelectionIds.Count; i++)
         {
-            EnemyType type = GameManager.Instance.currentEnemySelectionIds[i];
-            Vector2 coords = GameManager.Instance.currentEnemySelectionCoords[i];
+            EnemyType type = GameManager.Instance.EnemyPartyManager.currentEnemySelectionIds[i];
+            Vector2 coords = GameManager.Instance.EnemyPartyManager.currentEnemySelectionCoords[i];
 
             GameObject spawnedEnemy = Instantiate(EnemyPoolGameObjects[(int)type]);
             Unit unitComponent = spawnedEnemy.GetComponent<Unit>();
@@ -60,19 +60,9 @@ public class EnemyPoolController : MonoBehaviour
             Debug.Log("Spawned Enemies on the Battlefield");
         }
     }
-
-    //void SpawnBossBattleEnemies()
-    //{
-    //    List<Vector2> enemyCoords = GameManager.Instance.currentEnemySelectionCoords;
-
-    //    foreach (var enemy in GameManager.Instance.currentEnemySelection)
-    //    {
-    //        Instantiate(enemy);
-    //    }
-    //}
-    void SetEnemiesStartingCoordinatesInBossBattle()
+    private void SetEnemiesStartingCoordinatesInBossBattle()
     {
-        List<Vector2> enemyCoords = GameManager.Instance.currentEnemySelectionCoords;
+        List<Vector2> enemyCoords = GameManager.Instance.EnemyPartyManager.currentEnemySelectionCoords;
 
         for (int i = 0; i < enemyCoords.Count; i++)
         {
@@ -99,7 +89,7 @@ public class EnemyPoolController : MonoBehaviour
         }
     }
 
-    void SetTileDetectedUnit(Unit unitComponent, GameObject spawnedEnemy)
+    private void SetTileDetectedUnit(Unit unitComponent, GameObject spawnedEnemy)
     {
         Transform tileSpawnPosition = GridManager.Instance.GetTileControllerInstance(unitComponent.startingXCoordinate, unitComponent.startingYCoordinate).transform;
         TileController enemyControlledTile = tileSpawnPosition.GetComponent<TileController>();

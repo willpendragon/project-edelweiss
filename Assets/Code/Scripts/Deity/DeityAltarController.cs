@@ -33,7 +33,7 @@ public class DeityAltarController : MonoBehaviour
 
     public void Start()
     {
-        GameManager.Instance.ApplyDeityLinks();
+        GameManager.Instance.DeityLinkManager.ApplyDeityLinks();
         List<Unit> playerPartyMemberInstances = GameManager.Instance.playerPartyMembersInstances;
 
         // Creates a Player Profile in the Deity Altar for each party member.
@@ -69,7 +69,7 @@ public class DeityAltarController : MonoBehaviour
             unit.LinkedDeityId = connectedDeityId;
 
             // Safely find the linked Deity.
-            var deity = GameManager.Instance.collectibleDeities.Find(d => d.Id == unit.LinkedDeityId);
+            var deity = GameManager.Instance.DeityLinkManager.collectibleDeities.Find(d => d.Id == unit.LinkedDeityId);
             if (deity == null) continue; // Skip if no deity found.
 
             GameObject newDeityUnitProfileInstance = Instantiate(deityProfileGO, capturedDeitiesContainer);
@@ -161,14 +161,14 @@ public class DeityAltarController : MonoBehaviour
             saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deityId);
 
             selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = deity.GetComponent<Unit>().unitTemplate.unitName;
-            GameManager.Instance.ApplyDeityLinks();
+            GameManager.Instance.DeityLinkManager.ApplyDeityLinks();
             summoningBuffController.ApplyLinkedDeityPermanentBuff(selectedPlayerUnit);
             UpdatePlayerUnitProfile(selectedPlayerUnit);
             var altarProfileController = selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>();
             altarProfileController.UpdatePlayerUnitLinkedDeityPortrait(deity);
 
             SaveStateManager.SaveGame(saveData);
-            Debug.Log("Deity successfully assigned to Unit.");
+            Debug.Log($"{deityId} successfully assigned to {selectedPlayerUnitId}.");
 
             GameObject[] playerUnitContainers = GameObject.FindGameObjectsWithTag("PlayerUnitContainer");
             foreach (var playerUnitContainer in playerUnitContainers)

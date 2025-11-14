@@ -12,6 +12,6 @@ public class EnemySelection : MonoBehaviour
 
     public void SelectMapNode()
     {
-        GameManager.Instance.GenerateEnemyPartyData(enemyParty); // Generate random enemy data.
+        GameManager.Instance.EnemyPartyManager.GenerateEnemyPartyData(enemyParty); // Generate random enemy data.
     }
 }
