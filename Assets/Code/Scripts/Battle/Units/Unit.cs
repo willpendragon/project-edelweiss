@@ -374,9 +374,12 @@ public class Unit : MonoBehaviour
         currentXCoordinate = x;
         currentYCoordinate = y;
 
-        // Update the unit's physical position.
-        Vector3 newPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(x, y);
-        transform.position = newPosition + new Vector3(0, transform.localScale.y / 2, 0);
+        if (unitType != UnitType.Deity) // Deities can't change their physical position on the battlefield.
+        {
+            // Update the unit's physical position.
+            Vector3 newPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(x, y);
+            transform.position = newPosition + new Vector3(0, transform.localScale.y / 2, 0);
+        }
 
         // Update the TileController's detected unit for both the old and new positions.
         TileController oldTile = GridManager.Instance.GetTileControllerInstance(currentXCoordinate, currentYCoordinate);
@@ -408,7 +411,6 @@ public class Unit : MonoBehaviour
         unitMagicPower = unitTemplate.unitMagicPower;
         unitMovementLimit = unitTemplate.unitMovemementLimit;
         unitMeleeAttackBaseDamage = unitTemplate.unitMeleeAttackBaseDamage;
-        unitFoodSlots = unitTemplate.unitMaxFoodSlots;
         currentUnitLifeCondition = UnitLifeCondition.unitAlive;
 
         experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
