@@ -4775,7 +4775,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Alpha 0.5.0
+  m_text: Build n.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
@@ -4941,6 +4941,14 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 7f11e3616461c174a9babb14db2b774f, type: 2}
+    - target: {fileID: 6591843661666999432, guid: e55fb1242dc1f3842aebd139911c6330, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -31.619873
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591843661666999432, guid: e55fb1242dc1f3842aebd139911c6330, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 74.48999
+      objectReference: {fileID: 0}
     - target: {fileID: 7099101678695387532, guid: e55fb1242dc1f3842aebd139911c6330, type: 3}
       propertyPath: loadingScreenIcon
       value: 
