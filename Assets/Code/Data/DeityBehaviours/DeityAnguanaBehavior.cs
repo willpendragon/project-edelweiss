@@ -35,6 +35,7 @@ public class DeityAnguanaBehavior : DeityBehavior
             Attack(deity);
             MoveDeityToRandomTile(deity);
             GameObject deitySpawnerGameObject = GameObject.FindGameObjectWithTag("DeitySpawner");
+            // Only the Obelisk conduit moves on the Batlefield.
             DeitySpawner deitySpawner = deitySpawnerGameObject.GetComponent<DeitySpawner>();
             deitySpawner.MoveObeliskOnGridMap();
         }
@@ -104,9 +105,9 @@ public class DeityAnguanaBehavior : DeityBehavior
         destinationTile.detectedUnit = deity.gameObject;
         destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
 
-        deity.transform.position = GridManager.Instance.GetWorldPositionFromGridCoordinates(
-            destinationTile.tileXCoordinate, destinationTile.tileYCoordinate);
-        deity.transform.position += new Vector3(0, 0.5f, 0); // Optional height offset
+        //deity.transform.position = GridManager.Instance.GetWorldPositionFromGridCoordinates(
+        //    destinationTile.tileXCoordinate, destinationTile.tileYCoordinate);
+        //deity.transform.position += new Vector3(0, 0.5f, 0); // Optional height offset
         deity.gameObject.GetComponent<Unit>().currentXCoordinate = destinationTile.tileXCoordinate;
         deity.gameObject.GetComponent<Unit>().currentYCoordinate = destinationTile.tileYCoordinate;
     }

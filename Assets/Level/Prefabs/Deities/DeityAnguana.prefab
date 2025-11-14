@@ -402,6 +402,7 @@ MonoBehaviour:
   deityHealthBar: {fileID: 1899164654146396583}
   enmityTracker: {fileID: 6263825845760581718}
   deityCry: {fileID: 8214377848972271374}
+  currentDeityStatus: 0
   _enmityBar: {fileID: 4969434186105916154}
 --- !u!114 &-5287236863881772563
 MonoBehaviour:
@@ -431,6 +432,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
+  unitFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}

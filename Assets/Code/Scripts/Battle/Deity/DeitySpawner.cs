@@ -29,17 +29,6 @@ public class DeitySpawner : MonoBehaviour
     {
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
-            //string sceneName = SceneManager.GetActiveScene().name;
-
-            // This behaviour allows to spawn Tomodachick as a Deity in the Tutorial Battle.
-            //if (sceneName == "battle_tutorial")
-            //{
-            //    GameObject spawningDeity = spawnableDeities[0];
-            //    GameObject deityOnBattlefield = Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
-
-            //}
-            //else
-            //{
             int deityRollMinRange = 0;
             int deityRollMaxRange = 7;
             var deityRoll = localRandom.Next(deityRollMinRange, deityRollMaxRange);
@@ -111,22 +100,22 @@ public class DeitySpawner : MonoBehaviour
     public void InitiateBattleWithDeity(GameObject unlockedDeity)
     {
         //Unlocks Deity as an Unbound Entity
-        Debug.Log("Unbound Deity Unlocked");
+        Debug.Log($"Unlocked {unlockedDeity.GetComponent<Unit>().unitTemplate.unitName}");
 
         int unlockedDeityStartingTileXCoordinate = 5;
         int unlockedDeityStartingTileYCoordinate = 5;
 
         unlockedDeity.GetComponent<Unit>().startingXCoordinate = unlockedDeityStartingTileXCoordinate;
         unlockedDeity.GetComponent<Unit>().startingYCoordinate = unlockedDeityStartingTileYCoordinate;
-        GameObject unboundDeity = Instantiate(unlockedDeity);
-        Debug.Log("Moving Unbound Deity to Starting Position");
+        GameObject unboundDeity = Instantiate(unlockedDeity, deitySpawnPosition.position, Quaternion.identity);
+        Debug.Log($"Instantiate Unbound Deity GameObject at {deitySpawnPosition}");
 
         if (unboundDeity != null)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
             int deityTilePositionX = 5;
             int deityTilePositionY = 5;
-            unboundDeity.GetComponent<Unit>().MoveUnit(deityTilePositionX, deityTilePositionY, false);
+            //unboundDeity.GetComponent<Unit>().MoveUnit(deityTilePositionX, deityTilePositionY, false);
             TileController firstDeitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityTilePositionX, deityTilePositionY);
 
             unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
@@ -145,17 +134,6 @@ public class DeitySpawner : MonoBehaviour
             Destroy(enemy);
         }
         unboundDeity.gameObject.tag = "Enemy";
-        //CreateDeityHealthBar(unboundDeity);
-    }
-
-    void CreateDeityHealthBar(GameObject spawnedUnboundDeity)
-    {
-        currentUnboundDeity = spawnedUnboundDeity.GetComponent<Deity>();
-
-        GameObject battleInterfaceCanvasGO = GameObject.FindGameObjectWithTag("BattleInterfaceCanvas");
-        deityHealthBarInstance = Instantiate(deityHealthBar, battleInterfaceCanvasGO.transform);
-        currentUnboundDeity.deityHealthBar = deityHealthBarInstance;
-        Debug.Log("Spawning Deity Health Bar");
     }
 
     void PopulateDeityHealthBar()
