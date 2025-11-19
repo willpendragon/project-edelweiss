@@ -75,16 +75,30 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private void DisplayKnockbackPreview()
     {
         var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
+        // Block the Knockback preview for Magnet-equipped units.
+        if (activePlayerUnit.GetComponent<Unit>().hasHookshot == true)
+            return;
+
         var cursor = FindAnyObjectByType<CursorController>();
         Debug.Log($"Melee Targeting: {cursor.TargetedUnit}");
 
+        // Block the Knockback preview if the Tile belongs to a Deity conduit.
+        if (cursor.TargetedUnit.unitType == Unit.UnitType.Deity)
+            return;
+
         if (!IsKnockbackPossible(activePlayerUnit.GetComponent<Unit>(), cursor.TargetedUnit.ownedTile))
             return;
-        var enemyTile = cursor.TargetedUnit.ownedTile;
-        //if (_knockbackTile = null)
-        //    return;
+
         // Calculate the Knockback direction.
         _knockbackTile = CalculateKnockback(activePlayerUnit.GetComponent<Unit>(), cursor.TargetedUnit);
+
+        // Doesn't display the Knockback feedback if the target Tile is occupied.
+        // Band-aid fix, the knockback calculation shouldn't return a tile at all in such cases.
+        if (_knockbackTile == null)
+            return;
+        if (_knockbackTile.detectedUnit != null)
+            return;
+
         // Retrieve the current Tile Color
         _originalTileColor = _knockbackTile.tileShaderController.RetrieveCurrentTileColor();
         // Highlight the possible knockback destination tile
