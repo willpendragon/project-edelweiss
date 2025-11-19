@@ -47,9 +47,8 @@ public class EnemyTurnManager : MonoBehaviour
         foreach (GameObject enemyGameObject in enemiesOnBattlefield)
         {
             EnemyAgent enemyComponent = enemyGameObject.GetComponent<EnemyAgent>();
-            if (enemyComponent == null)
-                return;
-            enemiesInQueue.Add(enemyComponent);
+            if (enemyComponent != null)
+                enemiesInQueue.Add(enemyComponent);
         }
     }
     private void TriggerEnemyActions()
