@@ -111,7 +111,7 @@ public class BattleFlowController : MonoBehaviour
         // It should be handled by UI behaviour.
         battleEndUIHandler.battleEndEnemiesKilledText.text = $"Enemies Killed<space=60>{enemiesKilledInCurrentBattle}";
         battleEndUIHandler.battleEndWarFundsGainedText.text = $"War Funds Gained<space=20>{warFunds}<space=30><sprite=93>";
-        battleEndUIHandler.battleEndCrystalObtainedText.text = $"Tributes<space=20>{battleManager.captureCrystalsRewardPool}<space=30><sprite=98>";
+        //battleEndUIHandler.battleEndCrystalObtainedText.text = $"Tributes<space=20>{battleManager.captureCrystalsRewardPool}<space=30><sprite=98>";
 
         string ingredientNames = string.Join("\n", _lootedIngredients);
         battleEndUIHandler.battleEndIngredients.text = ingredientNames;

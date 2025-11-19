@@ -268,6 +268,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
     {
         activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        // Use the centralized logic.
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateProfile(activePlayerUnit.unitTemplate.unitName);
     }
 
     public void PlayVFX(GameObject spellVFX, TileController enemyOccupiedTile, Vector3 spellVFXOffset)

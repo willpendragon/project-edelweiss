@@ -30,9 +30,9 @@ public class TrapController : MonoBehaviour
             Unit detectedUnitOnTrapTile = GetComponentInParent<TileController>().detectedUnit.GetComponent<Unit>();
             if (SpikeKillingPlayer(detectedUnitOnTrapTile, spikeDamage))
             {
-                detectedUnitOnTrapTile.GetComponent<CrystalHandler>()?.TurnUnitIntoCrystal();
+                //detectedUnitOnTrapTile.GetComponent<CrystalHandler>()?.TurnUnitIntoCrystal();
                 detectedUnitOnTrapTile.TakeDamage(spikeDamage);
-                Debug.Log("Targeted Unit became a Capture Crystal");
+                //Debug.Log("Targeted Unit became a Capture Crystal");
             }
             else if (detectedUnitOnTrapTile.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
             {

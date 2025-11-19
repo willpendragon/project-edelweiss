@@ -5,12 +5,13 @@ using TMPro;
 using DG.Tweening;
 using System;
 
-public class BattleInterface : MonoBehaviour
+public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManager
 {
     public static BattleInterface Instance { get; private set; }
 
     [Header("Logic")]
     [SerializeField] BattleManager battleManager;
+    [SerializeField] private PlayerPartyProfilesUIManager _playerPartyProfilesUIManager;
     [SerializeField] float battlefieldNotificationsPanelDurationTime;
     public SummonedUnitInfoPanelHelper summonedUnitInfoPanelHelper;
 
@@ -34,6 +35,8 @@ public class BattleInterface : MonoBehaviour
 
     public delegate void DeselectPlayerAction();
     public static event DeselectPlayerAction OnDeselectPlayerAction;
+
+    public PlayerPartyProfilesUIManager PlayerPartyProfilesUIManager => _playerPartyProfilesUIManager;
 
     private void Awake()
     {

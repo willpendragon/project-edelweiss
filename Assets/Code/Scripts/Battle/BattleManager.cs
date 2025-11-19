@@ -6,6 +6,8 @@ public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
 
+    // Distribute responsibilities.
+
     [Header("Gameplay Flow")]
     [SerializeField] DeityAchievementsController deityAchievementsController;
     public EnemyTurnManager enemyTurnManager;
