@@ -13,6 +13,7 @@ public class PastryCreator : MonoBehaviour
     [SerializeField] private List<Ingredient> allIngredientPrototypes;
     [SerializeField] InventoryDisplayHelper _inventoryDisplayHelper;
     [SerializeField] private PastryFeedbackController _pastryFeedbackController;
+    [SerializeField] CafeMenuUIController _cafeMenuiUIController;
 
     private IEnumerator Start()
     {
@@ -68,6 +69,16 @@ public class PastryCreator : MonoBehaviour
             GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag(GameTags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
             gameStatsManager.SaveIngredientsAfterBaking();
             _inventoryDisplayHelper.RefreshInventoryDisplay();
+
+            // Add the baked item to the Cafe Menu UI list of baked items.
+            _cafeMenuiUIController.bakedItems.Add(new Inventory.FoodInventoryEntry
+            {
+                item = recipe.resultItem,
+                quantity = 1
+            }
+            );
+            // Save the list of baked items using SaveBakedItemsHelper.
+            _cafeMenuiUIController.SaveBakedItemsHelper.SaveBakedItems();
         }
         else
         {

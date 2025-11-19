@@ -17,13 +17,6 @@ public class PastryFeedbackController : MonoBehaviour
 
     public Recipe testRecipe;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            TestCookingFeedback();
-        }
-    }
     private void TestCookingFeedback()
     {
         var foodIcon = testRecipe.resultItem.foodIcon;

@@ -6,18 +6,6 @@ public class SaveBakedItemsHelper : MonoBehaviour
 {
     [SerializeField] CafeMenuUIController _cafeMenuUI;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            SaveBakedItems();
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            LoadBakedItems();
-        }
-    }
     public void SaveBakedItems()
     {
         var bakedItems = _cafeMenuUI.bakedItems;
@@ -36,8 +24,8 @@ public class SaveBakedItemsHelper : MonoBehaviour
         SaveStateManager.SaveGame(SaveStateManager.saveData);
     }
 
-    public void LoadBakedItems()
-    {
-        SaveStateManager.LoadGame();
-    }
+    //public void LoadBakedItems()
+    //{
+    //    SaveStateManager.LoadGame();
+    //}
 }

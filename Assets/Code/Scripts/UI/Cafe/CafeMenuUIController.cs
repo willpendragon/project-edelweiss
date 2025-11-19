@@ -44,6 +44,8 @@ public class CafeMenuUIController : MonoBehaviour
     public FoodListUIController FoodListUIController => _foodListUIController;
     public PastrySlotUIController PastrySlotController => _pastrySlotUIController;
 
+    public SaveBakedItemsHelper SaveBakedItemsHelper => _saveBakedItemsHelper;
+
     private void Awake()
     {
         if (Instance == null)
@@ -79,10 +81,6 @@ public class CafeMenuUIController : MonoBehaviour
         // Store the selected item and its price
         selectedItem = item;
         selectedItemPrice = price;
-
-        // Update the confirmation popup text and display the popup
-        //confirmationText.text = $"Buy {item.itemFoodName} for {price} War Funds?";
-        //confirmPurchasePopup.SetActive(true);
     }
     public void OnItemDropped(GameObject itemFoodObject, ItemFood itemFood, float itemFoodPrice, PointerEventData pointerData)
     {
@@ -109,9 +107,6 @@ public class CafeMenuUIController : MonoBehaviour
             // Deduct funds and update display
             gameStatsManager.warFunds -= selectedItemPrice;
             UpdateWarFundsCounter();
-
-            // Add the item to the Food Shelf
-            //AddItemToFoodShelf(selectedItem);
 
             // Show purchase notification
             notificationTexts.text = $"{selectedItem.itemFoodName} purchased!";
@@ -174,7 +169,6 @@ public class CafeMenuUIController : MonoBehaviour
             gameStatsManager.SaveSpentWarFunds(foodPrice);
             UpdateWarFundsCounter();
             currentPurchasedFood = purchasedFood;
-            //EnableFeedingCharactersButtons();
         }
         else
         {
@@ -216,11 +210,5 @@ public class CafeMenuUIController : MonoBehaviour
     public void HandleNotifications(string message)
     {
         notificationTexts.text = message;
-    }
-    IEnumerator ClearNotificationText(GameObject currentEmoticon)
-    {
-        float clearNotificationWaitingTime = 1.5f;
-        yield return new WaitForSeconds(clearNotificationWaitingTime);
-        notificationTexts.text = "";
     }
 }
