@@ -80,7 +80,6 @@ public class TurnController : MonoBehaviour
         BumperEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         StunnerEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
-        BossSimildeBehaviour.OnCheckPlayer += PlayerUnitsLifeCheck;
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnits;
         Deity.OnPlayerTurnSwap += RestorePlayerUnits;
         Unit.OnCheckGameOver += GameOverCheck;
@@ -90,7 +89,6 @@ public class TurnController : MonoBehaviour
         UnitSelectionController.OnUnitTurnEnded -= DecideTurn;
         BumperEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
         StunnerEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
-        BossSimildeBehaviour.OnCheckPlayer -= PlayerUnitsLifeCheck;
         DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnits;
         Deity.OnPlayerTurnSwap -= RestorePlayerUnits;
@@ -249,12 +247,12 @@ public class TurnController : MonoBehaviour
     }
     private void HandleBossBattle()
     {
-        BossController currentBossController = GameObject.FindGameObjectWithTag(Tags.BOSS_CONTROLLER).GetComponent<BossController>();
-        if (currentBossController.bossUnit != null && currentBossController.bossUnit.HealthPoints <= 0)
-        {
-            Debug.Log("Boss Defeated");
-            BattleFlowController.Instance.PlayerPartyVictorySequence("Boss Defeated", warFunds);
-        }
+        //BossController currentBossController = GameObject.FindGameObjectWithTag(Tags.BOSS_CONTROLLER).GetComponent<BossController>();
+        //if (currentBossController.bossUnit != null && currentBossController.bossUnit.HealthPoints <= 0)
+        //{
+        //    Debug.Log("Boss Defeated");
+        //    BattleFlowController.Instance.PlayerPartyVictorySequence("Boss Defeated", warFunds);
+        //}
     }
     public void RestorePlayerUnits()
     {
