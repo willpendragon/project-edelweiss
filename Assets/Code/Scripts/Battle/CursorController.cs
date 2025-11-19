@@ -352,6 +352,8 @@ public class CursorController : MonoBehaviour
             .Where(obj => obj != null)
             .Select(obj => obj.GetComponent<Unit>())
             .Where(unit => unit != null)
+            // Exclude dead Units. The End Turn Button will flash when alive Units only have 0 OPs.
+            .Where(unit => unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
             .All(unit => unit.unitOpportunityPoints <= 0);
 
         if (allNoOpportunities)
