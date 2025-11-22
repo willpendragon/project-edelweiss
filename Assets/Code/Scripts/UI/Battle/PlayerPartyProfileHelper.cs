@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,17 +18,31 @@ public class PlayerPartyProfileHelper : MonoBehaviour
         if (unit == null)
             return;
         unitPortrait.sprite = unit.unitTemplate.unitMiniPortrait;
-        hpSlider.maxValue = unit.unitMaxHealthPoints;
-        mpSlider.maxValue = unit.unitMaxManaPoints;
+
         availableMovesText.text = unit.unitOpportunityPoints.ToString();
         hpText.text = ($"{unit.unitHealthPoints}/{unit.unitMaxHealthPoints}");
         mpText.text = ($"{unit.unitManaPoints}/{unit.unitMaxManaPoints}");
         Debug.Log("Filling Player Details");
+        UpdateSliders(unit);
+    }
+
+    private void UpdateSliders(Unit unit)
+    {
+        hpSlider.maxValue = unit.unitTemplate.unitMaxHealthPoints;
+        mpSlider.maxValue = unit.unitTemplate.unitManaPoints;
+        hpSlider.value = unit.unitHealthPoints;
+        mpSlider.value = unit.unitManaPoints;
     }
 
     public void UpdateRemainingMovesDisplay(Unit unit)
     {
         availableMovesText.text = ($"{unit.unitOpportunityPoints}/{unit.unitTemplate.unitOpportunityPoints}");
         Debug.Log("Update remaining moves details");
+    }
+
+    public void UpdateHP(Unit unit)
+    {
+        hpText.text = ($"{unit.unitHealthPoints}/{unit.unitMaxHealthPoints}");
+        hpSlider.value = unit.unitHealthPoints;
     }
 }

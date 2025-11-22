@@ -140,8 +140,8 @@ public class TurnController : MonoBehaviour
     private void StartPlayerTurn()
     {
         // Send Player Turn UI notification.
-        // Allow the Player to select characters.
         OnPlayerTurn("Player Turn");
+        // Allow the Player to select characters.
         SetPlayerUnitsToActive();
     }
     private void SetPlayerUnitsToActive()
@@ -264,6 +264,11 @@ public class TurnController : MonoBehaviour
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
         }
+        // Refresh the remaining Moves on the UI.
+        DOVirtual.DelayedCall(0.1f, () =>
+            {
+                BattleInterface.Instance.PlayerPartyProfilesUIManager.RefreshPartyMovesCounter();
+            });
         RestoreActivePlayerUnit();
         SetPlayerUnitsToActive();
 

@@ -160,7 +160,8 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
     }
     private void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
-        activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
-
+        // Use centralized logic.
+        //activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateProfile(activePlayerUnit.unitTemplate.unitName);
     }
 }

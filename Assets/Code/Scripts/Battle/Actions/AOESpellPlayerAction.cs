@@ -98,7 +98,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         int damageToApply = CalculateSpellDamage(spell);
         spellTarget.TakeDamage(damageToApply);
 
-        // Only spawm the Frozen VFX if the Enemy has HP left after the attack
+        // Only spawn the Frozen VFX if the Enemy has HP left after the attack
         if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun && spellTarget.unitHealthPoints > 0)
             TriggerSecondaryEffect(spellTarget);
 
@@ -119,9 +119,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
         List<TileController> affectedTiles = gridMovementController.GetMultipleTiles(targetTile, aoeRange);
 
-        activePlayerUnit.unitOpportunityPoints--;
-        activePlayerUnit.SpendManaPoints(spell.manaPointsCost);
-        UpdateActivePlayerUnitMana(activePlayerUnit);
+
+        SpendResources(activePlayerUnit, spell);
 
         OnUsedSpell?.Invoke($"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}");
 
@@ -151,7 +150,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         activePlayerUnit.SpendManaPoints(spell.manaPointsCost);
         activePlayerUnit.unitOpportunityPoints--;
-        UpdateActivePlayerUnitMana(activePlayerUnit);
+        // Update on the UI.
+        UpdateActivePlayerUnitProfile(activePlayerUnit);
+
     }
 
     private void TriggerSecondaryEffect(Unit spellTarget)
@@ -265,11 +266,12 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         }
     }
 
-    public void UpdateActivePlayerUnitMana(Unit activePlayerUnit)
+    public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
-        activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        //activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
         // Use the centralized logic.
         BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateProfile(activePlayerUnit.unitTemplate.unitName);
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate.unitName);
     }
 
     public void PlayVFX(GameObject spellVFX, TileController enemyOccupiedTile, Vector3 spellVFXOffset)

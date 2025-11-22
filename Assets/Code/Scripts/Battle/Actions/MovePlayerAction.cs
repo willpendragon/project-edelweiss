@@ -71,6 +71,8 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
     private void SpendOpportunityPoints(Unit activePlayerUnit)
     {
         activePlayerUnit.unitOpportunityPoints--;
+        // Use the centralized logic.
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate.unitName);
     }
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {

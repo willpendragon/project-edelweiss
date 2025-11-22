@@ -52,8 +52,9 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         OnTrapPlaced?.Invoke();
     }
     private void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
-    {
-        activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+    {// Use centralized logic
+        //activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate.unitName);
 
     }
 }

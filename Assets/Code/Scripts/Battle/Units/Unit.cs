@@ -1,6 +1,9 @@
+using ProjectEdelweiss.Utils;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -156,6 +159,11 @@ public class Unit : MonoBehaviour
             slider.value = unitHealthPoints;
 
             Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
+        }
+
+        if (this.gameObject.tag != GameTags.Enemy)
+        {
+            BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateHPWrapper(this.unitTemplate.unitName);
         }
     }
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
