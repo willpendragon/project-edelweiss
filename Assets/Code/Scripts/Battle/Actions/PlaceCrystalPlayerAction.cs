@@ -127,7 +127,6 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
             captureCrystalInstance.transform.DOMove(deityObeliskSpawningPoint.transform.position, 0.5f)
             );
 
-
         // Shrink (disappear) crystal
         crystalSequence.Append(
             captureCrystalInstance.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack)
