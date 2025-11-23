@@ -16,9 +16,11 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] GameObject deityObelisk;
     [SerializeField] GameObject deityObeliskSpawningPoint;
     [SerializeField] private EnemyTurnManager _enemyTurnManager;
-
+    private GameObject _deityObeliskInstance;
     private GameObject deityHealthBarInstance;
 
+    public GameObject DeityObelisk => _deityObeliskInstance;
+    public GameObject DeityObeliskSpawningPoint => deityObeliskSpawningPoint;
 
     private System.Random localRandom = new System.Random(); // Local random number generator
 
@@ -119,7 +121,7 @@ public class DeitySpawner : MonoBehaviour
             TileController firstDeitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityTilePositionX, deityTilePositionY);
 
             unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
-            GameObject deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
+            _deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
 
             GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
             firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;

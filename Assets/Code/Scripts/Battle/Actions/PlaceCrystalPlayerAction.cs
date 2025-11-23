@@ -54,7 +54,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
         GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, targetTile.transform.position, Quaternion.identity);
 
-        AnimateCrystal(captureCrystalInstance, targetTile.transform.position);
+        AnimateCrystal(captureCrystalInstance);
 
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlayPlaceCrystalSFX.Invoke();
 
@@ -75,22 +75,42 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
         }
         else
         {
+            // Failed Capture Feedback on Obelisk.
             OnCaptureAttempt(FAILED_CAPTURE_MESSAGE);
+            GameObject deityObelisk = GameObject.FindGameObjectWithTag(GameTags.DEITY_SPAWNER).GetComponent<DeitySpawner>().DeityObelisk;
+            PlayFailureFeedback(deityObelisk);
         }
     }
 
-    private void AnimateCrystal(GameObject captureCrystalInstance, Vector3 currentSavedTilePosition)
+
+    public void PlayFailureFeedback(GameObject deityObelisk)
     {
-        Deity deity = GameObject.FindGameObjectWithTag(GameTags.DEITY_SPAWNER).GetComponent<DeitySpawner>().currentUnboundDeity;
+        if (deityObelisk == null) return;
+
+        // Get renderer and original color
+        Renderer rend = deityObelisk.GetComponentInChildren<MeshRenderer>();
+        if (rend == null) return;
+        Material mat = rend.material;
+        Color originalColor = mat.color;
+
+        // Create a DOTween sequence
+        Sequence seq = DOTween.Sequence();
+
+        // Shake and flash red simultaneously
+        seq.Join(deityObelisk.transform.DOShakePosition(0.3f, 0.2f, 10, 90, false, true));
+        seq.Join(rend.material.DOColor(Color.red, 0.1f));
+
+        // Revert color back to original
+        seq.Append(rend.material.DOColor(originalColor, 0.2f));
+    }
+
+
+    private void AnimateCrystal(GameObject captureCrystalInstance)
+    {
+        GameObject deityObeliskSpawningPoint = GameObject.FindGameObjectWithTag(GameTags.DEITY_SPAWNER).GetComponent<DeitySpawner>().DeityObeliskSpawningPoint;
 
         Vector3 startPos = captureCrystalInstance.transform.position;
-        Vector3 endPos = deity.transform.position;
-
-        var energyLine = captureCrystalInstance.GetComponentInChildren<LineRenderer>();
-        energyLine.positionCount = 2;
-        energyLine.SetPosition(0, startPos);
-        energyLine.SetPosition(1, endPos);
-        energyLine.enabled = false; // Start hidden
+        Vector3 endPos = deityObeliskSpawningPoint.transform.position;
 
         captureCrystalInstance.transform.localScale = Vector3.zero;
 
@@ -101,14 +121,12 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
             captureCrystalInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.4f).SetEase(Ease.OutBack)
         );
 
-        // Show LineRenderer
-        crystalSequence.AppendCallback(() => energyLine.enabled = true);
+        // Move Crystal to the Deity conduit.
 
-        // Keep line for a short duration
-        crystalSequence.AppendInterval(0.3f);
+        crystalSequence.Append(
+            captureCrystalInstance.transform.DOMove(deityObeliskSpawningPoint.transform.position, 0.5f)
+            );
 
-        // Hide line
-        crystalSequence.AppendCallback(() => energyLine.enabled = false);
 
         // Shrink (disappear) crystal
         crystalSequence.Append(
