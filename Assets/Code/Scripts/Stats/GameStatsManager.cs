@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameStatsManager : MonoBehaviour
@@ -25,11 +26,13 @@ public class GameStatsManager : MonoBehaviour
         LoadWarFunds();
         LoadEnemiesKilled();
         LoadUsedSingleTargetSpells();
-        LoadCaptureCrystalsCount();
+
+        //LoadCaptureCrystalsCount();
         LoadUnlockedKeys();
     }
     void Start()
     {
+        LoadDeityTributesFromBakedItems();
         LoadCharacterData();
 
         // Load ingredients AFTER PersistentInventoryManager has been initialized.
@@ -197,15 +200,37 @@ public class GameStatsManager : MonoBehaviour
             enemiesKilled = gameSaveData.enemiesKilled;
         }
     }
-    public void LoadCaptureCrystalsCount()
+    //public void LoadCaptureCrystalsCount()
+    //{
+    //    GameSaveData resourceSaveData = SaveStateManager.saveData;
+    //    if (resourceSaveData != null && resourceSaveData.resourceData != null)
+    //    {
+    //        captureCrystalsCount = resourceSaveData.resourceData.captureCrystalsCount;
+    //        Debug.Log($"Loaded Capture Crystals: {captureCrystalsCount}");
+    //    }
+    //}
+
+    public void LoadDeityTributesFromBakedItems()
     {
-        GameSaveData resourceSaveData = SaveStateManager.saveData;
-        if (resourceSaveData != null && resourceSaveData.resourceData != null)
+        GameSaveData save = SaveStateManager.saveData;
+
+        if (save != null && save.bakedItems != null)
         {
-            captureCrystalsCount = resourceSaveData.resourceData.captureCrystalsCount;
-            Debug.Log($"Loaded Capture Crystals: {captureCrystalsCount}");
+            var deityEntries = save.bakedItems
+                .FindAll(item => item.pastryName == "DeityTribute");
+
+            captureCrystalsCount = deityEntries.Sum(item => item.quantity);
+
+            Debug.Log($"Loaded Deity Tributes Battle Items Total: {captureCrystalsCount}");
+        }
+        else
+        {
+            captureCrystalsCount = 0;
+            Debug.LogWarning("Could not load deity tributes.");
         }
     }
+
+
     public void SaveCaptureCrystalsCount()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;

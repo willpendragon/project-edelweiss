@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class OverworldMapUIController : MonoBehaviour
 {
@@ -13,9 +12,14 @@ public class OverworldMapUIController : MonoBehaviour
     void Start()
     {
         gameStatsManager.warFunds.ToString();
-        crystalsCounter.text = $"Tributes <sprite=98> {gameStatsManager.captureCrystalsCount}";
+        DOVirtual.DelayedCall(0.1f, UpdateTributesCounter);
         warFundsCounter.text = $"War Funds <sprite=93> {gameStatsManager.warFunds}";
         locationInfoPanel?.SetActive(false);
+    }
+
+    private void UpdateTributesCounter()
+    {
+        crystalsCounter.text = $"Tributes <sprite=98> {gameStatsManager.captureCrystalsCount}";
     }
 
     public void SetArrowsVisibility(float alpha)
