@@ -16,7 +16,7 @@ public class MagnetHelper : MonoBehaviour
         }
         // Position it above the attacker
         Vector3 attackerPosition = attacker.transform.position;
-        Vector3 offset = new Vector3(0, 2f, 0);  // Raise the magnet above the attacker's head
+        Vector3 offset = new Vector3(0, 3.5f, 0);  // Raise the magnet above the attacker's head
         activeMagnet.transform.position = attackerPosition + offset;
 
         // Get the defender's position
