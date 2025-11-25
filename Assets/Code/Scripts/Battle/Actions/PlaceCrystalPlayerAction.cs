@@ -5,6 +5,7 @@ using ProjectEdelweiss.Utils;
 
 public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
+    // The name of the class is misleading: the crystals are now known as DeityTributes.
     public int selectionLimiter = 1;
     public GameObject captureCrystal;
     public TileController currentSavedTile;
@@ -51,6 +52,7 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
         UpdateActivePlayerUnitProfile(activePlayerUnit);
 
         gameStatsManager.captureCrystalsCount--;
+        gameStatsManager.ConsumeDeityTribute();
 
         GameObject captureCrystalInstance = Instantiate(Resources.Load("CaptureCrystal") as GameObject, targetTile.transform.position, Quaternion.identity);
 
@@ -82,7 +84,6 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
         }
     }
 
-
     public void PlayFailureFeedback(GameObject deityObelisk)
     {
         if (deityObelisk == null) return;
@@ -103,7 +104,6 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
         // Revert color back to original
         seq.Append(rend.material.DOColor(originalColor, 0.2f));
     }
-
 
     private void AnimateCrystal(GameObject captureCrystalInstance)
     {

@@ -230,6 +230,39 @@ public class GameStatsManager : MonoBehaviour
         }
     }
 
+    public void ConsumeDeityTribute()
+    {
+        GameSaveData save = SaveStateManager.saveData;
+
+        if (save?.bakedItems == null)
+            return;
+
+        // Search for any entry with pastryName == "DeityTribute"
+        for (int i = 0; i < save.bakedItems.Count; i++)
+        {
+            BakedItemsData item = save.bakedItems[i];
+
+            if (item.pastryName == "DeityTribute")
+            {
+                if (item.quantity > 1)
+                {
+                    item.quantity--;    // reduce this entry
+                }
+                else
+                {
+                    save.bakedItems.RemoveAt(i);  // remove entry entirely
+                }
+
+                SaveStateManager.SaveGame(save);
+
+                Debug.Log("Consumed ONE DeityTribute from bakedItems.");
+                return;
+            }
+        }
+
+        Debug.LogWarning("Tried to consume a DeityTribute but none were found.");
+    }
+
 
     public void SaveCaptureCrystalsCount()
     {
