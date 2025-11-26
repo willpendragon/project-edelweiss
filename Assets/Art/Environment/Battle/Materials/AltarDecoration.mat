@@ -66,6 +66,7 @@ Material:
     - _NoiseCat: 1
     - _NoiseIntensity: 0
     - _NoiseScale: 6
+    - _OutlineThickness: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RainbowIntensity: 0.878
@@ -78,4 +79,5 @@ Material:
     - _Color: {r: 1, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _NoiseSpeed: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
