@@ -14,6 +14,11 @@ public class Inventory : ScriptableObject
         public int quantity;
     }
 
+    public void ClearBakedItems()
+    {
+        bakedItems.Clear();
+    }
+
     public void Add(Ingredient ingredient, int amount = 1)
     {
         var entry = items.Find(e => e.ingredient == ingredient);

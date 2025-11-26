@@ -10,19 +10,21 @@ public class PersistentInventoryManager : MonoBehaviour
     [SerializeField] private List<Ingredient> allIngredientPrototypes; // Assign all known ingredients in the Inspector.
     [SerializeField] private List<ItemFood> allBakedItemPrototypes; // Assign all known baked items in the Inspector.
 
+    public static PersistentInventoryManager Instance;
 
     void Awake()
     {
-        if (CurrentInventory == null)
+        if (Instance == null)
         {
-            CurrentInventory = Instantiate(inventoryAsset);
-            Debug.Log("[PersistentInventoryManager] Instantiated new inventory. ID: " + CurrentInventory.GetInstanceID());
+            Instance = this;
 
-            FromSaveData(SaveStateManager.saveData.savedInventory, CurrentInventory, allIngredientPrototypes);
-            Debug.Log("[PersistentInventoryManager] Loaded saved inventory items: " + CurrentInventory.items.Count);
+            if (CurrentInventory == null)
+            {
+                CurrentInventory = Instantiate(inventoryAsset);
 
-            FromSavedBakedItems(SaveStateManager.saveData.bakedItems, CurrentInventory, allBakedItemPrototypes);
-
+                FromSaveData(SaveStateManager.saveData.savedInventory, CurrentInventory, allIngredientPrototypes);
+                FromSavedBakedItems(SaveStateManager.saveData.bakedItems, CurrentInventory, allBakedItemPrototypes);
+            }
 
             DontDestroyOnLoad(this.gameObject);
         }
@@ -91,5 +93,14 @@ public class PersistentInventoryManager : MonoBehaviour
         }
     }
 
-
+    public void LoadBakedItemsFromSave()
+    {
+        CurrentInventory.ClearBakedItems();
+        FromSavedBakedItems(SaveStateManager.saveData.bakedItems, CurrentInventory, allBakedItemPrototypes);
+        Debug.Log("[BakedItems] Reloaded from save file.");
+    }
+    public static void ReloadBakedItems()
+    {
+        Instance.LoadBakedItemsFromSave();
+    }
 }

@@ -8,6 +8,11 @@ public class FeedingController : MonoBehaviour
     [SerializeField] private CafeBuffController _cafeBuffController;
     public bool HandleFeeding(ItemFood foodItem, Unit fedUnit)
     {
+        if (foodItem.itemFoodType == ItemFoodType.DeityTribute)
+        {
+            _cafeMenuUIController.HandleNotifications($"Ew. What kind of lunatic would eat THAT?");
+            return false;
+        }
         if (fedUnit.unitFoodSlots == fedUnit.unitTemplate.unitMaxFoodSlots)
         {
             _cafeMenuUIController.HandleNotifications($"{fedUnit.unitTemplate.unitName} is not hungry!");

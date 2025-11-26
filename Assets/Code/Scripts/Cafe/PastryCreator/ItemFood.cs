@@ -6,7 +6,8 @@ public enum ItemFoodType
 {
     HPRecovery,
     ManaRecovery,
-    FaithRecovery
+    FaithRecovery,
+    DeityTribute
 }
 
 // Buff Alignment - prototype names.

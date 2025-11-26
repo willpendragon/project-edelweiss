@@ -62,6 +62,9 @@ public class CafeMenuUIController : MonoBehaviour
     {
         gameStatsManager = GameObject.FindWithTag("GameStatsManager").GetComponent<GameStatsManager>();
         warFundsCounter.text = gameStatsManager.warFunds.ToString();
+        // Reload the Baked items. Allow to update the list in cases where the food was consumed outside the café.
+        // (Namely in battle, offered as a tribute).
+        PersistentInventoryManager.ReloadBakedItems();
         _foodListUIController.GenerateFoodList();
         _characterListUIController.GenerateCharacterList();
     }
