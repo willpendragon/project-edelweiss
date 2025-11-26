@@ -23,6 +23,9 @@ namespace ProjectEdelweiss.Utils
         public const string END_TURN_BUTTON = "EndTurnButton";
         public const string ENEMY_TURN_MANAGER = "EnemyTurnManager";
 
+        // UI
+        public const string ENEMY_PROFILE = "CurrentlySelectedEnemyProfile";
+
         // Animation Triggers
         public const string SHOW_UNIT_CALLOUT = "ShowUnitCallout";
         public const string FULL_ENMITY_BAR = "FullBar";

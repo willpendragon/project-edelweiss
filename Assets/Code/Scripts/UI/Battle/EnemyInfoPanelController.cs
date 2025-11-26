@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using ProjectEdelweiss.Utils;
 
 public class EnemyInfoPanelController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -38,10 +39,10 @@ public class EnemyInfoPanelController : MonoBehaviour, IPointerEnterHandler, IPo
     }
     private void CreateEnemyUnitProfile(GameObject hoveredEnemyGameObject)
     {
-        _enemyUnitPanel = Instantiate(Resources.Load("CurrentlySelectedUnit") as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
-        _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
-        _enemyGameObject.GetComponent<Unit>().unitProfilePanel = _enemyUnitPanel;
-        _enemyUnitPanel.GetComponent<UnitProfileController>().ApplyProfileChanges(_enemyGameObject);
+        //_enemyUnitPanel = Instantiate(Resources.Load(GameTags.ENEMY_PROFILE) as GameObject, GameObject.FindGameObjectWithTag("BattleInterfaceCanvas").transform);
+        //_enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
+        //_enemyGameObject.GetComponent<Unit>().unitProfilePanel = _enemyUnitPanel;
+        //_enemyUnitPanel.GetComponent<UnitProfileController>().ApplyProfileChanges(_enemyGameObject);
     }
     public void DestroyEnemyUnitProfile()
     {

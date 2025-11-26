@@ -358,8 +358,8 @@ public class CursorController : MonoBehaviour
 
         if (allNoOpportunities)
         {
-            var movesCounter = FindAnyObjectByType<MovesCounter>();
-            movesCounter.HighlightEndTurnButton();
+            //var movesCounter = FindAnyObjectByType<MovesCounter>();
+            //movesCounter.HighlightEndTurnButton();
         }
 
         if (_targetedUnit == null)

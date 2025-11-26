@@ -1817,7 +1817,7 @@ GameObject:
   - component: {fileID: 6254837134984574995}
   - component: {fileID: 2080886862990089091}
   m_Layer: 5
-  m_Name: CurrentlySelectedUnit
+  m_Name: CurrentlySelectedEnemyProfile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4068,7 +4068,6 @@ GameObject:
   - component: {fileID: 6254837136385127569}
   - component: {fileID: 6254837136385127571}
   - component: {fileID: 6254837136385127568}
-  - component: {fileID: 6322003883487998301}
   m_Layer: 5
   m_Name: ActiveUnitProfilePanel
   m_TagString: Untagged
@@ -4140,18 +4139,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!225 &6322003883487998301
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6254837136385127574}
-  m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
 --- !u!1 &6254837136414152254
 GameObject:
   m_ObjectHideFlags: 0

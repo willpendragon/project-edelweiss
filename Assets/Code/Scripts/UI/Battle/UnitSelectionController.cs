@@ -202,9 +202,9 @@ public class UnitSelectionController : MonoBehaviour
         // Clear Existing Enemy Panels
         ClearPanelsByTag(GameTags.EnemyUnitProfile);
 
-        _enemyUnitPanel = Instantiate(Resources.Load(GameTags.CurrentlySelectedUnit) as GameObject, _battleUI.battleDetails.transform);
+        _enemyUnitPanel = Instantiate(Resources.Load(GameTags.ENEMY_PROFILE) as GameObject, _battleUI.battleDetails.transform);
         _enemyUnitPanel.tag = GameTags.EnemyUnitProfile;
-        _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerRight;
+        _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
         enemyUnit.unitProfilePanel = _enemyUnitPanel;
         UnitProfileController unitProfileController = _enemyUnitPanel.GetComponent<UnitProfileController>();
         unitProfileController.ApplyProfileChanges(enemyUnit.gameObject);
