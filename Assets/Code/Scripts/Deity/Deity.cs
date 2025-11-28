@@ -94,6 +94,12 @@ public class Deity : MonoBehaviour
         deityHealthBar.GetComponentInChildren<Slider>().value = deityUnitComponent.unitHealthPoints;
     }
 
+    public void ResetDeityEnmity()
+    {
+        enmity = 0;
+        UpdateDeityEnmitySlider();
+    }
+
     public void UpdateDeityEnmitySlider()
     {
         _enmityBar.value = enmity;

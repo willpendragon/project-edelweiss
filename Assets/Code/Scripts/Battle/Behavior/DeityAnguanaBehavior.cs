@@ -71,8 +71,14 @@ public class DeityAnguanaBehavior : DeityBehavior
             Destroy(newDeityAttackVFX, vfxDurationDelay);
             playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
         }
+        // Reset Anguana's enmity.
+        ResetEnmityWrapper();
+    }
 
-        deity.enmity = 0;
+    private void ResetEnmityWrapper()
+    {
+        var deityReference = BattleManager.Instance.enemyTurnManager.deity.GetComponent<Deity>();
+        deityReference.ResetDeityEnmity();
     }
 
     private void MoveDeityToRandomTile(Deity deity)
