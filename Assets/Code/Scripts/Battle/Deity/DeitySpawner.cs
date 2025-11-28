@@ -1,15 +1,17 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using System.Linq;
 using TMPro;
-using DG.Tweening;
+using UnityEditor.Rendering;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
+using UnityEngine.UI;
 
 public class DeitySpawner : MonoBehaviour
 {
-    [SerializeField] GameObject[] spawnableDeities;
+    [SerializeField] List<Deity> spawnableDeities;
     [SerializeField] Transform deitySpawnPosition;
     [SerializeField] DeityAchievementsController deityAchievementsController;
     [SerializeField] BattleManager battleManager;
@@ -18,6 +20,8 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] private EnemyTurnManager _enemyTurnManager;
     private GameObject _deityObeliskInstance;
     private GameObject deityHealthBarInstance;
+    // Killed Deity Dictionary
+    public Dictionary<string, bool> _killedDeityDictionary = new Dictionary<string, bool>();
 
     public GameObject DeityObelisk => _deityObeliskInstance;
     public GameObject DeityObeliskSpawningPoint => deityObeliskSpawningPoint;
@@ -27,8 +31,23 @@ public class DeitySpawner : MonoBehaviour
     public Deity currentUnboundDeity;
     public GameObject deityHealthBar;
 
-    void Start()
+    public void OnEnable()
     {
+        TurnController.OnDeityKilled += AddDeityToKilledDictionary;
+    }
+    public void OnDisable()
+    {
+        TurnController.OnDeityKilled -= AddDeityToKilledDictionary;
+    }
+
+    private void Awake()
+    {
+        LoadKilledDeities();
+    }
+    private void Start()
+    {
+        // Deity Status Check
+        UpdateSpawnableDeities();
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
             int deityRollMinRange = 0;
@@ -56,13 +75,60 @@ public class DeitySpawner : MonoBehaviour
             }
         }
     }
+
+    private void LoadKilledDeities()
+    {
+        GameSaveData saveData = SaveStateManager.saveData;
+
+        _killedDeityDictionary.Clear();
+
+        foreach (var kvp in saveData.killedDeities)
+        {
+            string deityName = kvp.Key;
+            bool isKilled = kvp.Value;
+
+            _killedDeityDictionary[deityName] = isKilled;
+        }
+    }
+    private void UpdateSpawnableDeities()
+    {
+        // Load the Killed Deity Dictionary
+        // If there is a match between a Deity in the Spawnable Deity array
+        // And a Deity in the Killed Deity Dictionary
+        // Delete that Spawnable Deity from the Dictionary
+
+        for (int i = spawnableDeities.Count - 1; i >= 0; i--)
+        {
+            var deity = spawnableDeities[i];
+            string deityName = deity.gameObject.GetComponent<Unit>().unitTemplate.unitName;
+
+            bool deityIsKilled =
+                _killedDeityDictionary.ContainsKey(deityName) &&
+                _killedDeityDictionary[deityName];
+
+            if (deityIsKilled == true)
+            {
+                spawnableDeities.RemoveAt(i);
+            }
+        }
+    }
+
+    public void AddDeityToKilledDictionary(Deity killedDeity)
+    {
+        string deityName = killedDeity.gameObject.GetComponent<Unit>().unitTemplate.unitName;
+        // Save the Dictionary
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.killedDeities.Add(deityName, true);
+        SaveStateManager.SaveGame(saveData);
+    }
+
     public void DeitySelector()
     {
         Debug.Log("Rolling which Deity will appear");
-        int deityIndex = localRandom.Next(0, spawnableDeities.Length); // Use System.Random for Deity selection
+        int deityIndex = localRandom.Next(0, spawnableDeities.Count); // Use System.Random for Deity selection
         Debug.Log($"Deity Index: {deityIndex} - {spawnableDeities[deityIndex].name}");
 
-        GameObject spawningDeity = spawnableDeities[deityIndex];
+        GameObject spawningDeity = spawnableDeities[deityIndex].gameObject;
         GameObject deityOnBattlefield = Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
 
         BattleManager.Instance.deity = deityOnBattlefield.GetComponent<Deity>();
@@ -104,6 +170,14 @@ public class DeitySpawner : MonoBehaviour
         //Unlocks Deity as an Unbound Entity
         Debug.Log($"Unlocked {unlockedDeity.GetComponent<Unit>().unitTemplate.unitName}");
 
+        string deityName = unlockedDeity.GetComponent<Unit>().unitTemplate.unitName;
+
+        if (DeityIsKilled(deityName))
+        {
+            return;
+        }
+
+
         int unlockedDeityStartingTileXCoordinate = 5;
         int unlockedDeityStartingTileYCoordinate = 5;
 
@@ -136,6 +210,18 @@ public class DeitySpawner : MonoBehaviour
             Destroy(enemy);
         }
         unboundDeity.gameObject.tag = "Enemy";
+    }
+    public bool DeityIsKilled(string deityName)
+    {
+        if (_killedDeityDictionary.TryGetValue(deityName, out bool isKilled) && isKilled)
+        {
+            Debug.Log($"{deityName} has been killed, Player can't fight it");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     void PopulateDeityHealthBar()

@@ -8,6 +8,7 @@ public class AchievementsManager : MonoBehaviour
     private System.Random localRandom = new System.Random(); // Local random number generator
 
     public Achievement currentAchievement;
+    public DeitySpawner _deitySpawner;
 
     private Achievement SelectAchievementUnlocked()
     {
@@ -29,6 +30,7 @@ public class AchievementsManager : MonoBehaviour
     {
         return achievement != null
             && achievement.spawnableDeity != null
+            && !_deitySpawner.DeityIsKilled(achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName)
             && localRandom.NextDouble() <= deitySpawnChance;
     }
     public BattleTypeController.BattleType TriggerDeityAchievementLogic()

@@ -34,7 +34,6 @@ public class GameStatsManager : MonoBehaviour
     {
         LoadDeityTributesFromBakedItems();
         LoadCharacterData();
-
         // Load ingredients AFTER PersistentInventoryManager has been initialized.
         StartCoroutine(DelayedLoadIngredients());
 

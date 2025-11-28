@@ -64,12 +64,16 @@ public class TurnController : MonoBehaviour
     public BattleManager battleManager;
     public BattleEndUIHandler battleEndUIHandler;
     public AchievementsManager achievementsManager;
+    [SerializeField] private DeitySpawner _deitySpawner;
 
     [Header("Gameplay Stats")]
 
     public float warFunds;
     public int enemiesKilledInCurrentBattle;
     public int timesSingleTargetSpellWasUsed;
+
+    public delegate void DeityKilled(Deity deity);
+    public static event DeityKilled OnDeityKilled;
 
     public void OnEnable() => SubscribeToEvents();
     public void OnDisable() => UnsubscribeFromEvents();
@@ -236,7 +240,9 @@ public class TurnController : MonoBehaviour
     {
         if (GameObject.FindGameObjectWithTag(Tags.ENEMY).GetComponent<Unit>().unitHealthPoints <= 0)
         {
-            BattleFlowController.Instance.PlayerPartyVictorySequence("Killed Deity", warFunds);
+            BattleFlowController.Instance.PlayerPartyVictorySequence("Deicide", warFunds);
+            // Add Deity to the Killed Deity Dictionary
+            OnDeityKilled(_deitySpawner.currentUnboundDeity);
             Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
         }
         else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))

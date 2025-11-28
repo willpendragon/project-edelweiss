@@ -17,6 +17,7 @@ public class GameSaveData
     public List<ConversationData> unlockedConversations = new List<ConversationData>();
     public List<IngredientSaveEntry> savedInventory = new List<IngredientSaveEntry>();
     public List<BakedItemsData> bakedItems = new List<BakedItemsData>();
+    public Dictionary<string, bool> killedDeities = new Dictionary<string, bool>();
 }
 
 [System.Serializable]

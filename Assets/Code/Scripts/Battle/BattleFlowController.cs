@@ -39,7 +39,7 @@ public class BattleFlowController : MonoBehaviour
     public void PlayerPartyVictorySequence(string battleEndPanelMessage, float receivedWarFunds)
     {
         // Execute after Player victory sequence.
-        OnBattleEnd("Victory");
+        OnBattleEnd(battleEndPanelMessage);
         ResetBattleToInitialStatus();
         battleManager.UnlockNextLevel();
 

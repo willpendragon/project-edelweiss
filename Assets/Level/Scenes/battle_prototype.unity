@@ -2822,6 +2822,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 459323976506094027, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
+      propertyPath: _deitySpawner
+      value: 
+      objectReference: {fileID: 1790485009}
+    - target: {fileID: 459323976506094027, guid: bd1fb3295938646478c5b8be3945616f, type: 3}
       propertyPath: deitySpawnChance
       value: 20
       objectReference: {fileID: 0}
@@ -3672,6 +3676,7 @@ MonoBehaviour:
   battleManager: {fileID: 5409979177453231299}
   battleEndUIHandler: {fileID: 1886200376}
   achievementsManager: {fileID: 499339821}
+  _deitySpawner: {fileID: 1790485009}
   warFunds: 0
   enemiesKilledInCurrentBattle: 0
   timesSingleTargetSpellWasUsed: 0
@@ -11389,8 +11394,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnableDeities:
-  - {fileID: 3348349630364506734, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
-  - {fileID: 3348349630364506734, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
+  - {fileID: 3348349630364506731, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
+  - {fileID: 3348349630364506731, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
   deitySpawnPosition: {fileID: 1790485010}
   deityAchievementsController: {fileID: 0}
   battleManager: {fileID: 5409979177453231299}
