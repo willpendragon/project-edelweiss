@@ -16,6 +16,7 @@ public class FeedingController : MonoBehaviour
         if (fedUnit.unitFoodSlots == fedUnit.unitTemplate.unitMaxFoodSlots)
         {
             _cafeMenuUIController.HandleNotifications($"{fedUnit.unitTemplate.unitName} is not hungry!");
+            Debug.Log($"{fedUnit.unitTemplate.unitName} is not hungry!");
             return false;
         }
         else

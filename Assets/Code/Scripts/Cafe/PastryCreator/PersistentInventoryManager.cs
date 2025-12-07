@@ -103,4 +103,32 @@ public class PersistentInventoryManager : MonoBehaviour
     {
         Instance.LoadBakedItemsFromSave();
     }
+
+    public void RemoveBakedItem(ItemFood item, int amount = 1)
+    {
+        for (int i = 0; i < CurrentInventory.bakedItems.Count; i++)
+        {
+            var entry = CurrentInventory.bakedItems[i];
+
+            if (entry.item == item)
+            {
+                int newQty = entry.quantity - amount;
+
+                if (newQty <= 0)
+                {
+                    CurrentInventory.bakedItems.RemoveAt(i);
+                }
+                else
+                {
+                    CurrentInventory.bakedItems[i] = new Inventory.FoodInventoryEntry
+                    {
+                        item = item,
+                        quantity = newQty
+                    };
+                }
+
+                return;
+            }
+        }
+    }
 }

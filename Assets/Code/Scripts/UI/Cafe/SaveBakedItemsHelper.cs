@@ -1,14 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveBakedItemsHelper : MonoBehaviour
 {
-    [SerializeField] CafeMenuUIController _cafeMenuUI;
-
     public void SaveBakedItems()
     {
-        var bakedItems = _cafeMenuUI.bakedItems;
+        var bakedItems = PersistentInventoryManager.CurrentInventory.bakedItems;
         List<BakedItemsData> bakedItemsData = new List<BakedItemsData>();
 
         foreach (var item in bakedItems)
@@ -23,9 +20,4 @@ public class SaveBakedItemsHelper : MonoBehaviour
         SaveStateManager.saveData.bakedItems = bakedItemsData;
         SaveStateManager.SaveGame(SaveStateManager.saveData);
     }
-
-    //public void LoadBakedItems()
-    //{
-    //    SaveStateManager.LoadGame();
-    //}
 }

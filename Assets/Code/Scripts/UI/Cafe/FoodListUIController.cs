@@ -50,6 +50,17 @@ public class FoodListUIController : MonoBehaviour
             });
             trigger.triggers.Add(releaseDragEntry);
 
+            // Drag event
+            EventTrigger.Entry dragEntry = new EventTrigger.Entry();
+            dragEntry.eventID = EventTriggerType.Drag;
+            dragEntry.callback.AddListener((data) =>
+            {
+                PointerEventData pointerData = (PointerEventData)data;
+                CafeMenuUIController.Instance.OnDrag(pointerData);
+            });
+            trigger.triggers.Add(dragEntry);
+
+
             //itemFoodButton.onClick.AddListener(() => OnItemClicked(entry.item, entry.item.itemFoodPrice));
 
             TextMeshProUGUI[] texts = itemFoodButton.GetComponentsInChildren<TextMeshProUGUI>();

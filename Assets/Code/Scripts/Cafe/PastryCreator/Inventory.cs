@@ -5,10 +5,10 @@ using UnityEngine;
 public class Inventory : ScriptableObject
 {
     public List<InventoryEntry> items = new List<InventoryEntry>();
-    [SerializeField] private List<FoodInventoryEntry> bakedItems = new List<FoodInventoryEntry>();
+    public List<FoodInventoryEntry> bakedItems = new List<FoodInventoryEntry>();
 
     [System.Serializable]
-    public struct FoodInventoryEntry
+    public class FoodInventoryEntry
     {
         public ItemFood item;
         public int quantity;
