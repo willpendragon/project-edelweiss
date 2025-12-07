@@ -67,4 +67,11 @@ public class GameManager : MonoBehaviour
         }
         return startingCoordinates;
     }
+
+    public Vector2Int GetDeityStartingCoordinates()
+    {
+        // Band-aid fix, beware. This will prevent ALWAYS prevent Enemies from spawning on 5,5 tile.
+        Vector2Int deityStartingPosition = new Vector2Int(5, 5);
+        return deityStartingPosition;
+    }
 }

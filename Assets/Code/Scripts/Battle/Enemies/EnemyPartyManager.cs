@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class EnemyPartyManager : MonoBehaviour
 {
@@ -16,7 +15,8 @@ public class EnemyPartyManager : MonoBehaviour
 
     }
     // This is a level enemy generator and should have its own dedicated class.
-
+    // Beware: the Enemy start positions generate programmatically BEFORE the battle.
+    // Forcibly hooking the Deity logic here.
     public void GenerateEnemyPartyData(EnemyPartyData enemyParty)
     {
         if (GridManager.Instance == null)
@@ -34,8 +34,12 @@ public class EnemyPartyManager : MonoBehaviour
             // Get existing tile coordinates from GridManager
             List<Vector2Int> existingTiles = GridManager.Instance.GetExistingTileCoordinates();
 
-            // Generate random positions for the enemies on the grid without overlapping player starting positions and only on existing tiles
-            List<Vector2> enemyPositions = GenerateEnemyPositions(enemyPoolSize, existingTiles, playerStartingCoordinates);
+            // Retrieve Deity starting position, add it to the ExcludedCoordinatesList.
+            List<Vector2Int> occupiedCoordinates = new List<Vector2Int>(playerStartingCoordinates);
+            occupiedCoordinates.Add(GameManager.Instance.GetDeityStartingCoordinates());
+
+            // Generate random positions for the enemies on the grid without overlapping player/Deity starting positions and only on existing tiles
+            List<Vector2> enemyPositions = GenerateEnemyPositions(enemyPoolSize, existingTiles, occupiedCoordinates);
 
             // Update current enemy selection data
             currentEnemySelectionIds.Clear();
@@ -112,5 +116,4 @@ public class EnemyPartyManager : MonoBehaviour
     {
         return random.Next(min, max);
     }
-
 }

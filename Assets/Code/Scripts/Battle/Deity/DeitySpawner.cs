@@ -177,7 +177,6 @@ public class DeitySpawner : MonoBehaviour
             return;
         }
 
-
         int unlockedDeityStartingTileXCoordinate = 5;
         int unlockedDeityStartingTileYCoordinate = 5;
 
