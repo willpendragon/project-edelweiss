@@ -76,4 +76,9 @@ public class PlayerPartyProfileHelper : MonoBehaviour
         hpText.text = ($"{unit.unitHealthPoints}/{unit.unitMaxHealthPoints}");
         hpSlider.value = unit.unitHealthPoints;
     }
+
+    public void CollectUpgradeFeedback()
+    {
+        Debug.Log("Displaying collect upgrade feedback");
+    }
 }

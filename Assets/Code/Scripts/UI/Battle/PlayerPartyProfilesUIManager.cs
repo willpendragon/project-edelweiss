@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using ProjectEdelweiss.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
+using UnityEngine;
 
 public class PlayerPartyProfilesUIManager : MonoBehaviour
 {
@@ -49,10 +50,10 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         // Sort by unitName.
         Unit matchingUnit = LookForUnit(unitName);
         // Retrieve the corresponding Profile.
-        PlayerPartyProfileHelper profilehelper = unitsDictionary[matchingUnit];
+        PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
         // Refresh Profile UI with updated gameplay stats.
-        profilehelper.FillPlayerDetails(matchingUnit);
-        profilehelper.UpdateRemainingMovesDisplay(matchingUnit);
+        profileHelper.FillPlayerDetails(matchingUnit);
+        profileHelper.UpdateRemainingMovesDisplay(matchingUnit);
     }
 
     private Unit LookForUnit(string unitName)
@@ -74,9 +75,9 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         // Sort by unitName.
         Unit matchingUnit = LookForUnit(unitName);
         // Retrieve the corresponding Profile.
-        PlayerPartyProfileHelper profilehelper = unitsDictionary[matchingUnit];
+        PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
         // Refresh Profile UI with new remaining Moves Count.
-        profilehelper.UpdateRemainingMovesDisplay(matchingUnit);
+        profileHelper.UpdateRemainingMovesDisplay(matchingUnit);
     }
 
     public void UpdateHPWrapper(string unitName)
@@ -85,9 +86,9 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         // Sort by unitName.
         Unit matchingUnit = LookForUnit(unitName);
         // Retrieve the corresponding Profile.
-        PlayerPartyProfileHelper profilehelper = unitsDictionary[matchingUnit];
+        PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
         // Refresh Profile UI with new remaining Moves Count.
-        profilehelper.UpdateHP(matchingUnit);
+        profileHelper.UpdateHP(matchingUnit);
 
     }
 
@@ -106,5 +107,23 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
             if (unit != null)
                 UpdateRemainingMoves(unit.unitTemplate.unitName);
         }
+    }
+
+    public void CollectUpgradeFeedback()
+    {
+        // Retrieve ActivePlayerUnit
+        var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit).GetComponent<Unit>();
+        Unit matchingUnit = LookForUnit(activePlayerUnit.unitTemplate.unitName);
+        PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
+        // Add feedback to the matching profile container after collecting an upgrade
+        profileHelper.CollectUpgradeFeedback();
+    }
+
+    public PlayerPartyProfileHelper RetrieveProfile(string unitName)
+    {
+        var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit).GetComponent<Unit>();
+        Unit matchingUnit = LookForUnit(activePlayerUnit.unitTemplate.unitName);
+        PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
+        return profileHelper;
     }
 }

@@ -12,10 +12,9 @@ public class ResourcesFeedbackController : MonoBehaviour
     //{
     //    if (Input.GetKeyDown(KeyCode.Q))
     //    {
-    //        MoveCrystalIcon();
+    //        MoveCrystalIcon(Color.red);
     //    }
     //}
-
     private void OnEnable()
     {
         TileController.OnPrizeCollected += MoveCrystalIcon;
@@ -26,7 +25,7 @@ public class ResourcesFeedbackController : MonoBehaviour
         TileController.OnPrizeCollected -= MoveCrystalIcon;
     }
 
-    private void MoveCrystalIcon()
+    private void MoveCrystalIcon(Color color)
     {
         // Get the starting position from the active unit
         Transform unit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").transform;
@@ -37,6 +36,13 @@ public class ResourcesFeedbackController : MonoBehaviour
         Transform iconTransform = icon.transform;
         SpriteRenderer sr = icon.GetComponent<SpriteRenderer>();
         TrailRenderer trail = icon.GetComponent<TrailRenderer>();
+
+        sr.material.color = color;
+
+        //// Retrieve destination position of the character who collected the upgrade (using ProfilesUIManager)
+        //var profileHelper = BattleInterface.Instance.PlayerPartyProfilesUIManager.RetrieveProfile(unit.GetComponent<Unit>().unitTemplate.unitName);
+
+        //destination = profileHelper.gameObject.transform;
 
         // Compute world position of the destination UI panel
         Vector3 screenTarget = RectTransformUtility.WorldToScreenPoint(Camera.main, destination.position);
@@ -50,6 +56,8 @@ public class ResourcesFeedbackController : MonoBehaviour
 
         // Cleanup on completion
         Destroy(icon, duration + 0.1f);
+        // Plays the collected crystal upgrade on the Active Player Unit UI profile.
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.CollectUpgradeFeedback();
     }
 
     private void AnimateIcon(Transform iconTransform, SpriteRenderer sr, Vector3 targetWorldPosition)

@@ -94,7 +94,7 @@ public class FieldPrizeController : MonoBehaviour
         FieldPrizeController newFieldPrize = newFieldPrizeGO?.GetComponent<FieldPrizeController>();
 
         ApplyTextLabelToPrize(newFieldPrize);
-
+        ApplyColorToPrize(newFieldPrize);
         Debug.Log("Spawned Field Prize" + newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrize.itemFieldPrizeType);
     }
     private void ApplyTextLabelToPrize(FieldPrizeController newFieldPrize)
@@ -111,4 +111,35 @@ public class FieldPrizeController : MonoBehaviour
                 break;
         }
     }
+
+    private void ApplyColorToPrize(FieldPrizeController newFieldPrize)
+    {
+        if (newFieldPrize == null) return;
+
+        // Get the FIRST CHILD mesh renderer
+        MeshRenderer meshRenderer = newFieldPrize.transform.GetChild(0).GetComponent<MeshRenderer>();
+
+        if (meshRenderer == null)
+        {
+            Debug.LogWarning("Prize child has no MeshRenderer.");
+            return;
+        }
+
+        Material mat = meshRenderer.material;  // creates instance (good!)
+
+        switch (newFieldPrize.fieldPrize?.itemFieldPrizeType)
+        {
+            case ItemFieldPrizeType.attackPowerUp:
+                mat.SetColor("_BaseColor", new Color(1f, 0f, 0f, 1f));   // Red (with alpha)
+                break;
+
+            case ItemFieldPrizeType.magicPowerUp:
+                mat.SetColor("_BaseColor", new Color(1f, 0f, 1f, 1)); // Magenta (with alpha)
+                break;
+
+            default:
+                break;
+        }
+    }
+
 }

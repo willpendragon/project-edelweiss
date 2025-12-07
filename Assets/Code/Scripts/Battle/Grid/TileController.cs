@@ -79,7 +79,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public delegate void PointerAwayFromTile();
     public static event PointerAwayFromTile OnPointerAwayFromTile;
 
-    public delegate void PrizeCollected();
+    public delegate void PrizeCollected(Color color);
     public static event PrizeCollected OnPrizeCollected;
 
     void Start()
@@ -143,10 +143,12 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.attackPowerUp)
             {
                 activePlayerUnit.unitAttackPower += fieldPrizeController.fieldPrize.powerUpAmount;
+                OnPrizeCollected(Color.red);
             }
             else if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.magicPowerUp)
             {
                 activePlayerUnit.unitMagicPower += fieldPrizeController.fieldPrize.powerUpAmount;
+                OnPrizeCollected(Color.magenta);
             }
             else if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.PuzzleLevelKey)
             {
@@ -156,7 +158,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 Debug.Log("Added Key to Game Stats Manager and saved to game state");
             }
             UpdateCombatValues();
-            OnPrizeCollected();
             Destroy(fieldPrizeController.gameObject);
             // Display Prize Collected Feedback
         }
