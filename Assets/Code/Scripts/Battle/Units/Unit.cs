@@ -1,3 +1,4 @@
+using DG.Tweening;
 using ProjectEdelweiss.Utils;
 using System.Collections;
 using System.Collections.Generic;
@@ -182,19 +183,10 @@ public class Unit : MonoBehaviour
         unitManaPoints -= spentManaAmount;
     }
 
-    private IEnumerator MoveToPosition(Vector3 targetPosition, float duration)
+    private IEnumerator MoveToPosition(Vector3 targetPosition)
     {
-        Vector3 startPosition = transform.position;
-        float time = 0;
-
-        while (time < duration)
-        {
-            transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
-            time += Time.deltaTime;
-            yield return null;
-        }
-
         transform.position = targetPosition;
+        yield return null;
     }
 
     public bool MoveUnit(int targetX, int targetY, bool ignoreUnitMovementLimit)
@@ -225,30 +217,32 @@ public class Unit : MonoBehaviour
 
     private IEnumerator FollowPath(List<TileController> path)
     {
+        float stepDelay = 0.025f; // SUPER fast, breezy, ITB-style
+
         foreach (var tile in path)
         {
             Vector3 worldPos = GridManager.Instance.GetWorldPositionFromGridCoordinates(
                 tile.tileXCoordinate, tile.tileYCoordinate);
 
-            Vector3 targetPosition = worldPos + new Vector3(0, transform.localScale.y / 2, 0);
+            Vector3 pos = worldPos + new Vector3(0, transform.localScale.y / 2, 0);
 
-            // Move animation
-            yield return StartCoroutine(MoveToPosition(targetPosition, 0.15f));
+            // Pure snap
+            transform.position = pos;
 
+            // Update coordinates
             currentXCoordinate = tile.tileXCoordinate;
             currentYCoordinate = tile.tileYCoordinate;
+
+            // Breezy rapid stepping
+            yield return new WaitForSeconds(stepDelay);
         }
 
-        // Sort rendering order
+        // Sorting + highlight update
         GameObject.FindGameObjectWithTag("CameraDistanceController")
             .GetComponent<CameraDistanceController>().SortUnits();
 
-        // Refresh tile highlight for active player
         if (gameObject.CompareTag("ActivePlayerUnit"))
-        {
-            var unitSelection = FindAnyObjectByType<UnitSelectionController>();
-            unitSelection.ChangeActivePlayerUnitTile(this);
-        }
+            FindAnyObjectByType<UnitSelectionController>().ChangeActivePlayerUnitTile(this);
 
         GridManager.IsUnitMoving = false;
     }
