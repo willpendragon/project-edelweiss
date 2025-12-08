@@ -43,6 +43,8 @@ public class GridManager : MonoBehaviour
     public delegate void SpawnActivationPlatforms();
     public static event SpawnActivationPlatforms OnSpawnActivationPlatforms;
 
+    public static bool IsUnitMoving = false;
+
     [Header("Map Layouts")]
     public MapData currentMapData;
     public MapData puzzleMapData;

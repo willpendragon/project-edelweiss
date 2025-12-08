@@ -199,57 +199,58 @@ public class Unit : MonoBehaviour
 
     public bool MoveUnit(int targetX, int targetY, bool ignoreUnitMovementLimit)
     {
-        // Convert current world position to grid coordinates.
         Vector2Int startGridPos = GridManager.Instance.GetGridCoordinatesFromWorldPosition(transform.position);
 
-        // Find path using grid coordinates.
-        List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>()
+        List<TileController> path = GridManager.Instance
+            .GetComponentInChildren<GridMovementController>()
             .FindPath(startGridPos.x, startGridPos.y, targetX, targetY);
 
         if (ignoreUnitMovementLimit)
-        {
             unitMovementLimit = 10000;
-        }
 
+        // Ensure valid path and within limit
         if (path != null && path.Count > 1 && (path.Count - 1) <= unitMovementLimit)
         {
+            GridManager.IsUnitMoving = true;
+
             StartCoroutine(FollowPath(path));
+
             unitMovementLimit = unitTemplate.unitMovemementLimit;
             return true;
         }
-        else
-        {
-            unitMovementLimit = unitTemplate.unitMovemementLimit;
-            return false;
-        }
-    }
 
+        unitMovementLimit = unitTemplate.unitMovemementLimit;
+        return false;
+    }
 
     private IEnumerator FollowPath(List<TileController> path)
     {
         foreach (var tile in path)
         {
-            // Convert grid coordinates back to world position for actual movement.
-            Vector3 worldPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(tile.tileXCoordinate, tile.tileYCoordinate);
-            Vector3 targetPosition = worldPosition + new Vector3(0, transform.localScale.y / 2, 0);
+            Vector3 worldPos = GridManager.Instance.GetWorldPositionFromGridCoordinates(
+                tile.tileXCoordinate, tile.tileYCoordinate);
 
-            // Adjust this value to make the Unit's movement across tiles faster.
-            float moveToTileDurationTime = 0.15f;
-            yield return StartCoroutine(MoveToPosition(targetPosition, moveToTileDurationTime));
+            Vector3 targetPosition = worldPos + new Vector3(0, transform.localScale.y / 2, 0);
 
-            // Update current grid coordinates
+            // Move animation
+            yield return StartCoroutine(MoveToPosition(targetPosition, 0.15f));
+
             currentXCoordinate = tile.tileXCoordinate;
             currentYCoordinate = tile.tileYCoordinate;
-            Debug.Log(tile.name);
-            Debug.Log($"Moving to Tile at: ({tile.tileXCoordinate}, {tile.tileYCoordinate})");
         }
-        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
-        // Show Active PlayerUnit Tile color
+
+        // Sort rendering order
+        GameObject.FindGameObjectWithTag("CameraDistanceController")
+            .GetComponent<CameraDistanceController>().SortUnits();
+
+        // Refresh tile highlight for active player
         if (gameObject.CompareTag("ActivePlayerUnit"))
         {
             var unitSelection = FindAnyObjectByType<UnitSelectionController>();
             unitSelection.ChangeActivePlayerUnitTile(this);
         }
+
+        GridManager.IsUnitMoving = false;
     }
 
     public bool CheckTileAvailability(int targetX, int targetY)

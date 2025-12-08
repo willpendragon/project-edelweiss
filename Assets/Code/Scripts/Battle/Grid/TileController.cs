@@ -101,6 +101,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     }
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (GridManager.IsUnitMoving)
+            return;
         if (detectedUnit == null)
             return;
         if (detectedUnit.CompareTag("Player"))

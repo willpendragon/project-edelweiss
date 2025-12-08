@@ -98,6 +98,8 @@ public class CursorController : MonoBehaviour
 
     private void Update()
     {
+        if (GridManager.IsUnitMoving)
+            return;
         if (Input.GetMouseButtonDown(0))
         {
             // Shoot Raycasts
