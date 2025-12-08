@@ -1804,11 +1804,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df482225a120b834a9fd98aec7cee4b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleLevelVolume: {fileID: 1709264537}
-  unitSpotLight: {fileID: 7001930910537804669, guid: 2319d3c803d86ce42afd81d8706952a6, type: 3}
-  DeitySpotlight: {fileID: 0}
-  directionalLight: {fileID: 0}
-  prayingVFX: {fileID: 3808539477776178843, guid: 131a6c8305943084d9f0501d3205320d, type: 3}
 --- !u!4 &263591584
 Transform:
   m_ObjectHideFlags: 0
@@ -2265,10 +2260,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa7b0a35dc87cc44594dd420073ff979, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftMouseButtonText: {fileID: 2017348354}
-  rightMouseButtonText: {fileID: 608919236}
-  actionModeText: {fileID: 0}
-  instructionsPanelContainer: {fileID: 365263268}
 --- !u!1 &378513648
 GameObject:
   m_ObjectHideFlags: 0
@@ -4255,8 +4246,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5b2032726d82bb42898f7d4154e519a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 5409979177453231299}
-  cameraAnimator: {fileID: 588608026}
 --- !u!320 &588608028
 PlayableDirector:
   m_ObjectHideFlags: 0
@@ -7068,8 +7057,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5b2032726d82bb42898f7d4154e519a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 5409979177453231299}
-  cameraAnimator: {fileID: 985621545}
 --- !u!95 &985621545
 Animator:
   serializedVersion: 5
@@ -7442,7 +7429,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -120.75}
+  m_AnchoredPosition: {x: 0, y: -372}
   m_SizeDelta: {x: 350, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1056140934
@@ -7667,8 +7654,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5b2032726d82bb42898f7d4154e519a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 5409979177453231299}
-  cameraAnimator: {fileID: 1118968327}
 --- !u!95 &1118968327
 Animator:
   serializedVersion: 5
@@ -9422,8 +9407,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5b2032726d82bb42898f7d4154e519a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 5409979177453231299}
-  cameraAnimator: {fileID: 1362109341}
 --- !u!95 &1362109341
 Animator:
   serializedVersion: 5
@@ -9993,7 +9976,7 @@ MonoBehaviour:
     bottomLeft: {r: 1, g: 1, b: 1, a: 1}
     bottomRight: {r: 1, g: 1, b: 1, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
+  m_spriteAsset: {fileID: 11400000, guid: 88c1c0d991129ed459c86537d26cc229, type: 2}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
   m_TextStyleHashCode: -1183493901
@@ -20757,7 +20740,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.7320508, y: 1.7320508, z: 1.7320508}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911147375969266743}
@@ -20895,7 +20878,7 @@ Transform:
   m_GameObject: {fileID: 2853166123752632539}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: -30.033583, y: 29.283108, z: -1.7287805}
+  m_LocalPosition: {x: 7.7, y: 24.96, z: -36.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

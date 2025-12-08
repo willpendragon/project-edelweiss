@@ -119,7 +119,7 @@ public class Deity : MonoBehaviour
     {
         var sinSystemDisplay = FindAnyObjectByType<SinSystemDisplay>();
         string deityName = transform.GetComponent<Unit>().unitTemplate.unitName;
-        sinSystemDisplay.DisplaySinfulMoves(deityName, hatedSpellAlignments[0].ToString());
+        sinSystemDisplay.DisplaySinfulMoves(deityName, hatedSpellAlignments[0]);
     }
 
     public bool PerformDeityEnmityCheck()

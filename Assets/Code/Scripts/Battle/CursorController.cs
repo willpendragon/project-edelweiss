@@ -70,6 +70,10 @@ public class CursorController : MonoBehaviour
         entry.priority = priority;
         button.GetComponentInChildren<TextMeshProUGUI>().text = label;
         radialMenu.GetComponent<RadialMenu>().entries.Add(entry);
+        if (entry.actionType == RadialMenuEntry.ActionType.Spell)
+        {
+            entry.DisplayAlignmentIcon();
+        }
         return button;
     }
 

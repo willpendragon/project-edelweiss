@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 using ProjectEdelweiss.Utils;
+using System;
 
 public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -11,6 +12,7 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public int knockbackStrength = 2;
     [SerializeField] private Color _originalTileColor;
     [SerializeField] private TileController _knockbackTile;
+    [SerializeField] private AlignmentIconHelper _alignmentIconHelper;
 
     public enum ActionType
     {
@@ -55,13 +57,22 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerEnter(PointerEventData eventData)
     {
         transform.DOScale(1.5f, 0.5f);
-
-        // Display Knockback Preview.
-        if (actionType != ActionType.Melee)
-            return;
-
-        DisplayKnockbackPreview();
+        TriggerAdditionalBehaviour(actionType);
     }
+
+    private void TriggerAdditionalBehaviour(ActionType actionType)
+    {
+        switch (actionType)
+        {
+            case ActionType.Melee:
+                DisplayKnockbackPreview();
+                return;
+            //case ActionType.Spell:
+            //    DisplayAlignmentIcon();
+            //    return;
+        }
+    }
+
     public void OnPointerExit(PointerEventData eventData)
     {
         if (_knockbackTile == null)
@@ -71,6 +82,12 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
         _knockbackTile.tileShaderController.SetTileColor(1f, _originalTileColor);
         _knockbackTile = null;
     }
+
+    public void DisplayAlignmentIcon()
+    {
+        _alignmentIconHelper.DisplayAlignmentIcon();
+    }
+
 
     private void DisplayKnockbackPreview()
     {
