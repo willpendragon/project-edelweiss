@@ -75,9 +75,10 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        transform.DOScale(1f, 0.5f);
+
         if (_knockbackTile == null)
             return;
-        transform.DOScale(1f, 0.5f);
         // Reset Knockback Preview (where applicable).
         _knockbackTile.tileShaderController.SetTileColor(1f, _originalTileColor);
         _knockbackTile = null;
