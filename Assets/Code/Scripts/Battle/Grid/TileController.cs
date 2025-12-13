@@ -40,10 +40,10 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public GameObject detectedUnit;
     public int tileXCoordinate;
     public int tileYCoordinate;
-
     public IPlayerAction<TileController> currentPlayerAction = new SelectUnitPlayerAction();
     public MeleePlayerAction meleeAction;
     public GameObject tileCurrentFieldPrize;
+    [SerializeField] PrizeCollectionHelper _prizeCollectionHelper;
 
     [Header("State Machines")]
     public SingleTileStatus currentSingleTileStatus;
@@ -61,14 +61,15 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     [Header("Cursor Visual")]
     public GameObject cursorPrefab; // Reference to the cursor prefab
     private GameObject cursorInstance; // Instance of the cursor prefab
-
     [SerializeField] string _actionButtonTag = "ActionButton";
 
-    // A* Pathfinding properties
+    [Header("A* Pathfinding properties")]
     public int gCost;
     public int hCost;
     public int FCost { get { return gCost + hCost; } }
+
     public TileController parent;
+    public PrizeCollectionHelper PrizeCollectionHelper => _prizeCollectionHelper;
 
     public delegate void UpdateEnemyTargetUnitProfile(GameObject detectedUnit);
     public static event UpdateEnemyTargetUnitProfile OnUpdateEnemyTargetUnitProfile;
@@ -78,9 +79,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     public delegate void PointerAwayFromTile();
     public static event PointerAwayFromTile OnPointerAwayFromTile;
-
-    public delegate void PrizeCollected(Color color);
-    public static event PrizeCollected OnPrizeCollected;
 
     void Start()
     {
@@ -135,42 +133,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         if (cursorInstance != null)
         {
             cursorInstance.SetActive(false);
-        }
-    }
-    public void CheckFieldPrizes(TileController destinationTile, Unit activePlayerUnit)
-    {
-        if (destinationTile != null && destinationTile.tileCurrentFieldPrize != null)
-        {
-            FieldPrizeController fieldPrizeController = destinationTile.tileCurrentFieldPrize.GetComponent<FieldPrizeController>();
-            if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.attackPowerUp)
-            {
-                activePlayerUnit.unitAttackPower += fieldPrizeController.fieldPrize.powerUpAmount;
-                OnPrizeCollected(Color.red);
-            }
-            else if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.magicPowerUp)
-            {
-                activePlayerUnit.unitMagicPower += fieldPrizeController.fieldPrize.powerUpAmount;
-                OnPrizeCollected(Color.magenta);
-            }
-            else if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.PuzzleLevelKey)
-            {
-                GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
-                gameStatsManager.unlockedPuzzleKeys += 1;
-                gameStatsManager.SaveUnlockedKeys(gameStatsManager.unlockedPuzzleKeys);
-                Debug.Log("Added Key to Game Stats Manager and saved to game state");
-            }
-            UpdateCombatValues();
-            Destroy(fieldPrizeController.gameObject);
-            // Display Prize Collected Feedback
-        }
-    }
-    private void UpdateCombatValues()
-    {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
-        if (activePlayerUnit != null)
-        {
-            activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().activeCharacterAttackPower.text = activePlayerUnit.unitAttackPower.ToString();
-            activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().activeCharacterMagicPower.text = activePlayerUnit.unitMagicPower.ToString();
         }
     }
 }

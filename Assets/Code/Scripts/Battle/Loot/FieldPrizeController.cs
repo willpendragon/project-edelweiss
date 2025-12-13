@@ -125,7 +125,7 @@ public class FieldPrizeController : MonoBehaviour
             return;
         }
 
-        Material mat = meshRenderer.material;  // creates instance (good!)
+        Material mat = meshRenderer.material; // Create material instance.
 
         switch (newFieldPrize.fieldPrize?.itemFieldPrizeType)
         {

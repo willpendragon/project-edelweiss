@@ -17,12 +17,12 @@ public class ResourcesFeedbackController : MonoBehaviour
     //}
     private void OnEnable()
     {
-        TileController.OnPrizeCollected += MoveCrystalIcon;
+        PrizeCollectionHelper.OnPrizeCollected += MoveCrystalIcon;
     }
 
     private void OnDisable()
     {
-        TileController.OnPrizeCollected -= MoveCrystalIcon;
+        PrizeCollectionHelper.OnPrizeCollected -= MoveCrystalIcon;
     }
 
     private void MoveCrystalIcon(Color color)

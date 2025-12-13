@@ -36,7 +36,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         ClaimTile(activePlayerUnit, targetTile);
         SpendOpportunityPoints(activePlayerUnit);
         UpdateActivePlayerUnitProfile(activePlayerUnit);
-        activePlayerUnit.ownedTile.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
+        activePlayerUnit.ownedTile.PrizeCollectionHelper.CheckFieldPrizes(activePlayerUnit.ownedTile, activePlayerUnit);
         var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
         reachableTilesVisualizer.ClearReachableTiles();
 
