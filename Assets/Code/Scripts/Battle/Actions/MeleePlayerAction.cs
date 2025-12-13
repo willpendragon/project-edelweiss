@@ -63,7 +63,15 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         Vector2Int attackerPos = attacker.GetGridPosition();
         Vector2Int defenderPos = defender.GetGridPosition();
 
+        // Check if the Magnet target is out of range (redundant, the cursor already does this check).
         if (GetManhattanDistance(attackerPos, defenderPos) > magnetRange) return;
+
+        // Return if the Magnet target is sitting on the adjacent tile
+        if (GetManhattanDistance(attackerPos, defenderPos) <= 1)
+        {
+            OnUsedMeleeAction?.Invoke($"{targetTile.detectedUnit.GetComponent<Unit>().unitTemplate.unitName} is already close.");
+            return;
+        }
 
         Vector2Int pullDirection = Vector2Int.zero;
         int deltaX = defenderPos.x - attackerPos.x;
@@ -100,7 +108,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
             destinationTile.tileShaderController.EnemyTileFeedback();
             OnUsedMeleeAction?.Invoke($"{attacker.unitTemplate.unitName} used Magnet");
         }
-
+        // Possibly redundant
         OnUsedMagnet?.Invoke();
         attacker.GetComponentInChildren<MagnetHelper>()?.DestroyMagnet();
     }
