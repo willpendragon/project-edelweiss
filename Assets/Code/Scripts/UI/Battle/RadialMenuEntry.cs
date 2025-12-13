@@ -47,6 +47,8 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
         if (activePlayerUnit.unitOpportunityPoints <= 0)
         {
             OnPointsDepleted("Not enough Energy...");
+            var cursorController = GameObject.FindAnyObjectByType<CursorController>();
+            cursorController.CloseRadialMenu();
         }
         else
         {

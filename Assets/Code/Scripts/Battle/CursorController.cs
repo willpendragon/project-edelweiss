@@ -1,3 +1,4 @@
+using Edelweiss.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Edelweiss.Core;
 
 public class CursorController : MonoBehaviour
 {
@@ -112,6 +112,7 @@ public class CursorController : MonoBehaviour
     }
     private void SortInteractedItemExit()
     {
+        // Check UI interactions
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
         {
             position = Input.mousePosition
@@ -120,18 +121,24 @@ public class CursorController : MonoBehaviour
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
 
+        bool actionFired = false;
+
+        // Iterate over all UI results
         foreach (RaycastResult result in results)
         {
+            // Check for ActionButton Tag
             if (result.gameObject.CompareTag("ActionButton"))
             {
                 result.gameObject.GetComponent<RadialMenuEntry>().FireAction();
-                Debug.Log("Found Action Button");
+                Debug.Log("Action Button Pressed (Mouse Up)");
+                actionFired = true;
                 break;
             }
-            else
-            {
-                CloseRadialMenu();
-            }
+        }
+
+        if (!actionFired && _isRadialMenuOpen)
+        {
+            CloseRadialMenu();
         }
     }
 
@@ -242,7 +249,7 @@ public class CursorController : MonoBehaviour
         PopulateButtonsList();
     }
 
-    void CloseRadialMenu()
+    public void CloseRadialMenu()
     {
         radialMenu.GetComponent<Image>().color = new Color(0, 0, 0, 0);
         _moveButtonPrefabInstance = null;
@@ -353,6 +360,8 @@ public class CursorController : MonoBehaviour
             // Update Enemy Info Panels.
             UpdateEnemyInfoPanels();
         }
+
+        CloseRadialMenu();
 
         bool allNoOpportunities = _turnController.playerUnitsOnBattlefield
             .Where(obj => obj != null)
