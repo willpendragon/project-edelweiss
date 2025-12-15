@@ -35,6 +35,8 @@ public class CafeMenuUIController : MonoBehaviour
     private Transform _originalParent;
     private Vector3 _originalPosition;
     private Vector2 _dragOffset;
+    private int _originalSiblingIndex;
+
 
     [SerializeField] private Canvas _cafeMenuCanvas;
 
@@ -93,10 +95,12 @@ public class CafeMenuUIController : MonoBehaviour
             itemFoodObject.transform.DOShakePosition(0.35f, 20f, 20, 90f);
             return;
         }
+        itemFoodObject.GetComponent<ItemFoodIconHelper>().ActivateOrderButton(false);
 
         _draggedFoodRT = itemFoodObject.GetComponent<RectTransform>();
         // Attach the Food Object Image to the Pointer
         _originalParent = _draggedFoodRT.parent;
+        _originalSiblingIndex = _draggedFoodRT.GetSiblingIndex();
         _originalPosition = _draggedFoodRT.anchoredPosition;
 
         //// Instantiate a Ghost on the previously position of the selected food on the UI.
@@ -229,8 +233,11 @@ public class CafeMenuUIController : MonoBehaviour
                 // Restore hierarchy
                 _draggedFoodRT.SetParent(_originalParent);
 
+                _draggedFoodRT.SetSiblingIndex(_originalSiblingIndex);
+                _draggedFoodRT.gameObject.GetComponent<ItemFoodIconHelper>().ActivateOrderButton(true);
                 // Clear selection
                 selectedItem = null;
+
             });
         });
     }
