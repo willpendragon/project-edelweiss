@@ -173,6 +173,8 @@ public class CafeMenuUIController : MonoBehaviour
                     });
                 });
 
+                DisplayNotification(itemFood, unit);
+
                 // Spend War Funds
                 ConfirmPurchase();
 
@@ -203,6 +205,11 @@ public class CafeMenuUIController : MonoBehaviour
         }
     }
 
+    private void DisplayNotification(ItemFood itemFood, Unit unit)
+    {
+        string message = $"{unit.unitTemplate.unitName} recovered {itemFood.recoveryAmount}";
+    }
+
     public void ConfirmPurchase()
     {
         // Warning: this logic should tie in the new drag and drop system!
@@ -212,9 +219,6 @@ public class CafeMenuUIController : MonoBehaviour
             // Deduct funds and update display
             gameStatsManager.warFunds -= selectedItemPrice;
             UpdateWarFundsCounter();
-
-            // Show purchase notification
-            notificationTexts.text = $"{selectedItem.itemFoodName} purchased!";
         }
     }
     // UI-only logic

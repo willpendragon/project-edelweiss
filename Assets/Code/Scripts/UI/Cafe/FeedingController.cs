@@ -34,7 +34,7 @@ public class FeedingController : MonoBehaviour
                 if (StatNotFull(fedUnit.unitHealthPoints, fedUnit.unitMaxHealthPoints))
                 {
                     fedUnit.unitHealthPoints = Mathf.Clamp(fedUnit.unitHealthPoints + foodItem.recoveryAmount, 0, fedUnit.unitMaxHealthPoints);
-                    _cafeMenuUIController.HandleNotifications($"{fedUnit.unitTemplate.unitName} recovered {foodItem.recoveryAmount} HP");
+                    _cafeMenuUIController.HandleNotifications($"{fedUnit.unitTemplate.unitName} recovered {foodItem.recoveryAmount} HP"!);
                     ApplyFoodBuff(foodItem.foodBuff, fedUnit);
 
                     return true;
@@ -48,7 +48,7 @@ public class FeedingController : MonoBehaviour
                 if (StatNotFull(fedUnit.unitManaPoints, fedUnit.unitMaxManaPoints))
                 {
                     fedUnit.unitManaPoints = Mathf.Clamp(fedUnit.unitManaPoints + foodItem.recoveryAmount, 0, fedUnit.unitMaxManaPoints);
-                    _cafeMenuUIController.HandleNotifications($"{fedUnit.unitTemplate.unitName} recovered {foodItem.recoveryAmount} MP");
+                    _cafeMenuUIController.HandleNotifications($"{fedUnit.unitTemplate.unitName} recovered {foodItem.recoveryAmount} MP"!);
                     ApplyFoodBuff(foodItem.foodBuff, fedUnit);
 
                     return true;
