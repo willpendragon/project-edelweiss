@@ -52,9 +52,11 @@ public class PastrySlotUIController : MonoBehaviour
         TrackEatenFood(fedUnit, foodItem);
         // Update the Pastry Slots for the corresponding Character.
         _newPastrySlotsPanel = Instantiate(_pastrySlotsPanelPrefab, _currentPastrySlotsContainer.transform);
-        _newPastrySlotsPanel.GetComponent<PastrySlotsPanelHelper>().UpdatePastrySlots(fedUnit);
+        var pastrySlotsPanelHelper = _newPastrySlotsPanel.GetComponent<PastrySlotsPanelHelper>();
+        pastrySlotsPanelHelper.UpdatePastrySlots(fedUnit);
         // Add Pastry Slot to Pastry Slots list (visual).
-
+        // Update Slider with the character's Occupied Food Slots
+        pastrySlotsPanelHelper.UpdateAppetiteSlider(fedUnit);
         // Save the list of eaten Pastry.
         // (...)
     }

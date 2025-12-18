@@ -141,22 +141,15 @@ public class CafeMenuUIController : MonoBehaviour
     {
         if (selectedItem == null)
             return;
-        // Check if the Item is being dropped on a Character (?)
-        // ...
+        // Check if the Item is being dropped on a Character
         Ray ray = Camera.main.ScreenPointToRay(pointerData.position);
         if (Physics.Raycast(ray, out RaycastHit raycastHit, 100f, LayerMask.GetMask("NoPixelation"))) // Should be a dedicated layer for Units.
         {
             CafeUnitHelper foundUnit = raycastHit.collider.gameObject.GetComponent<CafeUnitHelper>();
             if (foundUnit == null)
             {
-                _draggedFoodRT.DOAnchorPos(_originalPosition, 0.25f).SetEase(Ease.OutQuad);
-                _draggedFoodRT.DOScale(1f, 0.2f).OnComplete(() =>
-                {
-                    _draggedFoodRT.SetParent(_originalParent);
-                });
-
-                selectedItem = null;
                 // If there's nothing, just make the item return to its original place, and destroy the "ghost".
+                ReturnDraggedItemToShelf();
 
                 return;
             }
@@ -198,48 +191,16 @@ public class CafeMenuUIController : MonoBehaviour
             }
             else
             {
-                CancelEating(_originalPosition);
+                ReturnDraggedItemToShelf();
+                //CancelEating(_originalPosition);
                 Debug.Log("Handle cases where the character unit doesn't eat");
             }
         }
         else
         {
+            ReturnDraggedItemToShelf();
             Debug.Log("Handle dropping the food outside of a character");
         }
-    }
-
-    private void CancelEating(Vector3 originalPosition)
-    {
-        if (_draggedFoodRT == null)
-            return;
-
-        _draggedFoodRT.DOShakeAnchorPos(
-            duration: 0.25f,
-            strength: 20f,
-            vibrato: 20,
-            randomness: 90f,
-            snapping: false,
-            fadeOut: true
-        )
-        .OnComplete(() =>
-        {
-            // Return to original UI position smoothly
-            _draggedFoodRT.DOAnchorPos(originalPosition, 0.25f)
-                .SetEase(Ease.OutQuad);
-
-            // Reset scale
-            _draggedFoodRT.DOScale(1f, 0.2f).OnComplete(() =>
-            {
-                // Restore hierarchy
-                _draggedFoodRT.SetParent(_originalParent);
-
-                _draggedFoodRT.SetSiblingIndex(_originalSiblingIndex);
-                _draggedFoodRT.gameObject.GetComponent<ItemFoodIconHelper>().ActivateOrderButton(true);
-                // Clear selection
-                selectedItem = null;
-
-            });
-        });
     }
 
     public void ConfirmPurchase()
@@ -280,28 +241,6 @@ public class CafeMenuUIController : MonoBehaviour
             }
         }
     }
-    //public void CancelPurchase()
-    //{
-    //    // Reset selected item and hide the popup
-    //    selectedItem = null;
-    //    selectedItemPrice = 0;
-    //    confirmPurchasePopup.SetActive(false);
-    //}
-
-    //public void PurchaseFood(ItemFood purchasedFood, float foodPrice)
-    //{
-    //    if (foodPrice <= gameStatsManager.warFunds)
-    //    {
-    //        gameStatsManager.warFunds -= foodPrice;
-    //        gameStatsManager.SaveSpentWarFunds(foodPrice);
-    //        UpdateWarFundsCounter();
-    //        currentPurchasedFood = purchasedFood;
-    //    }
-    //    else
-    //    {
-    //        notificationTexts.text = "There are not enough War Funds to purchase this Food Item";
-    //    }
-    //}
     public void UpdateWarFundsCounter()
     {
         warFundsCounter.text = gameStatsManager.warFunds.ToString();
@@ -345,4 +284,42 @@ public class CafeMenuUIController : MonoBehaviour
     {
         notificationTexts.text = message;
     }
+
+    private void ReturnDraggedItemToShelf()
+    {
+        if (_draggedFoodRT == null)
+            return;
+
+        _draggedFoodRT
+            .DOShakeAnchorPos(
+                duration: 0.25f,
+                strength: 20f,
+                vibrato: 20,
+                randomness: 90f,
+                snapping: false,
+                fadeOut: true
+            )
+            .OnComplete(() =>
+            {
+                _draggedFoodRT
+                    .DOAnchorPos(_originalPosition, 0.25f)
+                    .SetEase(Ease.OutQuad);
+
+                _draggedFoodRT
+                    .DOScale(1f, 0.2f)
+                    .OnComplete(() =>
+                    {
+                        _draggedFoodRT.SetParent(_originalParent);
+                        _draggedFoodRT.SetSiblingIndex(_originalSiblingIndex);
+
+                        _draggedFoodRT
+                            .GetComponent<ItemFoodIconHelper>()
+                            .ActivateOrderButton(true);
+
+                        selectedItem = null;
+                        _draggedFoodRT = null;
+                    });
+            });
+    }
+
 }

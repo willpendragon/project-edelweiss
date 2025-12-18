@@ -12,7 +12,8 @@ public class CafeBuffController : MonoBehaviour
 
     public void ApplyFoodBuff(FoodBuff foodBuff, Unit fedUnit)
     {
-        CheckBuffCombinations(fedUnit);
+        // Removed for Playtest demo
+        //CheckBuffCombinations(fedUnit);
     }
 
     private void CheckBuffCombinations(Unit fedUnit)

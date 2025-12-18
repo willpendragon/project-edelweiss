@@ -48,16 +48,16 @@ public class CharacterListUIController : MonoBehaviour
                 // Add the profile to the list of small controllers
                 characterProfileSmallControllers.Add(characterProfile);
 
-                // Create and configure the feed button for this character
-                GameObject feedCharacterButton = Instantiate(_feedButton, characterProfile.transform);
-                var button = feedCharacterButton.GetComponent<Button>();
+                //// Create and configure the feed button for this character
+                //GameObject feedCharacterButton = Instantiate(_feedButton, characterProfile.transform);
+                //var button = feedCharacterButton.GetComponent<Button>();
 
-                // Add the onClick listener for feeding the character
-                Unit characterUnit = profileController.referenceUnit;  // Capture the reference to avoid closure issues
-                button.onClick.AddListener(() => OnCharacterClicked(characterUnit));
+                //// Add the onClick listener for feeding the character
+                //Unit characterUnit = profileController.referenceUnit;  // Capture the reference to avoid closure issues
+                //button.onClick.AddListener(() => OnCharacterClicked(characterUnit));
 
-                button.enabled = false;  // Disable initially; can be enabled when an item is selected
-                feedPlayerCharactersButtons.Add(button);
+                //button.enabled = false;  // Disable initially; can be enabled when an item is selected
+                //feedPlayerCharactersButtons.Add(button);
             }
         }
     }
