@@ -1,10 +1,7 @@
-using DG.Tweening;
 using ProjectEdelweiss.Utils;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Diagnostics;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -267,6 +264,7 @@ public class Unit : MonoBehaviour
 
     public void CheckUnitHealthStatus()
     {
+        // This logic works for both Player Units and Enemies.
         if (unitHealthPoints > 0)
         {
             Debug.Log("Unit is Still Alive");
@@ -303,6 +301,12 @@ public class Unit : MonoBehaviour
             ownedTile.tileShaderController.SetTileToMoveRangeColor();
             ownedTile.tileShaderController.SetTileGlowIntensity(1f);
             OnCheckGameOver();
+
+            // Deactivates Player Unit Profile when applicable.
+            if (gameObject.tag == GameTags.Player || gameObject.tag == GameTags.ActivePlayerUnit)
+            {
+                BattleInterface.Instance.PlayerPartyProfilesUIManager.SetDeadUnitProfile(unitTemplate.unitName);
+            }
         }
     }
 

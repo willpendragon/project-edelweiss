@@ -27,6 +27,10 @@ public static class SaveStateManager
             }
             return gameSaveData;
         }
+        set
+        {
+            gameSaveData = value;
+        }
     }
     public static void SaveGame(GameSaveData saveData)
     {
@@ -51,4 +55,5 @@ public static class SaveStateManager
             return new GameSaveData();
         }
     }
+
 }

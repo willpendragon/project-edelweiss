@@ -49,11 +49,22 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         // Search in the Dictionary.
         // Sort by unitName.
         Unit matchingUnit = LookForUnit(unitName);
+        if (matchingUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+        {
+            return;
+        }
         // Retrieve the corresponding Profile.
         PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
         // Refresh Profile UI with updated gameplay stats.
         profileHelper.FillPlayerDetails(matchingUnit);
         profileHelper.UpdateRemainingMovesDisplay(matchingUnit);
+    }
+
+    public void SetDeadUnitProfile(string unitName)
+    {
+        Unit matchingUnit = LookForUnit(unitName);
+        PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
+        profileHelper.DeactivateProfile();
     }
 
     private Unit LookForUnit(string unitName)

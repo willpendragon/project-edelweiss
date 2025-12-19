@@ -35,6 +35,7 @@ public class UnitTemplate : ScriptableObject
     public Sprite unitPortrait;
     public Sprite unitMiniPortrait;
     public GameObject unitCalloutPortrait;
+    public Sprite unitBattlePortrait;
 
     [Header("Voices")]
 

@@ -22,7 +22,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     private int aoeRange = 1;
     private bool _criticalHit;
 
-
     public delegate void SelectedSpell();
     public static event SelectedSpell OnSelectedSpell;
 
@@ -89,10 +88,17 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         Unit spellTarget = targetTile.detectedUnit.GetComponent<Unit>();
 
+
         if (!manaPointsAvailable(activePlayerUnit.unitManaPoints, spell.manaPointsCost))
         {
             OnNotEnoughMana("Not enough Mana...");
             return;
+        }
+
+        // Play feedback on Deity Obelisk when applicable.
+        if (targetTile.detectedUnit.GetComponent<Unit>().unitType == Unit.UnitType.Deity)
+        {
+            activePlayerUnit.GetComponent<BattleFeedbackController>().DisplaySpellObeliskDamageFeedback(activePlayerUnit);
         }
 
         int damageToApply = CalculateSpellDamage(spell);
@@ -119,6 +125,11 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
         List<TileController> affectedTiles = gridMovementController.GetMultipleTiles(targetTile, aoeRange);
 
+        // Play feedback on Deity Obelisk when applicable.
+        if (targetTile.detectedUnit.GetComponent<Unit>().unitType == Unit.UnitType.Deity)
+        {
+            activePlayerUnit.GetComponent<BattleFeedbackController>().DisplaySpellObeliskDamageFeedback(activePlayerUnit);
+        }
 
         SpendResources(activePlayerUnit, spell);
 

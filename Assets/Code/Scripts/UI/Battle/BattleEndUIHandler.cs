@@ -20,6 +20,7 @@ public class BattleEndUIHandler : MonoBehaviour
     [SerializeField] CanvasGroup _battleNotificationsGroup;
     [SerializeField] CanvasGroup _battleEndScreenGroup;
     [SerializeField] CanvasGroup _battleUpgradesGroup;
+    [SerializeField] CanvasGroup _mainCanvasGroup;
     [SerializeField] CanvasGroup _fadeCanvasGroup;
     [SerializeField] CursorController _cursor;
 
@@ -77,6 +78,7 @@ public class BattleEndUIHandler : MonoBehaviour
         _battleDetailsGroup.alpha = 0;
         _battleNotificationsGroup.alpha = 0;
         _battleUpgradesGroup.alpha = 0;
+        _mainCanvasGroup.alpha = 0;
         DeactivateUnitSelectionIcon();
         DeactivateStatusIcons();
         // Deactivate the radial menu.
@@ -115,8 +117,17 @@ public class BattleEndUIHandler : MonoBehaviour
         {
             Debug.LogWarning("No Saved Game Data found.");
         }
+        WipeGameSaveData();
         GameObject gameManagerInstance = GameObject.FindGameObjectWithTag("GameManager");
         Destroy(gameManagerInstance);
         SceneManager.LoadScene("start_screen");
+    }
+    // Duplicated method, for playtest demo only.
+    private void WipeGameSaveData()
+    {
+        GameSaveData freshData = new GameSaveData();
+        SaveStateManager.saveData = freshData;
+        SaveStateManager.SaveGame(freshData);
+        Debug.Log("Game data reset to blank slate.");
     }
 }

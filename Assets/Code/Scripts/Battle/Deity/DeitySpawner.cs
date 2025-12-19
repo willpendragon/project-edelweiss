@@ -238,4 +238,59 @@ public class DeitySpawner : MonoBehaviour
     {
         deityObeliskSpawningPoint.transform.position = currentUnboundDeity.gameObject.GetComponent<Unit>().ownedTile.gameObject.transform.position;
     }
+    public void ShowObeliskDamageFeedback()
+    {
+        if (_deityObeliskInstance == null) return;
+
+        Transform target = _deityObeliskInstance.transform;
+
+        target.DOKill();
+
+        // Rotation shake (main impact)
+        target.DOShakeRotation(
+            duration: 0.25f,
+            strength: new Vector3(0f, 6f, 0f),
+            vibrato: 12,
+            randomness: 90f,
+            fadeOut: true
+        );
+
+        // Subtle position shake
+        target.DOShakePosition(
+            duration: 0.2f,
+            strength: 1f,
+            vibrato: 10,
+            randomness: 90f,
+            fadeOut: true
+        );
+
+        PlayDamageFlash(target);
+    }
+
+    private void PlayDamageFlash(Transform target)
+    {
+        var renderer = target.GetComponentInChildren<Renderer>();
+        if (renderer == null) return;
+
+        // Instantiate material so we don't affect shared materials
+        Material mat = renderer.material;
+
+        Color originalColor = mat.HasProperty("_BaseColor")
+            ? mat.GetColor("_BaseColor")
+            : mat.color;
+
+        Color flashColor = Color.red;
+
+        float flashDuration = 0.5f; // VERY fast
+
+        mat
+            .DOColor(flashColor, "_BaseColor", flashDuration * 0.5f)
+            .SetEase(Ease.OutQuad)
+            .OnComplete(() =>
+            {
+                mat.DOColor(originalColor, "_BaseColor", flashDuration * 0.5f)
+                   .SetEase(Ease.InQuad);
+            });
+    }
+
 }

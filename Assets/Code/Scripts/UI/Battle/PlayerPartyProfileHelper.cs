@@ -19,7 +19,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour
     {
         if (unit == null)
             return;
-        unitPortrait.sprite = unit.unitTemplate.unitMiniPortrait;
+        unitPortrait.sprite = unit.unitTemplate.unitBattlePortrait;
 
         availableMovesText.text = unit.unitOpportunityPoints.ToString();
         hpText.text = ($"{unit.unitHealthPoints}/{unit.unitMaxHealthPoints}");
@@ -52,18 +52,24 @@ public class PlayerPartyProfileHelper : MonoBehaviour
            .Join(rt.DOShakePosition(0.20f, strength: 5f, vibrato: 15, randomness: 50, snapping: false));
         // Small shake.
 
-        // Update text.
-        availableMovesText.text = $"{unit.unitOpportunityPoints}/{unit.unitTemplate.unitOpportunityPoints}";
 
-        if (unit.unitOpportunityPoints <= 0)
+        if (unit.unitOpportunityPoints <= 0 || unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             SetProfileAlpha(0.16f);
         }
         else
         {
+            // Update text.
+            availableMovesText.text = $"{unit.unitOpportunityPoints}/{unit.unitTemplate.unitOpportunityPoints}";
             SetProfileAlpha(1f);
         }
         Debug.Log("Update remaining moves details");
+    }
+
+    public void DeactivateProfile()
+    {
+        SetProfileAlpha(0.16f);
+        availableMovesText.text = "-/-";
     }
 
     public void SetProfileAlpha(float alpha)

@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13abacb2f534ff34dbea42f20c42b229, type: 3}
   m_Name: DeityTribute
   m_EditorClassIdentifier: 
-  itemFoodType: 3
-  foodBuff: {fileID: 0}
+  itemFoodType: 0
+  foodBuff: {fileID: 11400000, guid: 3c0090512360ec94b95ee53ca98b03b3, type: 2}
   itemFoodName: DeityTribute
-  itemFoodDescription: Deity Tribute Description.
-  itemFoodPrice: 0
-  recoveryAmount: 0
-  foodIcon: {fileID: 21300000, guid: ca5e1f429d19afb489944f7dbd1add03, type: 3}
+  itemFoodDescription: A yummy threat for Deities. Wondering if it's delicious as
+    they say...?
+  itemFoodPrice: 1
+  recoveryAmount: 200
+  foodIcon: {fileID: -29705284, guid: 267274710855d2845ad818c804f9b078, type: 3}

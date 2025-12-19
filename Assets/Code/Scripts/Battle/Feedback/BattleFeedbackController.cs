@@ -44,8 +44,29 @@ public class BattleFeedbackController : MonoBehaviour
         }
 
         Vector3 originalPosition = activePlayerUnit.transform.position;
+        Vector3 destination;
 
-        activePlayerUnit.transform.position = currentTarget.transform.position;
+        if (currentTarget.unitType == Unit.UnitType.Deity)
+        {
+            var deitySpawner = FindAnyObjectByType<DeitySpawner>();
+            destination = deitySpawner.DeityObeliskSpawningPoint.transform.position;
+
+            float stopDistance = 1.2f;
+            float yOffset = 0.3f; // positive = up, negative = down
+
+            Vector3 direction = (destination - originalPosition).normalized;
+            Vector3 offsetDestination = destination - direction * stopDistance;
+
+            offsetDestination.y += yOffset;
+
+            activePlayerUnit.transform.position = offsetDestination;
+            deitySpawner.ShowObeliskDamageFeedback();
+        }
+        else
+        {
+            destination = currentTarget.transform.position;
+            activePlayerUnit.transform.position = destination;
+        }
         StartCoroutine(RestorePlayerUnitPosition(activePlayerUnit, originalPosition));
     }
 
@@ -54,6 +75,12 @@ public class BattleFeedbackController : MonoBehaviour
         float timeBeforeRestoringPlayerUnitPosition = 0.5f;
         yield return new WaitForSeconds(timeBeforeRestoringPlayerUnitPosition);
         activePlayerUnit.transform.position = originalPosition;
+    }
+
+    public void DisplaySpellObeliskDamageFeedback(Unit activePlayerUnit)
+    {
+        var deitySpawner = FindAnyObjectByType<DeitySpawner>();
+        deitySpawner.ShowObeliskDamageFeedback();
     }
 
     public void PlayHurtAnimation()

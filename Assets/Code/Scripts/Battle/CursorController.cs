@@ -211,12 +211,13 @@ public class CursorController : MonoBehaviour
 
         // Trap, Crystal, Summon
         bool canPlaceHazard = CheckDistance(_hazardsLimit) && _tileController.detectedUnit == null;
+        // Band-aid fix to allow only Aliza to use Traps.
         if (canPlaceHazard)
         {
             var trapController = _tileController.GetComponentInChildren<TrapController>();
             bool isTileFree = _tileController.currentSingleTileCondition == SingleTileCondition.free;
 
-            if (isTileFree && trapController != null && trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active)
+            if (isTileFree && trapController != null && trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active && activePlayerUnit.unitTemplate.unitName == "Aliza")
                 _trapButtonPrefabInstance = CreateActionButton(
                     RadialMenuEntry.ActionType.Trap, _trapIcon, "Trap", 2);
 

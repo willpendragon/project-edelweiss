@@ -327,6 +327,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
+  unitFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}
@@ -1029,11 +1030,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3428948116850998954, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 3428948116850998954, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.5
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 3428948116850998954, guid: 1bae54e12ea8aa64ba77d3ae3393fdec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1268,11 +1269,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1414415679049666734, guid: 8c17785434a51a74db7344ffa1507b4d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1.005
+      value: -0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1414415679049666734, guid: 8c17785434a51a74db7344ffa1507b4d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.5
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1414415679049666734, guid: 8c17785434a51a74db7344ffa1507b4d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

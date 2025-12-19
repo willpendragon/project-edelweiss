@@ -33,10 +33,9 @@ public class NewRunHelper : MonoBehaviour
     }
     private void WipeGameSaveData()
     {
-        GameSaveData gameSaveData = new GameSaveData();
-        SaveStateManager.saveData.highestUnlockedLevel = 0;
-        SaveStateManager.saveData.resourceData.warFunds = 0;
-        SaveStateManager.SaveGame(gameSaveData);
-        Debug.Log("Wiped Game Save Data");
+        GameSaveData freshData = new GameSaveData();
+        SaveStateManager.saveData = freshData;
+        SaveStateManager.SaveGame(freshData);
+        Debug.Log("Game data reset to blank slate.");
     }
 }

@@ -1865,6 +1865,7 @@ GameObject:
   - component: {fileID: 655295428}
   - component: {fileID: 655295427}
   - component: {fileID: 655295426}
+  - component: {fileID: 655295429}
   m_Layer: 5
   m_Name: DiscussionsMenuButton
   m_TagString: Untagged
@@ -1986,6 +1987,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 655295424}
   m_CullTransparentMesh: 1
+--- !u!114 &655295429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655295424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1953687559}
+          m_TargetAssemblyTypeName: NotificationsUIManager, Assembly-CSharp
+          m_MethodName: DisplayTooltip
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Talk with your comrades.
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1953687559}
+          m_TargetAssemblyTypeName: NotificationsUIManager, Assembly-CSharp
+          m_MethodName: ResetToolTip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Feed your Units with the available pastry here.
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &664844953
 GameObject:
   m_ObjectHideFlags: 0
@@ -2596,6 +2642,7 @@ GameObject:
   - component: {fileID: 784030338}
   - component: {fileID: 784030337}
   - component: {fileID: 784030336}
+  - component: {fileID: 784030339}
   m_Layer: 5
   m_Name: PastryCraftingMenuButton
   m_TagString: Untagged
@@ -2717,6 +2764,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 784030334}
   m_CullTransparentMesh: 1
+--- !u!114 &784030339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784030334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1953687559}
+          m_TargetAssemblyTypeName: NotificationsUIManager, Assembly-CSharp
+          m_MethodName: DisplayTooltip
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Bake pastry with the monster parts you've looted in
+              battle.
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1953687559}
+          m_TargetAssemblyTypeName: NotificationsUIManager, Assembly-CSharp
+          m_MethodName: ResetToolTip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Feed your Units with the available pastry here.
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &786807062
 GameObject:
   m_ObjectHideFlags: 0
@@ -2729,7 +2822,7 @@ GameObject:
   - component: {fileID: 786807065}
   - component: {fileID: 786807064}
   m_Layer: 5
-  m_Name: Footer
+  m_Name: Notifications
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7873,6 +7966,7 @@ GameObject:
   - component: {fileID: 1886166534}
   - component: {fileID: 1886166533}
   - component: {fileID: 1886166532}
+  - component: {fileID: 1886166535}
   m_Layer: 5
   m_Name: CafeMenuButton
   m_TagString: Untagged
@@ -7994,6 +8088,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886166530}
   m_CullTransparentMesh: 1
+--- !u!114 &1886166535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886166530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1953687559}
+          m_TargetAssemblyTypeName: NotificationsUIManager, Assembly-CSharp
+          m_MethodName: DisplayTooltip
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Feed your Units dragging and dropping Pastry on them.
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1953687559}
+          m_TargetAssemblyTypeName: NotificationsUIManager, Assembly-CSharp
+          m_MethodName: ResetToolTip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Feed your Units with the available pastry here.
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1941949562
 GameObject:
   m_ObjectHideFlags: 0
@@ -8122,6 +8261,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1953687557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1953687558}
+  - component: {fileID: 1953687559}
+  m_Layer: 0
+  m_Name: NotificationsUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1953687558
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953687557}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1953687559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953687557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98656ef016aff62458c402b14226aa6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _notificationsText: {fileID: 1703020733}
 --- !u!1 &1956919970
 GameObject:
   m_ObjectHideFlags: 0
@@ -10149,6 +10333,7 @@ SceneRoots:
   - {fileID: 1397406276}
   - {fileID: 1811273059}
   - {fileID: 870471533}
+  - {fileID: 1953687558}
   - {fileID: 390851201}
   - {fileID: 850424472}
   - {fileID: 59425012}

@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class AlignmentIconHelper : MonoBehaviour
 {
     [SerializeField] private Image _alignmentIcon;
-
     [SerializeField] List<Sprite> _alignmentIcons = new List<Sprite>();
+    [SerializeField] CanvasGroup _canvas;
 
     public void DisplayAlignmentIcon()
     {
@@ -17,10 +17,12 @@ public class AlignmentIconHelper : MonoBehaviour
         // Get ActivePlayerUnit
         var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
         SpellAlignment spellAlignment = activePlayerUnit.GetComponent<Unit>().unitTemplate.spellsList[0].alignment;
-        
-        Color imageColor = _alignmentIcon.color;
-        imageColor.a = 1f;
-        _alignmentIcon.color = imageColor;
+
+        //Color imageColor = _alignmentIcon.color;
+        //imageColor.a = 1f;
+        //_alignmentIcon.color = imageColor;
+
+        _canvas.alpha = 1f;
 
         switch (spellAlignment)
         {
