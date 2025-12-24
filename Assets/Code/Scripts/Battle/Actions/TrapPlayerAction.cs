@@ -9,6 +9,9 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public static event System.Action OnTrapPlaced;
 
+    public delegate void NotEnoughMana(string notification);
+    public static event NotEnoughMana OnNotEnoughMana;
+
     public void Select(TileController selectedTile) { }
 
     public void Deselect() { }
@@ -33,7 +36,11 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         }
 
         if (activePlayerUnit.unitOpportunityPoints <= 0) return;
-        if (activePlayerUnit.unitManaPoints < trapCreationCost) return;
+        if (activePlayerUnit.unitManaPoints < trapCreationCost)
+        {
+            OnNotEnoughMana("Not enough Mana...");
+            return;
+        }
 
         trapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
         Transform tilePosition = targetTile.transform;
@@ -44,17 +51,15 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
         activePlayerUnit.unitOpportunityPoints--;
 
-        UpdateActivePlayerUnitProfile(activePlayerUnit);
         activePlayerUnit.unitManaPoints -= trapCreationCost;
+        UpdateActivePlayerUnitProfile(activePlayerUnit);
 
         targetTile.GetComponentInChildren<SpriteRenderer>().material.color = Color.white;
-
         OnTrapPlaced?.Invoke();
     }
     private void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
-    {// Use centralized logic
-        //activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
+    {
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateProfile(activePlayerUnit.unitTemplate.unitName);
         BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate.unitName);
-
     }
 }
