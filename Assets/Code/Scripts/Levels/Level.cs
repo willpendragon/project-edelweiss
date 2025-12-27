@@ -6,4 +6,5 @@ public class Level : ScriptableObject
 {
     public int levelNumber;
     public EnemyPartyData enemyPartyData;
+    public MapData map;
 }

@@ -1,295 +1,283 @@
-//using UnityEngine;
-//using UnityEditor;
-//using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using System.Collections.Generic;
 
-//public class MapEditorWindow : EditorWindow
-//{
-//    private int gridWidth = 10;
-//    private int gridHeight = 10;
-//    private float tileOffsetX = 1.0f;
-//    private float tileOffsetY = 1.0f;
-//    private GameObject tilePrefab;
-//    private Dictionary<Vector2Int, GameObject> tiles = new Dictionary<Vector2Int, GameObject>();
+public class MapEditorWindow : EditorWindow
+{
+    private int gridWidth = 10;
+    private int gridHeight = 10;
+    private GameObject tilePrefab;
+    private MapData currentMap;
+    private TileType selectedTileType = TileType.Basic;
 
-//    private MapData currentMap;
-//    private bool isPlacingTile = false;
-//    private bool isDeletingTile = false;
+    // Use a dictionary for speed, but we will "Sync" it to ensure it's never empty
+    private Dictionary<Vector2Int, GameObject> tiles = new Dictionary<Vector2Int, GameObject>();
 
-//    // Tile type selector
-//    private TileType selectedTileType = TileType.Basic;
+    private bool isPlacingTile = false;
+    private bool isDeletingTile = false;
+    private Vector2Int lastGridPosition = new Vector2Int(-1, -1);
 
-//    [MenuItem("Window/Map Editor")]
-//    public static void ShowWindow()
-//    {
-//        GetWindow<MapEditorWindow>("Map Editor");
-//    }
+    [MenuItem("Window/Map Editor")]
+    public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
 
-//    private void OnEnable()
-//    {
-//        SceneView.duringSceneGui += OnSceneGUI;
-//    }
+    private void OnEnable() => SceneView.duringSceneGui += OnSceneGUI;
+    private void OnDisable() => SceneView.duringSceneGui -= OnSceneGUI;
 
-//    private void OnDisable()
-//    {
-//        SceneView.duringSceneGui -= OnSceneGUI;
-//    }
+    private void OnGUI()
+    {
+        GUILayout.Label("Map Settings", EditorStyles.boldLabel);
+        gridWidth = EditorGUILayout.IntField("Grid Width", gridWidth);
+        gridHeight = EditorGUILayout.IntField("Grid Height", gridHeight);
+        tilePrefab = (GameObject)EditorGUILayout.ObjectField("Tile Prefab", tilePrefab, typeof(GameObject), false);
+        currentMap = (MapData)EditorGUILayout.ObjectField("Current Map Asset", currentMap, typeof(MapData), false);
+        selectedTileType = (TileType)EditorGUILayout.EnumPopup("Tile Type", selectedTileType);
 
-//    private Vector2Int lastGridPosition = Vector2Int.one * int.MinValue;
+        EditorGUILayout.Space();
 
-//    private void OnGUI()
-//    {
-//        GUILayout.Label("Map Settings", EditorStyles.boldLabel);
+        if (GUILayout.Button("Generate/Clear Map")) GenerateMap();
 
-//        gridWidth = EditorGUILayout.IntField("Grid Width", gridWidth);
-//        gridHeight = EditorGUILayout.IntField("Grid Height", gridHeight);
-//        tileOffsetX = EditorGUILayout.FloatField("Tile Offset X", tileOffsetX);
-//        tileOffsetY = EditorGUILayout.FloatField("Tile Offset Y", tileOffsetY);
-//        tilePrefab = (GameObject)EditorGUILayout.ObjectField("Tile Prefab", tilePrefab, typeof(GameObject), false);
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Toggle(isPlacingTile, "Paint Mode", "Button")) { isPlacingTile = true; isDeletingTile = false; }
+        if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { isPlacingTile = false; isDeletingTile = true; }
+        EditorGUILayout.EndHorizontal();
 
-//        selectedTileType = (TileType)EditorGUILayout.EnumPopup("Tile Type", selectedTileType);
+        if (GUILayout.Button("Sync & Reload from Scene")) SyncDictionaryFromScene();
 
-//        if (GUILayout.Button("Generate Map"))
-//        {
-//            GenerateMap();
-//        }
+        // --- ADD THESE TO YOUR OnGUI METHOD ---
+        if (GUILayout.Button("Save Map to Asset"))
+        {
+            SaveMap();
+        }
 
-//        if (GUILayout.Button("Save Map"))
-//        {
-//            SaveMap();
-//        }
+        if (GUILayout.Button("Load Map from Asset"))
+        {
+            LoadFromAsset();
+        }
+        // --------------------------------------
+    }
 
-//        if (GUILayout.Button("Load Map"))
-//        {
-//            LoadMap();
-//        }
+    private void OnSceneGUI(SceneView sceneView)
+    {
+        // 1. Prevent "Click-Through" selection in the scene
+        int controlID = GUIUtility.GetControlID(FocusType.Passive);
+        if (isPlacingTile || isDeletingTile)
+        {
+            HandleUtility.AddDefaultControl(controlID);
+        }
 
-//        currentMap = (MapData)EditorGUILayout.ObjectField("Current Map", currentMap, typeof(MapData), false);
+        Event e = Event.current;
+        Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
 
-//        if (GUILayout.Button("Enable Tile Placement"))
-//        {
-//            isPlacingTile = !isPlacingTile;
-//            isDeletingTile = false;
-//        }
+        if (groundPlane.Raycast(ray, out float enter))
+        {
+            Vector3 hitPoint = ray.GetPoint(enter);
+            Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
 
-//        if (GUILayout.Button("Enable Tile Deletion"))
-//        {
-//            isDeletingTile = !isDeletingTile;
-//            isPlacingTile = false;
-//        }
-//    }
+            // Draw Brush Preview
+            DrawPreview(gridPos);
 
-//    private void OnSceneGUI(SceneView sceneView)
-//    {
-//        Handles.color = Color.green;
+            if (!IsInsideGrid(gridPos) || e.alt) return;
 
-//        foreach (var tile in tiles.Keys)
-//        {
-//            Vector3 tilePosition = new Vector3(tile.x * tileOffsetX, 0, tile.y * tileOffsetY);
-//            Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
-//        }
+            // 2. Handle Input
+            if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0)
+            {
+                if (gridPos != lastGridPosition)
+                {
+                    if (isPlacingTile) PlaceTile(gridPos, selectedTileType);
+                    else if (isDeletingTile) DeleteTile(gridPos);
+                    lastGridPosition = gridPos;
+                }
+                e.Use();
+            }
+        }
 
-//        Event currentEvent = Event.current;
-//        Ray ray = HandleUtility.GUIPointToWorldRay(currentEvent.mousePosition);
-//        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        if (e.type == EventType.MouseUp) lastGridPosition = new Vector2Int(-1, -1);
 
-//        if (groundPlane.Raycast(ray, out float enter))
-//        {
-//            Vector3 hitPoint = ray.GetPoint(enter);
-//            Vector2Int gridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
+        DrawGrid();
+        sceneView.Repaint();
+    }
 
-//            if (currentEvent.type == EventType.MouseDown || currentEvent.type == EventType.MouseDrag)
-//            {
-//                if (gridPos != lastGridPosition)
-//                {
-//                    if (currentEvent.button == 0 && isPlacingTile)
-//                    {
-//                        PlaceTile(gridPos, selectedTileType);
-//                    }
-//                    else if (currentEvent.button == 1 && isDeletingTile)
-//                    {
-//                        DeleteTile(gridPos);
-//                    }
-//                    lastGridPosition = gridPos;
-//                }
-//                currentEvent.Use(); // Consume the event
-//            }
+    private void PlaceTile(Vector2Int position, TileType type)
+    {
+        if (tilePrefab == null) return;
 
-//            if (currentEvent.type == EventType.MouseUp)
-//            {
-//                lastGridPosition = Vector2Int.one * int.MinValue; // Reset to an invalid position
-//            }
-//        }
+        SyncDictionaryFromScene(); // Ensure we don't double-place if dictionary was wiped
 
-//        Handles.color = Color.cyan;
-//        for (int x = 0; x < gridWidth; x++)
-//        {
-//            for (int y = 0; y < gridHeight; y++) // Use < instead of <=
-//            {
-//                Vector3 tilePosition = new Vector3(x * tileOffsetX, 0, y * tileOffsetY);
-//                Handles.DrawWireCube(tilePosition, new Vector3(tileOffsetX, 0.1f, tileOffsetY));
-//            }
-//        }
+        if (tiles.ContainsKey(position)) return;
 
-//        SceneView.RepaintAll();
-//    }
+        Vector2 tileSize = GetTileWorldSize();
+        Vector3 worldPos = GridToWorld(position, tileSize);
 
-//    private Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPosition)
-//    {
-//        int x = Mathf.RoundToInt(worldPosition.x / tileOffsetX);
-//        int y = Mathf.RoundToInt(worldPosition.z / tileOffsetY);
-//        return new Vector2Int(x, y);
-//    }
+        GameObject tile = (GameObject)PrefabUtility.InstantiatePrefab(tilePrefab);
+        tile.transform.position = worldPos;
+        tile.name = $"Tile_{position.x}_{position.y}";
 
-//    private void PlaceTile(Vector2Int position, TileType tileType)
-//    {
-//        if (tiles.ContainsKey(position))
-//        {
-//            Debug.LogWarning("Tile already exists at this position.");
-//            return;
-//        }
+        // Support Undo
+        Undo.RegisterCreatedObjectUndo(tile, "Place Tile");
 
-//        Vector3 tilePosition = new Vector3(position.x * tileOffsetX, 0, position.y * tileOffsetY);
-//        GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
-//        tile.name = $"Tile_{position.x}_{position.y}";
-//        tiles[position] = tile;
+        tiles[position] = tile;
+        HideTileEffects(tile);
 
-//        TileController tileController = tile.GetComponent<TileController>();
-//        if (tileController != null)
-//        {
-//            tileController.tileType = tileType;
-//        }
+        var controller = tile.GetComponent<TileController>();
+        if (controller != null) controller.tileType = type;
 
-//        if (currentMap != null)
-//        {
-//            MapData.TileData tileData = new MapData.TileData
-//            {
-//                position = position,
-//                tileType = tileType
-//            };
-//            currentMap.tilePositions.Add(tileData);
-//            EditorUtility.SetDirty(currentMap);
-//        }
-//    }
+        //UpdateMapData();
+    }
 
-//    private void DeleteTile(Vector2Int position)
-//    {
-//        if (!tiles.ContainsKey(position))
-//        {
-//            Debug.LogWarning("Tile does not exist at this position.");
-//            return;
-//        }
+    private void DeleteTile(Vector2Int position)
+    {
+        SyncDictionaryFromScene();
 
-//        GameObject tile = tiles[position];
-//        DestroyImmediate(tile);
-//        tiles.Remove(position);
+        if (tiles.ContainsKey(position))
+        {
+            GameObject tile = tiles[position];
+            tiles.Remove(position);
+            Undo.DestroyObjectImmediate(tile);
+            //UpdateMapData();
+        }
+    }
 
-//        if (currentMap != null)
-//        {
-//            currentMap.tilePositions.RemoveAll(t => t.position == position);
-//            EditorUtility.SetDirty(currentMap);
-//        }
-//    }
+    private Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPos)
+    {
+        Vector2 size = GetTileWorldSize();
+        // FloorToInt is the industry standard for stable grids
+        return new Vector2Int(Mathf.FloorToInt(worldPos.x / size.x), Mathf.FloorToInt(worldPos.z / size.y));
+    }
 
-//    private void GenerateMap()
-//    {
-//        ClearMap();
+    private Vector3 GridToWorld(Vector2Int gridPos, Vector2 tileSize)
+    {
+        // Align the center of the tile to the center of the grid cell
+        return new Vector3(gridPos.x * tileSize.x + (tileSize.x * 0.5f), 0, gridPos.y * tileSize.y + (tileSize.y * 0.5f));
+    }
 
-//        if (currentMap != null)
-//        {
-//            currentMap.tilePositions.Clear();
-//        }
+    private void SyncDictionaryFromScene()
+    {
+        // Rebuild dictionary by finding existing objects in scene using their names
+        tiles.Clear();
+        GameObject[] allTiles = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        foreach (var t in allTiles)
+        {
+            if (t.name.StartsWith("Tile_"))
+            {
+                string[] parts = t.name.Split('_');
+                if (parts.Length == 3 && int.TryParse(parts[1], out int x) && int.TryParse(parts[2], out int y))
+                {
+                    tiles[new Vector2Int(x, y)] = t;
+                }
+            }
+        }
+    }
 
-//        for (int x = 0; x < gridWidth; x++)
-//        {
-//            for (int y = 0; y < gridHeight; y++)
-//            {
-//                Vector3 tilePosition = new Vector3(x * tileOffsetX, 0, y * tileOffsetY);
-//                GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
-//                tile.name = $"Tile_{x}_{y}";
-//                tiles[new Vector2Int(x, y)] = tile;
+    private void DrawGrid()
+    {
+        Vector2 size = GetTileWorldSize();
+        Handles.color = new Color(0, 1, 1, 0.2f);
+        for (int x = 0; x <= gridWidth; x++)
+            Handles.DrawLine(new Vector3(x * size.x, 0, 0), new Vector3(x * size.x, 0, gridHeight * size.y));
+        for (int y = 0; y <= gridHeight; y++)
+            Handles.DrawLine(new Vector3(0, 0, y * size.y), new Vector3(gridWidth * size.x, 0, y * size.y));
+    }
 
-//                TileController tileController = tile.GetComponent<TileController>();
-//                if (tileController != null)
-//                {
-//                    tileController.tileType = selectedTileType;
-//                }
+    private void DrawPreview(Vector2Int gridPos)
+    {
+        Vector2 size = GetTileWorldSize();
+        Vector3 center = GridToWorld(gridPos, size);
+        Handles.color = isDeletingTile ? Color.red : Color.green;
+        Handles.DrawWireCube(center, new Vector3(size.x, 0.1f, size.y));
+    }
 
-//                if (currentMap != null)
-//                {
-//                    MapData.TileData tileData = new MapData.TileData
-//                    {
-//                        position = new Vector2Int(x, y),
-//                        tileType = selectedTileType
-//                    };
-//                    currentMap.tilePositions.Add(tileData);
-//                }
-//            }
-//        }
+    private Vector2 GetTileWorldSize()
+    {
+        if (tilePrefab == null) return Vector2.one;
+        Transform bounds = tilePrefab.transform.Find("GridBounds");
+        if (bounds == null) return Vector2.one;
+        return new Vector2(bounds.localScale.x, bounds.localScale.z);
+    }
 
-//        if (currentMap != null)
-//        {
-//            EditorUtility.SetDirty(currentMap);
-//        }
-//    }
+    private bool IsInsideGrid(Vector2Int pos) => pos.x >= 0 && pos.x < gridWidth && pos.y >= 0 && pos.y < gridHeight;
 
-//    private void ClearMap()
-//    {
-//        foreach (var tile in tiles.Values)
-//        {
-//            DestroyImmediate(tile);
-//        }
-//        tiles.Clear();
-//    }
+    private void UpdateMapData()
+    {
+        if (currentMap == null) return;
+        currentMap.tilePositions.Clear();
+        foreach (var kvp in tiles)
+        {
+            var controller = kvp.Value.GetComponent<TileController>();
+            currentMap.tilePositions.Add(new MapData.TileData { position = kvp.Key, tileType = controller ? controller.tileType : TileType.Basic });
+        }
+        EditorUtility.SetDirty(currentMap);
+    }
 
-//    private void SaveMap()
-//    {
-//        if (currentMap != null)
-//        {
-//            currentMap.tilePositions.Clear();
-//            foreach (var tile in tiles)
-//            {
-//                TileController tileController = tile.Value.GetComponent<TileController>();
-//                if (tileController != null)
-//                {
-//                    MapData.TileData tileData = new MapData.TileData
-//                    {
-//                        position = tile.Key,
-//                        tileType = tileController.tileType
-//                    };
-//                    currentMap.tilePositions.Add(tileData);
-//                }
-//            }
-//            EditorUtility.SetDirty(currentMap);
-//            AssetDatabase.SaveAssets();
-//        }
-//        else
-//        {
-//            Debug.LogError("No map asset selected to save.");
-//        }
-//    }
+    private void GenerateMap()
+    {
+        SyncDictionaryFromScene();
+        foreach (var obj in tiles.Values) Undo.DestroyObjectImmediate(obj);
+        tiles.Clear();
+        //UpdateMapData();
+    }
 
-//    private void LoadMap()
-//    {
-//        if (currentMap != null)
-//        {
-//            ClearMap();
-//            foreach (var tileData in currentMap.tilePositions)
-//            {
-//                Vector3 tilePosition = new Vector3(tileData.position.x * tileOffsetX, 0, tileData.position.y * tileOffsetY);
-//                GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
-//                tile.name = $"Tile_{tileData.position.x}_{tileData.position.y}";
-//                tiles[tileData.position] = tile;
+    private void HideTileEffects(GameObject tile)
+    {
+        Transform effects = tile.transform.Find("TileEffects");
+        if (effects != null) SceneVisibilityManager.instance.Hide(effects.gameObject, true);
+    }
 
-//                TileController tileController = tile.GetComponent<TileController>();
-//                if (tileController != null)
-//                {
-//                    tileController.tileType = tileData.tileType;
-//                }
-//            }
-//        }
-//        else
-//        {
-//            Debug.LogError("No map asset selected to load.");
-//        }
-//    }
-//}
+    private void SaveMap()
+    {
+        if (currentMap == null)
+        {
+            Debug.LogError("Assign a MapData asset first!");
+            return;
+        }
+
+        SyncDictionaryFromScene(); // Make sure our dictionary matches the scene
+
+        currentMap.tilePositions.Clear();
+        foreach (var kvp in tiles)
+        {
+            var controller = kvp.Value.GetComponent<TileController>();
+            currentMap.tilePositions.Add(new MapData.TileData
+            {
+                position = kvp.Key,
+                tileType = controller ? controller.tileType : TileType.Basic
+            });
+        }
+
+        EditorUtility.SetDirty(currentMap);
+        AssetDatabase.SaveAssets(); // This writes the file to disk!
+        Debug.Log($"Saved {tiles.Count} tiles to {currentMap.name}");
+    }
+
+    private void LoadFromAsset()
+    {
+        if (currentMap == null || tilePrefab == null)
+        {
+            Debug.LogError("Assign MapData and Tile Prefab first!");
+            return;
+        }
+
+        // 1. Clear the scene
+        SyncDictionaryFromScene();
+        foreach (var obj in tiles.Values) DestroyImmediate(obj);
+        tiles.Clear();
+
+        // 2. Spawn from Data
+        Vector2 tileSize = GetTileWorldSize();
+        foreach (var data in currentMap.tilePositions)
+        {
+            Vector3 worldPos = GridToWorld(data.position, tileSize);
+            GameObject tile = (GameObject)PrefabUtility.InstantiatePrefab(tilePrefab);
+            tile.transform.position = worldPos;
+            tile.name = $"Tile_{data.position.x}_{data.position.y}";
+
+            var controller = tile.GetComponent<TileController>();
+            if (controller != null) controller.tileType = data.tileType;
+
+            tiles[data.position] = tile;
+            HideTileEffects(tile);
+        }
+
+        Debug.Log($"Loaded {currentMap.tilePositions.Count} tiles.");
+    }
+}

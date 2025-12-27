@@ -34,6 +34,8 @@ public class EnemyPartyManager : MonoBehaviour
             // Get existing tile coordinates from GridManager
             List<Vector2Int> existingTiles = GridManager.Instance.GetExistingTileCoordinates();
 
+            // Exclude tiles occupied by Obstacles/Hazards.
+
             // Retrieve Deity starting position, add it to the ExcludedCoordinatesList.
             List<Vector2Int> occupiedCoordinates = new List<Vector2Int>(playerStartingCoordinates);
             occupiedCoordinates.Add(GameManager.Instance.GetDeityStartingCoordinates());

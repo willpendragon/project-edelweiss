@@ -1,3 +1,4 @@
+using ProjectEdelweiss.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private EnemyPartyManager _enemyPartyManager;
     [SerializeField] private DeityLinkManager _deityLinkManager;
     [SerializeField] private BuffManager _buffManager;
+    public MapData CurrentMap;
 
     public EnemyPartyManager EnemyPartyManager => _enemyPartyManager;
     public DeityLinkManager DeityLinkManager => _deityLinkManager;
@@ -24,7 +26,6 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             InstantiateUnits();
             SceneManager.sceneLoaded += OnSceneLoaded; // Subscribe to the sceneLoaded event
-
         }
         else if (Instance != this)
         {

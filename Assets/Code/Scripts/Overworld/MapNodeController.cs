@@ -89,6 +89,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     }
     private void HandleRegularBattle()
     {
+        // The sequence happening when the Player clicks on a node.
         Time.timeScale = 1f;
         enemySelection.SelectMapNode();
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();

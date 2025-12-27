@@ -1,7 +1,8 @@
+using Edelweiss.Core;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using Edelweiss.Core;
 
 public enum SingleTileStatus
 {
@@ -35,6 +36,33 @@ public enum TileType
 }
 public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+
+    [SerializeField] private Transform tileEffects;
+
+    private void Reset()
+    {
+        // Auto-assign for convenience
+        if (tileEffects == null)
+            tileEffects = transform.Find("TileEffects");
+    }
+
+    private void OnEnable()
+    {
+        if (tileEffects == null)
+            return;
+
+        // Runtime ALWAYS shows effects
+        if (Application.isPlaying)
+        {
+            tileEffects.gameObject.SetActive(true);
+            return;
+        }
+
+#if UNITY_EDITOR
+        // Editor ONLY: hide effects visually in Scene View
+        SceneVisibilityManager.instance.Hide(tileEffects.gameObject, true);
+#endif
+    }
 
     [Header("Gameplay Logic")]
     public GameObject detectedUnit;

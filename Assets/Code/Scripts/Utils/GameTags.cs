@@ -30,5 +30,8 @@ namespace ProjectEdelweiss.Utils
         public const string SHOW_UNIT_CALLOUT = "ShowUnitCallout";
         public const string FULL_ENMITY_BAR = "FullBar";
         public const string RESET_ENMITY_BAR = "ResetBar";
+
+        // Scene Names
+        public const string BATTLE_SCENE = "battle_prototype";
     }
 }

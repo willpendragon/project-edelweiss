@@ -82,6 +82,8 @@ public class OverworldMapGenerator : MonoBehaviour
                 GameObject newNode = Instantiate(mapNode, newPosition, Quaternion.identity);
                 newNode.GetComponent<EnemySelection>().enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
                 newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
+                // Set the Node MapData
+                newNode.GetComponent<EnemySelection>().mapData = domainLevelSelection.levelList[i].map;
 
                 // Unlocks levels based on the current state of level progression.
                 if (i == highestUnlockedLevel)

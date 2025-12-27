@@ -1,7 +1,10 @@
+using ProjectEdelweiss.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GridManager : MonoBehaviour
 {
@@ -20,6 +23,7 @@ public class GridManager : MonoBehaviour
     public int gridVerticalSize;
     public float inBetweenTilesXOffset;
     public float inBetweenTilesYOffset;
+    public float tileVerticalOffset = 0.56f;
     public GameObject currentPlayerUnit;
 
     public bool tileSelectionPermitted;
@@ -92,10 +96,21 @@ public class GridManager : MonoBehaviour
             }
             else
             {
-                GenerateGridMapFromData(currentMapData);
+                GenerateStandardMap();
             }
         }
     }
+
+    private void GenerateStandardMap()
+    {
+        var sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName == GameTags.BATTLE_SCENE)
+        {
+            currentMapData = GameManager.Instance.CurrentMap;
+            GenerateGridMapFromData(currentMapData);
+        }
+    }
+
     private void Start()
     {
         gridTileControllers = GameObject.FindObjectsOfType<TileController>();
@@ -128,7 +143,7 @@ public class GridManager : MonoBehaviour
 
         foreach (var tileData in currentMapData.tilePositions)
         {
-            Vector3 tilePosition = new Vector3(tileData.position.x * (1 + inBetweenTilesXOffset), 0, tileData.position.y * (1 + inBetweenTilesYOffset));
+            Vector3 tilePosition = new Vector3(tileData.position.x * (1 + inBetweenTilesXOffset), tileVerticalOffset, tileData.position.y * (1 + inBetweenTilesYOffset));
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
             TileController tileController = tilePrefabInstance.GetComponent<TileController>();
             tileController.tileXCoordinate = tileData.position.x;
