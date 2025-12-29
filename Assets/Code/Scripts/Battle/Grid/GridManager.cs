@@ -10,6 +10,8 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
 
+    [SerializeField] ObstacleController _obstacleController;
+
     public GameObject lineRendererPrefab;
     private static LineRenderer lineRendererInstance;
 
@@ -32,7 +34,7 @@ public class GridManager : MonoBehaviour
     public TileController[] gridTileControllers;
     public List<TileShaderController> _tileShaderControllers;
 
-    private Dictionary<PositionKey, TileController> gridMapDictionary = new Dictionary<PositionKey, TileController>();
+    public Dictionary<PositionKey, TileController> gridMapDictionary = new Dictionary<PositionKey, TileController>();
     public GridMovementController gridMovementController;
 
     public delegate void GridMovementModeActivated();
@@ -108,6 +110,7 @@ public class GridManager : MonoBehaviour
         {
             currentMapData = GameManager.Instance.CurrentMap;
             GenerateGridMapFromData(currentMapData);
+            _obstacleController.SpawnObstacles();
         }
     }
 
@@ -221,6 +224,10 @@ public class GridManager : MonoBehaviour
         foreach (var key in gridMapDictionary.Keys)
         {
             existingTiles.Add(new Vector2Int(key.indexTileXPosition, key.indexTileYPosition));
+            //// Test: Exclude tiles marked as obstacles.
+            //if (key.tileController.GetComponent<TileController>().tileType != TileType.Obstacle)
+            //{
+            //}
         }
         return existingTiles;
     }
@@ -289,6 +296,20 @@ public class GridManager : MonoBehaviour
         {
             lineRendererInstance.positionCount = 0;
         }
+    }
+
+    public List<Vector2Int> GetSpecialTiles()
+    {
+        List<Vector2Int> specialTiles = new List<Vector2Int>();
+        foreach (var tile in gridTileControllers)
+        {
+            if (tile.tileType == TileType.Obstacle)
+            {
+                Vector2Int coords = new Vector2Int(tile.tileXCoordinate, tile.tileYCoordinate);
+                specialTiles.Add(coords);
+            }
+        }
+        return specialTiles;
     }
 
     public void ClearTileColors()

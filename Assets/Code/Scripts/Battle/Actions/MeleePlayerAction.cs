@@ -29,6 +29,14 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
             return;
 
         GameObject enemyObject = targetTile.detectedUnit;
+        // Insert Interaction Logic here (for mirrors)
+        if (targetTile.tileType == TileType.Obstacle)
+        {
+            Beacon beacon = targetTile.detectedUnit.GetComponent<Beacon>();
+            beacon.OnHitByUnit();
+            return;
+        }
+
         Unit defender = enemyObject.GetComponent<Unit>();
 
         if (activePlayerUnit.hasHookshot)

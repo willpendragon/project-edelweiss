@@ -1,31 +1,38 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class ObstacleController : MonoBehaviour
 {
     [SerializeField] GridManager gridManager;
+    [SerializeField] GameObject _mirrorPrefab;
 
     List<TileController> obstacles = new List<TileController>();
 
     // Subscribe to Player Turn
 
-    private void Start()
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.E))
+    //    {
+    //        SpawnObstacles();
+    //    }
+    //}
+
+    public void SpawnObstacles()
     {
-        foreach (var tile in gridManager?.gridTileControllers)
+        foreach (var tile in gridManager.gridMapDictionary.Values)
         {
             if (tile.tileType == TileType.Obstacle)
             {
-                var spriteRenderer = tile.gameObject.GetComponentInChildren<SpriteRenderer>();
-                if (spriteRenderer != null)
-                {
-                    spriteRenderer.color = Color.red;
-                    Debug.Log("Set up Obstacle Color");
-                    OccupyObstacleTile(tile);
-                }
-                else
-                {
-                    Debug.Log("Unable to find SpriteRenderer Component in Obstacle Tile");
-                }
+                Debug.Log($"Found Obstacle on {tile.gameObject}");
+
+                OccupyObstacleTile(tile);
+                SpawnMirror(tile);
+            }
+            else
+            {
+                Debug.Log("Unable to find SpriteRenderer Component in Obstacle Tile");
             }
         }
     }
@@ -48,6 +55,18 @@ public class ObstacleController : MonoBehaviour
             }
         }
         return obstacles;
+    }
+
+    private void SpawnMirror(TileController tile)
+    {
+        int x = tile.tileXCoordinate;
+        int y = tile.tileYCoordinate;
+
+        var tileWorldPosition = gridManager.GetWorldPositionFromGridCoordinates(x, y);
+        float yOffset = 1f;
+        tileWorldPosition = new Vector3(tileWorldPosition.x, yOffset, tileWorldPosition.z);
+        GameObject mirrorInstance = Instantiate(_mirrorPrefab, tileWorldPosition, Quaternion.identity);
+        tile.detectedUnit = mirrorInstance;
     }
     private void ActivateObstacles()
     {

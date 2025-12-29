@@ -69,9 +69,9 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
             case ActionType.Melee:
                 DisplayKnockbackPreview();
                 return;
-            //case ActionType.Spell:
-            //    DisplayAlignmentIcon();
-            //    return;
+                //case ActionType.Spell:
+                //    DisplayAlignmentIcon();
+                //    return;
         }
     }
 
@@ -91,7 +91,6 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
         _alignmentIconHelper.DisplayAlignmentIcon();
     }
 
-
     private void DisplayKnockbackPreview()
     {
         var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
@@ -102,9 +101,13 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
         var cursor = FindAnyObjectByType<CursorController>();
         Debug.Log($"Melee Targeting: {cursor.TargetedUnit}");
 
+        if (cursor.TargetedUnit == null)
+            return;
+
         // Block the Knockback preview if the Tile belongs to a Deity conduit.
         if (cursor.TargetedUnit.unitType == Unit.UnitType.Deity)
             return;
+
 
         if (!IsKnockbackPossible(activePlayerUnit.GetComponent<Unit>(), cursor.TargetedUnit.ownedTile))
             return;

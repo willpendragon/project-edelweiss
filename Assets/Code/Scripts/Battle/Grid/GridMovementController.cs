@@ -189,4 +189,46 @@ public class GridMovementController : MonoBehaviour
 
         return /*10 * */(distX + distY);
     }
+
+    public List<TileController> GetTilesInDirection(int startX, int startY, Beacon.FacingDirection direction, int range)
+    {
+        List<TileController> tiles = new List<TileController>();
+
+        // Determine the X and Y movement per step based on direction
+        int dirX = 0;
+        int dirY = 0;
+
+        switch (direction)
+        {
+            case Beacon.FacingDirection.Up: dirY = 1; break;
+            case Beacon.FacingDirection.Down: dirY = -1; break;
+            case Beacon.FacingDirection.Left: dirX = -1; break;
+            case Beacon.FacingDirection.Right: dirX = 1; break;
+        }
+
+        // Loop through the range, starting from 1 tile away from the beacon
+        for (int i = 1; i <= range; i++)
+        {
+            int checkX = startX + (dirX * i);
+            int checkY = startY + (dirY * i);
+
+            // Check if the coordinates are within the grid boundaries
+            if (checkX >= 0 && checkX < gridManager.gridHorizontalSize &&
+                checkY >= 0 && checkY < gridManager.gridVerticalSize)
+            {
+                TileController tile = gridManager.GetTileControllerInstance(checkX, checkY);
+                if (tile != null)
+                {
+                    tiles.Add(tile);
+                }
+            }
+            else
+            {
+                // Stop if we hit the edge of the map
+                break;
+            }
+        }
+
+        return tiles;
+    }
 }

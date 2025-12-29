@@ -35,10 +35,12 @@ public class EnemyPartyManager : MonoBehaviour
             List<Vector2Int> existingTiles = GridManager.Instance.GetExistingTileCoordinates();
 
             // Exclude tiles occupied by Obstacles/Hazards.
+            List<Vector2Int> specialTiles = GridManager.Instance.GetSpecialTiles();
 
             // Retrieve Deity starting position, add it to the ExcludedCoordinatesList.
             List<Vector2Int> occupiedCoordinates = new List<Vector2Int>(playerStartingCoordinates);
             occupiedCoordinates.Add(GameManager.Instance.GetDeityStartingCoordinates());
+            occupiedCoordinates.AddRange(specialTiles);
 
             // Generate random positions for the enemies on the grid without overlapping player/Deity starting positions and only on existing tiles
             List<Vector2> enemyPositions = GenerateEnemyPositions(enemyPoolSize, existingTiles, occupiedCoordinates);
@@ -83,36 +85,69 @@ public class EnemyPartyManager : MonoBehaviour
 
     private List<Vector2> GenerateEnemyPositions(int count, List<Vector2Int> existingTiles, List<Vector2Int> excludedPositions)
     {
-        List<Vector2> positions = new List<Vector2>();
-        HashSet<Vector2> usedPositions = new HashSet<Vector2>(excludedPositions.ConvertAll(p => (Vector2)p));
+        List<Vector2> finalPositions = new List<Vector2>();
 
-        for (int i = 0; i < count; i++)
+        // 1. Create a list of ONLY valid tiles by removing any that are in the excluded list
+        // This turns the excludedPositions (Obstacles/Players) into a "No-Spawn Zone"
+        List<Vector2Int> validTiles = existingTiles.FindAll(tile => !excludedPositions.Contains(tile));
+
+        // 2. Shuffle the valid tiles list (Fisher-Yates Shuffle)
+        // This makes the selection random without needing a 'do-while' loop
+        for (int i = 0; i < validTiles.Count; i++)
         {
-            Vector2 position;
-            int attempt = 0;
-
-            do
-            {
-                Vector2Int randomTile = existingTiles[RandomRange(0, existingTiles.Count)];
-                position = new Vector2(randomTile.x, randomTile.y);
-                attempt++;
-                if (attempt > 100) // Prevent an infinite loop
-                {
-                    Debug.LogError("Could not find a suitable position for the enemy.");
-                    break;
-                }
-            }
-            while (usedPositions.Contains(position));
-
-            if (!usedPositions.Contains(position))
-            {
-                positions.Add(position);
-                usedPositions.Add(position);
-            }
+            Vector2Int temp = validTiles[i];
+            int randomIndex = Random.Range(i, validTiles.Count);
+            validTiles[i] = validTiles[randomIndex];
+            validTiles[randomIndex] = temp;
         }
 
-        return positions;
+        // 3. Take the first 'count' tiles from our shuffled valid list
+        int spawnCount = Mathf.Min(count, validTiles.Count);
+        for (int i = 0; i < spawnCount; i++)
+        {
+            finalPositions.Add(new Vector2(validTiles[i].x, validTiles[i].y));
+        }
+
+        if (finalPositions.Count < count)
+        {
+            Debug.LogWarning("Not enough valid tiles to spawn the full enemy party!");
+        }
+
+        return finalPositions;
     }
+
+    //private List<Vector2> GenerateEnemyPositions(int count, List<Vector2Int> existingTiles, List<Vector2Int> excludedPositions)
+    //{
+    //    List<Vector2> positions = new List<Vector2>();
+    //    HashSet<Vector2> usedPositions = new HashSet<Vector2>(excludedPositions.ConvertAll(p => (Vector2)p));
+
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        Vector2 position;
+    //        int attempt = 0;
+
+    //        do
+    //        {
+    //            Vector2Int randomTile = existingTiles[RandomRange(0, existingTiles.Count)];
+    //            position = new Vector2(randomTile.x, randomTile.y);
+    //            attempt++;
+    //            if (attempt > 100) // Prevent an infinite loop
+    //            {
+    //                Debug.LogError("Could not find a suitable position for the enemy.");
+    //                break;
+    //            }
+    //        }
+    //        while (usedPositions.Contains(position));
+
+    //        if (!usedPositions.Contains(position))
+    //        {
+    //            positions.Add(position);
+    //            usedPositions.Add(position);
+    //        }
+    //    }
+
+    //    return positions;
+    //}
 
     private int RandomRange(int min, int max)
     {
