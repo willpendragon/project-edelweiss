@@ -7,73 +7,64 @@ public class CafeBuffController : MonoBehaviour
 {
     [SerializeField] PastrySlotUIController _pastrySlotUIController;
     int buffComboThreshold = 2;
-    float stackedBuffsMultiplier = 0.2f; // Can be reinforced using permanent upgrades via Deity links.
+    float stackedBuffsMultiplier = 0.01f; // Can be reinforced using permanent upgrades via Deity links.
 
 
     public void ApplyFoodBuff(FoodBuff foodBuff, Unit fedUnit)
     {
         // Removed for Playtest demo
-        //CheckBuffCombinations(fedUnit);
+        CheckBuffCombinations(fedUnit);
     }
 
     private void CheckBuffCombinations(Unit fedUnit)
     {
-        // Remove Existing Buffs
-        List<ItemFood> eatenFood = new List<ItemFood>();
-        // Use the PastrySlotController.GetHistory method (Unit param) to retrieve what a Unit has eaten.
+        // Reset the character's stats to baseline.
 
-        eatenFood = _pastrySlotUIController.GetHistory(fedUnit);
+        fedUnit.unitAttackPower = fedUnit.unitTemplate.meleeAttackPower;
+        fedUnit.unitShieldPoints = fedUnit.unitTemplate.unitShieldPoints;
 
-        // Group all of the Food with the same alignment and same type.
+        // Wipe the existing buffs list.
+        fedUnit.GetComponent<UnitBuffController>().ClearAppliedBuffs();
+
+        List<ItemFood> eatenFood = _pastrySlotUIController.GetHistory(fedUnit);
 
         var groupedFood = eatenFood
             .GroupBy(food => new { food.foodBuff.alignment, food.foodBuff.foodBuffType });
 
         foreach (var group in groupedFood)
         {
-            var alignment = group.Key;
+            int count = group.Count();
+            float totalBaseValue = group.Sum(food => food.foodBuff.foodBuffAmount);
 
-            int foundBuffs = group.Count();
+            float finalBuffValue = totalBaseValue;
 
-            // If the number of aligned buffs is more than a certain threshold,
-            // add a % added effect * number of aligned buffs on the effect of the aligned buffs.
-
-            if (foundBuffs >= buffComboThreshold)
+            if (count >= buffComboThreshold)
             {
-                float totalBaseValue = group.Sum(food => food.foodBuff.foodBuffAmount);
-
-                float multiplier = stackedBuffsMultiplier * foundBuffs;
-                float comboBuffValue = totalBaseValue * (1 + multiplier);
-
-                int buffsDuration = group.Sum(food => food.foodBuff.foodBuffDurationDays);
-                ApplyFoodBuffCombo(fedUnit, comboBuffValue, buffsDuration, group.First().foodBuff);
+                // Fixed percentage bonus. Total sum + flat % bonus.
+                float bonusValue = totalBaseValue * stackedBuffsMultiplier;
+                finalBuffValue = totalBaseValue + bonusValue;
             }
-            else
-            {
-                float totalBaseValue = group.Sum(food => food.foodBuff.foodBuffAmount);
-                int buffsDuration = group.Sum(food => food.foodBuff.foodBuffDurationDays);
-                ApplyFoodBuffCombo(fedUnit, totalBaseValue, buffsDuration, group.First().foodBuff);
-            }
+
+            int totalDuration = group.Sum(food => food.foodBuff.foodBuffDurationDays);
+
+            ApplyFoodBuffCombo(fedUnit, finalBuffValue, totalDuration, group.First().foodBuff);
         }
     }
-
     private void ApplyFoodBuffCombo(Unit fedUnit, float resultingBuffValue, int buffsDuration, FoodBuff foodBuff)
     {
-        // Applies the buffs depending on its type.
         switch (foodBuff.foodBuffType)
         {
             case FoodBuff.FoodBuffType.Attack:
-                fedUnit.unitAttackPower = fedUnit.unitTemplate.meleeAttackPower += resultingBuffValue;
-                Debug.Log($"Applied {resultingBuffValue} Attack Power Buff on {fedUnit}");
-
+                fedUnit.unitAttackPower += resultingBuffValue;
+                Debug.Log($"Applied {resultingBuffValue} Attack Power. Current Total: {fedUnit.unitAttackPower}");
                 break;
+
             case FoodBuff.FoodBuffType.Defense:
-                fedUnit.unitShieldPoints = fedUnit.unitTemplate.unitShieldPoints += (int)resultingBuffValue;
-                Debug.Log($"Applied {resultingBuffValue} Defense Buff on {fedUnit}");
+                fedUnit.unitShieldPoints += (int)resultingBuffValue;
                 break;
         }
 
-        // Add 1 entry to the total of applied buffs on the Character and pair it with the duration days.
+        // Records the entry so we can clear it next time or handle expiration
         fedUnit.GetComponent<UnitBuffController>().CreateAppliedBuffEntry(resultingBuffValue, buffsDuration, foodBuff.foodBuffType);
     }
 

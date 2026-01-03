@@ -25,8 +25,9 @@ public class UnitBuffController : MonoBehaviour
             RemainingDurationDays = duration
         };
 
-        if (_appliedBuffs == null || _appliedBuffs.Count <= 0)
-            return;
+
+        // Stop only if the list is null.
+        if (_appliedBuffs == null) return;
 
         if (!_appliedBuffs.TryGetValue(type, out var list))
         {
@@ -36,6 +37,7 @@ public class UnitBuffController : MonoBehaviour
 
         list.Add(entry);
     }
+
 
     public void SubtractDurationDaysFromBuffEntries(int subtractedDays)
     {
@@ -82,4 +84,10 @@ public class UnitBuffController : MonoBehaviour
                 break;
         }
     }
+
+    public void ClearAppliedBuffs()
+    {
+        _appliedBuffs.Clear();
+    }
+
 }
