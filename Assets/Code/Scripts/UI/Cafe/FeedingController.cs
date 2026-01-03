@@ -13,7 +13,7 @@ public class FeedingController : MonoBehaviour
             _cafeMenuUIController.HandleNotifications($"Ew. What kind of lunatic would eat THAT?");
             return false;
         }
-        if (fedUnit.unitFoodSlots == fedUnit.unitTemplate.unitMaxFoodSlots)
+        if (fedUnit.unitOccupiedFoodSlots == fedUnit.unitTemplate.unitMaxFoodSlots)
         {
             _cafeMenuUIController.HandleNotifications($"{fedUnit.unitTemplate.unitName} is not hungry!");
             Debug.Log($"{fedUnit.unitTemplate.unitName} is not hungry!");

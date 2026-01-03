@@ -60,7 +60,7 @@ public class Unit : MonoBehaviour
     public float unitManaPoints;
     public float unitMaxManaPoints;
     public float unitShieldPoints;
-    public int unitFoodSlots;
+    public int unitOccupiedFoodSlots;
 
     [Header("Progression System Stats")]
 

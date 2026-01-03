@@ -26,6 +26,6 @@ public class PastrySlotsPanelHelper : MonoBehaviour
     public void UpdateAppetiteSlider(Unit fedUnit)
     {
         _appetiteSlider.maxValue = fedUnit.unitTemplate.unitMaxFoodSlots;
-        _appetiteSlider.value = fedUnit.unitFoodSlots;
+        _appetiteSlider.value = fedUnit.unitOccupiedFoodSlots;
     }
 }

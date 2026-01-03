@@ -26,7 +26,7 @@ public class CafeSaveManager : MonoBehaviour
                 existingCharacterData.unitMagicPower = playerUnit.unitMagicPower;
 
                 // Update other stats as necessary
-
+                existingCharacterData.unitOccupiedFoodSlots = playerUnit.unitOccupiedFoodSlots;
                 Debug.Log("Character Stats Saved");
             }
         }

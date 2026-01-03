@@ -41,6 +41,7 @@ public class CharacterData
     public float unitAttackPower;
     public float unitMagicPower;
     public int unitFaithPoints;
+    public int unitOccupiedFoodSlots;
 }
 
 [System.Serializable]

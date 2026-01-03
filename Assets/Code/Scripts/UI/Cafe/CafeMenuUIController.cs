@@ -263,12 +263,13 @@ public class CafeMenuUIController : MonoBehaviour
             // This sequence triggers only when the character was actually fed.
             _pastrySlotUIController.DestroyExistingSlotsPanel();
             _characterListUIController.UpdateCharacterStatsCounter(fedUnit);
+            // Fill one food slot. Should use an helper class on the Unit.
+            fedUnit.unitOccupiedFoodSlots += 1;
+
             _cafeSaveManager.SaveRestoredCharacterStats();
             // Move "love" feedback in another class
             GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
             Destroy(loveIconPrefabInstance, 1);
-            // Fill one food slot. Should use an helper class on the Unit.
-            fedUnit.unitFoodSlots += 1;
             // Spend War Funds and Update Counter. Should use a dedicated class for spending.
             gameStatsManager.warFunds -= selectedItemPrice;
             UpdateWarFundsCounter();
