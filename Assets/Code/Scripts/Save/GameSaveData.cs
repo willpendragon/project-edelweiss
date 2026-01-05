@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
+using static ConversationData;
 
 [System.Serializable]
 public class GameSaveData
@@ -18,6 +19,7 @@ public class GameSaveData
     public List<IngredientSaveEntry> savedInventory = new List<IngredientSaveEntry>();
     public List<BakedItemsData> bakedItems = new List<BakedItemsData>();
     public Dictionary<string, bool> killedDeities = new Dictionary<string, bool>();
+    public List<EatenPastryData> eatenPastriesHistory = new List<EatenPastryData>();
 }
 
 [System.Serializable]
@@ -81,5 +83,18 @@ public class ConversationData
         conversationID = id;
         isUnlocked = unlocked;
         isRead = read;
+    }
+}
+
+[System.Serializable]
+public class EatenPastryData
+{
+    public string unitId; // To identify which character ate it
+    public List<string> foodNames = new List<string>();
+
+    public EatenPastryData(string id, List<string> names)
+    {
+        this.unitId = id;
+        this.foodNames = names;
     }
 }

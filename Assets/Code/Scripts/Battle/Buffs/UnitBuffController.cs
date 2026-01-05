@@ -83,11 +83,21 @@ public class UnitBuffController : MonoBehaviour
                 unitReference.unitShieldPoints -= buffEntry.AppliedValue;
                 break;
         }
+
+        // Save Updated Character Data
+        GameSaveData characterSaveData = SaveStateManager.saveData;
+
+        CharacterData charData = characterSaveData.characterData.Find(c => c.unitId == unitReference.Id);
+        if (charData != null)
+        {
+            // Upgrade stats.
+            charData.unitAttackPower = unitReference.unitAttackPower;
+            charData.unitShieldPoints = unitReference.unitShieldPoints;
+        }
     }
 
     public void ClearAppliedBuffs()
     {
         _appliedBuffs.Clear();
     }
-
 }

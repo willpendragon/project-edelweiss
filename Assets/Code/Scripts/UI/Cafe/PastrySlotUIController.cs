@@ -10,7 +10,9 @@ public class PastrySlotUIController : MonoBehaviour
 
     [SerializeField] private GameObject _pastrySlotsPanelPrefab;
     [SerializeField] private RectTransform _currentPastrySlotsContainer;
+    [SerializeField] private CafeSaveManager _cafeSaveManager;
     private GameObject _newPastrySlotsPanel;
+
 
 
     void Start()
@@ -59,6 +61,7 @@ public class PastrySlotUIController : MonoBehaviour
         pastrySlotsPanelHelper.UpdateAppetiteSlider(fedUnit);
         // Save the list of eaten Pastry.
         // (...)
+        _cafeSaveManager.SaveSpecificUnitHistory(fedUnit);
     }
 
     public void DestroyExistingSlotsPanel()

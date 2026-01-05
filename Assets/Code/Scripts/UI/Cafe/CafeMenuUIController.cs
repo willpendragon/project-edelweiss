@@ -266,7 +266,7 @@ public class CafeMenuUIController : MonoBehaviour
             // Fill one food slot. Should use an helper class on the Unit.
             fedUnit.unitOccupiedFoodSlots += 1;
 
-            _cafeSaveManager.SaveRestoredCharacterStats();
+            _cafeSaveManager.SaveRestoredCharacterStats(fedUnit);
             // Move "love" feedback in another class
             GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
             Destroy(loveIconPrefabInstance, 1);
