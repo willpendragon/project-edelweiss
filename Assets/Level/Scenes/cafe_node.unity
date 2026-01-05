@@ -6629,11 +6629,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1602629018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 36, y: -16}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -463.75, y: 88.7}
   m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1639632772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6649,10 +6649,10 @@ MonoBehaviour:
   m_Padding:
     m_Left: 36
     m_Right: 0
-    m_Top: 35
+    m_Top: 16
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 15
+  m_Spacing: 30
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -7600,6 +7600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6558deb5c7a458e47b6027a137869bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterProfileObjs: []
   characterProfileSmallControllers: []
   characterProfilesPrefab: {fileID: 1968320970506569678, guid: c7d9cc8a22433b6458748860f66657ef, type: 3}
   characterProfilesContainer: {fileID: 1639632770}

@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 public class CharacterListUIController : MonoBehaviour
 {
-    public List<GameObject> characterProfileSmallControllers = new List<GameObject>();
+    public List<GameObject> characterProfileObjs = new List<GameObject>();
+    public List<CharacterProfileSmallController> characterProfileSmallControllers = new List<CharacterProfileSmallController>();
+
     public GameObject characterProfilesPrefab;
     public GameObject characterProfilesContainer;
     [SerializeField] GameObject _feedButton;
@@ -41,61 +43,37 @@ public class CharacterListUIController : MonoBehaviour
                 if (characterTexts.Length >= 3)
                 {
                     characterTexts[0].text = partyMember.unitTemplate.unitName;
-                    characterTexts[1].text = $"HP {partyMember.unitHealthPoints} / {partyMember.unitMaxHealthPoints}";
-                    characterTexts[2].text = $"MP {partyMember.unitManaPoints} / {partyMember.unitMaxManaPoints}";
+                    profileController.UpdateUIStats();
+                    //characterTexts[1].text = $"HP {partyMember.unitHealthPoints} / {partyMember.unitMaxHealthPoints}";
+                    //characterTexts[2].text = $"MP {partyMember.unitManaPoints} / {partyMember.unitMaxManaPoints}";
                 }
 
-                // Add the profile to the list of small controllers
-                characterProfileSmallControllers.Add(characterProfile);
-
-                //// Create and configure the feed button for this character
-                //GameObject feedCharacterButton = Instantiate(_feedButton, characterProfile.transform);
-                //var button = feedCharacterButton.GetComponent<Button>();
-
-                //// Add the onClick listener for feeding the character
-                //Unit characterUnit = profileController.referenceUnit;  // Capture the reference to avoid closure issues
-                //button.onClick.AddListener(() => OnCharacterClicked(characterUnit));
-
-                //button.enabled = false;  // Disable initially; can be enabled when an item is selected
-                //feedPlayerCharactersButtons.Add(button);
+                // Add the instantiated profile object to the list of small profiles.
+                characterProfileObjs.Add(characterProfile);
+                // Add the corresponding controller to the list of controllers.
+                CharacterProfileSmallController characterProfileController = characterProfile.GetComponent<CharacterProfileSmallController>();
+                characterProfileSmallControllers.Add(characterProfileController);
             }
         }
     }
     public void OnCharacterClicked(Unit character)
     {
-        //    if (selectedFoodItem == null)
-        //    {
-        //        notificationTexts.text = "Please select a food item first.";
-        //        return;
-        //    }
-
-        //    // Feed the character with the selected food item
-        //    bool itemUsed = FeedCharacter(ref selectedFoodItem.item, character);
-
-        //    // If the item was used successfully, update the inventory
-        //    if (itemUsed)
-        //    {
-        //        if (!selectedFoodItem.UseItem())
-        //        {
-        //            selectedFoodItem = null;  // Clear selected item if no more are left
-        //        }
-        //    }
     }
     public void UpdateCharacterStatsCounter(Unit fedUnit)
     {
-        foreach (var smallProfileController in characterProfileSmallControllers)
+        foreach (CharacterProfileSmallController smallProfileController in characterProfileSmallControllers)
         {
-            if (fedUnit == smallProfileController.GetComponent<CharacterProfileSmallController>().referenceUnit)
+            if (fedUnit == smallProfileController.referenceUnit)
             {
-                characterTexts = smallProfileController.GetComponentsInChildren<TextMeshProUGUI>();
+                smallProfileController.UpdateUIStats();
+                //characterTexts = smallProfileController.GetComponentsInChildren<TextMeshProUGUI>();
 
-                if (characterTexts.Length >= 5)
-                {
-                    characterTexts[2].text = fedUnit.unitHealthPoints.ToString();
-                    characterTexts[6].text = fedUnit.unitManaPoints.ToString();
-                }
+                //if (characterTexts.Length >= 5)
+                //{
+                //    characterTexts[2].text = fedUnit.unitHealthPoints.ToString();
+                //    characterTexts[6].text = fedUnit.unitManaPoints.ToString();
+                //}
             }
-
         }
     }
 }
