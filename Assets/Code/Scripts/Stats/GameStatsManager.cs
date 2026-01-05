@@ -95,31 +95,37 @@ public class GameStatsManager : MonoBehaviour
     }
     public void LoadCharacterData()
     {
-        GameObject[] playerUnits = null;
-        if (TurnController.Instance != null)
+        //GameObject[] playerUnits = null;
+        if (GameManager.Instance == null)
+            return;
+        List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
+
+        //if (TurnController.Instance != null)
+        //{
+        //    playerUnits = TurnController.Instance.playerUnitsOnBattlefield;
+        //}
+        //if (playerUnits != null)
+        //{
+        GameSaveData characterSaveData = SaveStateManager.saveData;
+        foreach (var playerUnit in playerUnits)
         {
-            playerUnits = TurnController.Instance.playerUnitsOnBattlefield;
-        }
-        if (playerUnits != null)
-        {
-            GameSaveData characterSaveData = SaveStateManager.saveData;
-            foreach (var playerUnit in playerUnits)
+            Unit unitComponent = playerUnit.GetComponent<Unit>();
+            CharacterData loadedCharacterData = characterSaveData.characterData.Find(character => character.unitId == unitComponent.Id);
+            if (loadedCharacterData != null)
             {
-                Unit unitComponent = playerUnit.GetComponent<Unit>();
-                CharacterData loadedCharacterData = characterSaveData.characterData.Find(character => character.unitId == unitComponent.Id);
-                if (loadedCharacterData != null)
-                {
-                    unitComponent.unitHealthPoints = loadedCharacterData.unitHealthPoints;
-                    unitComponent.unitManaPoints = loadedCharacterData.unitSavedManaPoints;
-                    unitComponent.unitShieldPoints = loadedCharacterData.unitShieldPoints;
-                    unitComponent.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
-                    unitComponent.unitAttackPower = loadedCharacterData.unitAttackPower;
-                    unitComponent.unitMagicPower = loadedCharacterData.unitMagicPower;
-                    unitComponent.unitFaithPoints = loadedCharacterData.unitFaithPoints;
-                    Debug.Log("Restoring Player Units HP and Mana");
-                }
+                unitComponent.unitHealthPoints = loadedCharacterData.unitHealthPoints;
+                unitComponent.unitManaPoints = loadedCharacterData.unitSavedManaPoints;
+                unitComponent.unitShieldPoints = loadedCharacterData.unitShieldPoints;
+                unitComponent.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
+                unitComponent.unitAttackPower = loadedCharacterData.unitAttackPower;
+                unitComponent.unitMagicPower = loadedCharacterData.unitMagicPower;
+                unitComponent.unitFaithPoints = loadedCharacterData.unitFaithPoints;
+                Debug.Log("Restoring Player Units HP and Mana");
+                // Loads the occupied food slots. The Saving happens in the Café only.
+                unitComponent.unitOccupiedFoodSlots = loadedCharacterData.unitOccupiedFoodSlots;
             }
         }
+        //}
     }
     public void LoadWarFunds()
     {
