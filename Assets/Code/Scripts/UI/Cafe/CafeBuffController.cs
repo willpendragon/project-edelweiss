@@ -6,6 +6,7 @@ using UnityEngine;
 public class CafeBuffController : MonoBehaviour
 {
     [SerializeField] PastrySlotUIController _pastrySlotUIController;
+    [SerializeField] private CafeSaveManager _cafeSaveManager;
     int buffComboThreshold = 2;
     float stackedBuffsMultiplier = 0.01f; // Can be reinforced using permanent upgrades via Deity links.
 
@@ -98,6 +99,9 @@ public class CafeBuffController : MonoBehaviour
         // This now creates a unique entry for EVERY item, allowing them to expire 
         // at different times (1 day, 2 days, etc.)
         fedUnit.GetComponent<UnitBuffController>().CreateAppliedBuffEntry(resultingBuffValue, buffsDuration, foodBuff.foodBuffType);
+
+        // Save Applied Buffs
+        _cafeSaveManager.GameStatsManager.SaveCharacterData();
     }
 
     // Save Applied Buffs

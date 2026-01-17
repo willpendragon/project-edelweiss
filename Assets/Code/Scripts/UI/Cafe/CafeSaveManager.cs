@@ -15,34 +15,8 @@ public class CafeSaveManager : MonoBehaviour
     [Tooltip("Drag all ItemFood SOs here to allow the save system to find them by name.")]
     [SerializeField] private List<ItemFood> allFoodRegistry;
 
-
-    //public void SaveRestoredCharacterStats()
-    //{
-    //    //Saves the stats after feeding.
-    //    GameSaveData characterSaveData = SaveStateManager.saveData;
-
-    //    foreach (var playerUnit in GameManager.Instance.playerPartyMembersInstances)
-    //    {
-    //        CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
-    //        if (existingCharacterData != null)
-    //        {
-    //            // Update existing character data
-    //            existingCharacterData.unitHealthPoints = playerUnit.unitHealthPoints;
-    //            existingCharacterData.unitSavedManaPoints = playerUnit.unitManaPoints;
-    //            existingCharacterData.unitShieldPoints = playerUnit.unitShieldPoints;
-
-    //            existingCharacterData.unitLifeCondition = playerUnit.currentUnitLifeCondition;
-
-    //            existingCharacterData.unitAttackPower = playerUnit.unitAttackPower;
-    //            existingCharacterData.unitMagicPower = playerUnit.unitMagicPower;
-
-    //            // Update other stats as necessary
-    //            existingCharacterData.unitOccupiedFoodSlots = playerUnit.unitOccupiedFoodSlots;
-    //            Debug.Log("Character Stats Saved");
-    //        }
-    //    }
-    //    SaveStateManager.SaveGame(characterSaveData);
-    //}
+    [SerializeField] private GameStatsManager _gameStatsManager;
+    public GameStatsManager GameStatsManager => _gameStatsManager;
 
     public void Start()
     {

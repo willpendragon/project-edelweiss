@@ -16,7 +16,29 @@ public class UnitBuffController : MonoBehaviour
 
     [SerializeField] Unit unitReference;
 
-    public void CreateAppliedBuffEntry(float value, int duration, FoodBuff.FoodBuffType type)
+    //public void CreateAppliedBuffEntry(float value, int duration, FoodBuff.FoodBuffType type)
+    //{
+    //    var entry = new AppliedBuffEntry
+    //    {
+    //        Type = type,
+    //        AppliedValue = value,
+    //        RemainingDurationDays = duration
+    //    };
+
+
+    //    // Stop only if the list is null.
+    //    if (_appliedBuffs == null) return;
+
+    //    if (!_appliedBuffs.TryGetValue(type, out var list))
+    //    {
+    //        list = new List<AppliedBuffEntry>();
+    //        _appliedBuffs[type] = list;
+    //    }
+
+    //    list.Add(entry);
+    //}
+
+    public void CreateAppliedBuffEntry(float value, int duration, FoodBuff.FoodBuffType type, bool isLoading = false)
     {
         var entry = new AppliedBuffEntry
         {
@@ -25,20 +47,27 @@ public class UnitBuffController : MonoBehaviour
             RemainingDurationDays = duration
         };
 
-
-        // Stop only if the list is null.
-        if (_appliedBuffs == null) return;
-
         if (!_appliedBuffs.TryGetValue(type, out var list))
         {
             list = new List<AppliedBuffEntry>();
             _appliedBuffs[type] = list;
         }
-
         list.Add(entry);
+
+        // Only apply math if we aren't just restoring from a save file
+        if (!isLoading)
+        {
+            switch (type)
+            {
+                case FoodBuff.FoodBuffType.Attack:
+                    unitReference.unitAttackPower += value;
+                    break;
+                case FoodBuff.FoodBuffType.Defense:
+                    unitReference.unitShieldPoints += value;
+                    break;
+            }
+        }
     }
-
-
     public void SubtractDurationDaysFromBuffEntries(int subtractedDays)
     {
         // Method to subtract duration days from all of the Buff entries.
@@ -82,17 +111,6 @@ public class UnitBuffController : MonoBehaviour
             case FoodBuff.FoodBuffType.Defense:
                 unitReference.unitShieldPoints -= buffEntry.AppliedValue;
                 break;
-        }
-
-        // Save Updated Character Data
-        GameSaveData characterSaveData = SaveStateManager.saveData;
-
-        CharacterData charData = characterSaveData.characterData.Find(c => c.unitId == unitReference.Id);
-        if (charData != null)
-        {
-            // Upgrade stats.
-            charData.unitAttackPower = unitReference.unitAttackPower;
-            charData.unitShieldPoints = unitReference.unitShieldPoints;
         }
     }
 

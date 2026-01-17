@@ -53,41 +53,46 @@ public class GameStatsManager : MonoBehaviour
 
     public void SaveCharacterData()
     {
-        GameObject[] playerUnits = _turnController.playerUnitsOnBattlefield;
+        //GameObject[] playerUnits = _turnController.playerUnitsOnBattlefield;
+        List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
         GameSaveData characterSaveData = SaveStateManager.saveData;
 
         foreach (var playerUnit in playerUnits)
         {
-            Unit unitComponent = playerUnit.GetComponent<Unit>();
-            CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == unitComponent.Id);
+            //Unit unitComponent = playerUnit.GetComponent<Unit>();
+            CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
 
             if (existingCharacterData != null)
             {
                 // Update existing character data
-                existingCharacterData.unitHealthPoints = unitComponent.unitHealthPoints;
-                existingCharacterData.unitSavedManaPoints = unitComponent.unitManaPoints;
-                existingCharacterData.unitShieldPoints = unitComponent.unitShieldPoints;
-                existingCharacterData.unitLifeCondition = unitComponent.currentUnitLifeCondition;
-                existingCharacterData.unitAttackPower = unitComponent.unitAttackPower;
-                existingCharacterData.unitMagicPower = unitComponent.unitMagicPower;
-                existingCharacterData.unitFaithPoints = unitComponent.unitFaithPoints;
+                existingCharacterData.unitHealthPoints = playerUnit.unitHealthPoints;
+                existingCharacterData.unitSavedManaPoints = playerUnit.unitManaPoints;
+                existingCharacterData.unitShieldPoints = playerUnit.unitShieldPoints;
+                existingCharacterData.unitLifeCondition = playerUnit.currentUnitLifeCondition;
+                existingCharacterData.unitAttackPower = playerUnit.unitAttackPower;
+                existingCharacterData.unitMagicPower = playerUnit.unitMagicPower;
+                existingCharacterData.unitFaithPoints = playerUnit.unitFaithPoints;
+                existingCharacterData.unitOccupiedFoodSlots = playerUnit.unitOccupiedFoodSlots;
 
-                // Update other stats as necessary
+                SaveBuffsToData(playerUnit.gameObject, existingCharacterData);
             }
             else if (existingCharacterData == null)
             {
                 // Add new character data
                 CharacterData newCharacterData = new CharacterData()
                 {
-                    unitId = unitComponent.Id,
-                    unitHealthPoints = unitComponent.unitHealthPoints,
-                    unitSavedManaPoints = unitComponent.unitManaPoints,
-                    unitShieldPoints = unitComponent.unitShieldPoints,
-                    unitLifeCondition = unitComponent.currentUnitLifeCondition,
-                    unitAttackPower = unitComponent.unitAttackPower,
-                    unitMagicPower = unitComponent.unitMagicPower,
-                    unitFaithPoints = unitComponent.unitFaithPoints
+                    unitId = playerUnit.Id,
+                    unitHealthPoints = playerUnit.unitHealthPoints,
+                    unitSavedManaPoints = playerUnit.unitManaPoints,
+                    unitShieldPoints = playerUnit.unitShieldPoints,
+                    unitLifeCondition = playerUnit.currentUnitLifeCondition,
+                    unitAttackPower = playerUnit.unitAttackPower,
+                    unitMagicPower = playerUnit.unitMagicPower,
+                    unitFaithPoints = playerUnit.unitFaithPoints,
+                    unitOccupiedFoodSlots = playerUnit.unitOccupiedFoodSlots
                 };
+
+                SaveBuffsToData(playerUnit.gameObject, newCharacterData);
                 characterSaveData.characterData.Add(newCharacterData);
             }
         }
@@ -123,6 +128,8 @@ public class GameStatsManager : MonoBehaviour
                 Debug.Log("Restoring Player Units HP and Mana");
                 // Loads the occupied food slots. The Saving happens in the Café only.
                 unitComponent.unitOccupiedFoodSlots = loadedCharacterData.unitOccupiedFoodSlots;
+
+                LoadBuffsFromData(unitComponent.gameObject, loadedCharacterData);
             }
         }
         //}
@@ -144,6 +151,43 @@ public class GameStatsManager : MonoBehaviour
         {
             currentDay = calendarSaveData.calendarData.currentDay;
             Debug.Log($"Loaded Current Day: {currentDay}");
+        }
+    }
+
+    private void SaveBuffsToData(GameObject unitObject, CharacterData data)
+    {
+        UnitBuffController buffController = unitObject.GetComponent<UnitBuffController>();
+        if (buffController == null)
+            return;
+
+        data.activeBuffs.Clear();
+
+        var runtimeBuffs = buffController.GetActiveBuffs();
+
+        foreach (var kvp in runtimeBuffs)
+        {
+            foreach (var entry in kvp.Value)
+            {
+                data.activeBuffs.Add(new SavedBuffEntry
+                {
+                    type = entry.Type,
+                    appliedValue = entry.AppliedValue,
+                    remainingDuration = entry.RemainingDurationDays
+                });
+            }
+        }
+    }
+
+    private void LoadBuffsFromData(GameObject unitObject, CharacterData data)
+    {
+        UnitBuffController buffController = unitObject.GetComponent<UnitBuffController>();
+        if (buffController == null || data.activeBuffs == null) return;
+
+        buffController.ClearAppliedBuffs();
+        foreach (var savedBuff in data.activeBuffs)
+        {
+            // Pass 'true' for isLoading to prevent stats from being added twice
+            buffController.CreateAppliedBuffEntry(savedBuff.appliedValue, savedBuff.remainingDuration, savedBuff.type, true);
         }
     }
 
@@ -205,15 +249,6 @@ public class GameStatsManager : MonoBehaviour
             enemiesKilled = gameSaveData.enemiesKilled;
         }
     }
-    //public void LoadCaptureCrystalsCount()
-    //{
-    //    GameSaveData resourceSaveData = SaveStateManager.saveData;
-    //    if (resourceSaveData != null && resourceSaveData.resourceData != null)
-    //    {
-    //        captureCrystalsCount = resourceSaveData.resourceData.captureCrystalsCount;
-    //        Debug.Log($"Loaded Capture Crystals: {captureCrystalsCount}");
-    //    }
-    //}
 
     public void LoadDeityTributesFromBakedItems()
     {

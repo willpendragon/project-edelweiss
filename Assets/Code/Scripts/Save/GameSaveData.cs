@@ -30,6 +30,14 @@ public class CalendarData
 }
 
 [System.Serializable]
+public class SavedBuffEntry
+{
+    public FoodBuff.FoodBuffType type;
+    public float appliedValue;
+    public int remainingDuration;
+}
+
+[System.Serializable]
 public class CharacterData
 {
     public string unitId;
@@ -44,6 +52,8 @@ public class CharacterData
     public float unitMagicPower;
     public int unitFaithPoints;
     public int unitOccupiedFoodSlots;
+
+    public List<SavedBuffEntry> activeBuffs = new List<SavedBuffEntry>();
 }
 
 [System.Serializable]
