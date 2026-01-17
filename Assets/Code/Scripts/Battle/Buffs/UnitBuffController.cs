@@ -100,4 +100,8 @@ public class UnitBuffController : MonoBehaviour
     {
         _appliedBuffs.Clear();
     }
+    public Dictionary<FoodBuff.FoodBuffType, List<AppliedBuffEntry>> GetActiveBuffs()
+    {
+        return _appliedBuffs;
+    }
 }
