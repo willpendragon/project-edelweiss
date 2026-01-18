@@ -6,6 +6,7 @@ public class CalendarController : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _currentDayText;
     [SerializeField] private int _daysCounter = 1; // Starting value.
+    [SerializeField] private FeedingHelper _feedingHelper;
     private GameStatsManager _gameStatsManager;
 
     private void Start()
@@ -28,6 +29,8 @@ public class CalendarController : MonoBehaviour
         _daysCounter += days;
         UpdateCurrentDayText();
         GameManager.Instance.BuffManager.UpdateBuffs(days);
+        // Reset the Units feeding stats after 1 day passes.
+        _feedingHelper.ResetPartyFeedingStats();
         // Save the Current Day.
         _gameStatsManager.SaveCalendarData(days);
         _gameStatsManager.SaveCharacterData();
