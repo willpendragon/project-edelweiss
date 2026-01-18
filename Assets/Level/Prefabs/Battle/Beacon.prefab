@@ -120,10 +120,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480f6b4189096c649b71f29e687ba4bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 5
+  range: 0
   _currentFacingDirection: 0
   tileX: 0
   tileY: 0
+  rotationOffset: 0
 --- !u!120 &7470654011253043123
 LineRenderer:
   serializedVersion: 2

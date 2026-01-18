@@ -61,6 +61,8 @@ public class Beacon : MonoBehaviour
     // This is the method your Melee Unit calls when attacking the Beacon.
     public void OnHitByUnit()
     {
+        range = 5;
+        // Not ideal, avoid setting the range every time the Beacon gets hit.
         RotateClockwise();
         ActivateBeaconEffect();
     }
@@ -93,6 +95,9 @@ public class Beacon : MonoBehaviour
             Debug.Log($"{tile} was in the beacon path");
 
             var hitEnemy = tile.detectedUnit.GetComponent<Unit>();
+            if (hitEnemy.unitStatusController.unitCurrentStatus == UnitStatus.stun)
+                return;
+
             if (hitEnemy != null && hitEnemy.unitStatusController != null)
             {
                 hitEnemy.unitStatusController.unitCurrentStatus = UnitStatus.stun;
@@ -102,14 +107,6 @@ public class Beacon : MonoBehaviour
             }
         }
     }
-
-    //private void UpdateVisualRotation()
-    //{
-    //    // Rotates the actual GameObject so the Player sees where it's pointing
-    //    // Assuming your "Up" sprite/model faces North by default
-    //    float angle = (int)_currentFacingDirection * 90f;
-    //    transform.rotation = Quaternion.Euler(0, 0, -angle);
-    //}
 
     [SerializeField] private float rotationOffset = 0f; // Adjust this in the Inspector (e.g., 90, -90, or 180)
 

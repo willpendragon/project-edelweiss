@@ -32,6 +32,10 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         // Insert Interaction Logic here (for mirrors)
         if (targetTile.tileType == TileType.Obstacle)
         {
+            // Subtract Opportunity Points 
+            int opportunityPointsCost = 1;
+            activePlayerUnit.unitOpportunityPoints -= opportunityPointsCost;
+            UpdateActivePlayerUnitProfile(activePlayerUnit);
             Beacon beacon = targetTile.detectedUnit.GetComponent<Beacon>();
             beacon.OnHitByUnit();
             return;
