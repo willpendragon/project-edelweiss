@@ -15,6 +15,7 @@ public class CafeBuffController : MonoBehaviour
     {
         // Removed for Playtest demo
         CheckBuffCombinations(fedUnit);
+        _cafeSaveManager.GameStatsManager.SaveCharacterData();
     }
 
     private void CheckBuffCombinations(Unit fedUnit)
@@ -32,25 +33,6 @@ public class CafeBuffController : MonoBehaviour
         var groupedFood = eatenFood
             .GroupBy(food => new { food.foodBuff.alignment, food.foodBuff.foodBuffType });
 
-        //foreach (var group in groupedFood)
-        //{
-        //    int count = group.Count();
-        //    float totalBaseValue = group.Sum(food => food.foodBuff.foodBuffAmount);
-
-        //    float finalBuffValue = totalBaseValue;
-
-        //    if (count >= buffComboThreshold)
-        //    {
-        //        // Fixed percentage bonus. Total sum + flat % bonus.
-        //        float bonusValue = totalBaseValue * stackedBuffsMultiplier;
-        //        finalBuffValue = totalBaseValue + bonusValue;
-        //    }
-
-        //    int totalDuration = group.Sum(food => food.foodBuff.foodBuffDurationDays);
-
-        //    ApplyFoodBuffCombo(fedUnit, finalBuffValue, totalDuration, group.First().foodBuff);
-        //}
-
         foreach (var group in groupedFood)
         {
             int count = group.Count();
@@ -66,47 +48,20 @@ public class CafeBuffController : MonoBehaviour
             }
         }
     }
-    //private void ApplyFoodBuffCombo(Unit fedUnit, float resultingBuffValue, int buffsDuration, FoodBuff foodBuff)
-    //{
-    //    switch (foodBuff.foodBuffType)
-    //    {
-    //        case FoodBuff.FoodBuffType.Attack:
-    //            fedUnit.unitAttackPower += resultingBuffValue;
-    //            Debug.Log($"Applied {resultingBuffValue} Attack Power. Current Total: {fedUnit.unitAttackPower}");
-    //            break;
-
-    //        case FoodBuff.FoodBuffType.Defense:
-    //            fedUnit.unitShieldPoints += (int)resultingBuffValue;
-    //            break;
-    //    }
-
-    //    // Records the entry so we can clear it next time or handle expiration
-    //    fedUnit.GetComponent<UnitBuffController>().CreateAppliedBuffEntry(resultingBuffValue, buffsDuration, foodBuff.foodBuffType);
-    //}
     private void ApplyFoodBuffCombo(Unit fedUnit, float resultingBuffValue, int buffsDuration, FoodBuff foodBuff)
     {
         switch (foodBuff.foodBuffType)
         {
             case FoodBuff.FoodBuffType.Attack:
                 fedUnit.unitAttackPower += resultingBuffValue; // Use += to stack individual items
+                Debug.Log($"Resulting Buff Value {resultingBuffValue}");
                 break;
 
             case FoodBuff.FoodBuffType.Defense:
                 fedUnit.unitShieldPoints += (int)resultingBuffValue;
                 break;
         }
-
-        // This now creates a unique entry for EVERY item, allowing them to expire 
-        // at different times (1 day, 2 days, etc.)
         fedUnit.GetComponent<UnitBuffController>().CreateAppliedBuffEntry(resultingBuffValue, buffsDuration, foodBuff.foodBuffType);
 
-        // Save Applied Buffs
-        _cafeSaveManager.GameStatsManager.SaveCharacterData();
     }
-
-    // Save Applied Buffs
-
-    // Load/Re-apply Applied Buffs
-
-    // Consume Buffs Lifetime
 }

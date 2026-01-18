@@ -104,11 +104,11 @@ public class CafeSaveManager : MonoBehaviour
         }
 
         // Update Character Stats (HP, Mana, Upgrade, Filled Slots).
-        SaveRestoredCharacterStats(unit);
+        //SaveRestoredCharacterStats(unit);
 
         // Write to Disk
-        SaveStateManager.SaveGame(saveData);
-        Debug.Log($"Saved bite for {unit.unitTemplate.unitName}");
+        //SaveStateManager.SaveGame(saveData);
+        //Debug.Log($"Saved bite for {unit.unitTemplate.unitName}");
     }
 
     // Helper to save stats for a Unit.

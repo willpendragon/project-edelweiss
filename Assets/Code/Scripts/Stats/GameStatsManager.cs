@@ -98,19 +98,13 @@ public class GameStatsManager : MonoBehaviour
         }
         SaveStateManager.SaveGame(characterSaveData);
     }
+
     public void LoadCharacterData()
     {
-        //GameObject[] playerUnits = null;
         if (GameManager.Instance == null)
             return;
         List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
 
-        //if (TurnController.Instance != null)
-        //{
-        //    playerUnits = TurnController.Instance.playerUnitsOnBattlefield;
-        //}
-        //if (playerUnits != null)
-        //{
         GameSaveData characterSaveData = SaveStateManager.saveData;
         foreach (var playerUnit in playerUnits)
         {
@@ -126,7 +120,7 @@ public class GameStatsManager : MonoBehaviour
                 unitComponent.unitMagicPower = loadedCharacterData.unitMagicPower;
                 unitComponent.unitFaithPoints = loadedCharacterData.unitFaithPoints;
                 Debug.Log("Restoring Player Units HP and Mana");
-                // Loads the occupied food slots. The Saving happens in the Café only.
+                // Loads the occupied food slots. The Saving happens in the Café only and when buffs expire.
                 unitComponent.unitOccupiedFoodSlots = loadedCharacterData.unitOccupiedFoodSlots;
 
                 LoadBuffsFromData(unitComponent.gameObject, loadedCharacterData);
