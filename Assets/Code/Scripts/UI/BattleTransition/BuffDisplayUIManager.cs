@@ -1,3 +1,4 @@
+using PixelCrushers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ public class BuffDisplayUIManager : MonoBehaviour
     private Dictionary<string, GameObject> _partyMembersIconsDictionary = new Dictionary<string, GameObject>();
     [SerializeField] private GameObject _iconTemplate;
     [SerializeField] private RectTransform _unitsContainer;
-
+    [SerializeField] private GameStatsManager _gameStatsManager;
     void Start()
     {
         // Cache Party Members
@@ -59,6 +60,9 @@ public class BuffDisplayUIManager : MonoBehaviour
                     var deitySprite = unit.linkedDeity.gameObject.GetComponent<Unit>().unitTemplate.unitPortrait;
                     var iconHelper = uiIcon.GetComponent<UIUnitIconHelper>();
                     iconHelper.ShowDeityIcon(deitySprite);
+                    unit.linkedDeity.summoningBehaviour.ExecuteBuffBehaviour(unit.linkedDeity, unit);
+                    // Save the alteration to stats from buff
+                    _gameStatsManager.SaveCharacterData();
                     // Display on uiIcon, possibly have an helper class with a slot for the Deity representation
                     // Display Deity Animation
                 }
@@ -69,43 +73,43 @@ public class BuffDisplayUIManager : MonoBehaviour
         // If Buffs Exist, show buff value on the corresponding character icon
     }
 
-private void DisplayBuffOnCharacters()
-{
-    foreach (Unit unit in _partyMembers)
+    private void DisplayBuffOnCharacters()
     {
-        if (unit == null) continue;
-
-        // 1. Get the controller
-        var buffController = unit.GetComponent<UnitBuffController>();
-        if (buffController == null) continue;
-
-        // 2. Get the active buffs
-        var activeBuffs = buffController.GetActiveBuffs();
-
-        // 3. Find the UI icon for this unit
-        string unitName = unit.unitTemplate.unitName;
-        if (_partyMembersIconsDictionary.TryGetValue(unitName, out GameObject uiIcon))
+        foreach (Unit unit in _partyMembers)
         {
-            var iconHelper = uiIcon.GetComponent<UIUnitIconHelper>();
+            if (unit == null) continue;
 
-            // 4. Loop through each buff type (Attack, Defense, etc.)
-            foreach (var kvp in activeBuffs)
+            // 1. Get the controller
+            var buffController = unit.GetComponent<UnitBuffController>();
+            if (buffController == null) continue;
+
+            // 2. Get the active buffs
+            var activeBuffs = buffController.GetActiveBuffs();
+
+            // 3. Find the UI icon for this unit
+            string unitName = unit.unitTemplate.unitName;
+            if (_partyMembersIconsDictionary.TryGetValue(unitName, out GameObject uiIcon))
             {
-                FoodBuff.FoodBuffType type = kvp.Key;
-                List<UnitBuffController.AppliedBuffEntry> entries = kvp.Value;
+                var iconHelper = uiIcon.GetComponent<UIUnitIconHelper>();
 
-                // Calculate total value if there are multiple buffs of the same type
-                float totalValue = 0;
-                foreach (var entry in entries)
+                // 4. Loop through each buff type (Attack, Defense, etc.)
+                foreach (var kvp in activeBuffs)
                 {
-                    totalValue += entry.AppliedValue;
-                }
+                    FoodBuff.FoodBuffType type = kvp.Key;
+                    List<UnitBuffController.AppliedBuffEntry> entries = kvp.Value;
 
-                // 5. Send data to UI Helper
-                // You will need to create this 'SetBuffDisplay' method in your Helper class
-                iconHelper.SetBuffDisplay(type, totalValue);
+                    // Calculate total value if there are multiple buffs of the same type
+                    float totalValue = 0;
+                    foreach (var entry in entries)
+                    {
+                        totalValue += entry.AppliedValue;
+                    }
+
+                    // 5. Send data to UI Helper
+                    // You will need to create this 'SetBuffDisplay' method in your Helper class
+                    iconHelper.SetBuffDisplay(type, totalValue);
+                }
             }
         }
     }
-}
 }

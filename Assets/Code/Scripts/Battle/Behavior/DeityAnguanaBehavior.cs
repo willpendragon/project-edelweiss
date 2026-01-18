@@ -32,6 +32,11 @@ public class DeityAnguanaBehavior : DeityBehavior
         }
     }
 
+    public override void ExecuteBuffBehaviour(Deity deity, Unit unit)
+    {
+        //
+    }
+
     private void MoveObelisk(Deity deity)
     {
         // Logic.

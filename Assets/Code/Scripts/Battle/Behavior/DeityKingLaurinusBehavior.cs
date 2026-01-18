@@ -40,6 +40,11 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         }
     }
 
+    public override void ExecuteBuffBehaviour(Deity deity, Unit unit)
+    {
+        throw new NotImplementedException();
+    }
+
     private void AttemptAttack(Deity deity)
     {
         float enmity = BattleManager.Instance.enemyTurnManager.deity.GetComponent<Deity>().enmity;
