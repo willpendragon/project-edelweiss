@@ -61,7 +61,7 @@ public class CursorController : MonoBehaviour
     RadialMenuEntry.ActionType actionType,
     Sprite icon,
     string label,
-    int priority = 0)
+    int priority = 0) // Priority determines the position of the Action Button in the Radial Menu (clock-style).
     {
         var button = Instantiate(actionButtonPrefab, radialMenu.transform);
         var entry = button.GetComponent<RadialMenuEntry>();
@@ -70,10 +70,18 @@ public class CursorController : MonoBehaviour
         entry.priority = priority;
         button.GetComponentInChildren<TextMeshProUGUI>().text = label;
         radialMenu.GetComponent<RadialMenu>().entries.Add(entry);
+
+        // Display Alignment Icons on Spell Action Buttons.
         if (entry.actionType == RadialMenuEntry.ActionType.Spell)
         {
             entry.DisplayAlignmentIcon();
         }
+        // Display Deity Tributes count on place Tributes buttons.
+        if (entry.actionType == RadialMenuEntry.ActionType.Crystal)
+        {
+            entry.DisplayTributesCounterWrapper();
+        }
+
         return button;
     }
 

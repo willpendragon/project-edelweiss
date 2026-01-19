@@ -17,7 +17,7 @@ public class RadialMenu : MonoBehaviour
         {5, 45f},   // 1:30
         {6, 135f},  // 4:30
         {7, 225f},  // 7:30
-        {8, 315f},  // 10:30
+        {8, 315f},  // 10:30 
     };
 
     public void ArrangeButtons()
@@ -31,7 +31,7 @@ public class RadialMenu : MonoBehaviour
                 continue;
             }
 
-            float angleDeg = fixedAngles[entry.priority];
+            float angleDeg = fixedAngles[entry.priority]; // The position of the Icon on the radial menu is driven by the priority.
             float angleRad = angleDeg * Mathf.Deg2Rad;
 
             float x = Mathf.Cos(angleRad) * _radius;

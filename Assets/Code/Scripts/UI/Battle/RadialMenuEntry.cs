@@ -13,6 +13,7 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] private Color _originalTileColor;
     [SerializeField] private TileController _knockbackTile;
     [SerializeField] private AlignmentIconHelper _alignmentIconHelper;
+    [SerializeField] private ItemCounterUIHelper _itemCounterUIHelper;
 
     public enum ActionType
     {
@@ -166,5 +167,12 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
         pos.x = Mathf.Clamp(pos.x, 0, grid.gridHorizontalSize - 1);
         pos.y = Mathf.Clamp(pos.y, 0, grid.gridVerticalSize - 1);
         return pos;
+    }
+
+    public void DisplayTributesCounterWrapper()
+    {
+        if (_itemCounterUIHelper == null)
+            return;
+        _itemCounterUIHelper.DisplayTributesCounter();
     }
 }
