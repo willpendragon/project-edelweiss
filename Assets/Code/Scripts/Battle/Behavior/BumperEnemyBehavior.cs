@@ -29,7 +29,8 @@ public class BumperEnemyBehavior : EnemyBehavior
 
         if (enemyAgent.GetComponentInParent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.stun)
         {
-            OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} is trapped in ice...");
+            //OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} is trapped in ice...");
+            OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} can't move...");
             return;
         }
 

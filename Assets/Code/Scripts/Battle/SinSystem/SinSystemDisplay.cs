@@ -26,7 +26,7 @@ public class SinSystemDisplay : MonoBehaviour
                 break;
 
             case SpellAlignment.Ice:
-                _alignmentIcon.sprite = _alignmentIcons[0];
+                _alignmentIcon.sprite = _alignmentIcons[1];
                 sinSystemText.text = "Sinful Element";
                 //sinSystemText.text = $"This Deity hates {sinfulMoveName}  <space=5><voffset=5><sprite=1></voffset>";
                 break;
