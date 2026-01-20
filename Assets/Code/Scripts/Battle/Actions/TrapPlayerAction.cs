@@ -6,7 +6,7 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
     public float trapCreationCost = 5;
     public int trapCreationRange = 1;
-
+    public float trapVerticalOffset = 0.52f;
     public static event System.Action OnTrapPlaced;
 
     public delegate void NotEnoughMana(string notification);
@@ -44,7 +44,7 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
         trapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
         Transform tilePosition = targetTile.transform;
-        Vector3 offSet = new Vector3(0, 1f, 0);
+        Vector3 offSet = new Vector3(0, trapVerticalOffset, 0);
         Vector3 spawnPosition = targetTile.transform.position + offSet;
         GameObject trapVFX = (GameObject)Resources.Load("TrapTileVFX");
         Instantiate(trapVFX, spawnPosition, Quaternion.identity);
