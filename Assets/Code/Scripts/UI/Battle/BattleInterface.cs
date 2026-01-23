@@ -63,6 +63,7 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         BumperEnemyBehavior.OnMovementDisabled += SetBattleNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetBattleNotification;
         PrizeCollectionHelper.OnUpgradeObtained += SetBattleNotification;
+        UnitSelectionController.OnFaithlessUnit += SetBattleNotification;
     }
 
     private void UnsubscribeBattleNotifications()
@@ -78,6 +79,7 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         BumperEnemyBehavior.OnMovementDisabled -= SetBattleNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetBattleNotification;
         PrizeCollectionHelper.OnUpgradeObtained -= SetBattleNotification;
+        UnitSelectionController.OnFaithlessUnit -= SetBattleNotification;
     }
 
     private void OnEnable()

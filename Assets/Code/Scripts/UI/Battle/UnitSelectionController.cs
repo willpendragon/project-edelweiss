@@ -38,6 +38,10 @@ public class UnitSelectionController : MonoBehaviour
     private BattleInterface _battleUI;
     private GridMovementController _gridMovementController;
 
+
+    public delegate void FaithlessUnit(string notification);
+    public static event FaithlessUnit OnFaithlessUnit;
+
     private void Awake()
     {
         _battleUI = GameObject.FindGameObjectWithTag(GameTags.BattleInterfaceCanvas)?.GetComponent<BattleInterface>();
@@ -64,9 +68,13 @@ public class UnitSelectionController : MonoBehaviour
     public void SelectPlayerUnit(Unit playerUnit)
     {
         if (playerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead
-            || playerUnit.currentUnitPhase == Unit.UnitPhase.Waiting
-            || playerUnit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless)
+            || playerUnit.currentUnitPhase == Unit.UnitPhase.Waiting)
             return;
+        if (playerUnit.unitStatusController.unitCurrentStatus == UnitStatus.Faithless)
+        {
+            OnFaithlessUnit($"{playerUnit.unitTemplate.unitName} became Faithless...");
+            return;
+        }
         if (playerUnit.gameObject.tag == GameTags.Enemy || playerUnit.gameObject.tag == GameTags.Deity)
             return;
         // Play Feedback for invalid selection. Include negative statuses as invalid as well (such as paralysis).
