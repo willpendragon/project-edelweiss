@@ -232,9 +232,9 @@ public class CursorController : MonoBehaviour
             if (isTileFree && gameStatsManager.captureCrystalsCount > 0)
                 CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Crystal", 4);
 
-            if (isTileFree && activePlayerUnit?.linkedDeity != null && activePlayerUnit?.summonedLinkedDeity == null &&
-                GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController) <= 3)
-                CreateActionButton(RadialMenuEntry.ActionType.Summon, _summonIcon, "Summon");
+            //if (isTileFree && activePlayerUnit?.linkedDeity != null && activePlayerUnit?.summonedLinkedDeity == null &&
+            //    GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController) <= 3)
+            //    CreateActionButton(RadialMenuEntry.ActionType.Summon, _summonIcon, "Summon");
         }
 
         // Melee/Magnet
