@@ -3,7 +3,17 @@ guid: c950925948d78cb46b040c3294f0213d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mirror_base_texture
+    second: {fileID: 2100000, guid: 1b044dbc36342eb42b1aac77eaf9e8c0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mirror_screen_texture
+    second: {fileID: 2100000, guid: 2afceacc2731a4242be94c777a300070, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

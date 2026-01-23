@@ -29,7 +29,7 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
             return;
 
         GameObject enemyObject = targetTile.detectedUnit;
-        // Insert Interaction Logic here (for mirrors)
+        // Insert Interaction Logic here (for mirrors) - should have a dedicated behaviur
         if (targetTile.tileType == TileType.Obstacle)
         {
             // Subtract Opportunity Points 
@@ -38,6 +38,10 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
             UpdateActivePlayerUnitProfile(activePlayerUnit);
             Beacon beacon = targetTile.detectedUnit.GetComponent<Beacon>();
             beacon.OnHitByUnit();
+            // Notification
+            OnUsedMeleeAction($"{activePlayerUnit.unitTemplate.unitName} rotated the Beacon");
+            // Trigger Character Animation
+            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, targetTile.detectedUnit.GetComponent<Unit>());
             return;
         }
 

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2041394884563012877}
   - component: {fileID: 5442066789903148889}
   - component: {fileID: 7470654011253043123}
+  - component: {fileID: 3834695809587436813}
   m_Layer: 0
   m_Name: Beacon
   m_TagString: Untagged
@@ -229,6 +230,63 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &3834695809587436813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532709617461329243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9191c87aab5c6164087525c5b65d85f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Id: 
+  unitTemplate: {fileID: 0}
+  unitMovementLimit: 0
+  currentXCoordinate: 0
+  currentYCoordinate: 0
+  startingXCoordinate: 0
+  startingYCoordinate: 0
+  unitSelectionController: {fileID: 0}
+  ownedTile: {fileID: 0}
+  unitHealthPoints: 0
+  unitMaxHealthPoints: 0
+  unitOpportunityPoints: 0
+  unitFaithPoints: 0
+  unitManaPoints: 0
+  unitMaxManaPoints: 0
+  unitShieldPoints: 0
+  unitOccupiedFoodSlots: 0
+  unitCoins: 0
+  unitExperiencePoints: 0
+  coinsRewardRange: {x: 0, y: 0}
+  experiencePointsReward: 0
+  unitAttackPower: 0
+  unitMagicPower: 0
+  unitMeleeAttackBaseDamage: 0
+  currentUnitLifeCondition: 0
+  currentUnitBuff: 0
+  currentUnitPhase: 0
+  unitStatusController: {fileID: 0}
+  fieldPrizeController: {fileID: 0}
+  unitType: 0
+  hasHookshot: 0
+  bossFlag: 0
+  linkedDeity: {fileID: 0}
+  summonedLinkedDeity: {fileID: 0}
+  LinkedDeityId: 
+  battleFeedbackController: {fileID: 0}
+  unitProfilePanel: {fileID: 0}
+  unitSprite: {fileID: 0}
+  characterAnimator: {fileID: 0}
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTakenDamage:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1123239497770630518
 PrefabInstance:
   m_ObjectHideFlags: 0

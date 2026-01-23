@@ -161,6 +161,8 @@ public class Beacon : MonoBehaviour
             // Instantiate the StunIcon
             GameObject stunIconInstance = Instantiate(Resources.Load<GameObject>("StunIcon"), targetUnit.transform);
             GridManager.Instance.statusIcons.Add(stunIconInstance);
+            var battleFeedback = targetUnit.battleFeedbackController;
+            battleFeedback.stunIcon = stunIconInstance;
 
             // Create a sequence for the StunIcon animations
             Sequence iconSequence = DOTween.Sequence();
@@ -177,7 +179,6 @@ public class Beacon : MonoBehaviour
             // Play the icon sequence
             iconSequence.Play();
         });
-
         float stunVFXDestroyCountdown = 1.5f;
         Destroy(stunVFX, stunVFXDestroyCountdown);
     }
