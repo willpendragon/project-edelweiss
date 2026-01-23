@@ -29,6 +29,7 @@ public class BattleFeedbackController : MonoBehaviour
     public Animator comboIncreaseVFXAnimator;
     public Animator unitAnimator;
     public GameObject buffIcon;
+    public GameObject stunIcon;
 
     [SerializeField] Animator hitAnimator;
 

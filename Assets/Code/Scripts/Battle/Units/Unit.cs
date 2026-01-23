@@ -294,6 +294,10 @@ public class Unit : MonoBehaviour
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
             Destroy(unitProfilePanel);
             Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+
+            // Destroy Stun Icon, temporary solution.
+            if (battleFeedbackController.stunIcon != null)
+                Destroy(battleFeedbackController.stunIcon);
             CheckEnemyDefeat();
 
             // Reset TileController color to Movement Range.
