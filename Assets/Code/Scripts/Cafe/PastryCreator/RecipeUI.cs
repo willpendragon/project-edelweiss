@@ -6,6 +6,7 @@ public class RecipeUI : MonoBehaviour
     [SerializeField] private Image resultIcon;
     [SerializeField] private TextMeshProUGUI resultName;
     [SerializeField] private TextMeshProUGUI requirementText;
+    [SerializeField] private TextMeshProUGUI typeText;
     [SerializeField] private Button craftButton;
 
     private Recipe currentRecipe;
@@ -17,6 +18,7 @@ public class RecipeUI : MonoBehaviour
 
         resultIcon.sprite = recipe.resultItem.foodIcon;
         resultName.text = recipe.resultItem.itemFoodName;
+        typeText.text = recipe.resultItem.itemFoodType.ToString();
 
         requirementText.text = "";
         foreach (var ing in recipe.ingredients)
