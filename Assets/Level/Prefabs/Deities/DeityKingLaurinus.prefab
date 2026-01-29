@@ -187,6 +187,7 @@ GameObject:
   - component: {fileID: 3348349630364506732}
   - component: {fileID: 3348349630364506731}
   - component: {fileID: 1219321713655519419}
+  - component: {fileID: 7081414685753982599}
   m_Layer: 0
   m_Name: DeityKingLaurinus
   m_TagString: Deity
@@ -327,7 +328,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
-  unitFoodSlots: 0
+  unitOccupiedFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}
@@ -346,7 +347,7 @@ MonoBehaviour:
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}
   LinkedDeityId: 
-  battleFeedbackController: {fileID: 0}
+  battleFeedbackController: {fileID: 7081414685753982599}
   unitProfilePanel: {fileID: 0}
   unitSprite: {fileID: 0}
   characterAnimator: {fileID: 0}
@@ -368,6 +369,57 @@ MonoBehaviour:
   OnTakenDamage:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7081414685753982599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3348349630364506734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49061b32be4ab2c4e801392d4fbd3849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayMeleeAttackSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlaySpellSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayMovementSelectedSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayMovementConfirmedSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayDamageSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayPlaceCrystalSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayPrayerSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlaySelectionSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlaySelectionWaitingConfirmationSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayDeselectionSFX:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayDeathVFX:
+    m_PersistentCalls:
+      m_Calls: []
+  deathDisappearAnimationVFX: {fileID: 0}
+  comboIncreaseVFXAnimator: {fileID: 0}
+  unitAnimator: {fileID: 0}
+  buffIcon: {fileID: 0}
+  stunIcon: {fileID: 0}
+  hitAnimator: {fileID: 0}
 --- !u!1 &3412786831148077582
 GameObject:
   m_ObjectHideFlags: 0
