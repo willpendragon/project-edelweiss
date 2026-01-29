@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: aliza_1
-  unitTemplate: {fileID: 11400000, guid: 04db12c6884f3cf4a953590005894d84, type: 2}
+  unitTemplate: {fileID: 11400000, guid: b660816490f17e64aa34b2945649e9d3, type: 2}
   unitMovementLimit: 3
   currentXCoordinate: 0
   currentYCoordinate: 0
@@ -82,7 +82,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
-  unitFoodSlots: 0
+  unitOccupiedFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}
@@ -340,6 +340,7 @@ MonoBehaviour:
   comboIncreaseVFXAnimator: {fileID: 0}
   unitAnimator: {fileID: 6180686884810482089}
   buffIcon: {fileID: 7203561652851106972, guid: 434c3c0a511b02c4aa92c6efa6dd915b, type: 3}
+  stunIcon: {fileID: 0}
   hitAnimator: {fileID: 0}
 --- !u!114 &8130161269669623750
 MonoBehaviour:

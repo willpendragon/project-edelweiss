@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: violet_1
-  unitTemplate: {fileID: 11400000, guid: 4158cb569a81dc648badefbad041989e, type: 2}
+  unitTemplate: {fileID: 11400000, guid: d1e4936fce73b3a409cfaabe6c77734c, type: 2}
   unitMovementLimit: 3
   currentXCoordinate: 0
   currentYCoordinate: 0
@@ -81,7 +81,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
-  unitFoodSlots: 0
+  unitOccupiedFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}
@@ -339,6 +339,7 @@ MonoBehaviour:
   comboIncreaseVFXAnimator: {fileID: 0}
   unitAnimator: {fileID: 6180686884810482089}
   buffIcon: {fileID: 7203561652851106972, guid: 434c3c0a511b02c4aa92c6efa6dd915b, type: 3}
+  stunIcon: {fileID: 0}
   hitAnimator: {fileID: 0}
 --- !u!114 &7692419924391721579
 MonoBehaviour:
