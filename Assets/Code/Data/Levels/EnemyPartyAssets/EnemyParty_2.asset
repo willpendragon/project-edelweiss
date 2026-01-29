@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7954709b594692a44a06915f078ca1b0, type: 3}
-  m_Name: Enemy Party_4
+  m_Name: EnemyParty_2
   m_EditorClassIdentifier: 
   minEnemyPoolSize: 3
-  maxEnemyPoolSize: 7
+  maxEnemyPoolSize: 6
   enemyWeights:
-  - enemyType: 2
-    weight: 2
   - enemyType: 0
     weight: 3
