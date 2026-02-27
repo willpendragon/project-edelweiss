@@ -12,4 +12,8 @@ public class MapData : ScriptableObject
     }
 
     public List<TileData> tilePositions = new List<TileData>();
+
+    public int horizontalSize;
+    public int verticalSize;
+
 }

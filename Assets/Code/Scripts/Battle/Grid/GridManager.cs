@@ -87,19 +87,20 @@ public class GridManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        GameSaveData gameSaveData = SaveStateManager.saveData;
-        if (gameSaveData != null)
-        {
-            int unlockedPuzzleKeys = gameSaveData.resourceData.puzzleLevelKeys;
-            if (unlockedPuzzleKeys >= 1)
-            {
-                GenerateGridMapFromData(puzzleMapData);
-            }
-            else
-            {
-                GenerateStandardMap();
-            }
-        }
+        GenerateStandardMap();
+
+        //GameSaveData gameSaveData = SaveStateManager.saveData;
+        //if (gameSaveData != null)
+        //{
+        //    int unlockedPuzzleKeys = gameSaveData.resourceData.puzzleLevelKeys;
+        //    if (unlockedPuzzleKeys >= 1)
+        //    {
+        //        GenerateGridMapFromData(puzzleMapData);
+        //    }
+        //    else
+        //    {
+        //    }
+        //}
     }
 
     private void GenerateStandardMap()
@@ -142,6 +143,10 @@ public class GridManager : MonoBehaviour
             Debug.LogError("No MapData assigned to GridManager.");
             return;
         }
+
+        // Set Grid Boundaries
+        GridManager.Instance.gridHorizontalSize = currentMapData.horizontalSize;
+        GridManager.Instance.gridVerticalSize = currentMapData.verticalSize;
 
         foreach (var tileData in currentMapData.tilePositions)
         {

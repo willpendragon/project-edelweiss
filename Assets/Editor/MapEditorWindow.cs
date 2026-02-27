@@ -243,6 +243,10 @@ public class MapEditorWindow : EditorWindow
                 tileType = controller ? controller.tileType : TileType.Basic
             });
         }
+        // Save the Width and Height of the map.
+
+        currentMap.horizontalSize = gridWidth;
+        currentMap.verticalSize = gridHeight;
 
         EditorUtility.SetDirty(currentMap);
         AssetDatabase.SaveAssets(); // This writes the file to disk!

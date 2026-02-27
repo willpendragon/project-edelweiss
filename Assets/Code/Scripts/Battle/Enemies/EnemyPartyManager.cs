@@ -82,7 +82,7 @@ public class EnemyPartyManager : MonoBehaviour
 
         return pool;
     }
-
+    // This method randomly assigns Enemies to a tile.
     private List<Vector2> GenerateEnemyPositions(int count, List<Vector2Int> existingTiles, List<Vector2Int> excludedPositions)
     {
         List<Vector2> finalPositions = new List<Vector2>();
