@@ -8,26 +8,27 @@ public class PrizeCollectionHelper : MonoBehaviour
     public delegate void UpgradeObtained(string message);
     public static event UpgradeObtained OnUpgradeObtained;
 
-
+    // This class controls the logic of a Unit grabbing a Prize on the Battlefield.
     public void CheckFieldPrizes(TileController destinationTile, Unit activePlayerUnit)
     {
         if (destinationTile != null && destinationTile.tileCurrentFieldPrize != null)
         {
             FieldPrizeController fieldPrizeController = destinationTile.tileCurrentFieldPrize.GetComponent<FieldPrizeController>();
-            if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.attackPowerUp)
+            if (fieldPrizeController != null && fieldPrizeController.ItemFieldPrizeType == ItemFieldPrizeType.attackPowerUp) // Using the public read-only variable from controller.
             {
-                activePlayerUnit.unitAttackPower += fieldPrizeController.fieldPrize.powerUpAmount;
-                OnPrizeCollected(Color.red);
+                activePlayerUnit.unitAttackPower += fieldPrizeController.PowerUpAmount;
+                OnPrizeCollected(Color.red); // Display Prize Collected Feedback
                 DisplayUpgradeNotification($"{activePlayerUnit.unitTemplate.unitName}'s Attack Power increased.");
             }
-            else if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.magicPowerUp)
+            else if (fieldPrizeController != null && fieldPrizeController.ItemFieldPrizeType == ItemFieldPrizeType.magicPowerUp)
             {
-                activePlayerUnit.unitMagicPower += fieldPrizeController.fieldPrize.powerUpAmount;
+                activePlayerUnit.unitMagicPower += fieldPrizeController.PowerUpAmount;
                 OnPrizeCollected(Color.magenta);
                 DisplayUpgradeNotification($"{activePlayerUnit.unitTemplate.unitName}'s Magic Power increased.");
             }
-            else if (fieldPrizeController != null && fieldPrizeController.fieldPrize.itemFieldPrizeType == ItemFieldPrizeType.PuzzleLevelKey)
+            else if (fieldPrizeController != null && fieldPrizeController.ItemFieldPrizeType == ItemFieldPrizeType.PuzzleLevelKey)
             {
+                // Logic for unlocking keys
                 GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
                 gameStatsManager.unlockedPuzzleKeys += 1;
                 gameStatsManager.SaveUnlockedKeys(gameStatsManager.unlockedPuzzleKeys);
@@ -35,7 +36,6 @@ public class PrizeCollectionHelper : MonoBehaviour
             }
             UpdateCombatValues();
             Destroy(fieldPrizeController.gameObject);
-            // Display Prize Collected Feedback
         }
     }
     private void UpdateCombatValues()

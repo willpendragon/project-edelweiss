@@ -1,133 +1,46 @@
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
+using UnityEngine;
 
 public class FieldPrizeController : MonoBehaviour
 {
-    public enum FieldPrizeType
-    {
-        Upgrade,
-        Key
-    }
-    public GameObject fieldPrizeVisuals;
-    public GameObject keyVisuals;
-    public ItemFieldPrize fieldPrize;
-    private System.Random random;
-    public TextMeshProUGUI prizeTypeText;
-    FieldPrizeType fieldPrizeType;
-    [SerializeField] int keyPrizeThreshold;
+    public ItemFieldPrize fieldPrizeTemplate;
+    [SerializeField] private float _powerUpAmount;
+    [SerializeField] private ItemFieldPrizeType _itemFieldPrizeType;
+    [SerializeField] TextMeshProUGUI _fieldPrizeLabel;
+    [SerializeField] MeshRenderer _prizeMesh; // Mesh should be retrieved from SO.
 
-    // Weights for different outcomes, exposed to the editor
-    [SerializeField]
-    private List<int> weights = new List<int> { 70, 30 }; // Default: 70% chance to not win, 30% chance to win
-    void Start()
+    public float PowerUpAmount => _powerUpAmount;
+    public ItemFieldPrizeType ItemFieldPrizeType => _itemFieldPrizeType;
+    public void SetupPrize()
     {
-        random = new System.Random();
-    }
-    public void UnlockFieldPrize(TileController fieldPrizeTile)
-    {
-        if (!RollFieldPrizeChance())
-            return;
-
-        FieldPrizeType selectedPrizeType = SelectPrizeType();
-        Vector3 prizeSpawnPosition = fieldPrizeTile.gameObject.transform.position + Vector3.up;
-
-        GameObject prizeVisualPrefab = selectedPrizeType == FieldPrizeType.Upgrade ? fieldPrizeVisuals : keyVisuals;
-        SpawnPrize(fieldPrizeTile, prizeSpawnPosition, prizeVisualPrefab);
-    }
-    public bool RollFieldPrizeChance()
-    {
-        if (weights == null || weights.Count < 2)
+        _powerUpAmount = fieldPrizeTemplate.powerUpAmount;
+        _itemFieldPrizeType = fieldPrizeTemplate.itemFieldPrizeType;
+        if (fieldPrizeTemplate.itemFieldPrizeType != ItemFieldPrizeType.PuzzleLevelKey)
         {
-            Debug.LogError("Invalid weights list! Ensure you set it in the Inspector.");
-            return false;
-        }
-
-        int totalWeight = weights.Sum();
-        int roll = Random.Range(0, totalWeight);  // Use Unity's random
-        int cumulativeWeight = 0;
-
-        Debug.Log($"Total Weight: {totalWeight}, Rolled: {roll}");
-
-        for (int i = 0; i < weights.Count; i++)
-        {
-            cumulativeWeight += weights[i];
-            Debug.Log($"Checking Weight Index {i}, Cumulative: {cumulativeWeight}");
-
-            if (roll < cumulativeWeight)
-            {
-                Debug.Log($"Selected Index: {i}, Win: {i != 0}");
-                return i != 0; // Only index 0 is a loss, all others are wins
-            }
-        }
-
-        return false;
-    }
-
-    public FieldPrizeType SelectPrizeType()
-    {
-        if (ComboController.Instance.comboCounter >= keyPrizeThreshold)
-        {
-            return
-            fieldPrizeType = FieldPrizeType.Key;
-        }
-        else
-        {
-            return
-            fieldPrizeType = FieldPrizeType.Upgrade;
-        }
-    }
-    private void SpawnPrize(TileController fieldPrizeTile, Vector3 prizeSpawnPosition, GameObject spawnablePrizeVisuals)
-    {
-        // Instantiate the Field Prize GameObject at the new position
-        GameObject newFieldPrizeGO = Instantiate(spawnablePrizeVisuals, prizeSpawnPosition, Quaternion.identity);
-        newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrize = this.fieldPrize;
-
-        // Set the local scale of the new GameObject
-
-        newFieldPrizeGO.transform.localScale = new Vector3(1, 1, 1);
-
-        // Connects it to the Tile
-        fieldPrizeTile.tileCurrentFieldPrize = newFieldPrizeGO;
-
-        FieldPrizeController newFieldPrize = newFieldPrizeGO?.GetComponent<FieldPrizeController>();
-
-        ApplyTextLabelToPrize(newFieldPrize);
-        ApplyColorToPrize(newFieldPrize);
-        Debug.Log("Spawned Field Prize" + newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrize.itemFieldPrizeType);
-    }
-    private void ApplyTextLabelToPrize(FieldPrizeController newFieldPrize)
-    {
-        switch (newFieldPrize.fieldPrize?.itemFieldPrizeType)
-        {
-            case ItemFieldPrizeType.attackPowerUp:
-                newFieldPrize.prizeTypeText.text = "ATK+";
-                break;
-            case ItemFieldPrizeType.magicPowerUp:
-                newFieldPrize.prizeTypeText.text = "MAGI+";
-                break;
-            default:
-                break;
+            SetTextLabel();
+            SetPrizeColor();
         }
     }
 
-    private void ApplyColorToPrize(FieldPrizeController newFieldPrize)
+    // Text Label is contained in the SO label.
+    public void SetTextLabel()
     {
-        if (newFieldPrize == null) return;
+        // Should be abbreviated name of the effect, not full name.
+        _fieldPrizeLabel.text = fieldPrizeTemplate.itemFieldPrizeLabel;
+    }
 
-        // Get the FIRST CHILD mesh renderer
-        MeshRenderer meshRenderer = newFieldPrize.transform.GetChild(0).GetComponent<MeshRenderer>();
-
-        if (meshRenderer == null)
+    // Prize Color has to be specified in the SO label.
+    public void SetPrizeColor()
+    {
+        if (_prizeMesh == null)
         {
-            Debug.LogWarning("Prize child has no MeshRenderer.");
+            Debug.LogWarning("No Prize MeshRenderer has been found.");
             return;
         }
 
-        Material mat = meshRenderer.material; // Create material instance.
+        Material mat = _prizeMesh.material; // Create material instance.
 
-        switch (newFieldPrize.fieldPrize?.itemFieldPrizeType)
+        switch (fieldPrizeTemplate.itemFieldPrizeType)
         {
             case ItemFieldPrizeType.attackPowerUp:
                 mat.SetColor("_BaseColor", new Color(1f, 0f, 0f, 1f));   // Red (with alpha)
@@ -141,5 +54,4 @@ public class FieldPrizeController : MonoBehaviour
                 break;
         }
     }
-
 }

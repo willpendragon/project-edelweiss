@@ -79,7 +79,7 @@ public class Unit : MonoBehaviour
     public UnitBuff currentUnitBuff;
     public UnitPhase currentUnitPhase;
     public UnitStatusController unitStatusController;
-    public FieldPrizeController fieldPrizeController;
+    public PrizeReleaseController fieldPrizeController;
     public UnitType unitType;
 
     public bool hasHookshot;

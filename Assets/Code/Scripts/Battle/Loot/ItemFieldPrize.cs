@@ -15,6 +15,8 @@ public class ItemFieldPrize : ScriptableObject
 {
     public string itemFieldPrizeName;
     public string itemFieldPrizeDescription;
+    public string itemFieldPrizeLabel;
+
     public ItemFieldPrizeType itemFieldPrizeType;
     public float powerUpAmount;
 

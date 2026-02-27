@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 67632292693706766}
   - component: {fileID: 67632292693706761}
+  - component: {fileID: 7208819867768792117}
   m_Layer: 9
-  m_Name: FieldPrize
+  m_Name: Prize
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,17 +42,32 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 67632292693706767}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6652aa2d868819449909f670b3923924, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fieldPrizeVisuals: {fileID: 8992135779467649837}
-  keyVisuals: {fileID: 0}
-  fieldPrize: {fileID: 11400000, guid: da9b3b277abd4464c878b543c8d9372d, type: 2}
-  prizeTypeText: {fileID: 6990424190059694669}
-  keyPrizeThreshold: 3
+  _fieldPrizeGO: {fileID: 0}
+  _upgradePrizes: []
+  _keyPrizes: []
   weights: 0a0000005a000000
+--- !u!114 &7208819867768792117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67632292693706767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed030afe98194a4095fb72eae0144f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fieldPrizeTemplate: {fileID: 0}
+  _powerUpAmount: 0
+  _itemFieldPrizeType: 0
+  _fieldPrizeLabel: {fileID: 6990424190059694669}
+  _prizeMesh: {fileID: 8992135779467649838}
 --- !u!1 &4168092339426451339
 GameObject:
   m_ObjectHideFlags: 0
