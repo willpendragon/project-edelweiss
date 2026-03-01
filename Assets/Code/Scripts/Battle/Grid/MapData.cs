@@ -16,4 +16,6 @@ public class MapData : ScriptableObject
     public int horizontalSize;
     public int verticalSize;
 
+    public GameObject environment;
+
 }

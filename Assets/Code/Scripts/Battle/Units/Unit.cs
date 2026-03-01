@@ -271,7 +271,7 @@ public class Unit : MonoBehaviour
         }
         else if (unitHealthPoints <= 0)
         {
-            ComboController.Instance.IncreaseComboCounter(this);
+            //ComboController.Instance.IncreaseComboCounter(this);
             var meshRenderer = GetComponentInChildren<MeshRenderer>();
 
             if (unitSprite != null)

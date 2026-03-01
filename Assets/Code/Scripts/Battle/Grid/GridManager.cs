@@ -32,6 +32,7 @@ public class GridManager : MonoBehaviour
 
     public TileController[] gridTileControllers;
     public List<TileShaderController> _tileShaderControllers;
+    [SerializeField] EnvironmentController _environmentController;
 
     public Dictionary<PositionKey, TileController> gridMapDictionary = new Dictionary<PositionKey, TileController>();
     public GridMovementController gridMovementController;
@@ -55,27 +56,6 @@ public class GridManager : MonoBehaviour
     public MapData puzzleMapData;
 
     [SerializeField] UnitSetupController unitSetupController;
-
-    // Test for Multi-Map Dungeon Setup.
-
-    //private void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        GenerateGridMapFromData(puzzleMapData);
-    //        unitSetupController.SetUnitsInitialPositionOnGrid();
-    //        gridTileControllers = GameObject.FindObjectsOfType<TileController>();
-    //        RefreshGridTileControllers();
-    //    }
-    //    else if (Input.GetKeyDown(KeyCode.S))
-    //    {
-    //        GenerateGridMapFromData(currentMapData);
-    //        unitSetupController.SetUnitsInitialPositionOnGrid();
-    //        gridTileControllers = GameObject.FindObjectsOfType<TileController>();
-    //        RefreshGridTileControllers();
-    //    }
-
-    //}
     private void Awake()
     {
         if (Instance == null)
@@ -167,6 +147,7 @@ public class GridManager : MonoBehaviour
                 Debug.LogWarning("Duplicate key found when adding GameObject to dictionary!");
             }
         }
+
         //Debug.Log("Dictionary Count: " + gridMapDictionary.Count);
     }
 
