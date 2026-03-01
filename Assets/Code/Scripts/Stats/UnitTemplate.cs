@@ -29,6 +29,7 @@ public class UnitTemplate : ScriptableObject
     public List<Spell> spellsList;
     public Vector2 coinsRewardRange;
     public float unitExperiencePointsReward;
+    public MeleeBehavior meleeBehavior;
 
     [Header("Visuals")]
 

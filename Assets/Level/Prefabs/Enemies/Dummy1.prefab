@@ -381,8 +381,8 @@ GameObject:
   - component: {fileID: 5410876119120275068}
   - component: {fileID: 7127888063209652432}
   - component: {fileID: 975513701372675069}
-  - component: {fileID: 1254154078120300381}
   - component: {fileID: 1163028146103148358}
+  - component: {fileID: 8120714621248630938}
   m_Layer: 10
   m_Name: Dummy1
   m_TagString: Enemy
@@ -480,6 +480,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
+  unitOccupiedFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}
@@ -491,7 +492,7 @@ MonoBehaviour:
   currentUnitBuff: 0
   currentUnitPhase: 0
   unitStatusController: {fileID: 361118017173477511}
-  fieldPrizeController: {fileID: 1254154078120300381}
+  fieldPrizeController: {fileID: 8120714621248630938}
   unitType: 1
   hasHookshot: 0
   bossFlag: 0
@@ -661,6 +662,7 @@ MonoBehaviour:
   comboIncreaseVFXAnimator: {fileID: 45147626664482888}
   unitAnimator: {fileID: 369530382422409763}
   buffIcon: {fileID: 0}
+  stunIcon: {fileID: 0}
   hitAnimator: {fileID: 5311419140287502522}
 --- !u!114 &975513701372675069
 MonoBehaviour:
@@ -675,24 +677,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crystalsAmount: 3
---- !u!114 &1254154078120300381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5009294011632168286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6652aa2d868819449909f670b3923924, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fieldPrizeVisuals: {fileID: 67632292693706767, guid: 6b2300afed068b24394e325c341abb48, type: 3}
-  keyVisuals: {fileID: 67632292693706767, guid: 6b2300afed068b24394e325c341abb48, type: 3}
-  fieldPrize: {fileID: 11400000, guid: da9b3b277abd4464c878b543c8d9372d, type: 2}
-  prizeTypeText: {fileID: 0}
-  keyPrizeThreshold: 3
-  weights: 460000001e000000
 --- !u!96 &1163028146103148358
 TrailRenderer:
   serializedVersion: 3
@@ -797,6 +781,25 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &8120714621248630938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009294011632168286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6652aa2d868819449909f670b3923924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fieldPrizeGO: {fileID: 67632292693706767, guid: 6b2300afed068b24394e325c341abb48, type: 3}
+  _upgradePrizes:
+  - {fileID: 11400000, guid: da9b3b277abd4464c878b543c8d9372d, type: 2}
+  - {fileID: 11400000, guid: 27cb5a7026d37d84692fa4ea27970834, type: 2}
+  _keyPrizes:
+  - {fileID: 11400000, guid: 55d215907fa163443a746e9504a75fb3, type: 2}
+  weights: 460000001e000000
 --- !u!1 &6077859705235512824
 GameObject:
   m_ObjectHideFlags: 0
@@ -5939,6 +5942,10 @@ PrefabInstance:
     - target: {fileID: 2088154072740875750, guid: b732a19ba5e67014b85db8529feeb798, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2228152404788091488, guid: b732a19ba5e67014b85db8529feeb798, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3890993151345674166, guid: b732a19ba5e67014b85db8529feeb798, type: 3}
       propertyPath: m_Pivot.x
