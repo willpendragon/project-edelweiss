@@ -218,7 +218,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
       propertyPath: m_Name
-      value: mountain_blockout
+      value: MountainEnvironment
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
       propertyPath: m_Layer
@@ -275,6 +275,10 @@ PrefabInstance:
     - target: {fileID: 7732992161657461538, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8687245509543217420, guid: ddfd08f909c4da847b6811f6964129e2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
