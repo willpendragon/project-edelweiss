@@ -1,16 +1,17 @@
+using DG.Tweening;
 using ProjectEdelweiss.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private List<Camera> _cameras;
-    [SerializeField] private float _zoomAmount = 22.9f; // Actually original zoom amount
-    [SerializeField] private Vector3 _originalCameraPosition;
-    [SerializeField] private float _originalZoomAmount;
-    [SerializeField] private Vector3 _cameraOffset = new Vector3(0, 0, -7f);
-    [SerializeField] private float _cameraResetDelay = 1.5f;
+    private Vector3 _originalCameraPosition;
+    private float _originalZoomAmount;
+    private float _zoomAmount;
+    private float _cameraResetDelay;
+    private Vector3 _cameraOffset;
 
+    [SerializeField] BattleCameraSettings _battleCameraSettings;
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))
@@ -18,6 +19,14 @@ public class CameraController : MonoBehaviour
             CameraCloseUp();
         }
     }
+
+    public void Start()
+    {
+        // Set original CameraTransform + Zoom
+        _originalCameraPosition = _cameras[0].gameObject.transform.position;
+        _originalZoomAmount = _cameras[0].fieldOfView;
+    }
+    public List<Camera> _cameras;
 
     private void OnEnable()
     {
@@ -27,13 +36,6 @@ public class CameraController : MonoBehaviour
     private void OnDisable()
     {
         MeleeBehavior.OnKnockbackFired -= CameraCloseUp;
-    }
-
-    private void Start()
-    {
-        // Save original CameraTransform + Zoom
-        _originalCameraPosition = _cameras[0].gameObject.transform.position;
-        _originalZoomAmount = _cameras[0].fieldOfView;
     }
 
     public void CameraCloseUp()
@@ -53,12 +55,13 @@ public class CameraController : MonoBehaviour
         foreach (var cam in _cameras)
         {
             // Set Camera Transform
-            Vector3 finalTransform = tileTransform.position + _cameraOffset;
+            Vector3 finalTransform = tileTransform.position + _battleCameraSettings.CameraOffset; // Retrieve values from SO
             cam.transform.position = finalTransform;
+            //cam.transform.DOShakePosition(0.5f, 0.5f, 0, 0, false, false);
             // Set Camera Zoom
-            cam.fieldOfView = _zoomAmount;
+            cam.fieldOfView = _battleCameraSettings.ZoomAmount; // Retrieve values from SO
         }
-        Invoke("ResetCameraPosition", _cameraResetDelay);
+        Invoke("ResetCameraPosition", _battleCameraSettings.CameraResetDelay); // Retrieve values from SO
     }
     private void ResetCameraPosition()
     {

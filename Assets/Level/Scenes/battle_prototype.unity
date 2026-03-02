@@ -7416,6 +7416,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1108736595}
   m_CullTransparentMesh: 1
+--- !u!21 &1111012494
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &1118968325
 GameObject:
   m_ObjectHideFlags: 0
@@ -12779,66 +12810,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 959c526f6ce92554192cfb65f2701470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _battleCameraSettings: {fileID: 11400000, guid: 02efce6c002f0de4e8d2bc2bbf97af1e, type: 2}
   _cameras:
   - {fileID: 588608018}
   - {fileID: 1362109347}
   - {fileID: 985621550}
   - {fileID: 1118968333}
-  _zoomAmount: 60
-  _originalCameraPosition: {x: 7.7, y: 53.5, z: -65.7}
-  _originalZoomAmount: 22.9
-  _cameraOffset: {x: 0, y: 3, z: -4.5}
-  _cameraResetDelay: 1.5
---- !u!21 &2071578465
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _RECEIVESHADOWS_OFF
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AlphaCutoff: 0.5
-    - _Banner: 1
-    - _FogCameraMode: 0
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    - _QueueControl: -1
-    - _QueueOffset: 0
-    - _ReceiveShadows: 0
-    m_Colors:
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &2086941017
 GameObject:
   m_ObjectHideFlags: 0
@@ -14004,7 +13981,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2071578465}
+  - {fileID: 1111012494}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14263,6 +14240,10 @@ PrefabInstance:
     - target: {fileID: 8544985649793520265, guid: df72b9480c0abe046bf2b9e4e26e14b7, type: 3}
       propertyPath: m_Name
       value: mountain_blockout
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544985649793520265, guid: df72b9480c0abe046bf2b9e4e26e14b7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9069743325500704819, guid: df72b9480c0abe046bf2b9e4e26e14b7, type: 3}
       propertyPath: m_LocalPosition.x
