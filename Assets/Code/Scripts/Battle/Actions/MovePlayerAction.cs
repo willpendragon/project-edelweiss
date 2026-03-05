@@ -67,6 +67,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         activePlayerUnit.ownedTile = tile;
         activePlayerUnit.ownedTile.detectedUnit = activePlayerUnit.gameObject;
+        tile.currentSingleTileCondition = SingleTileCondition.occupied;
     }
     private void SpendOpportunityPoints(Unit activePlayerUnit)
     {

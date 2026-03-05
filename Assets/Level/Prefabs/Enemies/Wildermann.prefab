@@ -201,6 +201,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: _enemyAIPriority
+      value: 
+      objectReference: {fileID: 11400000, guid: 456c95c4a5b009a48aac7da37ae09ada, type: 2}
     - target: {fileID: 5009294011632168286, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: m_Name
       value: Wildermann

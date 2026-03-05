@@ -444,6 +444,7 @@ MonoBehaviour:
   minEnemyMoveRollRange: 1
   maxEnemyMoveRollRange: 20
   enemyBehavior: {fileID: 11400000, guid: 942df072a2e990a4799e28f0faee4951, type: 2}
+  _enemyAIPriority: {fileID: 11400000, guid: b7c99b549d20cf54b963362c49a772cc, type: 2}
   enemyMoveElapsingTime: 1
   enemyAnimator: {fileID: 0}
   attackVFXAnimator: {fileID: 2579693216120635807, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}

@@ -19,6 +19,7 @@ public class EnemyAgent : MonoBehaviour
     [SerializeField] int minEnemyMoveRollRange;
     [SerializeField] int maxEnemyMoveRollRange;
     public EnemyBehavior enemyBehavior;
+    [SerializeField] private EnemyAIPriority _enemyAIPriority;
 
     [Header("Presentation")]
     [SerializeField] float enemyMoveElapsingTime;
@@ -39,10 +40,7 @@ public class EnemyAgent : MonoBehaviour
 
     public GameObject unitStunStatusIcon;
 
-    public void Start()
-    {
-        //opportunityCounter.text = opportunity.ToString();
-    }
+    public EnemyAIPriority EnemyAIPriority => _enemyAIPriority;
 
     // Starts the Enemy Turn Sequence contained in the Scriptable Object.
     public void EnemyTurnEvents()

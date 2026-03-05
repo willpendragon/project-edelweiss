@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DG.Tweening;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ public class BumperEnemyBehavior : EnemyBehavior
     [SerializeField] int meleeRange = 2; // Attack range
     [SerializeField] int movementLimit = 4; // Movement limit
     [SerializeField] GameObject attackVFXAnimator;
+    [SerializeField] int actionsPerTurn = 2; // Numero di azioni che può fare
+    [SerializeField] float actionDelay = 1.0f; // Pausa tra un'azione e l'altra (per le animazioni)
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
@@ -24,48 +27,73 @@ public class BumperEnemyBehavior : EnemyBehavior
             enemyAgent.GetComponentInParent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             Debug.Log("Enemy is dead and cannot act.");
+            OnCheckPlayer?.Invoke();
             return;
         }
 
         if (enemyAgent.GetComponentInParent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.stun)
         {
-            //OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} is trapped in ice...");
             OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} can't move...");
+            OnCheckPlayer?.Invoke();
             return;
         }
 
         Unit enemyUnit = enemyAgent.GetComponent<Unit>();
-        Unit targetPlayerUnit = SelectTargetPlayerUnit();
 
-        if (targetPlayerUnit == null)
+        PerformNextAction(enemyUnit, enemyAgent, actionsPerTurn);
+    }
+
+    private void PerformNextAction(Unit enemyUnit, EnemyAgent enemyAgent, int actionsLeft)
+    {
+        if (actionsLeft <= 0)
         {
-            Debug.Log("No valid target found for the enemy.");
+            OnCheckPlayer?.Invoke();
             return;
         }
 
+        Unit targetPlayerUnit = enemyAgent.EnemyAIPriority.SelectTargetPlayerUnit(enemyUnit);
+
+        if (targetPlayerUnit == null || targetPlayerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+        {
+            OnCheckPlayer?.Invoke();
+            return;
+        }
+
+        // Validate range and attack.
         if (CheckAttackRange(enemyUnit.ownedTile, targetPlayerUnit.ownedTile))
         {
             PerformAttack(enemyUnit, enemyAgent, targetPlayerUnit);
+
+            DOVirtual.DelayedCall(actionDelay, () => PerformNextAction(enemyUnit, enemyAgent, actionsLeft - 1));
         }
         else
         {
-            MoveEnemyToPlayerTarget(targetPlayerUnit, enemyAgent);
-            GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+            bool moveSuccess = MoveEnemyToPlayerTarget(targetPlayerUnit, enemyAgent);
+
+            if (moveSuccess)
+            {
+                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+                DOVirtual.DelayedCall(actionDelay, () => PerformNextAction(enemyUnit, enemyAgent, actionsLeft - 1));
+            }
+            else
+            {
+                OnCheckPlayer?.Invoke();
+            }
         }
     }
 
-    public Unit SelectTargetPlayerUnit()
-    {
-        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
-            .GetComponent<PlayerPartyController>()
-            .playerUnitsOnBattlefield;
+    //public Unit SelectTargetPlayerUnit()
+    //{
+    //    GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
+    //        .GetComponent<PlayerPartyController>()
+    //        .playerUnitsOnBattlefield;
 
-        return playerUnitsOnBattlefield
-            .Select(go => go.GetComponent<Unit>())
-            .Where(unit => unit != null && unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-            .OrderBy(unit => unit.unitHealthPoints)
-            .FirstOrDefault();
-    }
+    //    return playerUnitsOnBattlefield
+    //        .Select(go => go.GetComponent<Unit>())
+    //        .Where(unit => unit != null && unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+    //        .OrderBy(unit => unit.unitHealthPoints)
+    //        .FirstOrDefault();
+    //}
 
     public bool CheckAttackRange(TileController attackerTile, TileController defenderTile)
     {
@@ -80,7 +108,6 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     private void PerformAttack(Unit enemyUnit, EnemyAgent enemyAgent, Unit targetPlayerUnit)
     {
-
         float baseDamage = enemyUnit.unitMeleeAttackBaseDamage;
         float proximityModifier = 1.5f;
         float finalDamage = baseDamage;
@@ -97,48 +124,38 @@ public class BumperEnemyBehavior : EnemyBehavior
             .PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
 
         OnBumperEnemyAttack?.Invoke($"{enemyUnit.unitTemplate.unitName} used Bump");
-        OnCheckPlayer?.Invoke();
     }
 
-    public void MoveEnemyToPlayerTarget(Unit defenderPlayerUnit, EnemyAgent enemyAttacker)
+    public bool MoveEnemyToPlayerTarget(Unit defenderPlayerUnit, EnemyAgent enemyAttacker)
     {
         Unit enemyUnit = enemyAttacker.GetComponent<Unit>();
         TileController startTile = enemyUnit.ownedTile;
         TileController targetTile = defenderPlayerUnit.ownedTile;
 
-        if (startTile == null || targetTile == null)
-        {
-            Debug.LogError("Start or target tile is null. Cannot move enemy.");
-            return;
-        }
+        if (startTile == null || targetTile == null) return false;
 
         List<TileController> fullPath = RetracePathToTarget(startTile, targetTile);
 
-        if (fullPath == null || fullPath.Count == 0)
-        {
-            Debug.Log("No valid path to the target.");
-            return;
-        }
+        if (fullPath == null || fullPath.Count == 0) return false;
 
         List<TileController> limitedPath = LimitPath(fullPath, movementLimit, targetTile);
 
-        if (limitedPath.Count == 0)
+        if (limitedPath.Count > 0 && limitedPath.Last() == targetTile)
         {
-            Debug.Log("No tiles within movement limit.");
-            return;
+            limitedPath.RemoveAt(limitedPath.Count - 1);
         }
+
+        if (limitedPath.Count == 0 || limitedPath.Last() == startTile) return false;
 
         TileController destinationTile = limitedPath.Last();
 
         if (destinationTile == null || destinationTile.currentSingleTileCondition != SingleTileCondition.free || destinationTile.detectedUnit != null)
         {
-            Debug.Log("Destination tile is invalid or occupied.");
-            return;
+            return false;
         }
 
         MoveUnitToTile(enemyUnit, destinationTile);
-
-        Debug.Log($"Enemy moved closer to Player. Position: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
+        return true;
     }
 
     private List<TileController> RetracePathToTarget(TileController startTile, TileController targetTile)
@@ -163,7 +180,8 @@ public class BumperEnemyBehavior : EnemyBehavior
 
             foreach (TileController neighbor in GetNeighbours(currentTile))
             {
-                if (neighbor.currentSingleTileCondition == SingleTileCondition.occupied || closedSet.Contains(neighbor))
+                if (closedSet.Contains(neighbor) ||
+                   (neighbor.currentSingleTileCondition == SingleTileCondition.occupied && neighbor != targetTile))
                 {
                     continue;
                 }
@@ -189,7 +207,7 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     private List<TileController> LimitPath(List<TileController> fullPath, int movementLimit, TileController targetTile)
     {
-        return fullPath.Take(movementLimit).ToList(); // Temporarily allow paths that include the target
+        return fullPath.Take(movementLimit).ToList(); // Temporarily allow paths that include the target.
     }
 
     private List<TileController> RetracePath(TileController startTile, TileController endTile)

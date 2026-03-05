@@ -235,6 +235,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 942df072a2e990a4799e28f0faee4951, type: 2}
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: _enemyAIPriority
+      value: 
+      objectReference: {fileID: 11400000, guid: ce2308d695df5c044ba15a3aa8baa10e, type: 2}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: enemyCoinsReward
       value: 30
       objectReference: {fileID: 0}
