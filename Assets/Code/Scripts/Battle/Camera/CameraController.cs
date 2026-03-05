@@ -30,12 +30,12 @@ public class CameraController : MonoBehaviour
 
     private void OnEnable()
     {
-        MeleeBehavior.OnKnockbackFired += CameraCloseUp;
+        PhysicalAttackBehavior.OnKnockbackFired += CameraCloseUp;
     }
 
     private void OnDisable()
     {
-        MeleeBehavior.OnKnockbackFired -= CameraCloseUp;
+        PhysicalAttackBehavior.OnKnockbackFired -= CameraCloseUp;
     }
 
     public void CameraCloseUp()
