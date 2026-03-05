@@ -4,6 +4,13 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "NewMap", menuName = "Map")]
 public class MapData : ScriptableObject
 {
+    public enum LevelType
+    {
+        Regular,
+        Puzzle
+    }
+
+
     [System.Serializable]
     public struct TileData
     {
@@ -17,5 +24,5 @@ public class MapData : ScriptableObject
     public int verticalSize;
 
     public GameObject environment;
-
+    public LevelType levelType;
 }

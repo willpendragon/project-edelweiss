@@ -1,3 +1,4 @@
+using Language.Lua;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -49,16 +50,39 @@ public class BattleTypeController : MonoBehaviour
     }
     private void BattleSelection()
     {
-        Debug.Log("BattleSelection started.");
+        // At the start of a battle, decide the level type.
 
-        if (keyController != null && keyController.ValidateKey())
+        //if (keyController != null && keyController.ValidateKey()) // Sets the Level as Puzzle Level
+        //{
+        //    currentBattleType = keyController.UnlockLevelLogic();
+        //}
+
+        currentBattleType = RetrieveBattleType();
+
+        if (currentBattleType == BattleType.PuzzleBattle)
         {
-            currentBattleType = keyController.UnlockLevelLogic();
+            // Add specific logic for Puzzle Battles, to be further developed
         }
+
         else if (currentBattleType == BattleType.RegularBattle && achievementsManager != null)
         {
             currentBattleType = achievementsManager.TriggerDeityAchievementLogic();
         }
+
         OnBattleTypeInitialized?.Invoke();
+    }
+
+    public BattleType RetrieveBattleType()
+    {
+        // Retrieve the Battle Type from MapData Scriptable Object
+        switch (GridManager.Instance.currentMapData.levelType)
+        {
+            case (MapData.LevelType.Regular):
+                return BattleType.RegularBattle;
+            case (MapData.LevelType.Puzzle):
+                return BattleType.PuzzleBattle;
+            default:
+                return BattleType.RegularBattle;
+        }
     }
 }
