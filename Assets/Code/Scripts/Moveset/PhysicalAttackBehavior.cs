@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using static DG.Tweening.DOTweenAnimation;
 
-[CreateAssetMenu(fileName = "New Melee Behavior", menuName = "Moveset/MeleeBehavior")]
+[CreateAssetMenu(fileName = "New Physic Attack Behavior", menuName = "Moveset/PhysicAttackBehavior")]
 
-public class MeleeBehavior : ScriptableObject
+public class PhysicalAttackBehavior : ScriptableObject
 {
+    public delegate void UsedPhysicalAttack(string notification);
+    public static event UsedPhysicalAttack OnUsedPhysicalAttack;
+
     public int baseDamage;
     private Vector2Int knockbackDirection;
     public int knockbackStrength = 2;
@@ -16,7 +19,7 @@ public class MeleeBehavior : ScriptableObject
     public delegate void KnockbackFired();
     public static event KnockbackFired OnKnockbackFired;
 
-    public void AttackSequence(Unit targetUnit, TileController targetTile, Unit activePlayerUnit)
+    public virtual void AttackSequence(Unit targetUnit, TileController targetTile, Unit activePlayerUnit)
     {
         if (targetTile.tileType == TileType.Obstacle)
         {
@@ -32,19 +35,8 @@ public class MeleeBehavior : ScriptableObject
             activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, targetTile.detectedUnit.GetComponent<Unit>());
             return;
         }
-
-
-        //    if (activePlayerUnit.hasHookshot)
-        //    {
-        //        ExecuteMagnet(targetTile);
-        //        activePlayerUnit.unitOpportunityPoints--;
-        //        UpdateActivePlayerUnitProfile(activePlayerUnit);
-        //        return;
-        //    }
-
         AttemptKnockback(activePlayerUnit, targetUnit);
         HitTarget(activePlayerUnit, targetUnit, targetTile);
-
     }
 
     public void AttemptKnockback(Unit attacker, Unit defender)
@@ -115,11 +107,11 @@ public class MeleeBehavior : ScriptableObject
         return distanceController.CheckDistance(activePlayerUnit.ownedTile, targetTile);
     }
 
-
     private void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
     {
         float damage = CalculateDamage(attacker, defender, modifierIsActive);
         defender.TakeDamage(damage);
+        BroadcastAttackNotification($"{attacker.unitTemplate.unitName} used Melee Attack");
     }
 
     private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive)
@@ -147,7 +139,7 @@ public class MeleeBehavior : ScriptableObject
         }
     }
 
-    private void MoveUnitToTile(Unit unit, TileController destinationTile)
+    public virtual void MoveUnitToTile(Unit unit, TileController destinationTile)
     {
         if (unit == null || destinationTile == null)
             return;
@@ -166,5 +158,10 @@ public class MeleeBehavior : ScriptableObject
         // Update unit's reference
         unit.ownedTile = destinationTile;
         GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+    }
+
+    public virtual void BroadcastAttackNotification(string message)
+    {
+        OnUsedPhysicalAttack(message);
     }
 }
