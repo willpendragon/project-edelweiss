@@ -10,7 +10,7 @@ public class BumperEnemyBehavior : EnemyBehavior
     [SerializeField] int movementLimit = 4; // Movement limit
     [SerializeField] GameObject attackVFXAnimator;
     [SerializeField] int actionsPerTurn = 2; // Numero di azioni che può fare
-    [SerializeField] float actionDelay = 1.0f; // Pausa tra un'azione e l'altra (per le animazioni)
+    public float actionDelay = 1.0f; // Pausa tra un'azione e l'altra (per le animazioni)
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
@@ -81,19 +81,6 @@ public class BumperEnemyBehavior : EnemyBehavior
             }
         }
     }
-
-    //public Unit SelectTargetPlayerUnit()
-    //{
-    //    GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
-    //        .GetComponent<PlayerPartyController>()
-    //        .playerUnitsOnBattlefield;
-
-    //    return playerUnitsOnBattlefield
-    //        .Select(go => go.GetComponent<Unit>())
-    //        .Where(unit => unit != null && unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
-    //        .OrderBy(unit => unit.unitHealthPoints)
-    //        .FirstOrDefault();
-    //}
 
     public bool CheckAttackRange(TileController attackerTile, TileController defenderTile)
     {
@@ -248,7 +235,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         return neighbors;
     }
 
-    private void MoveUnitToTile(Unit unit, TileController destinationTile)
+    public void MoveUnitToTile(Unit unit, TileController destinationTile)
     {
         TileController startTile = unit.ownedTile;
 
