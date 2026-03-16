@@ -7,7 +7,8 @@ public enum EnemyType
     dummy1,
     dummy2,
     dummy3,
-    Wildermann
+    Wildermann,
+    RockEnemy
 }
 
 [System.Serializable]
@@ -17,7 +18,7 @@ public class EnemyWeight
     public int weight;
 }
 
-[CreateAssetMenu(fileName = "Enemy Party", menuName = "Enemy Party", order = 1)]
+[CreateAssetMenu(fileName = "Enemy Party", menuName = "Level Design/Enemy Party", order = 1)]
 public class EnemyPartyData : ScriptableObject
 {
     public int minEnemyPoolSize;
