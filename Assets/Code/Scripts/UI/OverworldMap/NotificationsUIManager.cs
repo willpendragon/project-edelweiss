@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
-using UnityEditor.VersionControl;
-
 
 public class NotificationsUIManager : MonoBehaviour
 {
