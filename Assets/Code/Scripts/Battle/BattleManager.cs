@@ -59,6 +59,7 @@ public class BattleManager : MonoBehaviour
     private void BeginBattle()
     {
         BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen(battleStartMessage);
+        BattleSFXManager.PlaySound(SoundType.BATTLEBEGINS, 1);
         TrackEnemiesOnBattlefield();
     }
     private void TrackEnemiesOnBattlefield()

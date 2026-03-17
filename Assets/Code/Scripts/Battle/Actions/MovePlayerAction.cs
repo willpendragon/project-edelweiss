@@ -28,7 +28,7 @@ public class MovePlayerAction : MonoBehaviour, IPlayerAction<TileController>
         activePlayerUnit.MoveUnit(targetTile.tileXCoordinate, targetTile.tileYCoordinate, false);
 
         GridManager.Instance.tileSelectionPermitted = true;
-        activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMovementConfirmedSFX.Invoke();
+        BattleSFXManager.PlaySound(SoundType.CONFIRMMOVE, 1);
         List<TileController> path = GridManager.Instance.GetComponentInChildren<GridMovementController>().FindPath(activePlayerUnit.currentXCoordinate, activePlayerUnit.currentYCoordinate, targetTile.tileXCoordinate, targetTile.tileYCoordinate);
         GridManager.Instance.ClearPath();
 

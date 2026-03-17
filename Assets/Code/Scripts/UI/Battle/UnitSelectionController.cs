@@ -237,8 +237,7 @@ public class UnitSelectionController : MonoBehaviour
 
     private void PlaySelectionFeedback(Unit playerUnit)
     {
-        BattleFeedbackController battleFeedbackController = playerUnit.GetComponent<BattleFeedbackController>();
-        battleFeedbackController.PlaySelectionSFX.Invoke();
+        BattleSFXManager.PlaySound(SoundType.SELECT, 1);
     }
 
     public void ResetUnitSelection()

@@ -62,6 +62,7 @@ public class CharacterDialogueManager : MonoBehaviour
         // Animate the dialogue box to appear with a "juicy" effect
         dialogueBox.transform.DOScale(targetScale, scaleDuration).SetEase(Ease.OutBack);
         portraitImage.DOFade(1, fadeDuration).SetEase(Ease.InOutQuad); // Fade in the portrait
+        BattleSFXManager.PlaySound(SoundType.UIDIALOGUEOPEN, 1);
     }
 
     private void HideDialogue()
@@ -70,6 +71,7 @@ public class CharacterDialogueManager : MonoBehaviour
         dialogueBox.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
         portraitImage.DOFade(0, fadeDuration).SetEase(Ease.InOutQuad);
         _dialogueOpen = false;
+        BattleSFXManager.PlaySound(SoundType.UIDIALOGUECLOSE, 1);
         Destroy(this);
     }
 }

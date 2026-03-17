@@ -6,10 +6,11 @@ public class MasterVolumeController : MonoBehaviour
 {
     public AudioMixer audioMixer;
     public Slider volumeSlider;
+    public string mixerName;
 
     void Start()
     {
-        float savedVolume = PlayerPrefs.GetFloat("MasterVolume", 0.75f);
+        float savedVolume = PlayerPrefs.GetFloat(mixerName, 0.75f);
         volumeSlider.value = savedVolume;
         SetVolume(savedVolume);
         volumeSlider.onValueChanged.AddListener(SetVolume);
@@ -17,7 +18,7 @@ public class MasterVolumeController : MonoBehaviour
 
     public void SetVolume(float volume)
     {
-        audioMixer.SetFloat("MasterVolume", Mathf.Log10(volume) * 20);
-        PlayerPrefs.SetFloat("MasterVolume", volume);
+        audioMixer.SetFloat(mixerName, Mathf.Log10(volume) * 20);
+        PlayerPrefs.SetFloat(mixerName, volume);
     }
 }

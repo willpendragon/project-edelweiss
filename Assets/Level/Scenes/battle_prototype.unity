@@ -6616,6 +6616,7 @@ MonoBehaviour:
   - {fileID: 5147203796786549252, guid: fb44d29c5900bc445abe290940fb487c, type: 3}
   - {fileID: 8194179579621356911, guid: e2d5e0f6a4ecbbd4fa91bedaf9149e08, type: 3}
   - {fileID: 5361943858132570556, guid: 0610c7c61ed17374db0e0ae3d06e0754, type: 3}
+  - {fileID: 5009294011632168286, guid: 1df26f0ab6bba9b4b9eeceeaef7e4394, type: 3}
   battleManager: {fileID: 5409979177453231299}
 --- !u!1 &985621543
 GameObject:
@@ -7416,37 +7417,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1108736595}
   m_CullTransparentMesh: 1
---- !u!21 &1111012494
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1118968325
 GameObject:
   m_ObjectHideFlags: 0
@@ -10338,8 +10308,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1669585087}
   - component: {fileID: 1669585088}
+  - component: {fileID: 1669585089}
   m_Layer: 0
-  m_Name: BattlefieldVFXController
+  m_Name: BattleSFXManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10369,9 +10340,115 @@ MonoBehaviour:
   m_GameObject: {fileID: 1669585086}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94df2ea0ad7cbe343942484d31d3f229, type: 3}
+  m_Script: {fileID: 11500000, guid: c2374529251521c4cbceba1b983c04f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundList:
+  - {fileID: 8300000, guid: 9c19e4618f9729d4f90582aaa65c111f, type: 3}
+  - {fileID: 8300000, guid: d9e48a4c2cdeccd4f9d2c2791bc204fb, type: 3}
+  - {fileID: 8300000, guid: 0c875237808cf834ea322dc2b7601baa, type: 3}
+  - {fileID: 8300000, guid: e1ae69ab0d288a148841b42242781f19, type: 3}
+  - {fileID: 8300000, guid: be09651c7800de745b8bd37b403bfd77, type: 3}
+  - {fileID: 8300000, guid: b21c6053f4d9ad74392a4d25be9be73a, type: 3}
+  - {fileID: 8300000, guid: 9c7dc8e828b398f45ab72086dd557c17, type: 3}
+  - {fileID: 8300000, guid: aa6f8009a520cff41903e6b0e4fb399e, type: 3}
+  - {fileID: 8300000, guid: c9bc5741fd70427408ff2d4bd38a7d03, type: 3}
+--- !u!82 &1669585089
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669585086}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1686268446
 GameObject:
   m_ObjectHideFlags: 0
@@ -10831,6 +10908,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1739556450}
   m_CullTransparentMesh: 1
+--- !u!21 &1744549062
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &1745898677
 GameObject:
   m_ObjectHideFlags: 0
@@ -12997,7 +13105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleManager: {fileID: 5409979177453231299}
   _playerPartyProfilesUIManager: {fileID: 563983239}
-  battlefieldNotificationsPanelDurationTime: 2.5
+  battlefieldNotificationsPanelDurationTime: 1.2
   summonedUnitInfoPanelHelper: {fileID: 0}
   moveNamePanel: {fileID: 0}
   battlefieldNotificationsPanel: {fileID: 2109305883}
@@ -13981,7 +14089,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1111012494}
+  - {fileID: 1744549062}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14037,11 +14145,11 @@ PrefabInstance:
     - target: {fileID: 1667419858105504247, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
-      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
+      objectReference: {fileID: 24300002, guid: ecaf4f303109c3b4fb630918327760b3, type: 2}
     - target: {fileID: 2857230602773587428, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
-      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
+      objectReference: {fileID: 24300002, guid: ecaf4f303109c3b4fb630918327760b3, type: 2}
     - target: {fileID: 5791820355447313058, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: Priority
       value: 50
@@ -14065,7 +14173,7 @@ PrefabInstance:
     - target: {fileID: 7324555068394218106, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
-      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
+      objectReference: {fileID: 24300002, guid: ecaf4f303109c3b4fb630918327760b3, type: 2}
     - target: {fileID: 7881867642617583607, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -14109,7 +14217,7 @@ PrefabInstance:
     - target: {fileID: 8094380234372350077, guid: 1d57fe9631eaf0c4491a4d7e6b91e822, type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
-      objectReference: {fileID: 24300002, guid: 48735f93395f53146bb4a732da8d8d93, type: 2}
+      objectReference: {fileID: 24300002, guid: ecaf4f303109c3b4fb630918327760b3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14997,9 +15105,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a1f2e514540d5d4996497fd320b759f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentBattleType: 0
   achievementsManager: {fileID: 499339821}
   keyController: {fileID: 6813185690059547153}
+  _deitySpawner: {fileID: 1790485009}
+  currentBattleType: 0
 --- !u!4 &7703225848940330282
 Transform:
   m_ObjectHideFlags: 0
@@ -15202,7 +15311,7 @@ SceneRoots:
   - {fileID: 191159732}
   - {fileID: 1984202725}
   - {fileID: 1801208385}
-  - {fileID: 1669585087}
   - {fileID: 1357964116}
   - {fileID: 748068806843783399}
+  - {fileID: 1669585087}
   - {fileID: 144210099}

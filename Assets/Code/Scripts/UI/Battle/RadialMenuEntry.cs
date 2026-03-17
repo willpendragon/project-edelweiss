@@ -61,6 +61,7 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         transform.DOScale(1.5f, 0.5f);
         TriggerAdditionalBehaviour(actionType);
+        BattleSFXManager.PlaySound(SoundType.RADIALHOVERSWITCH, 1);
     }
 
     private void TriggerAdditionalBehaviour(ActionType actionType)

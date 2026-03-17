@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleMomentsScreenHelper : MonoBehaviour
@@ -23,11 +24,20 @@ public class BattleMomentsScreenHelper : MonoBehaviour
     {
         battleMomentsScreen.SetActive(true);
         battleMomentsScreen.GetComponentInChildren<TextMeshProUGUI>().text = battleMomentText;
+        if (battleMomentText == "Deity Turn")
+        {
+            PlayDeitySwapSound();
+        }
         StartCoroutine("DeactivateBattleMomentsScreen");
     }
     IEnumerator DeactivateBattleMomentsScreen()
     {
         yield return new WaitForSeconds(battleMomentsScreenDeactivationTime);
         battleMomentsScreen.SetActive(false);
+    }
+
+    public void PlayDeitySwapSound()
+    {
+        BattleSFXManager.PlaySound(SoundType.NEXTTURN);
     }
 }
