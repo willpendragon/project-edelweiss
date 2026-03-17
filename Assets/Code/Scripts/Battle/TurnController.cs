@@ -83,6 +83,7 @@ public class TurnController : MonoBehaviour
         UnitSelectionController.OnUnitTurnEnded += DecideTurn;
         BumperEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         StunnerEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
+        RockEnemyBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
         EnemyTurnManager.OnPlayerTurnSwap += RestorePlayerUnits;
         Deity.OnPlayerTurnSwap += RestorePlayerUnits;
@@ -93,7 +94,8 @@ public class TurnController : MonoBehaviour
         UnitSelectionController.OnUnitTurnEnded -= DecideTurn;
         BumperEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
         StunnerEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
-        DeityKingLaurinusBehavior.OnCheckPlayer += PlayerUnitsLifeCheck;
+        RockEnemyBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
+        DeityKingLaurinusBehavior.OnCheckPlayer -= PlayerUnitsLifeCheck;
         EnemyTurnManager.OnPlayerTurnSwap -= RestorePlayerUnits;
         Deity.OnPlayerTurnSwap -= RestorePlayerUnits;
         Unit.OnCheckGameOver -= GameOverCheck;
@@ -159,6 +161,7 @@ public class TurnController : MonoBehaviour
     private void StartEnemyTurn()
     {
         OnEnemyTurn("Enemy Turn");
+        BattleSFXManager.PlaySound(SoundType.NEXTTURN);
         DOVirtual.DelayedCall(1.5f, () => OnEnemyTurnSwap?.Invoke());
     }
     public bool PlayerPartyAvailable()
