@@ -68,19 +68,6 @@ public class GridManager : MonoBehaviour
         }
 
         GenerateStandardMap();
-
-        //GameSaveData gameSaveData = SaveStateManager.saveData;
-        //if (gameSaveData != null)
-        //{
-        //    int unlockedPuzzleKeys = gameSaveData.resourceData.puzzleLevelKeys;
-        //    if (unlockedPuzzleKeys >= 1)
-        //    {
-        //        GenerateGridMapFromData(puzzleMapData);
-        //    }
-        //    else
-        //    {
-        //    }
-        //}
     }
 
     private void GenerateStandardMap()
