@@ -1,16 +1,14 @@
 using DG.Tweening;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DeitySpawner : MonoBehaviour
 {
+    // Separate Obelisk Logic on another class
+
     [SerializeField] List<Deity> spawnableDeities;
     [SerializeField] Transform deitySpawnPosition;
     [SerializeField] DeityAchievementsController deityAchievementsController;
@@ -121,7 +119,6 @@ public class DeitySpawner : MonoBehaviour
         saveData.killedDeities.Add(deityName, true);
         SaveStateManager.SaveGame(saveData);
     }
-
     public void DeitySelector()
     {
         Debug.Log("Rolling which Deity will appear");
@@ -129,6 +126,10 @@ public class DeitySpawner : MonoBehaviour
         Debug.Log($"Deity Index: {deityIndex} - {spawnableDeities[deityIndex].name}");
 
         GameObject spawningDeity = spawnableDeities[deityIndex].gameObject;
+        SpawnDeity(spawningDeity);
+    }
+    public void SpawnDeity(GameObject spawningDeity)
+    {
         GameObject deityOnBattlefield = Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
 
         BattleManager.Instance.deity = deityOnBattlefield.GetComponent<Deity>();
@@ -222,7 +223,6 @@ public class DeitySpawner : MonoBehaviour
             return false;
         }
     }
-
     void PopulateDeityHealthBar()
     {
         Slider deityHPSlider = deityHealthBarInstance.GetComponentInChildren<Slider>();
@@ -233,7 +233,6 @@ public class DeitySpawner : MonoBehaviour
         deityHPSlider.value = currentUnboundDeityUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints; ;
         deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints.ToString();
     }
-
     public void MoveObeliskOnGridMap()
     {
         deityObeliskSpawningPoint.transform.position = currentUnboundDeity.gameObject.GetComponent<Unit>().ownedTile.gameObject.transform.position;
@@ -266,7 +265,6 @@ public class DeitySpawner : MonoBehaviour
 
         PlayDamageFlash(target);
     }
-
     private void PlayDamageFlash(Transform target)
     {
         var renderer = target.GetComponentInChildren<Renderer>();
@@ -292,5 +290,4 @@ public class DeitySpawner : MonoBehaviour
                    .SetEase(Ease.InQuad);
             });
     }
-
 }
