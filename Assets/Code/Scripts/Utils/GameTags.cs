@@ -22,6 +22,7 @@ namespace ProjectEdelweiss.Utils
         public const string BATTLE_MANAGER = "BattleManager";
         public const string END_TURN_BUTTON = "EndTurnButton";
         public const string ENEMY_TURN_MANAGER = "EnemyTurnManager";
+        public const string CAMERA_DISTANCE_CONTROLLER = "CameraDistanceController";
 
         // UI
         public const string ENEMY_PROFILE = "CurrentlySelectedEnemyProfile";
