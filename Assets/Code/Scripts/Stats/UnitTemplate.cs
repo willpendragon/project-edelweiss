@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
-[CreateAssetMenu(fileName = "New Unit Template", menuName = "UnitTemplate")]
+[CreateAssetMenu(fileName = "New Unit Template", menuName = "UnitTemplates/UnitTemplate")]
 public class UnitTemplate : ScriptableObject
 
 {
@@ -41,4 +39,8 @@ public class UnitTemplate : ScriptableObject
     [Header("Voices")]
 
     public GameObject unitCriticalHitVoice;
+
+    public virtual float GetElementalModifier() => 1.0f; // Valore di default
+
+    public virtual Sprite GetAlternateSprite() => null;
 }
