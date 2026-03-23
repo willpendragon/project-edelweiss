@@ -12,6 +12,7 @@ public class EnvironmentController : MonoBehaviour
     public void SpawnEnvironment()
     {
         var environment = GridManager.Instance.currentMapData.environment;
-        Instantiate(environment);
+        Vector3 spawnPoint = GridManager.Instance.currentMapData.environmentSpawnpoint;
+        Instantiate(environment, spawnPoint, Quaternion.identity);
     }
 }
