@@ -38,6 +38,8 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
 
     public PlayerPartyProfilesUIManager PlayerPartyProfilesUIManager => _playerPartyProfilesUIManager;
 
+    private Tween activeNotificationTween;
+
     private void Awake()
     {
         if (Instance == null)
@@ -62,6 +64,7 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         BumperEnemyBehavior.OnBumperEnemyAttack += SetBattleNotification;
         BumperEnemyBehavior.OnMovementDisabled += SetBattleNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetBattleNotification;
+        RockEnemyBehavior.OnRockEnemyAttack += SetBattleNotification;
         PrizeCollectionHelper.OnUpgradeObtained += SetBattleNotification;
         UnitSelectionController.OnFaithlessUnit += SetBattleNotification;
     }
@@ -78,6 +81,7 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetBattleNotification;
         BumperEnemyBehavior.OnMovementDisabled -= SetBattleNotification;
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetBattleNotification;
+        RockEnemyBehavior.OnRockEnemyAttack -= SetBattleNotification;
         PrizeCollectionHelper.OnUpgradeObtained -= SetBattleNotification;
         UnitSelectionController.OnFaithlessUnit -= SetBattleNotification;
     }
@@ -96,24 +100,6 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         SelectUnitPlayerAction.OnFaithlessCharacter -= SetFaithlessCharacterNotification;
         UnsubscribeBattleNotifications();
     }
-
-    // Add Fade In using FadeCanvas
-
-    //private void Start()
-    //{
-    //    FadeIn();
-    //}
-    //public void FadeIn()
-    //{
-    //    float duration = 0.5f;
-    //    if (fadePanel != null)
-    //    {
-    //        fadePanel.DOFade(0, duration);
-
-    //        fadePanel.interactable = false;
-    //        fadePanel.blocksRaycasts = false;
-    //    }
-    //}
 
     public void SetBattleNotification(string actionNotification)
     {
@@ -157,13 +143,19 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
 
     private void ShowNotification(string message)
     {
+        if (activeNotificationTween != null && activeNotificationTween.IsActive())
+        {
+            activeNotificationTween.Kill();
+        }
+
         battlefieldNotificationsPanel.transform.localScale = Vector3.one;
         battlefieldTextNotifications.text = message;
-        StartCoroutine(ResetBattleFieldTextNotification());
-    }
-    IEnumerator ResetBattleFieldTextNotification()
-    {
-        yield return new WaitForSeconds(battlefieldNotificationsPanelDurationTime);
-        battlefieldNotificationsPanel.transform.localScale = new Vector3(0, 0, 0);
+        // Add a tiny, quick "pop" animation so the player notices the text changed instantly
+        battlefieldNotificationsPanel.DOPunchScale(new Vector3(0.1f, 0.1f, 0.0f), 0.15f, 0, 0);
+        BattleSFXManager.PlaySound(SoundType.POPUPMESSAGE, 1);
+        activeNotificationTween = DOVirtual.DelayedCall(battlefieldNotificationsPanelDurationTime, () =>
+        {
+            battlefieldNotificationsPanel.transform.localScale = Vector3.zero;
+        });
     }
 }
