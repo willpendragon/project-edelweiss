@@ -1,16 +1,9 @@
-using Language.Lua;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class BattleTypeController : MonoBehaviour
 {
-    public static BattleTypeController Instance { get; private set; }
-    public static event Action OnBattleTypeInitialized;
-
-    private const string BattleTutorialSceneName = "battle_tutorial";
-    private const string BattleSceneName = "battle_prototype";
-
     public enum BattleType
     {
         RegularBattle,
@@ -18,6 +11,16 @@ public class BattleTypeController : MonoBehaviour
         PuzzleBattle,
         BossBattle
     }
+
+    public static BattleTypeController Instance { get; private set; }
+    public static event Action OnBattleTypeInitialized;
+
+    private const string BattleTutorialSceneName = "battle_tutorial";
+    private const string BattleSceneName = "battle_prototype";
+
+    [SerializeField] AchievementsManager achievementsManager;
+    [SerializeField] KeyController keyController;
+    [SerializeField] private DeitySpawner _deitySpawner;
 
     public BattleType currentBattleType;
 
@@ -37,9 +40,6 @@ public class BattleTypeController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    [SerializeField] AchievementsManager achievementsManager;
-    [SerializeField] KeyController keyController;
-
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("Scene Loaded: " + scene.name);
@@ -52,16 +52,20 @@ public class BattleTypeController : MonoBehaviour
     {
         // At the start of a battle, decide the level type.
 
-        //if (keyController != null && keyController.ValidateKey()) // Sets the Level as Puzzle Level
-        //{
-        //    currentBattleType = keyController.UnlockLevelLogic();
-        //}
-
         currentBattleType = RetrieveBattleType();
 
         if (currentBattleType == BattleType.PuzzleBattle)
         {
             // Add specific logic for Puzzle Battles, to be further developed
+            // Spawn Puzzle Deity (demo logic).
+            currentBattleType = BattleType.PuzzleBattle;
+            if (GridManager.Instance.currentMapData.RetrieveDeity() == null)
+                return;
+            else
+            {
+                GameObject puzzleDeity = GridManager.Instance.currentMapData.RetrieveDeity(); // Retrieve Deity
+                _deitySpawner.SpawnDeity(puzzleDeity);
+            }
         }
 
         else if (currentBattleType == BattleType.RegularBattle && achievementsManager != null)
