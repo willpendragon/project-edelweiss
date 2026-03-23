@@ -73,6 +73,8 @@ public class PhysicalAttackBehavior : ScriptableObject
             // If the Enemy it's still alive, the Enemy Tile Feedback (Red Tile) should still be present.
             destinationTile.tileShaderController.EnemyTileFeedback();
         }
+        var defenderAgent = defender.gameObject.GetComponent<EnemyAgent>();
+        defenderAgent.RemoveElementalBuff(defenderAgent);
 
         RemoveInvulnerableMask(defender);
 
