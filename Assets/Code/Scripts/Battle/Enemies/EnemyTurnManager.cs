@@ -87,6 +87,7 @@ public class EnemyTurnManager : MonoBehaviour
         if (deity == null)
         {
             DOVirtual.DelayedCall(1f, () => OnPlayerTurn?.Invoke("Player Turn"));
+            BattleSFXManager.PlaySound(SoundType.NEXTTURN);
             DOVirtual.DelayedCall(1f, () => OnPlayerTurnSwap?.Invoke());
         }
         else
@@ -94,6 +95,7 @@ public class EnemyTurnManager : MonoBehaviour
             float deityTurnDuration = 5f;
             DOVirtual.DelayedCall(1f, () => OnDeityTurn?.Invoke("Deity Turn"));
             yield return new WaitForSeconds(deityTurnDuration);
+            BattleSFXManager.PlaySound(SoundType.NEXTTURN);
             OnPlayerTurn?.Invoke("Player Turn");
             DOVirtual.DelayedCall(1.5f, () => OnPlayerTurnSwap?.Invoke());
         }
