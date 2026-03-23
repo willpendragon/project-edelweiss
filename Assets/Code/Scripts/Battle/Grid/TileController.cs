@@ -34,6 +34,15 @@ public enum TileType
     Mirror,
     Triad
 }
+
+public enum TileElement // Such properties could be moved in an SO.
+{
+    Water,
+    Ice,
+    Lighting,
+    Fire
+}
+
 public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
 
@@ -80,6 +89,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     [Header("Tile Type")]
     public TileType tileType;
+    public TileElement tileElement;
 
     [Header("Visuals")]
     public GameObject targetIcon;
@@ -154,6 +164,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             cursorInstance.transform.position = new Vector3(transform.position.x, 0.57f, transform.position.z);
             cursorInstance.SetActive(true);
         }
+        BattleSFXManager.PlaySound(SoundType.UIHOVER);
     }
     public void OnPointerExit(PointerEventData eventData)
     {
