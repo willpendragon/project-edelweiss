@@ -4,6 +4,8 @@ using System.Linq;
 
 public class PrizeReleaseController : MonoBehaviour
 {
+    // This class should be centralized instead of living on each enemy.
+
     // This enum controls the visuals only of the Prize.
     public enum FieldPrizeType
     {
@@ -31,8 +33,8 @@ public class PrizeReleaseController : MonoBehaviour
     }
     public void UnlockFieldPrize(TileController fieldPrizeTile)
     {
-        if (!RollFieldPrizeChance())
-            return;
+        //if (!RollFieldPrizeChance())
+        //    return;
 
         // Set the Prize Type based on roll (either Key or Upgeades).
         FieldPrizeType selectedPrizeType = RollPrizeType();
@@ -55,19 +57,21 @@ public class PrizeReleaseController : MonoBehaviour
     {
         // Retrieve the Prize SO from Upgrades list.
         // Only 2 Upgrades present at the moment, demo-only logic.
+        var rng = Random.Range(0, 2);
+        return _upgradePrizes[rng];
 
-        if (fieldPrizeType == FieldPrizeType.Upgrade)
-        {
-            return _upgradePrizes[0];
-        }
-        else if (fieldPrizeType == FieldPrizeType.Upgrade)
-        {
-            return _upgradePrizes[1];
-        }
-        else
-        {
-            return null;
-        }
+        //if (fieldPrizeType == FieldPrizeType.Upgrade)
+        //{
+        //    return _upgradePrizes[0];
+        //}
+        //else if (fieldPrizeType == FieldPrizeType.Upgrade)
+        //{
+        //    return _upgradePrizes[1];
+        //}
+        //else
+        //{
+        //    return null;
+        //}
     }
 
     public bool RollFieldPrizeChance()
@@ -121,6 +125,7 @@ public class PrizeReleaseController : MonoBehaviour
         GameObject newFieldPrizeGO = Instantiate(_fieldPrizeGO, prizeSpawnPosition, Quaternion.identity);
         //newFieldPrizeGO.GetComponent<PrizeReleaseController>().fieldPrize = this.fieldPrize;
         newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrizeTemplate = rolledItem;
+        newFieldPrizeGO.GetComponentInChildren<MeshFilter>().sharedMesh = rolledItem.prizeGraphics.GetComponent<MeshFilter>().sharedMesh;
 
         // Set the local scale of the new GameObject
 
@@ -132,52 +137,6 @@ public class PrizeReleaseController : MonoBehaviour
         FieldPrizeController fieldPrizeController = newFieldPrizeGO?.GetComponent<FieldPrizeController>();
         fieldPrizeController.SetupPrize();
 
-        //ApplyTextLabelToPrize(newFieldPrize);
-        //ApplyColorToPrize(newFieldPrize);
     }
-    private void ApplyTextLabelToPrize(PrizeReleaseController newFieldPrize)
-    {
-        //switch (newFieldPrize.fieldPrize?.itemFieldPrizeType)
-        //{
-        //    case ItemFieldPrizeType.attackPowerUp:
-        //        newFieldPrize.prizeTypeText.text = "ATK+";
-        //        break;
-        //    case ItemFieldPrizeType.magicPowerUp:
-        //        newFieldPrize.prizeTypeText.text = "MAGI+";
-        //        break;
-        //    default:
-        //        break;
-        //}
-    }
-
-    //private void ApplyColorToPrize(PrizeReleaseController newFieldPrize)
-    //{
-    //    if (newFieldPrize == null) return;
-
-    //    // Get the FIRST CHILD mesh renderer
-    //    MeshRenderer meshRenderer = newFieldPrize.transform.GetChild(0).GetComponent<MeshRenderer>();
-
-    //    if (meshRenderer == null)
-    //    {
-    //        Debug.LogWarning("Prize child has no MeshRenderer.");
-    //        return;
-    //    }
-
-    //    Material mat = meshRenderer.material; // Create material instance.
-
-    //    switch (newFieldPrize.fieldPrize?.itemFieldPrizeType)
-    //    {
-    //        case ItemFieldPrizeType.attackPowerUp:
-    //            mat.SetColor("_BaseColor", new Color(1f, 0f, 0f, 1f));   // Red (with alpha)
-    //            break;
-
-    //        case ItemFieldPrizeType.magicPowerUp:
-    //            mat.SetColor("_BaseColor", new Color(1f, 0f, 1f, 1)); // Magenta (with alpha)
-    //            break;
-
-    //        default:
-    //            break;
-    //    }
-    //}
 
 }

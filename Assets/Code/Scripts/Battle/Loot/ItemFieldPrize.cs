@@ -13,6 +13,7 @@ public enum ItemFieldPrizeType
 public class ItemFieldPrize : ScriptableObject
 
 {
+    public GameObject prizeGraphics;
     public string itemFieldPrizeName;
     public string itemFieldPrizeDescription;
     public string itemFieldPrizeLabel;
