@@ -14,7 +14,7 @@ public class PhysicalAttackBehavior : ScriptableObject
     private Vector2Int knockbackDirection;
     public int knockbackStrength = 2;
     public int selectionLimiter = 1;
-    private int meleeRange = 2;
+    public int meleeRange = 2;
 
     public delegate void KnockbackFired();
     public static event KnockbackFired OnKnockbackFired;
@@ -109,7 +109,7 @@ public class PhysicalAttackBehavior : ScriptableObject
         return distanceController.CheckDistance(activePlayerUnit.ownedTile, targetTile);
     }
 
-    private void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
+    protected void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
     {
         float damage = CalculateDamage(attacker, defender, modifierIsActive);
         defender.TakeDamage(damage);
@@ -166,4 +166,10 @@ public class PhysicalAttackBehavior : ScriptableObject
     {
         OnUsedPhysicalAttack(message);
     }
+
+    public virtual int GetAttackRange()
+    {
+        return meleeRange;
+    }
+
 }
