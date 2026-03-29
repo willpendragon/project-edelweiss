@@ -236,15 +236,20 @@ public class CursorController : MonoBehaviour
         }
 
         // Melee/Magnet
-        bool canMelee = CheckDistance(_meleeRange) && _tileController.detectedUnit != null;
-        if (canMelee)
+        if (activePlayerUnit != null && activePlayerUnit.unitTemplate != null)
         {
-            _meleeButtonPrefabInstance = CreateActionButton(
-                RadialMenuEntry.ActionType.Melee,
-                GetButtonIcon(activePlayerUnit),
-                GetButtonName(activePlayerUnit),
-                4);
-            DisplayHelp();
+            int _meleeRange = activePlayerUnit.unitTemplate.physicAttackBehavior.GetAttackRange();
+            bool canMelee = CheckDistance(_meleeRange) && _tileController.detectedUnit != null;
+
+            if (canMelee)
+            {
+                _meleeButtonPrefabInstance = CreateActionButton(
+                    RadialMenuEntry.ActionType.Melee,
+                    GetButtonIcon(activePlayerUnit),
+                    GetButtonName(activePlayerUnit),
+                    4);
+                DisplayHelp();
+            }
         }
         // Spell
         bool canSpell = CheckDistance(_spellRange) && _tileController.detectedUnit != null;
