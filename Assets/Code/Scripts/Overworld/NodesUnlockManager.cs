@@ -83,7 +83,10 @@ public class NodesUnlockManager : MonoBehaviour
     public void SpendKeyResource()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
-        gameSaveData.resourceData.puzzleLevelKeys--;
-        SaveStateManager.SaveGame(gameSaveData);
+        if (gameSaveData.gameFlowData.secretLevelUnlocked == true)
+        {
+            gameSaveData.resourceData.puzzleLevelKeys--;
+            SaveStateManager.SaveGame(gameSaveData);
+        }
     }
 }
