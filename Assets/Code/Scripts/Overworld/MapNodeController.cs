@@ -37,7 +37,6 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
 
     }
 
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -82,13 +81,16 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             case MapNodeType.RegularBattleNode:
                 HandleRegularBattle();
                 break;
-                //case MapNodeType.BossBattleNode:
-                //    HandleBossBattle();
-                //    break;
         }
     }
     private void HandleRegularBattle()
     {
+        NodesUnlockManager nodesUnlockManager = GameManager.Instance.NodesUnlockManager;
+        if (nodesUnlockManager.MapData.levelType == MapData.LevelType.Puzzle)
+        {
+            nodesUnlockManager.SpendKeyResource();
+        }
+
         // The sequence happening when the Player clicks on a node.
         Time.timeScale = 1f;
         enemySelection.SelectMapNode();
@@ -101,9 +103,4 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         var mapMenuController = FindAnyObjectByType<OverworldMapUIController>();
         mapMenuController.transform.GetComponent<CanvasGroup>().alpha = alpha;
     }
-
-    //private void HandleBossBattle()
-    //{
-
-    //}
 }
