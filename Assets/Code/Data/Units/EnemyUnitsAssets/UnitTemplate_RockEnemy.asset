@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9bf9d7c58a60514f82f4e8516356b1b, type: 3}
-  m_Name: UnitTemplate_Godling
+  m_Name: UnitTemplate_RockEnemy
   m_EditorClassIdentifier: 
-  unitName: Godling
+  unitName: RockEnemy
   unitHealthPoints: 30
   unitMaxHealthPoints: 30
   unitManaPoints: 0
@@ -35,4 +35,5 @@ MonoBehaviour:
   unitBattlePortrait: {fileID: 0}
   unitCriticalHitVoice: {fileID: 0}
   enemyPersonality: 0
-  elementalModifier: 5
+  alternateSprite: {fileID: -736080139, guid: cac7d194b559c064fbadf619a33d7c65, type: 3}
+  _elementalModifier: 5
