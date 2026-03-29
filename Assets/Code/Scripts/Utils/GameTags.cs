@@ -35,5 +35,6 @@ namespace ProjectEdelweiss.Utils
         // Scene Names
         public const string BATTLE_SCENE = "battle_prototype";
         public const string BATTLE_TRANSITION = "battle_transition";
+        public const string OVERWORLD_MAP = "overworld_map";
     }
 }
