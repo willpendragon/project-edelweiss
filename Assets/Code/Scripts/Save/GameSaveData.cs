@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-using System;
 using System.Collections.Generic;
 using static ConversationData;
 
@@ -9,9 +7,12 @@ public class GameSaveData
     public int enemiesKilled;
     public int highestUnlockedLevel;
     public int timesSingleTargetSpellWasUsed;
+    public int convoIndex;
+    public int lastConvoNumber;
 
     public CalendarData calendarData = new CalendarData();
     public ResourceData resourceData = new ResourceData();
+    public GameFlowData gameFlowData = new GameFlowData();
 
     public List<CharacterData> characterData = new List<CharacterData>();
     public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
@@ -27,6 +28,13 @@ public class GameSaveData
 public class CalendarData
 {
     public int currentDay;
+}
+
+[System.Serializable]
+
+public class GameFlowData
+{
+    public bool secretLevelUnlocked; // Demo Logic only
 }
 
 [System.Serializable]
@@ -86,13 +94,15 @@ public class ConversationData
     public string conversationID;
     public bool isUnlocked;
     public bool isRead;
+    public int conversationNumber;
 
     // Constructor with ID and unlocked status.
-    public ConversationData(string id, bool unlocked, bool read)
+    public ConversationData(string id, bool unlocked, bool read, int number)
     {
         conversationID = id;
         isUnlocked = unlocked;
         isRead = read;
+        conversationNumber = number;
     }
 }
 

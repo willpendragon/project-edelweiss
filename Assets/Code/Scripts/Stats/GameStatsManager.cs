@@ -1,10 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class GameStatsManager : MonoBehaviour
-
 {
     public int currentDay;
     public int enemiesKilled;
@@ -12,22 +12,23 @@ public class GameStatsManager : MonoBehaviour
     public int timesSingleTargetSpellWasUsed;
     public int captureCrystalsCount;
     public int unlockedPuzzleKeys;
+
+    [SerializeField] private bool _secretLevelUnlocked; // Flow related bool.
+
     public Inventory inventory;
     [SerializeField] FaithController faithController;
     [SerializeField] TurnController _turnController;
-
     [SerializeField] private List<Ingredient> allIngredientPrototypes;
 
     private CharacterData characterData;
 
+    public bool SecretLevelUnlocked => _secretLevelUnlocked;
+
     public void Awake()
     {
-        //LoadCalendarData();
         LoadWarFunds();
         LoadEnemiesKilled();
         LoadUsedSingleTargetSpells();
-
-        //LoadCaptureCrystalsCount();
         LoadUnlockedKeys();
     }
     void Start()
@@ -53,13 +54,11 @@ public class GameStatsManager : MonoBehaviour
 
     public void SaveCharacterData()
     {
-        //GameObject[] playerUnits = _turnController.playerUnitsOnBattlefield;
         List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
         GameSaveData characterSaveData = SaveStateManager.saveData;
 
         foreach (var playerUnit in playerUnits)
         {
-            //Unit unitComponent = playerUnit.GetComponent<Unit>();
             CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
 
             if (existingCharacterData != null)
@@ -126,7 +125,6 @@ public class GameStatsManager : MonoBehaviour
                 LoadBuffsFromData(unitComponent.gameObject, loadedCharacterData);
             }
         }
-        //}
     }
     public void LoadWarFunds()
     {
@@ -397,4 +395,27 @@ public class GameStatsManager : MonoBehaviour
         Debug.Log("Loaded ingredients into runtime inventory.");
     }
 
+    // Loads a bool that indicates whether the player has unlocked the secret level in the current playthrough. This is used to determine whether to show the secret level node on the overworld map.
+
+    public void LoadGameFlowData()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.gameFlowData != null)
+        {
+            _secretLevelUnlocked = gameSaveData.gameFlowData.secretLevelUnlocked;
+            Debug.Log($"Loaded Game Flow Data: Has Unlocked Secret Level = {_secretLevelUnlocked}");
+        }
+    }
+
+    // Save Game Flow Data, this indicates whether the player has unlocked the secret level.
+    public void SaveGameFlowData(bool hasUnlockedSecretLevel)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.gameFlowData != null)
+        {
+            gameSaveData.gameFlowData.secretLevelUnlocked = hasUnlockedSecretLevel;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Game Flow Data: Has Unlocked Secret Level = {hasUnlockedSecretLevel}");
+        }
+    }
 }
