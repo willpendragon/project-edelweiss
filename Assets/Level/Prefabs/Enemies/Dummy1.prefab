@@ -445,6 +445,9 @@ MonoBehaviour:
   maxEnemyMoveRollRange: 20
   enemyBehavior: {fileID: 11400000, guid: 942df072a2e990a4799e28f0faee4951, type: 2}
   _enemyAIPriority: {fileID: 11400000, guid: b7c99b549d20cf54b963362c49a772cc, type: 2}
+  _enemyAITilePriority: {fileID: 11400000, guid: d5c900a7dc60b7c4897ce80e3b904b89, type: 2}
+  elementalImbue: 0
+  _enemyUnit: {fileID: 3031252642805861247}
   enemyMoveElapsingTime: 1
   enemyAnimator: {fileID: 0}
   attackVFXAnimator: {fileID: 2579693216120635807, guid: b525f1faf90f4b74f88eabf1662d0630, type: 3}
@@ -452,6 +455,7 @@ MonoBehaviour:
   healthPointsCounter: {fileID: 0}
   opportunityCounter: {fileID: 0}
   receivedDamageCounter: {fileID: 0}
+  enemySpriteRenderer: {fileID: 5090446047043621278}
   unitStunStatusIcon: {fileID: 3406946445924013396, guid: e9adfb87616477e4784c4a1060a542fd, type: 3}
 --- !u!114 &3031252642805861247
 MonoBehaviour:
@@ -800,7 +804,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 27cb5a7026d37d84692fa4ea27970834, type: 2}
   _keyPrizes:
   - {fileID: 11400000, guid: 55d215907fa163443a746e9504a75fb3, type: 2}
-  weights: 460000001e000000
+  weights: 0a0000005a000000
 --- !u!1 &6077859705235512824
 GameObject:
   m_ObjectHideFlags: 0
