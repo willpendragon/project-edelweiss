@@ -75,8 +75,17 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     [Header("Gameplay Logic")]
     public GameObject detectedUnit;
-    public int tileXCoordinate;
-    public int tileYCoordinate;
+    
+    // Sostituiamo le coordinate X e Y singole con un Vector3Int completo
+    public Vector3Int gridPosition; 
+    
+    // Mantenute per compatibilità immediata se altri script vi accedono, 
+    // ma ti consiglio di migrare tutto a 'gridPosition.x', 'gridPosition.y', 'gridPosition.z' in futuro.
+    public int tileXCoordinate { get => gridPosition.x; set => gridPosition.x = value; }
+    public int tileYCoordinate { get => gridPosition.z; set => gridPosition.z = value; } // L'estetica dice "Y" per i vecchi script, la logica usa "Z"
+    public int tileElevation { get => gridPosition.y; set => gridPosition.y = value; } // Nuova Y / Altezza
+    
+
     public IPlayerAction<TileController> currentPlayerAction = new SelectUnitPlayerAction();
     public MeleePlayerAction meleeAction;
     public GameObject tileCurrentFieldPrize;

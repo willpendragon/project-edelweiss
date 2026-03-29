@@ -5,6 +5,8 @@ public class GridMovementController : MonoBehaviour
 {
     public GridManager gridManager;
 
+    public int maxJumpHeight = 1; // Dislivello massimo (in numero di blocchi) che un'unità può salire/scendere
+
     public List<TileController> FindPath(int startX, int startY, int targetX, int targetY)
     {
         TileController startTile = GridManager.Instance.GetTileControllerInstance(startX, startY);
@@ -132,24 +134,44 @@ public class GridMovementController : MonoBehaviour
     {
         List<TileController> neighbours = new List<TileController>();
 
-        for (int x = -1; x <= 1; x++)
+        // Ora usiamo gridPosition (che è un Vector3Int: x, y=elevazione, z=profondità)
+        int x = tile.gridPosition.x;
+        int y = tile.gridPosition.y; 
+        int z = tile.gridPosition.z;
+
+        // Le 4 direzioni cardinali piane
+        Vector2Int[] planarDirections = new Vector2Int[]
         {
-            for (int y = -1; y <= 1; y++)
+            new Vector2Int(0, 1),  // Nord (Z+1)
+            new Vector2Int(0, -1), // Sud (Z-1)
+            new Vector2Int(1, 0),  // Est (X+1)
+            new Vector2Int(-1, 0)  // Ovest (X-1)
+        };
+
+        foreach (var dir in planarDirections)
+        {
+            int checkX = x + dir.x;
+            int checkZ = z + dir.y;
+
+            // Dobbiamo cercare se esiste un tile adiacente nella colonna [checkX, checkZ]
+            // che sia a un'altezza raggiungibile (da y - maxJumpHeight a y + maxJumpHeight)
+            for (int h = -maxJumpHeight; h <= maxJumpHeight; h++)
             {
-                // Skip the current tile and any diagonal tiles
-                if (x == 0 && y == 0 || x != 0 && y != 0)
-                    continue;
+                int checkY = y + h;
+                
+                // Usiamo il nuovo GetTileControllerInstance a 3 dimensioni 
+                // Assumendo che lo hai aggiornato in GridManager nel passaggio precedente
+                TileController neighbor = GridManager.Instance.GetTileControllerInstance(checkX, checkY, checkZ);
 
-                int checkX = tile.tileXCoordinate + x;
-                int checkY = tile.tileYCoordinate + y;
-
-                // Check if the neighbor is within the grid bounds
-                if (checkX >= 0 && checkX < gridManager.gridHorizontalSize && checkY >= 0 && checkY < gridManager.gridVerticalSize)
+                if (neighbor != null)
                 {
-                    TileController neighbour = gridManager.GetTileControllerInstance(checkX, checkY);
-                    if (neighbour != null)
+                    // Controllo opzionale VOXEL PURO: Assicuriamoci che non ci sia un ostacolo (muro/blocco) SOPRA il tile vicino
+                    // altrimenti il personaggio sbatterebbe la testa.
+                    TileController tileAboveNeighbor = GridManager.Instance.GetTileControllerInstance(checkX, checkY + 1, checkZ);
+                    
+                    if (tileAboveNeighbor == null || tileAboveNeighbor.tileType == TileType.Basic /* adatta se i tuoi tile sono valicabili */) 
                     {
-                        neighbours.Add(neighbour);
+                        neighbours.Add(neighbor);
                     }
                 }
             }
@@ -182,12 +204,22 @@ public class GridMovementController : MonoBehaviour
         return tilesInRange;
     }
 
-    public int GetDistance(TileController tileA, TileController tileB)
+    public int GetDistance(TileController nodeA, TileController nodeB)
     {
-        int distX = Mathf.Abs(tileA.tileXCoordinate - tileB.tileXCoordinate);
-        int distY = Mathf.Abs(tileA.tileYCoordinate - tileB.tileYCoordinate);
+        int dstX = Mathf.Abs(nodeA.gridPosition.x - nodeB.gridPosition.x);
+        int dstZ = Mathf.Abs(nodeA.gridPosition.z - nodeB.gridPosition.z); // Era Y
+        int dstY = Mathf.Abs(nodeA.gridPosition.y - nodeB.gridPosition.y); // Dislivello verticale
+        
+        // Puoi decidere se il dislivello costa punti movimento extra o è "gratis" 
+        // finché rientra nel maxJumpHeight. Di base:
+        int flatDistance = (dstX > dstZ) ? 
+            14 * dstZ + 10 * (dstX - dstZ) : 
+            14 * dstX + 10 * (dstZ - dstX);
 
-        return /*10 * */(distX + distY);
+        // Aggiungiamo un peso al dislivello se lo desideri
+        int elevationPenalty = dstY * 10; 
+        
+        return flatDistance + elevationPenalty;
     }
 
     public List<TileController> GetTilesInDirection(int startX, int startY, Beacon.FacingDirection direction, int range)

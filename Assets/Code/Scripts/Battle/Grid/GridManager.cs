@@ -111,19 +111,28 @@ public class GridManager : MonoBehaviour
             return;
         }
 
-        // Set Grid Boundaries
         GridManager.Instance.gridHorizontalSize = currentMapData.horizontalSize;
         GridManager.Instance.gridVerticalSize = currentMapData.verticalSize;
 
         foreach (var tileData in currentMapData.tilePositions)
         {
-            Vector3 tilePosition = new Vector3(tileData.position.x * (1 + inBetweenTilesXOffset), tileVerticalOffset, tileData.position.y * (1 + inBetweenTilesYOffset));
+            // ORA CALCOLIAMO LA Y IN BASE ALL'ELEVAZIONE: y = tileData.position.y * tileVerticalSpacing
+            float tileVerticalSpacing = 1f; // Regola questo valore in base all'altezza visiva (es. spessore) del tuo cubo Voxel
+            
+            Vector3 tilePosition = new Vector3(
+                tileData.position.x * (1 + inBetweenTilesXOffset), 
+                tileData.position.y * tileVerticalSpacing + tileVerticalOffset, 
+                tileData.position.z * (1 + inBetweenTilesYOffset)
+            );
+
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
             TileController tileController = tilePrefabInstance.GetComponent<TileController>();
-            tileController.tileXCoordinate = tileData.position.x;
-            tileController.tileYCoordinate = tileData.position.y;
-            tileController.tileType = tileData.tileType; // Set the tile type
-            PositionKey positionKey = new PositionKey(tileData.position.x, tileData.position.y, tilePrefab);
+            
+            // Assegniamo il nuovo gridPosition completo
+            tileController.gridPosition = tileData.position;
+            tileController.tileType = tileData.tileType; 
+            
+            PositionKey positionKey = new PositionKey(tileData.position, tilePrefab);
 
             if (!gridMapDictionary.ContainsKey(positionKey))
             {
@@ -131,11 +140,9 @@ public class GridManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Duplicate key found when adding GameObject to dictionary!");
+                Debug.LogWarning($"Duplicate key found when adding GameObject to dictionary at {tileData.position}");
             }
         }
-
-        //Debug.Log("Dictionary Count: " + gridMapDictionary.Count);
     }
 
     private void ClearGridMap()
@@ -158,37 +165,23 @@ public class GridManager : MonoBehaviour
         return lineRendererInstance;
     }
 
-    public TileController GetTileControllerInstance(int xCoordinate, int yCoordinate)
+    public TileController GetTileControllerInstance(int xCoordinate, int elevationY, int zCoordinate)
     {
-        PositionKey positionKeyToFind = new PositionKey(xCoordinate, yCoordinate, null);
+        PositionKey positionKeyToFind = new PositionKey(xCoordinate, elevationY, zCoordinate, null);
 
         if (gridMapDictionary.TryGetValue(positionKeyToFind, out TileController result))
         {
-            if (result != null)
-            {
-                TileController tileController = result.GetComponent<TileController>();
-
-                if (tileController != null)
-                {
-                    return tileController;
-                }
-                else
-                {
-                    Debug.LogError("TileController component not found");
-                    return null;
-                }
-            }
-            else
-            {
-                Debug.LogError("GameObject is null.");
-                return null;
-            }
+            return result;
         }
-        else
-        {
-            Debug.Log("Key not found");
-            return null;
-        }
+        return null;
+    }
+    
+    // VERSIONE "SOVRACCARICATA" EXTRA 2D PER NON ROMPERE TUTTO SUBITO
+    // Molti tuoi script passano ancora (X, Y) credendo sia la vista dall'alto (dove la loro vecchia Y è ora la nostra Z)
+    // Usiamo questa per cercare i tile al "Piano Terra" (Elevazione 0).
+    public TileController GetTileControllerInstance(int xCoordinate, int zOrOldYCoordinate)
+    {
+        return GetTileControllerInstance(xCoordinate, 0, zOrOldYCoordinate);
     }
     public List<Vector2Int> GetExistingTileCoordinates()
     {

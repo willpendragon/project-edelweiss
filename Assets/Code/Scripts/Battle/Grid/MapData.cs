@@ -13,14 +13,16 @@ public class MapData : ScriptableObject
     [System.Serializable]
     public struct TileData
     {
-        public Vector2Int position;
+        // Cambiato da Vector2Int a Vector3Int per il supporto Voxel
+        public Vector3Int position;
         public TileType tileType;
     }
 
     public List<TileData> tilePositions = new List<TileData>();
 
-    public int horizontalSize;
-    public int verticalSize;
+    public int horizontalSize; // X
+    public int verticalSize;   // Z
+    public int depthSize = 1;  // Y (Nuova proprietà: altezza massima della griglia)
 
     public GameObject environment;
     public LevelType levelType;
