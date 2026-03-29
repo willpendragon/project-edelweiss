@@ -13,20 +13,20 @@ public class ConversationManager : MonoBehaviour
     [SerializeField] public List<ConversationData> conversations = new List<ConversationData>();
 
     private const string OVERWORLD_MAP = "overworld_map";
-    private string _lastUnlockedConversation;
-    private int _convoIndex = 0;
+    [SerializeField] private string _lastUnlockedConversation;
+    [SerializeField] private int _convoIndex = 0;
 
     public delegate void DialogueUnlocked(string title);
     public static event DialogueUnlocked OnDialogueUnlocked;
 
     private void OnEnable()
     {
-        BattleFlowController.OnBattleEndDialogueUnlock += UnlockRandomConversation;
+        BattleFlowController.OnBattleEndDialogueUnlock += UnlockNewConversation;
     }
 
     private void OnDisable()
     {
-        BattleFlowController.OnBattleEndDialogueUnlock -= UnlockRandomConversation;
+        BattleFlowController.OnBattleEndDialogueUnlock -= UnlockNewConversation;
     }
 
     private void Awake()
@@ -38,10 +38,10 @@ public class ConversationManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            if (currentSceneName == "battle_prototype")
-            {
-                DontDestroyOnLoad(gameObject);
-            }
+            //if (currentSceneName == "battle_prototype")
+            //{
+            //    DontDestroyOnLoad(gameObject);
+            //}
         }
         else
         {
@@ -56,10 +56,13 @@ public class ConversationManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == OVERWORLD_MAP)
-        {
-            OnDialogueUnlocked(_lastUnlockedConversation);
-        }
+        //GameSaveData conversationData = SaveStateManager.saveData;
+        //var lastConvoIndex = conversationData.convoIndex;
+
+        //if (scene.name == OVERWORLD_MAP)
+        //{
+        //    OnDialogueUnlocked(_lastUnlockedConversation);
+        //}
     }
 
     private void Start()
@@ -67,15 +70,16 @@ public class ConversationManager : MonoBehaviour
         LoadUnlockedConversation();
     }
 
-    public void UnlockRandomConversation()
+    public void UnlockNewConversation()
     {
+        // Unlocks a new conversation, only after a Victory in Battle.
         List<ConversationData> lockedConvos = conversations.FindAll(convo => !convo.isUnlocked);
+
         if (lockedConvos.Count > 0)
         {
             IncreaseIndex();
             lockedConvos[_convoIndex].isUnlocked = true;
             Debug.Log($"Unlocked convo {lockedConvos[_convoIndex].conversationID}");
-            // Show notification on UI
             _lastUnlockedConversation = $"{lockedConvos[_convoIndex].conversationID}";
             SaveUnlockedConversation();
         }
@@ -87,8 +91,8 @@ public class ConversationManager : MonoBehaviour
 
     private void IncreaseIndex()
     {
-        if (_convoIndex == 0)
-            return;
+        //if (_convoIndex == 0)
+        //    return;
         _convoIndex++;
     }
 
@@ -109,6 +113,7 @@ public class ConversationManager : MonoBehaviour
                 conversation.isUnlocked = savedConvo.isUnlocked;
             }
         }
+        _convoIndex = conversationData.convoIndex;
     }
 
     public void SaveUnlockedConversation()
@@ -119,8 +124,11 @@ public class ConversationManager : MonoBehaviour
 
         foreach (var conversation in ConversationManager.Instance.conversations)
         {
-            gameSaveData.unlockedConversations.Add(new ConversationData(conversation.conversationID, conversation.isUnlocked, conversation.isRead));
+            gameSaveData.unlockedConversations.Add(new ConversationData(conversation.conversationID, conversation.isUnlocked, conversation.isRead, conversation.conversationNumber));
         }
+
+        gameSaveData.convoIndex = _convoIndex; // Save the current Index
+
         SaveStateManager.SaveGame(gameSaveData);
     }
 
