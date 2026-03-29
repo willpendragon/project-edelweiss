@@ -57,7 +57,6 @@ public class CameraController : MonoBehaviour
             // Set Camera Transform
             Vector3 finalTransform = tileTransform.position + _battleCameraSettings.CameraOffset; // Retrieve values from SO
             cam.transform.position = finalTransform;
-            //cam.transform.DOShakePosition(0.5f, 0.5f, 0, 0, false, false);
             // Set Camera Zoom
             cam.fieldOfView = _battleCameraSettings.ZoomAmount; // Retrieve values from SO
         }

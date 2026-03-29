@@ -229,10 +229,6 @@ public class CursorController : MonoBehaviour
 
             if (isTileFree && gameStatsManager.captureCrystalsCount > 0)
                 CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Crystal", 4);
-
-            //if (isTileFree && activePlayerUnit?.linkedDeity != null && activePlayerUnit?.summonedLinkedDeity == null &&
-            //    GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController) <= 3)
-            //    CreateActionButton(RadialMenuEntry.ActionType.Summon, _summonIcon, "Summon");
         }
 
         // Melee/Magnet
@@ -349,10 +345,6 @@ public class CursorController : MonoBehaviour
                 _tileController.currentPlayerAction = new SummonPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 break;
-            //case RadialMenuEntry.ActionType.Pray:
-            //    _tileController.currentPlayerAction = new PrayPlayerAction();
-            //    _tileController.currentPlayerAction.Execute(_tileController);
-            //    break;
             case RadialMenuEntry.ActionType.Run:
                 TurnController.Instance.RunFromBattle();
                 DestroyEnemyInfoPanels();
