@@ -44,7 +44,12 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void FireAction()
     {
-        var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
+        if (actionType == ActionType.Run)
+        {
+            FindAnyObjectByType<CursorController>().ChangeCursorMode(actionType);
+            return;
+        }
+        var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit).GetComponent<Unit>();
         if (activePlayerUnit.unitOpportunityPoints <= 0)
         {
             OnPointsDepleted("Not enough Energy...");
