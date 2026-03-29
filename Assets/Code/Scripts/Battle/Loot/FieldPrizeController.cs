@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +7,6 @@ public class FieldPrizeController : MonoBehaviour
     [SerializeField] private float _powerUpAmount;
     [SerializeField] private ItemFieldPrizeType _itemFieldPrizeType;
     [SerializeField] TextMeshProUGUI _fieldPrizeLabel;
-    //public MeshRenderer _prizeMesh; // Mesh was retrieved from SO at Spawn in Prize Release class.
 
     public float PowerUpAmount => _powerUpAmount;
     public ItemFieldPrizeType ItemFieldPrizeType => _itemFieldPrizeType;
@@ -38,12 +36,6 @@ public class FieldPrizeController : MonoBehaviour
     // Prize Color has to be specified in the SO label.
     public void SetPrizeColor()
     {
-        //if (_prizeMesh == null)
-        //{
-        //    Debug.LogWarning("No Prize MeshRenderer has been found.");
-        //    return;
-        //}
-
         Material mat = GetComponentInChildren<MeshRenderer>().material; // Create material instance.
 
         switch (fieldPrizeTemplate.itemFieldPrizeType)
