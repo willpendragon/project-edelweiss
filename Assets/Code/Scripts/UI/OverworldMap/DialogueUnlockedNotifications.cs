@@ -1,6 +1,3 @@
-using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -9,7 +6,7 @@ public class DialogueUnlockedNotifications : MonoBehaviour
     [SerializeField] TextMeshProUGUI _title;
     [SerializeField] RectTransform _popupTransform;
     [SerializeField] CanvasGroup _canvasGroup;
-
+    [SerializeField] NotificationConfig _dialogueNotificationConfig;
     private void OnEnable()
     {
         ConversationManager.OnDialogueUnlocked += ShowNotification;
@@ -19,23 +16,28 @@ public class DialogueUnlockedNotifications : MonoBehaviour
         ConversationManager.OnDialogueUnlocked -= ShowNotification;
     }
 
-    private void ShowNotification(string title)
+    private void Start()
     {
-        _canvasGroup.alpha = 1;
-        _popupTransform.localScale = Vector3.zero;
-        _popupTransform.DOScale(Vector3.one, 0.3f)
-            .SetEase(Ease.OutBack);
-        _title.text = title;
-        Invoke("HidePopup", 2f);
+        GameSaveData conversationData = SaveStateManager.saveData;
+        // Load Convo Current Index and Latest Convo Number
+        int convoIndex = conversationData.convoIndex;
+        int lastConvoNumber = conversationData.lastConvoNumber; // It was previously saved via this class.
+        if (convoIndex == lastConvoNumber) // Blocks execution if no new convo unlocks. 
+            return;
+        string dialogueTitle = conversationData.unlockedConversations[convoIndex - 1].conversationID;
+        ShowNotification(dialogueTitle);
+        SaveLastConvoNumber();
     }
 
-    public void HidePopup()
+    public void SaveLastConvoNumber()
     {
-        _popupTransform.DOScale(Vector3.zero, 0.25f)
-            .SetEase(Ease.InBack)
-            .OnComplete(() =>
-            {
-                _canvasGroup.alpha = 0;
-            });
+        GameSaveData conversationData = SaveStateManager.saveData;
+        int convoIndex = conversationData.convoIndex;
+        conversationData.lastConvoNumber = conversationData.unlockedConversations[convoIndex].conversationNumber;
+    }
+
+    private void ShowNotification(string title)
+    {
+        OverworldUIManager.Instance.EventsUIManager.AddNotification(_dialogueNotificationConfig, title, "test");
     }
 }
