@@ -12,12 +12,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private EnemyPartyManager _enemyPartyManager;
     [SerializeField] private DeityLinkManager _deityLinkManager;
     [SerializeField] private BuffManager _buffManager;
+    [SerializeField] private NodesUnlockManager _nodesUnlockManager;
     public MapData CurrentMap;
 
     public EnemyPartyManager EnemyPartyManager => _enemyPartyManager;
     public DeityLinkManager DeityLinkManager => _deityLinkManager;
 
     public BuffManager BuffManager => _buffManager;
+    public NodesUnlockManager NodesUnlockManager => _nodesUnlockManager;
     private void Awake()
     {
         if (Instance == null)
@@ -74,5 +76,10 @@ public class GameManager : MonoBehaviour
         // Band-aid fix, beware. This will prevent ALWAYS prevent Enemies from spawning on 5,5 tile.
         Vector2Int deityStartingPosition = new Vector2Int(5, 5);
         return deityStartingPosition;
+    }
+
+    public void AddNodesUnlockManager(NodesUnlockManager nodesUnlockManager)
+    {
+        _nodesUnlockManager = nodesUnlockManager;
     }
 }
