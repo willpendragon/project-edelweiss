@@ -4,74 +4,65 @@ using System.Linq;
 
 public class PrizeReleaseController : MonoBehaviour
 {
-    // This class should be centralized instead of living on each enemy.
-
-    // This enum controls the visuals only of the Prize.
     public enum FieldPrizeType
     {
         Upgrade,
         Key
     }
 
+    [Header("Prefabs & Data")]
     [SerializeField] private GameObject _fieldPrizeGO;
-    //public GameObject keyVisuals;
-    //public ItemFieldPrize fieldPrize; // This slot contains the reward SO.
-    private System.Random random;
-    //public TextMeshProUGUI prizeTypeText;
-    //FieldPrizeType fieldPrizeType;
-    //[SerializeField] int keyPrizeThreshold;
+    [SerializeField] private List<ItemFieldPrize> _upgradePrizes;
+    [SerializeField] private List<ItemFieldPrize> _keyPrizes;
 
-    // A list containing the different types of items
-    [SerializeField] List<ItemFieldPrize> _upgradePrizes;
-    [SerializeField] List<ItemFieldPrize> _keyPrizes;
+    [Header("Drop Chances")]
+    [Tooltip("Index 0 is Loss chance. Index 1+ is Win chance.")]
+    [SerializeField] private List<int> weights = new List<int> { 70, 30 };
 
-    // Weights for different outcomes, exposed to the editor
-    [SerializeField] private List<int> weights = new List<int> { 70, 30 }; // Default: 70% chance to not win, 30% chance to win
-    void Start()
-    {
-        random = new System.Random();
-    }
     public void UnlockFieldPrize(TileController fieldPrizeTile)
     {
-        //if (!RollFieldPrizeChance())
-        //    return;
+        // 1. THE GUARD CLAUSE: Prevent double spawning!
+        // If the tile already holds a prize, abort the sequence immediately.
+        if (fieldPrizeTile.tileCurrentFieldPrize != null)
+        {
+            Debug.Log($"Tile {fieldPrizeTile.name} already has a prize. Skipping spawn.");
+            return;
+        }
 
-        // Set the Prize Type based on roll (either Key or Upgeades).
+        // 2. Roll for success
+        if (!RollFieldPrizeChance())
+            return;
+
+        // 3. Determine Prize Type and Location
         FieldPrizeType selectedPrizeType = RollPrizeType();
-        // Set where the Prize will actually spawn on the Tile.
         Vector3 prizeSpawnPosition = fieldPrizeTile.gameObject.transform.position + Vector3.up;
 
+        // 4. Spawn the appropriate prize
         if (selectedPrizeType == FieldPrizeType.Key)
         {
-            // Only 1 key present at the moment, demo-only logic.
-            SpawnPrize(fieldPrizeTile, prizeSpawnPosition, _keyPrizes[0]);
+            if (_keyPrizes.Count > 0)
+                SpawnPrize(fieldPrizeTile, prizeSpawnPosition, _keyPrizes[0]);
         }
         else if (selectedPrizeType == FieldPrizeType.Upgrade)
         {
-            ItemFieldPrize rolledItem = RollUpgrade(selectedPrizeType);
-            SpawnPrize(fieldPrizeTile, prizeSpawnPosition, rolledItem);
+            ItemFieldPrize rolledItem = RollUpgrade();
+            if (rolledItem != null)
+                SpawnPrize(fieldPrizeTile, prizeSpawnPosition, rolledItem);
         }
     }
 
-    private ItemFieldPrize RollUpgrade(FieldPrizeType fieldPrizeType)
+    private ItemFieldPrize RollUpgrade()
     {
-        // Retrieve the Prize SO from Upgrades list.
-        // Only 2 Upgrades present at the moment, demo-only logic.
-        var rng = Random.Range(0, 2);
-        return _upgradePrizes[rng];
+        // Failsafe: Ensure the list isn't empty before rolling
+        if (_upgradePrizes == null || _upgradePrizes.Count == 0)
+        {
+            Debug.LogWarning("Upgrade Prizes list is empty!");
+            return null;
+        }
 
-        //if (fieldPrizeType == FieldPrizeType.Upgrade)
-        //{
-        //    return _upgradePrizes[0];
-        //}
-        //else if (fieldPrizeType == FieldPrizeType.Upgrade)
-        //{
-        //    return _upgradePrizes[1];
-        //}
-        //else
-        //{
-        //    return null;
-        //}
+        // Make it dynamic: Rolls between 0 and whatever the list size is.
+        int rng = Random.Range(0, _upgradePrizes.Count);
+        return _upgradePrizes[rng];
     }
 
     public bool RollFieldPrizeChance()
@@ -83,20 +74,16 @@ public class PrizeReleaseController : MonoBehaviour
         }
 
         int totalWeight = weights.Sum();
-        int roll = Random.Range(0, totalWeight);  // Use Unity's random
+        int roll = Random.Range(0, totalWeight);
         int cumulativeWeight = 0;
-
-        Debug.Log($"Total Weight: {totalWeight}, Rolled: {roll}");
 
         for (int i = 0; i < weights.Count; i++)
         {
             cumulativeWeight += weights[i];
-            Debug.Log($"Checking Weight Index {i}, Cumulative: {cumulativeWeight}");
 
             if (roll < cumulativeWeight)
             {
-                Debug.Log($"Selected Index: {i}, Win: {i != 0}");
-                return i != 0; // Only index 0 is a loss, all others are wins
+                return i != 0; // Index 0 is a loss, anything else is a win
             }
         }
 
@@ -105,38 +92,39 @@ public class PrizeReleaseController : MonoBehaviour
 
     public FieldPrizeType RollPrizeType()
     {
-        // Roll the chance for the type of prize
-        int rng = Random.Range(1, 3);
+        // Simplify the roll: Random.Range with integers is (inclusive, exclusive).
+        // This gives a 50/50 chance for 0 or 1.
+        int rng = Random.Range(0, 2);
 
-        switch (rng)
-        {
-            case 1:
-                return FieldPrizeType.Upgrade;
-            case 2:
-                Debug.Log("Rolled a Key");
-                return FieldPrizeType.Key;
-            default:
-                return FieldPrizeType.Upgrade;
-        }
+        if (rng == 0) return FieldPrizeType.Upgrade;
+        else return FieldPrizeType.Key;
     }
+
     private void SpawnPrize(TileController fieldPrizeTile, Vector3 prizeSpawnPosition, ItemFieldPrize rolledItem)
     {
-        // Instantiate the Field Prize GameObject at the new position
+        // Instantiate and set scale
         GameObject newFieldPrizeGO = Instantiate(_fieldPrizeGO, prizeSpawnPosition, Quaternion.identity);
-        //newFieldPrizeGO.GetComponent<PrizeReleaseController>().fieldPrize = this.fieldPrize;
-        newFieldPrizeGO.GetComponent<FieldPrizeController>().fieldPrizeTemplate = rolledItem;
-        newFieldPrizeGO.GetComponentInChildren<MeshFilter>().sharedMesh = rolledItem.prizeGraphics.GetComponent<MeshFilter>().sharedMesh;
+        newFieldPrizeGO.transform.localScale = Vector3.one;
 
-        // Set the local scale of the new GameObject
-
-        newFieldPrizeGO.transform.localScale = new Vector3(1, 1, 1);
-
-        // Connects it to the Tile
+        // Link the item to the tile
         fieldPrizeTile.tileCurrentFieldPrize = newFieldPrizeGO;
+        fieldPrizeTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
 
-        FieldPrizeController fieldPrizeController = newFieldPrizeGO?.GetComponent<FieldPrizeController>();
-        fieldPrizeController.SetupPrize();
+        // Apply visual meshes
+        MeshFilter targetMeshFilter = newFieldPrizeGO.GetComponentInChildren<MeshFilter>();
+        MeshFilter sourceMeshFilter = rolledItem.prizeGraphics.GetComponent<MeshFilter>();
 
+        if (targetMeshFilter != null && sourceMeshFilter != null)
+        {
+            targetMeshFilter.sharedMesh = sourceMeshFilter.sharedMesh;
+        }
+
+        // Setup the controller data
+        FieldPrizeController fieldPrizeController = newFieldPrizeGO.GetComponent<FieldPrizeController>();
+        if (fieldPrizeController != null)
+        {
+            fieldPrizeController.fieldPrizeTemplate = rolledItem;
+            fieldPrizeController.SetupPrize();
+        }
     }
-
 }
