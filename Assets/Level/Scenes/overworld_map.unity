@@ -768,15 +768,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 139781ea64fb45a428d61d62c4219e34, type: 2}
   mapNode: {fileID: 7530335955166926438, guid: 3cbe7607717d6e145bab6c0affb91a81, type: 3}
   mapNodeTransform: {fileID: 1490335694}
-  maxPositionVariation: 2
-  minDistanceApart: 3
-  randomSeed: 12345
-  currentMapNodeTransform: {fileID: 0}
+  config: {fileID: 11400000, guid: 71d4daf0b20a6e640bc3317e1035afc7, type: 2}
+  pathLineMaterial: {fileID: 2100000, guid: 5efbe459117be0c4f9e7afc30e4ba166, type: 2}
+  lineVerticalOffset: 0.2
   partyMemberIcons:
   - {fileID: 5757136211554381409, guid: 70461140050eb20429879a0bf8686320, type: 3}
   - {fileID: 5079095157101055813, guid: 32c0f31dfd635bd4bb3a14154ef9bc5a, type: 3}
   - {fileID: 206116485120872592, guid: 166c0ab59b8c39a4a8694a5a17fc9051, type: 3}
   iconZOffset: -2
+  autoUpdateInPlayMode: 1
+  currentMapNodeTransform: {fileID: 0}
 --- !u!1 &129807939
 GameObject:
   m_ObjectHideFlags: 0
@@ -2916,17 +2917,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550915615}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d2e14c67e03a8b448dfe39bdc40cb98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panSpeed: 40
-  panLimitX: {x: -28, y: 46}
-  panLimitY: {x: 4, y: 4}
-  panLimitZ: {x: -21, y: 0.71}
-  margin: 80
-  currentCamera: {fileID: 550915620}
   _enterCafePanelObject: {fileID: 581154927}
   _enterAltarPanelObject: {fileID: 1887404936}
   _cafeSelector: {fileID: 879331073}
@@ -2985,8 +2980,8 @@ Camera:
   near clip plane: 0.01
   far clip plane: 1363.9
   field of view: 60
-  orthographic: 0
-  orthographic size: 9.37
+  orthographic: 1
+  orthographic size: 18.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -3010,13 +3005,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550915615}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: -21}
+  m_LocalRotation: {x: 0.25000006, y: -0.24999997, z: 0.066987306, w: 0.9330127}
+  m_LocalPosition: {x: 17.66, y: 21.6, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: -30, z: 0}
 --- !u!1 &581154927 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2646488589501518239, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
@@ -3223,6 +3218,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 676789505}
   m_CullTransparentMesh: 1
+--- !u!21 &682448326
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1001 &685719145
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4494,8 +4520,8 @@ Transform:
   m_GameObject: {fileID: 879331070}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -37.9, y: 0.6, z: -0.4}
-  m_LocalScale: {x: 0.87979, y: 0.87979, z: 0.87979}
+  m_LocalPosition: {x: -9.100002, y: 0.6, z: -15.51}
+  m_LocalScale: {x: 0.6993803, y: 0.6993803, z: 0.6993803}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1104418071}
@@ -5255,7 +5281,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1821972035}
+  - {fileID: 682448326}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6145,7 +6171,6 @@ GameObject:
   - component: {fileID: 1199666552}
   - component: {fileID: 1199666555}
   - component: {fileID: 1199666554}
-  - component: {fileID: 1199666553}
   m_Layer: 9
   m_Name: CafeNotificationCanvas
   m_TagString: Untagged
@@ -6173,23 +6198,6 @@ RectTransform:
   m_AnchoredPosition: {x: -27.56, y: 8.59}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1199666553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1199666551}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!114 &1199666554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6368,7 +6376,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tributes<sprite=98> 0000
+  m_text: Keys<sprite=109> 0000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
@@ -7261,17 +7269,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1311311414}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d2e14c67e03a8b448dfe39bdc40cb98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panSpeed: 40
-  panLimitX: {x: -28, y: 46}
-  panLimitY: {x: 4, y: 4}
-  panLimitZ: {x: -21, y: 0.71}
-  margin: 80
-  currentCamera: {fileID: 1311311419}
   _enterCafePanelObject: {fileID: 581154927}
   _enterAltarPanelObject: {fileID: 1887404936}
   _cafeSelector: {fileID: 879331073}
@@ -7330,8 +7332,8 @@ Camera:
   near clip plane: 0.01
   far clip plane: 1363.9
   field of view: 60
-  orthographic: 0
-  orthographic size: 9.37
+  orthographic: 1
+  orthographic size: 18.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -7355,13 +7357,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1311311414}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: -21}
+  m_LocalRotation: {x: 0.25000006, y: -0.24999997, z: 0.066987306, w: 0.9330127}
+  m_LocalPosition: {x: 17.66, y: 21.6, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: -30, z: 0}
 --- !u!1 &1328341415
 GameObject:
   m_ObjectHideFlags: 0
@@ -8736,7 +8738,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1520156201
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9308,8 +9310,8 @@ Camera:
   near clip plane: 0.01
   far clip plane: 1363.9
   field of view: 60
-  orthographic: 0
-  orthographic size: 9.37
+  orthographic: 1
+  orthographic size: 18.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -9333,13 +9335,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1559498396}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: -21}
+  m_LocalRotation: {x: 0.25000006, y: -0.24999997, z: 0.066987306, w: 0.9330127}
+  m_LocalPosition: {x: 17.66, y: 21.6, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: -30, z: 0}
 --- !u!114 &1559498400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9368,12 +9370,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d2e14c67e03a8b448dfe39bdc40cb98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panSpeed: 40
-  panLimitX: {x: -28, y: 46}
-  panLimitY: {x: 4, y: 4}
-  panLimitZ: {x: -21, y: 0.71}
-  margin: 80
-  currentCamera: {fileID: 1559498398}
   _enterCafePanelObject: {fileID: 581154927}
   _enterAltarPanelObject: {fileID: 1887404936}
   _cafeSelector: {fileID: 879331073}
@@ -10975,37 +10971,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812651358}
   m_CullTransparentMesh: 1
---- !u!21 &1821972035
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1001 &1845306723
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11771,7 +11736,7 @@ Transform:
   m_GameObject: {fileID: 1964902250}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: 0.507, z: -8.3}
+  m_LocalPosition: {x: 14.02, y: 0.507, z: -11.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12785,7 +12750,7 @@ Transform:
   m_GameObject: {fileID: 2147179661}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 28.8, y: 0, z: -15.51}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
