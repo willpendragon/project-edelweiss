@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5031033964453014279
+--- !u!114 &-4418532223499050904
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: room_pixel_texture
+  m_Name: middle_part_texture
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -32,7 +32,7 @@ Material:
   - N_F_RELGI_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
-  - _UVSET_UV1
+  - _UVSET_UV0
   m_InvalidKeywords:
   - _CUSTOMLIGHTDIRECTIONFOLLOWOBJECTROTATION_OFF
   - _GIFLATSHADE_OFF
@@ -69,7 +69,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: a120698addbbd7f499e200ff0cba6bc2, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9bf82a41ddbc5c943b9e38d5ca0cc82c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -109,7 +109,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: a120698addbbd7f499e200ff0cba6bc2, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9bf82a41ddbc5c943b9e38d5ca0cc82c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskGloss:
@@ -300,9 +300,9 @@ Material:
     - _OutZTest: 4
     - _OutZWrite: 1
     - _OutlineExtrudeMethod: 0
-    - _OutlineWidth: 14.79
+    - _OutlineWidth: 22.03
     - _OutlineWidthAffectedByViewDistance: 0
-    - _OutlineZPostionInCamera: -0.2
+    - _OutlineZPostionInCamera: 0
     - _OverallShadowColorPower: 1
     - _PADist: 0
     - _PASize: 0.5
@@ -320,11 +320,11 @@ Material:
     - _RefMetallic: 0
     - _RefVal: 0
     - _ReflectionIntensity: 0
-    - _RimLigInt: 0.04
+    - _RimLigInt: 1
     - _RimLightColorPower: 10
     - _RimLightInLight: 1
     - _RimLightSoftness: 1
-    - _RimLightUnfill: 0
+    - _RimLightUnfill: 1.5
     - _SPECIN: 1
     - _SPECMODE: 0
     - _STIL: 0
@@ -352,7 +352,7 @@ Material:
     - _SimTrans: 0
     - _SkinMatrixIndex: 0
     - _SmoothObjectNormal: 0
-    - _Smoothness: 0
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -372,7 +372,7 @@ Material:
     - _TriPlaBlend: 4
     - _TriPlaTile: 1
     - _UVSec: 0
-    - _UVSet: 1
+    - _UVSet: 0
     - _UseSecondaryCutout: 0
     - _UseTLB: 0
     - _VertexColorBlueAffectOutlineWitdh: 0

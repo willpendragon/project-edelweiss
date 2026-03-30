@@ -12,6 +12,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: middle_part_texture
+    second: {fileID: 2100000, guid: a32a51fe256075c4b9df27e2c7f7d2c7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: right_room_pixel_texture
     second: {fileID: 2100000, guid: 2996a2e2b6a3594418ef451cd859ff2d, type: 2}
   - first:
