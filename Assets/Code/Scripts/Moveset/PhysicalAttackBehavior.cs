@@ -26,17 +26,38 @@ public class PhysicalAttackBehavior : ScriptableObject
             // Subtract Opportunity Points 
             int opportunityPointsCost = 1;
             activePlayerUnit.unitOpportunityPoints -= opportunityPointsCost;
-            //UpdateActivePlayerUnitProfile(activePlayerUnit);
+            
             Beacon beacon = targetTile.detectedUnit.GetComponent<Beacon>();
             beacon.OnHitByUnit();
-            // Notification
-            //OnUsedMeleeAction($"{activePlayerUnit.unitTemplate.unitName} rotated the Beacon");
+            
             // Trigger Character Animation
-            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, targetTile.detectedUnit.GetComponent<Unit>());
+            activePlayerUnit.battleFeedbackController.PlayMeleeAttackAnimation(activePlayerUnit, targetTile.detectedUnit.GetComponent<Unit>());
             return;
         }
-        AttemptKnockback(activePlayerUnit, targetUnit);
-        HitTarget(activePlayerUnit, targetUnit, targetTile);
+
+        bool canKnockback = IsKnockbackPossible(activePlayerUnit, targetUnit.ownedTile) && targetUnit.unitType != Unit.UnitType.Deity;
+
+        if (canKnockback)
+        {
+            // Attacco con knockback: solo animazione base e applicazione dell'effetto
+            Animator activePlayerUnitAnimator = activePlayerUnit.gameObject.GetComponentInChildren<Animator>();
+            if (activePlayerUnitAnimator != null)
+            {
+                activePlayerUnitAnimator.SetTrigger("Attack");
+            }
+            if (activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX != null)
+            {
+                activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX.Invoke();
+            }
+
+            AttemptKnockback(activePlayerUnit, targetUnit);
+        }
+        else
+        {
+            // Attacco normale: teletrasporto e HitTarget standard
+            activePlayerUnit.battleFeedbackController.PlayMeleeAttackAnimation(activePlayerUnit, targetUnit);
+            HitTarget(activePlayerUnit, targetUnit, false);
+        }
     }
 
     public void AttemptKnockback(Unit attacker, Unit defender)
@@ -50,7 +71,9 @@ public class PhysicalAttackBehavior : ScriptableObject
         HitTarget(attacker, defender, modifierIsActive);
         ExecuteKnockback(attacker, defender);
         // Zoom Camera
-        OnKnockbackFired();
+        if (OnKnockbackFired != null) 
+            OnKnockbackFired();
+
         Vector2Int defenderPos = defender.GetGridPosition();
         Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
@@ -74,7 +97,8 @@ public class PhysicalAttackBehavior : ScriptableObject
             destinationTile.tileShaderController.EnemyTileFeedback();
         }
         var defenderAgent = defender.gameObject.GetComponent<EnemyAgent>();
-        defenderAgent.RemoveElementalBuff(defenderAgent);
+        if (defenderAgent != null)
+            defenderAgent.RemoveElementalBuff(defenderAgent);
 
         RemoveInvulnerableMask(defender);
 
