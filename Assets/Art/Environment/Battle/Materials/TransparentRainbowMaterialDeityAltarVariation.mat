@@ -62,20 +62,20 @@ Material:
     - _AlphaCutoff: 0.5
     - _DirectionalCat: 1
     - _FogCat: 1
-    - _Metallic: 0.724
+    - _Metallic: 0.671
     - _NoiseCat: 1
     - _NoiseIntensity: 0
     - _NoiseScale: 6
-    - _OutlineThickness: 0
+    - _OutlineThickness: 0.05
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RainbowIntensity: 0.878
-    - _ReflectionIntensity: 1
+    - _RainbowIntensity: 0.677
+    - _ReflectionIntensity: 0.641
     - _SkyboxCat: 1
-    - _Smoothness: 0.863
+    - _Smoothness: 1
     - _VertexIntensity: 0
     m_Colors:
-    - _BaseColor: {r: 0.97973794, g: 1, b: 0, a: 1}
+    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _NoiseSpeed: {r: 0.5, g: 0.5, b: 0, a: 0}
