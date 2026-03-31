@@ -70,6 +70,12 @@ public class NodesUnlockManager : MonoBehaviour
     }
     private void GenerateNode()
     {
+        MeshRenderer existingMesh = _nodeSpawnPoint.GetComponentInChildren<MeshRenderer>();
+        if (existingMesh != null)
+        {
+            Destroy(existingMesh.gameObject);
+        }
+
         // Notify Node Appearing
         // Spawn the Node GameObject
         GameObject unlockedNode = Instantiate(_mapNode, _nodeSpawnPoint);
