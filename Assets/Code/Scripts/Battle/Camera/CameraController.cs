@@ -42,6 +42,10 @@ public class CameraController : MonoBehaviour
     {
         // Retrieve the position of the character
         var activeUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
+        if (activeUnit == null)
+        {
+            return;
+        }
         var tile = activeUnit.GetComponent<Unit>().ownedTile;
         UpdateCameraPosition(tile.gameObject.transform);
     }
