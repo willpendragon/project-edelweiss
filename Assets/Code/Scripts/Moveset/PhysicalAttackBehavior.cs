@@ -11,7 +11,8 @@ public class PhysicalAttackBehavior : ScriptableObject
     public static event UsedPhysicalAttack OnUsedPhysicalAttack;
 
     public int baseDamage;
-    private Vector2Int knockbackDirection;
+    // Usiamo Vector3Int
+    private Vector3Int knockbackDirection;
     public int knockbackStrength = 2;
     public int selectionLimiter = 1;
     public int meleeRange = 2;
@@ -26,17 +27,38 @@ public class PhysicalAttackBehavior : ScriptableObject
             // Subtract Opportunity Points 
             int opportunityPointsCost = 1;
             activePlayerUnit.unitOpportunityPoints -= opportunityPointsCost;
-            //UpdateActivePlayerUnitProfile(activePlayerUnit);
+
             Beacon beacon = targetTile.detectedUnit.GetComponent<Beacon>();
             beacon.OnHitByUnit();
-            // Notification
-            //OnUsedMeleeAction($"{activePlayerUnit.unitTemplate.unitName} rotated the Beacon");
+
             // Trigger Character Animation
-            activePlayerUnit.GetComponent<BattleFeedbackController>().PlayMeleeAttackAnimation(activePlayerUnit, targetTile.detectedUnit.GetComponent<Unit>());
+            activePlayerUnit.battleFeedbackController.PlayMeleeAttackAnimation(activePlayerUnit, targetTile.detectedUnit.GetComponent<Unit>());
             return;
         }
-        AttemptKnockback(activePlayerUnit, targetUnit);
-        HitTarget(activePlayerUnit, targetUnit, targetTile);
+
+        bool canKnockback = IsKnockbackPossible(activePlayerUnit, targetUnit.ownedTile) && targetUnit.unitType != Unit.UnitType.Deity;
+
+        if (canKnockback)
+        {
+            // Attacco con knockback: solo animazione base e applicazione dell'effetto
+            Animator activePlayerUnitAnimator = activePlayerUnit.gameObject.GetComponentInChildren<Animator>();
+            if (activePlayerUnitAnimator != null)
+            {
+                activePlayerUnitAnimator.SetTrigger("Attack");
+            }
+            if (activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX != null)
+            {
+                activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX.Invoke();
+            }
+
+            AttemptKnockback(activePlayerUnit, targetUnit);
+        }
+        else
+        {
+            // Attacco normale: teletrasporto e HitTarget standard
+            activePlayerUnit.battleFeedbackController.PlayMeleeAttackAnimation(activePlayerUnit, targetUnit);
+            HitTarget(activePlayerUnit, targetUnit, false);
+        }
     }
 
     public void AttemptKnockback(Unit attacker, Unit defender)
@@ -49,86 +71,70 @@ public class PhysicalAttackBehavior : ScriptableObject
         bool modifierIsActive = true;
         HitTarget(attacker, defender, modifierIsActive);
         ExecuteKnockback(attacker, defender);
-        // Zoom Camera
-        OnKnockbackFired();
-        Vector2Int defenderPos = defender.GetGridPosition();
-        Vector2Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
+        
+        if (OnKnockbackFired != null)
+            OnKnockbackFired();
+
+        // 3D Voxel Coordinate Handling
+        Vector3Int defenderPos = defender.ownedTile.gridPosition;
+        Vector3Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
 
         newGridPos = ClampGridPosition(newGridPos);
 
-        TileController projectedTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
+        TileController projectedTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y, newGridPos.z);
         if (projectedTile == null)
             return;
         if (projectedTile.detectedUnit != null)
             return;
 
-        if (defender.MoveUnit(newGridPos.x, newGridPos.y, true) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+        // Unit.MoveUnit deve ricevere le coord X e Z (se non l'hai convertito al Vector3Int pieno)
+        if (defender.MoveUnit(newGridPos.x, newGridPos.z, true) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
         {
             defender.ownedTile.detectedUnit = null;
             defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
             defender.ownedTile.tileShaderController.ResetEnemyTileFeedback();
 
-            TileController destinationTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y);
+            TileController destinationTile = projectedTile;
             MoveUnitToTile(defender, destinationTile);
-            // If the Enemy it's still alive, the Enemy Tile Feedback (Red Tile) should still be present.
+            
             destinationTile.tileShaderController.EnemyTileFeedback();
         }
         var defenderAgent = defender.gameObject.GetComponent<EnemyAgent>();
-        defenderAgent.RemoveElementalBuff(defenderAgent);
+        if (defenderAgent != null)
+            defenderAgent.RemoveElementalBuff(defenderAgent);
 
         RemoveInvulnerableMask(defender);
-
-        //ResetTileColours();
     }
 
     private void ExecuteKnockback(Unit attacker, Unit defender)
     {
-        Vector2Int attackerPos = attacker.GetGridPosition();
-        Vector2Int defenderPos = defender.GetGridPosition();
+        Vector3Int attackerPos = attacker.ownedTile.gridPosition;
+        Vector3Int defenderPos = defender.ownedTile.gridPosition;
 
         int deltaX = attackerPos.x - defenderPos.x;
-        int deltaY = attackerPos.y - defenderPos.y;
+        int deltaZ = attackerPos.z - defenderPos.z; // Z al posto della Y!
 
-        knockbackDirection = Vector2Int.zero;
-        if (Mathf.Abs(deltaX) > Mathf.Abs(deltaY))
+        knockbackDirection = Vector3Int.zero;
+        if (Mathf.Abs(deltaX) > Mathf.Abs(deltaZ))
             knockbackDirection.x = -(int)Mathf.Sign(deltaX);
         else
-            knockbackDirection.y = -(int)Mathf.Sign(deltaY);
+            knockbackDirection.z = -(int)Mathf.Sign(deltaZ);
 
         knockbackStrength = Mathf.Clamp(knockbackStrength, 1, 3);
-
-        Vector2Int previewGridPos = defenderPos + (knockbackDirection * knockbackStrength);
-        previewGridPos = ClampGridPosition(previewGridPos);
-
-        TileController previewTile = GridManager.Instance.GetTileControllerInstance(previewGridPos.x, previewGridPos.y);
     }
 
     private bool IsKnockbackPossible(Unit activePlayerUnit, TileController targetTile)
     {
         DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
+        // Utilizziamo l'algoritmo puro in DistanceController
         return distanceController.CheckDistance(activePlayerUnit.ownedTile, targetTile);
     }
 
-    protected void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
-    {
-        float damage = CalculateDamage(attacker, defender, modifierIsActive);
-        defender.TakeDamage(damage);
-        BroadcastAttackNotification($"{attacker.unitTemplate.unitName} used Melee Attack");
-    }
-
-    private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive)
-    {
-        float damageOutput = attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage;
-        if (modifierIsActive)
-            damageOutput += 2;
-        return damageOutput;
-    }
-
-    private Vector2Int ClampGridPosition(Vector2Int pos)
+    private Vector3Int ClampGridPosition(Vector3Int pos)
     {
         var grid = GridManager.Instance;
         pos.x = Mathf.Clamp(pos.x, 0, grid.gridHorizontalSize - 1);
-        pos.y = Mathf.Clamp(pos.y, 0, grid.gridVerticalSize - 1);
+        pos.z = Mathf.Clamp(pos.z, 0, grid.gridVerticalSize - 1);
         return pos;
     }
 
@@ -172,4 +178,18 @@ public class PhysicalAttackBehavior : ScriptableObject
         return meleeRange;
     }
 
+    protected void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
+    {
+        float damage = CalculateDamage(attacker, defender, modifierIsActive);
+        defender.TakeDamage(damage);
+        BroadcastAttackNotification($"{attacker.unitTemplate.unitName} used Melee Attack");
+    }
+
+    private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive)
+    {
+        float damageOutput = attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage;
+        if (modifierIsActive)
+            damageOutput += 2;
+        return damageOutput;
+    }
 }

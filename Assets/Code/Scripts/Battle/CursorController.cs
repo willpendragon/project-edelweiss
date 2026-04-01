@@ -394,12 +394,22 @@ public class CursorController : MonoBehaviour
     private bool CheckDistance(int limit)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
-        if (activePlayerUnit != null)
-        {
-            int distance = GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, _tileController);
-            return distance <= limit;
-        }
-        else return false;
+        if (activePlayerUnit == null || _tileController == null)
+            return false;
+
+        // Misuriamo manualmente i blocchi di "Distanza Manhattan" (Voxel Orthogonal Distance)
+        Vector3Int pPos = activePlayerUnit.ownedTile.gridPosition;
+        Vector3Int targetPos = _tileController.gridPosition;
+
+        // Quanti "passi" di griglia in X e Z (profondità) abbiamo?
+        int dstX = Mathf.Abs(pPos.x - targetPos.x);
+        int dstZ = Mathf.Abs(pPos.z - targetPos.z);
+        // Opzionale: int dstY = Mathf.Abs(pPos.y - targetPos.y); 
+        // Aggiungi + dstY se vuoi che bersagliare uno più in alto costi range extra.
+        
+        int blockDistance = dstX + dstZ; 
+
+        return blockDistance <= limit;
     }
 
     private void DestroyEnemyInfoPanels()
