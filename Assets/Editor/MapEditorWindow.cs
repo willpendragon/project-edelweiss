@@ -196,9 +196,9 @@ public class MapEditorWindow : EditorWindow
 
         if (hasHit)
         {
-            DrawPreview(targetGridPos);
-
             if (!IsInsideGrid(targetGridPos) || e.alt) return;
+
+            DrawPreview(targetGridPos);
 
             if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0)
             {
@@ -305,52 +305,48 @@ public class MapEditorWindow : EditorWindow
     private Vector3Int GetGridCoordinatesFromWorldPosition(Vector3 worldPos)
     {
         Vector3 size = GetTileWorldSize3D();
-        float spacingX = size.x + inBetweenTilesXOffset;
-        float spacingZ = size.z + inBetweenTilesZOffset;
+        float cellWidth = size.x + inBetweenTilesXOffset;
+        float cellDepth = size.z + inBetweenTilesZOffset;
 
         return new Vector3Int(
-            Mathf.FloorToInt(worldPos.x / spacingX), 
-            Mathf.FloorToInt(worldPos.y / size.y), 
-            Mathf.FloorToInt(worldPos.z / spacingZ)
+            Mathf.RoundToInt(worldPos.x / cellWidth), 
+            Mathf.RoundToInt(worldPos.y / size.y), 
+            Mathf.RoundToInt(worldPos.z / cellDepth)
         );
     }
 
     private Vector3 GridToWorld(Vector3Int gridPos, Vector3 tileSize)
     {
-        float spacingX = tileSize.x + inBetweenTilesXOffset;
-        float spacingZ = tileSize.z + inBetweenTilesZOffset;
+        // Esatta formula del GridManager
+        float x = gridPos.x * (tileSize.x + inBetweenTilesXOffset);
+        float y = gridPos.y * tileSize.y; 
+        float z = gridPos.z * (tileSize.z + inBetweenTilesZOffset);
 
-        float x = gridPos.x * spacingX + (tileSize.x * 0.5f);
-        float y = gridPos.y * tileSize.y;
-        float z = gridPos.z * spacingZ + (tileSize.z * 0.5f);
+        // Non aggiungiamo la metà del tileSize se il pivot del tuo cubo prefab non è nell'angolo!
+        // Visto che in GridManager spawni senza "offset di mezzeria", qui facciamo uguale.
         return new Vector3(x, y, z);
     }
 
     private void DrawGrid()
     {
         Vector3 size = GetTileWorldSize3D();
-        float spacingX = size.x + inBetweenTilesXOffset;
-        float spacingZ = size.z + inBetweenTilesZOffset;
+        float cellWidth = size.x + inBetweenTilesXOffset;
+        float cellDepth = size.z + inBetweenTilesZOffset;
 
         Handles.color = new Color(0, 1, 1, 0.2f);
         
         for (int x = 0; x <= gridWidth; x++)
-            Handles.DrawLine(new Vector3(x * spacingX, 0, 0), new Vector3(x * spacingX, 0, gridHeight * spacingZ));
+            Handles.DrawLine(new Vector3(x * cellWidth, 0, 0), new Vector3(x * cellWidth, 0, gridHeight * cellDepth));
         for (int z = 0; z <= gridHeight; z++)
-            Handles.DrawLine(new Vector3(0, 0, z * spacingZ), new Vector3(gridWidth * spacingX, 0, z * spacingZ));
+            Handles.DrawLine(new Vector3(0, 0, z * cellDepth), new Vector3(gridWidth * cellWidth, 0, z * cellDepth));
     }
 
     private void DrawPreview(Vector3Int gridPos)
     {
         Vector3 size = GetTileWorldSize3D();
-        float spacingX = size.x + inBetweenTilesXOffset;
-        float spacingZ = size.z + inBetweenTilesZOffset;
-
-        float centerX = gridPos.x * spacingX + (size.x * 0.5f);
-        float centerY = gridPos.y * size.y + (size.y * 0.5f); 
-        float centerZ = gridPos.z * spacingZ + (size.z * 0.5f);
-
-        Vector3 center = new Vector3(centerX, centerY, centerZ);
+        
+        // Disegno il preview square richiamando direttamente la funzione maestra
+        Vector3 center = GridToWorld(gridPos, size);
         
         Handles.color = isDeletingTile ? Color.red : Color.green;
         Handles.DrawWireCube(center, size);
@@ -359,14 +355,22 @@ public class MapEditorWindow : EditorWindow
     private Vector3 GetTileWorldSize3D()
     {
         if (tilePrefab == null) return Vector3.one;
+
+        Vector3 scale = tilePrefab.transform.localScale;
+
         Transform bounds = tilePrefab.transform.Find("GridBounds");
-        if (bounds == null) 
+        if (bounds != null) 
         {
-            BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
-            if (col != null) return col.size;
-            return Vector3.one;
+            return Vector3.Scale(bounds.localScale, scale);
         }
-        return bounds.localScale;
+
+        BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
+        if (col != null)
+        {
+            return Vector3.Scale(col.size, scale);
+        }
+
+        return scale;
     }
 
     private bool IsInsideGrid(Vector3Int pos) 

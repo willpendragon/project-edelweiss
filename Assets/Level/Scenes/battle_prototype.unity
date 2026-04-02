@@ -7874,37 +7874,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1137814003}
   m_CullTransparentMesh: 1
---- !u!21 &1145273183
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1180730693
 GameObject:
   m_ObjectHideFlags: 0
@@ -8956,6 +8925,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee88ea1c4d61434aae8e96b2acf45a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!21 &1333139033
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &1346473499
 GameObject:
   m_ObjectHideFlags: 0
@@ -14089,7 +14089,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1145273183}
+  - {fileID: 1333139033}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14725,7 +14725,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6110140968250516965, guid: 921b258e64d81d24ba38bd044f1fdead, type: 3}
       propertyPath: tileVerticalOffset
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6110140968250516965, guid: 921b258e64d81d24ba38bd044f1fdead, type: 3}
       propertyPath: _obstacleController
@@ -14737,11 +14737,11 @@ PrefabInstance:
       objectReference: {fileID: 3051364443125896833}
     - target: {fileID: 6110140968250516965, guid: 921b258e64d81d24ba38bd044f1fdead, type: 3}
       propertyPath: inBetweenTilesXOffset
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6110140968250516965, guid: 921b258e64d81d24ba38bd044f1fdead, type: 3}
       propertyPath: inBetweenTilesYOffset
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6110140968250516965, guid: 921b258e64d81d24ba38bd044f1fdead, type: 3}
       propertyPath: _environmentController

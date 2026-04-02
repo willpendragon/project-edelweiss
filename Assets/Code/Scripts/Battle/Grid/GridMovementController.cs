@@ -133,19 +133,15 @@ public class GridMovementController : MonoBehaviour
     public List<TileController> GetNeighbours(TileController tile)
     {
         List<TileController> neighbours = new List<TileController>();
-
-        // Ora usiamo gridPosition (che è un Vector3Int: x, y=elevazione, z=profondità)
+        
         int x = tile.gridPosition.x;
         int y = tile.gridPosition.y; 
         int z = tile.gridPosition.z;
 
-        // Le 4 direzioni cardinali piane
         Vector2Int[] planarDirections = new Vector2Int[]
         {
-            new Vector2Int(0, 1),  // Nord (Z+1)
-            new Vector2Int(0, -1), // Sud (Z-1)
-            new Vector2Int(1, 0),  // Est (X+1)
-            new Vector2Int(-1, 0)  // Ovest (X-1)
+            new Vector2Int(0, 1),  new Vector2Int(0, -1), 
+            new Vector2Int(1, 0),  new Vector2Int(-1, 0)
         };
 
         foreach (var dir in planarDirections)
@@ -153,30 +149,28 @@ public class GridMovementController : MonoBehaviour
             int checkX = x + dir.x;
             int checkZ = z + dir.y;
 
-            // Dobbiamo cercare se esiste un tile adiacente nella colonna [checkX, checkZ]
-            // che sia a un'altezza raggiungibile (da y - maxJumpHeight a y + maxJumpHeight)
+            // Esplora dal basso verso l'alto per l'altezza raggiungibile
             for (int h = -maxJumpHeight; h <= maxJumpHeight; h++)
             {
                 int checkY = y + h;
                 
-                // Usiamo il nuovo GetTileControllerInstance a 3 dimensioni 
-                // Assumendo che lo hai aggiornato in GridManager nel passaggio precedente
                 TileController neighbor = GridManager.Instance.GetTileControllerInstance(checkX, checkY, checkZ);
 
                 if (neighbor != null)
                 {
-                    // Controllo opzionale VOXEL PURO: Assicuriamoci che non ci sia un ostacolo (muro/blocco) SOPRA il tile vicino
-                    // altrimenti il personaggio sbatterebbe la testa.
+                    // IL PUNTO CRITALE VOXEL:
+                    // Per poter camminare "SOPRA" questo neighbor, lo spazio a Y+1 deve essere LIBERO!
                     TileController tileAboveNeighbor = GridManager.Instance.GetTileControllerInstance(checkX, checkY + 1, checkZ);
                     
-                    if (tileAboveNeighbor == null || tileAboveNeighbor.tileType == TileType.Basic /* adatta se i tuoi tile sono valicabili */) 
+                    // Se c'è spazio vuoto (!tileAboveNeighbor) oppure è un tile invisibile pass-through (se lo codifichi)
+                    if (tileAboveNeighbor == null) 
                     {
                         neighbours.Add(neighbor);
+                        break; // Trovata la vetta calpestabile per questa colonna (X, Z), fermiamo l'analisi verticale
                     }
                 }
             }
         }
-
         return neighbours;
     }
 

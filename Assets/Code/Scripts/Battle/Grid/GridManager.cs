@@ -114,24 +114,19 @@ public class GridManager : MonoBehaviour
         GridManager.Instance.gridHorizontalSize = currentMapData.horizontalSize;
         GridManager.Instance.gridVerticalSize = currentMapData.verticalSize;
 
-        Vector3 tileSize = Vector3.one;
-        BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
-        if (col != null) tileSize = col.size; 
+        Vector3 tileSize = GetTileWorldSize3D(); // USA L'HELPER!
 
         foreach (var tileData in currentMapData.tilePositions)
         {
-            // ORA CALCOLIAMO LA Y IN BASE ALL'ELEVAZIONE: y = tileData.position.y * tileVerticalSpacing
-            
             Vector3 tilePosition = new Vector3(
                 tileData.position.x * (tileSize.x + inBetweenTilesXOffset), 
-                tileData.position.y * tileSize.y, // Elimina i trick VerticalSpacing fissi o offset strani
-                tileData.position.z * (tileSize.z + inBetweenTilesYOffset)
+                tileData.position.y * tileSize.y, 
+                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondità
             );
 
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
             TileController tileController = tilePrefabInstance.GetComponent<TileController>();
             
-            // Assegniamo il nuovo gridPosition completo
             tileController.gridPosition = tileData.position;
             tileController.tileType = tileData.tileType; 
             
@@ -140,10 +135,6 @@ public class GridManager : MonoBehaviour
             if (!gridMapDictionary.ContainsKey(positionKey))
             {
                 gridMapDictionary.Add(positionKey, tileController);
-            }
-            else
-            {
-                Debug.LogWarning($"Duplicate key found when adding GameObject to dictionary at {tileData.position}");
             }
         }
     }
@@ -240,39 +231,37 @@ public class GridManager : MonoBehaviour
             Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
         }
     }
-    public Vector3 GetWorldPositionFromGridCoordinates(int x, int z) // Era Y nel vecchio codice 2D
+    public Vector3 GetWorldPositionFromGridCoordinates(int x, int z)
     {
-        // Se possibile, cerca il tile esatto!
-        // Dato che stiamo passando solo X e Z per compatibilità, cerchiamo il primo tile disponibile partendo dal pavimento, o usiamo un metodo "GetTopTile"
-        // NOTA: Se hai sovrapposto tile (es. piano terra e primo piano sulla stessa XZ), questo metodo dovrebbe restituire l'ultimo piano calpestabile!
-        
-        // Cerca partendo dal piano più alto disponibile in quella colonna e scendendo
-        for (int y = 20; y >= 0; y--) // Assumiamo 20 come altezza massima arbitraria per il check
+        for (int y = 20; y >= 0; y--)
         {
             TileController tile = GetTileControllerInstance(x, y, z);
             if (tile != null)
             {
-                // Trovato il tile! Ora calcoliamo la "vetta" esatta del BoxCollider
                 float surfaceY = tile.transform.position.y;
                 BoxCollider col = tile.GetComponent<BoxCollider>();
                 if (col != null)
                 {
-                    surfaceY += col.bounds.extents.y; // bounds.extents è metà dell'altezza totale
+                    surfaceY += col.bounds.extents.y;
                 }
                 
                 return new Vector3(tile.transform.position.x, surfaceY, tile.transform.position.z);
             }
         }
         
-        // Fallback di sicurezza se non trova nessun tile (non dovrebbe mai succedere)
-        float worldX = x * (1 + inBetweenTilesXOffset);
-        float worldZ = z * (1 + inBetweenTilesYOffset);
+        // CORREZIONE AL FALLBACK
+        Vector3 tileSize = GetTileWorldSize3D();
+        float worldX = x * (tileSize.x + inBetweenTilesXOffset);
+        float worldZ = z * (tileSize.z + inBetweenTilesYOffset);
         return new Vector3(worldX, 0, worldZ);
     }
     public Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPosition)
     {
-        int x = Mathf.RoundToInt(worldPosition.x / (1 + inBetweenTilesXOffset));
-        int y = Mathf.RoundToInt(worldPosition.z / (1 + inBetweenTilesYOffset));
+        // CORREZIONE DELLA VETTORIZZZAZIONE INVERSA
+        Vector3 tileSize = GetTileWorldSize3D();
+        int x = Mathf.RoundToInt(worldPosition.x / (tileSize.x + inBetweenTilesXOffset));
+        int y = Mathf.RoundToInt(worldPosition.z / (tileSize.z + inBetweenTilesYOffset));
+
         return new Vector2Int(x, y);
     }
     public void RemoveTrapSelection()
@@ -348,5 +337,17 @@ public class GridManager : MonoBehaviour
             finalY,
             targetTile.transform.position.z
         );
+    }
+
+    public Vector3 GetTileWorldSize3D()
+    {
+        if (tilePrefab == null) return Vector3.one;
+        BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
+        if (col != null) 
+        {
+            // Moltiplica la grandezza pura per la scala del Prefab! (Es: 1 * 1.5 = 1.5)
+            return Vector3.Scale(col.size, tilePrefab.transform.localScale);
+        }
+        return tilePrefab.transform.localScale;
     }
 }
