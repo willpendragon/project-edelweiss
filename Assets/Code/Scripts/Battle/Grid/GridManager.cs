@@ -181,7 +181,18 @@ public class GridManager : MonoBehaviour
     // Usiamo questa per cercare i tile al "Piano Terra" (Elevazione 0).
     public TileController GetTileControllerInstance(int xCoordinate, int zOrOldYCoordinate)
     {
-        return GetTileControllerInstance(xCoordinate, 0, zOrOldYCoordinate);
+        // Partiamo da un'elevazione massima (es. 20 blocchi di altezza) e scendiamo
+        // finché non troviamo il primo blocco fisico esistente.
+        for (int y = 20; y >= 0; y--)
+        {
+            TileController tile = GetTileControllerInstance(xCoordinate, y, zOrOldYCoordinate);
+            if (tile != null)
+            {
+                return tile; // Trovato! Restituiamo il Voxel sulla cima della collina!
+            }
+        }
+        
+        return null; // Nessun tile in questa colonna
     }
     public List<Vector2Int> GetExistingTileCoordinates()
     {
@@ -226,10 +237,33 @@ public class GridManager : MonoBehaviour
             Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
         }
     }
-    public Vector3 GetWorldPositionFromGridCoordinates(int x, int y)
+    public Vector3 GetWorldPositionFromGridCoordinates(int x, int z) // Era Y nel vecchio codice 2D
     {
+        // Se possibile, cerca il tile esatto!
+        // Dato che stiamo passando solo X e Z per compatibilità, cerchiamo il primo tile disponibile partendo dal pavimento, o usiamo un metodo "GetTopTile"
+        // NOTA: Se hai sovrapposto tile (es. piano terra e primo piano sulla stessa XZ), questo metodo dovrebbe restituire l'ultimo piano calpestabile!
+        
+        // Cerca partendo dal piano più alto disponibile in quella colonna e scendendo
+        for (int y = 20; y >= 0; y--) // Assumiamo 20 come altezza massima arbitraria per il check
+        {
+            TileController tile = GetTileControllerInstance(x, y, z);
+            if (tile != null)
+            {
+                // Trovato il tile! Ora calcoliamo la "vetta" esatta del BoxCollider
+                float surfaceY = tile.transform.position.y;
+                BoxCollider col = tile.GetComponent<BoxCollider>();
+                if (col != null)
+                {
+                    surfaceY += col.bounds.extents.y; // bounds.extents è metà dell'altezza totale
+                }
+                
+                return new Vector3(tile.transform.position.x, surfaceY, tile.transform.position.z);
+            }
+        }
+        
+        // Fallback di sicurezza se non trova nessun tile (non dovrebbe mai succedere)
         float worldX = x * (1 + inBetweenTilesXOffset);
-        float worldZ = y * (1 + inBetweenTilesYOffset);
+        float worldZ = z * (1 + inBetweenTilesYOffset);
         return new Vector3(worldX, 0, worldZ);
     }
     public Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPosition)
@@ -284,5 +318,32 @@ public class GridManager : MonoBehaviour
         {
             tileShader.SetTileGlowIntensity(0f);
         }
+    }
+
+    /// <summary>
+    /// Posiziona un GameObject (es. Unità) esattamente sopra la superficie calpestabile di un Tile,
+    /// compensando in automatico qualsiasi offset errato o pivot strano dei figli (SpriteRenderer).
+    /// </summary>
+    public void PlaceUnitOnTileSurface(GameObject unitToPlace, TileController targetTile)
+    {
+        if (unitToPlace == null || targetTile == null) return;
+
+        // Anziché usare posizioni relative o bounds, usiamo la cima esatta del Renderer o del Collider!
+        float finalY = targetTile.transform.position.y;
+        
+        Collider col = targetTile.GetComponent<Collider>();
+        if (col != null)
+        {
+            // bounds.max.y ti dà il punto ASSOLUTO in altezza top nello spazio mondo di QUEL cubo!
+            finalY = col.bounds.max.y;
+        }
+
+        Debug.Log($"[VOXEL MATH] Sposto {unitToPlace.name} ad altezza reale Y = {finalY}");
+
+        unitToPlace.transform.position = new Vector3(
+            targetTile.transform.position.x,
+            finalY,
+            targetTile.transform.position.z
+        );
     }
 }

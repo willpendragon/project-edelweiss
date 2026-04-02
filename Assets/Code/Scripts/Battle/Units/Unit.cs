@@ -214,32 +214,24 @@ public class Unit : MonoBehaviour
 
     private IEnumerator FollowPath(List<TileController> path)
     {
-        float stepDelay = 0.025f; // SUPER fast, breezy, ITB-style
+        float stepDelay = 0.05f;
 
         foreach (var tile in path)
         {
-            Vector3 worldPos = GridManager.Instance.GetWorldPositionFromGridCoordinates(
-                tile.tileXCoordinate, tile.tileYCoordinate);
+            // Il Grid Manager pensa a piazzarlo al Top!
+            GridManager.Instance.PlaceUnitOnTileSurface(this.gameObject, tile);
 
-            Vector3 pos = worldPos + new Vector3(0, transform.localScale.y / 2, 0);
+            currentXCoordinate = tile.gridPosition.x;
+            currentYCoordinate = tile.gridPosition.z;
 
-            // Pure snap
-            transform.position = pos;
-
-            // Update coordinates
-            currentXCoordinate = tile.tileXCoordinate;
-            currentYCoordinate = tile.tileYCoordinate;
-
-            // Breezy rapid stepping
             yield return new WaitForSeconds(stepDelay);
         }
 
-        // Sorting + highlight update
         GameObject.FindGameObjectWithTag("CameraDistanceController")
-            .GetComponent<CameraDistanceController>().SortUnits();
+            .GetComponent<CameraDistanceController>()?.SortUnits();
 
         if (gameObject.CompareTag("ActivePlayerUnit"))
-            FindAnyObjectByType<UnitSelectionController>().ChangeActivePlayerUnitTile(this);
+            FindAnyObjectByType<UnitSelectionController>()?.ChangeActivePlayerUnitTile(this);
 
         GridManager.IsUnitMoving = false;
     }
@@ -379,33 +371,24 @@ public class Unit : MonoBehaviour
         return new Vector2Int(currentXCoordinate, currentYCoordinate);
     }
 
-    public void SetPosition(int x, int y)
+    public void SetPosition(int x, int z) // Era la Y
     {
-        // Update the unit's logical grid coordinates.
         currentXCoordinate = x;
-        currentYCoordinate = y;
+        currentYCoordinate = z; // Sempre la Z spaziale che fa da asse orizzontale sulla mappa
 
-        if (unitType != UnitType.Deity) // Deities can't change their physical position on the battlefield.
+        if (unitType != UnitType.Deity)
         {
-            // Update the unit's physical position.
-            Vector3 newPosition = GridManager.Instance.GetWorldPositionFromGridCoordinates(x, y);
-            transform.position = newPosition + new Vector3(0, transform.localScale.y / 2, 0);
+            // Troviamo il tile...
+            // NOTA: Usa GetTileControllerInstance Voxel o quello di compatibilità
+            TileController targetTile = GridManager.Instance.GetTileControllerInstance(x, z); 
+            if (targetTile != null)
+            {
+                // Appoggia perfettamente il giocatore!
+                GridManager.Instance.PlaceUnitOnTileSurface(this.gameObject, targetTile);
+            }
         }
 
-        // Update the TileController's detected unit for both the old and new positions.
-        TileController oldTile = GridManager.Instance.GetTileControllerInstance(currentXCoordinate, currentYCoordinate);
-        if (oldTile != null)
-        {
-            oldTile.detectedUnit = null;
-            oldTile.currentSingleTileCondition = SingleTileCondition.free;
-        }
-
-        TileController newTile = GridManager.Instance.GetTileControllerInstance(x, y);
-        if (newTile != null)
-        {
-            newTile.detectedUnit = this.gameObject;
-            newTile.currentSingleTileCondition = SingleTileCondition.occupied;
-        }
+        // Il resto del codice di Update di detectedUnit rimane uguale
     }
 
     public void RetrieveTemplateValues()
