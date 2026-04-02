@@ -114,15 +114,18 @@ public class GridManager : MonoBehaviour
         GridManager.Instance.gridHorizontalSize = currentMapData.horizontalSize;
         GridManager.Instance.gridVerticalSize = currentMapData.verticalSize;
 
+        Vector3 tileSize = Vector3.one;
+        BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
+        if (col != null) tileSize = col.size; 
+
         foreach (var tileData in currentMapData.tilePositions)
         {
             // ORA CALCOLIAMO LA Y IN BASE ALL'ELEVAZIONE: y = tileData.position.y * tileVerticalSpacing
-            float tileVerticalSpacing = 1f; // Regola questo valore in base all'altezza visiva (es. spessore) del tuo cubo Voxel
             
             Vector3 tilePosition = new Vector3(
-                tileData.position.x * (1 + inBetweenTilesXOffset), 
-                tileData.position.y * tileVerticalSpacing + tileVerticalOffset, 
-                tileData.position.z * (1 + inBetweenTilesYOffset)
+                tileData.position.x * (tileSize.x + inBetweenTilesXOffset), 
+                tileData.position.y * tileSize.y, // Elimina i trick VerticalSpacing fissi o offset strani
+                tileData.position.z * (tileSize.z + inBetweenTilesYOffset)
             );
 
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
