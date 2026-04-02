@@ -9,7 +9,7 @@ public class MapEditorWindow : EditorWindow
     private int gridDepth = 10;  // Y
     
     public float inBetweenTilesXOffset = 0f;
-    public float inBetweenTilesZOffset = 0f; // Rappresenta la tua "YOffset" 2D passata in 3D
+    public float inBetweenTilesZOffset = 0f;
 
     private GameObject tilePrefab;
     private MapData currentMap;
@@ -22,14 +22,24 @@ public class MapEditorWindow : EditorWindow
     private bool clearOnClose = false;
     private Vector3Int lastGridPosition = new Vector3Int(-1, -1, -1);
 
+    // --- NUOVE VARIABILI PER IL COOLDOWN ---
+    public float paintDelay = 0.15f; 
+    private double lastPaintTime = 0.0;
+
+    // --- IMMAGINE DEL BANNER ---
+    private Texture2D headerImage;
+
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
 
     private void OnEnable()
     {
         SceneView.duringSceneGui += OnSceneGUI;
-        
-        // 1. Ripristina il Tile Prefab salvato dalle preferenze dell'Editor
+
+        // Trova e carica l'immagine del Banner. Assicurati di mettere un'immagine chiamata 
+        // "MapEditorBanner" nella cartella: Assets/Editor/Resources
+        headerImage = Resources.Load<Texture2D>("MapEditorBanner");
+
         string prefabPath = EditorPrefs.GetString("MapEditor_TilePrefabPath", "");
         if (!string.IsNullOrEmpty(prefabPath))
         {
@@ -39,43 +49,60 @@ public class MapEditorWindow : EditorWindow
         inBetweenTilesXOffset = EditorPrefs.GetFloat("MapEditor_OffsetX", 0f);
         inBetweenTilesZOffset = EditorPrefs.GetFloat("MapEditor_OffsetZ", 0f);
         clearOnClose = EditorPrefs.GetBool("MapEditor_ClearOnClose", false);
+        paintDelay = EditorPrefs.GetFloat("MapEditor_PaintDelay", 0.15f);
     }
 
     private void OnDisable()
     {
         SceneView.duringSceneGui -= OnSceneGUI;
 
-        // 2. Pulizia opzionale alla chiusura della finestra
         if (clearOnClose)
         {
-            GenerateMap(); // Questo distrugge tutti i tile attuali
+            GenerateMap(); 
             Debug.Log("Map Editor: Scene automatically cleared on close.");
         }
     }
 
     private void OnGUI()
     {
+        // 1. BANNER IMMAGINE
+        if (headerImage != null)
+        {
+            float imageWidth = EditorGUIUtility.currentViewWidth;
+            float imageHeight = imageWidth * ((float)headerImage.height / headerImage.width); // Aspetto ratio
+            GUILayout.Label(headerImage, GUILayout.Width(imageWidth), GUILayout.Height(Mathf.Clamp(imageHeight, 50, 150)));
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("Per mostrare un Banner in cima all'Editor, posizionare l'immagine 'MapEditorBanner.png' dentro 'Assets/Editor/Resources'.", MessageType.Info);
+        }
+
         GUILayout.Label("Map Dimensions", EditorStyles.boldLabel);
         gridWidth = EditorGUILayout.IntField("Grid Width (X)", gridWidth);
         gridDepth = EditorGUILayout.IntField("Grid Depth/Height (Y)", gridDepth);
         gridHeight = EditorGUILayout.IntField("Grid Length (Z)", gridHeight);
         
         EditorGUILayout.Space();
-        GUILayout.Label("Map Offsets (Distance Between Tiles)", EditorStyles.boldLabel);
+        GUILayout.Label("Map Offsets & Experience", EditorStyles.boldLabel);
         EditorGUI.BeginChangeCheck();
+        
         inBetweenTilesXOffset = EditorGUILayout.FloatField("X Offset", inBetweenTilesXOffset);
         inBetweenTilesZOffset = EditorGUILayout.FloatField("Z Offset (Old Y)", inBetweenTilesZOffset);
+
+        // 2. SLIDER PER IL PAINT DELAY
+        paintDelay = EditorGUILayout.Slider("Paint Cooldown (sec)", paintDelay, 0.05f, 1.0f);
+        
         if (EditorGUI.EndChangeCheck())
         {
             EditorPrefs.SetFloat("MapEditor_OffsetX", inBetweenTilesXOffset);
             EditorPrefs.SetFloat("MapEditor_OffsetZ", inBetweenTilesZOffset);
-            SceneView.RepaintAll(); // Aggiorna la griglia al volo
+            EditorPrefs.SetFloat("MapEditor_PaintDelay", paintDelay);
+            SceneView.RepaintAll();
         }
 
         EditorGUILayout.Space();
         GUILayout.Label("Assets & Properties", EditorStyles.boldLabel);
         
-        // Salvataggio automatico del Prefab se cambia
         EditorGUI.BeginChangeCheck();
         tilePrefab = (GameObject)EditorGUILayout.ObjectField("Tile Prefab", tilePrefab, typeof(GameObject), false);
         if (EditorGUI.EndChangeCheck() && tilePrefab != null)
@@ -110,7 +137,6 @@ public class MapEditorWindow : EditorWindow
     {
         Event e = Event.current;
 
-        // 5. Esci con ESC
         if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
         {
             isPlacingTile = false;
@@ -132,7 +158,6 @@ public class MapEditorWindow : EditorWindow
         bool hasHit = false;
         Vector3Int targetGridPos = Vector3Int.zero;
 
-        // Voxel Raycasting Robusto: Cerca Collider Fisici (Cosi scavalchiamo i Gap dell'Offset!)
         if (Physics.Raycast(ray, out RaycastHit hitInfo))
         {
             hasHit = true;
@@ -149,7 +174,7 @@ public class MapEditorWindow : EditorWindow
                 );
 
                 if (isDeletingTile) targetGridPos = basePos;
-                else targetGridPos = basePos + normalOffset; // Clic su faccia laterale/superiore = Tile accanto
+                else targetGridPos = basePos + normalOffset; 
             }
             else
             {
@@ -159,7 +184,6 @@ public class MapEditorWindow : EditorWindow
         }
         else
         {
-            // Floor Raycast
             Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
             if (groundPlane.Raycast(ray, out float enter))
             {
@@ -178,13 +202,32 @@ public class MapEditorWindow : EditorWindow
 
             if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0)
             {
-                if (targetGridPos != lastGridPosition)
+                double currentTime = EditorApplication.timeSinceStartup;
+
+                // È passato abbastanza tempo dall'ultimo piazzamento?
+                bool cooldownPassed = (currentTime - lastPaintTime) > paintDelay;
+                
+                // Stiamo puntando la STESSA cella su cui abbiamo appena interagito?
+                bool isSameCellAsLast = (targetGridPos == lastGridPosition);
+
+                // LOGICA:
+                // Se stiamo trascinando il mouse, e siamo ancora fermi sulla stessa cella, ignoriamo totalmente(evita torri accidentali).
+                // Altrimenti, se è scattato il cooldown, procedi con l'azione!
+                if (e.type == EventType.MouseDrag && isSameCellAsLast)
+                {
+                    e.Use();
+                    return;
+                }
+
+                if (cooldownPassed)
                 {
                     if (isPlacingTile) PlaceTile(targetGridPos, selectedTileType);
                     else if (isDeletingTile) DeleteTile(targetGridPos);
                     
                     lastGridPosition = targetGridPos;
+                    lastPaintTime = currentTime;
                 }
+                
                 e.Use();
             }
         }
@@ -225,12 +268,10 @@ public class MapEditorWindow : EditorWindow
         ApplyDecorativeColor(tile, type);
     }
 
-    // 4. Stile Decorativo! Colorerà di grigio scuro il tile se è Ostacolo
     private void ApplyDecorativeColor(GameObject tile, TileType type)
     {
         if (type == TileType.Obstacle)
         {
-            // Cerchiamo in modo specifico il GameObject figlio "GridBounds"
             Transform gridBoundsTransform = tile.transform.Find("GridBounds");
             if (gridBoundsTransform != null)
             {
@@ -240,18 +281,11 @@ public class MapEditorWindow : EditorWindow
                     MaterialPropertyBlock block = new MaterialPropertyBlock();
                     renderer.GetPropertyBlock(block);
                     
-                    // Nello standard URP lit shader, la property per il colore base si chiama _BaseColor
                     block.SetColor("_BaseColor", new Color(0.15f, 0.15f, 0.15f, 1f)); 
-                    
-                    // Come fallback, per shader legacy o custom:
                     block.SetColor("_Color", new Color(0.15f, 0.15f, 0.15f, 1f));
                     
                     renderer.SetPropertyBlock(block);
                 }
-            }
-            else
-            {
-                Debug.LogWarning($"[MapEditor] Impossibile applicare il colore decorativo: '{tile.name}' non ha un figlio 'GridBounds'.");
             }
         }
     }
@@ -268,7 +302,6 @@ public class MapEditorWindow : EditorWindow
         }
     }
 
-    // 3. I calcoli delle coordinate integrano il gap inBetweenTiles!
     private Vector3Int GetGridCoordinatesFromWorldPosition(Vector3 worldPos)
     {
         Vector3 size = GetTileWorldSize3D();
@@ -288,7 +321,7 @@ public class MapEditorWindow : EditorWindow
         float spacingZ = tileSize.z + inBetweenTilesZOffset;
 
         float x = gridPos.x * spacingX + (tileSize.x * 0.5f);
-        float y = gridPos.y * tileSize.y; // Assumendo base-pivot
+        float y = gridPos.y * tileSize.y;
         float z = gridPos.z * spacingZ + (tileSize.z * 0.5f);
         return new Vector3(x, y, z);
     }
@@ -395,7 +428,6 @@ public class MapEditorWindow : EditorWindow
             tiles[data.position] = tile;
             HideTileEffects(tile);
             
-            // Applica il look decorativo caricando i file vecchi
             ApplyDecorativeColor(tile, data.tileType);
         }
     }
