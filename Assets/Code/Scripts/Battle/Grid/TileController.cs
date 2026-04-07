@@ -167,10 +167,19 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         if (detectedUnit != null && detectedUnit.CompareTag("ActivePlayerUnit"))
             return;
 
-        // Show and position the cursor over the tile at Y = 0.57.
+        // Show and position the cursor over the tile dynamically.
         if (cursorInstance != null)
         {
-            cursorInstance.transform.position = new Vector3(transform.position.x, 0.57f, transform.position.z);
+            float cursorY = transform.position.y + 0.57f; // Fallback temporaneo
+            Collider tileCollider = GetComponentInChildren<Collider>();
+            
+            if (tileCollider != null)
+            {
+                // Posiziona il cursore esattamente sul margine superiore del collider (+0.07f per l'offset visivo per non compenetrare)
+                cursorY = tileCollider.bounds.max.y + 0.07f;
+            }
+
+            cursorInstance.transform.position = new Vector3(transform.position.x, cursorY, transform.position.z);
             cursorInstance.SetActive(true);
         }
         BattleSFXManager.PlaySound(SoundType.UIHOVER);

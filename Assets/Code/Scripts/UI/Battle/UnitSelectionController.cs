@@ -97,9 +97,22 @@ public class UnitSelectionController : MonoBehaviour
         var tile = playerUnit.ownedTile;
         tile.tileShaderController.SetTileColor(1f, Color.green);
         // Display the selected player unit cursor on the tile.
-        selectedTileInstance = Instantiate(_selectedTile, playerUnit.ownedTile.transform);
-        Vector3 selectedTileInstanceOffset = new Vector3(0, 20.5f, 0);
-        selectedTileInstance.transform.localPosition += selectedTileInstanceOffset;
+        selectedTileInstance = Instantiate(_selectedTile, tile.transform);
+        
+        Collider tileCollider = tile.GetComponentInChildren<Collider>();
+        float cursorYOffset = 0.07f; // Piccolo offset per evitare compenetrazione visiva
+        
+        if (tileCollider != null)
+        {
+            // Troviamo il tetto in coordinate World, poi lo trasformiamo in coordinata Local
+            Vector3 worldTopPoint = new Vector3(tile.transform.position.x, tileCollider.bounds.max.y + cursorYOffset, tile.transform.position.z);
+            selectedTileInstance.transform.position = worldTopPoint;
+        }
+        else
+        {
+            // Fallback se il tile non avesse un collider
+            selectedTileInstance.transform.localPosition = new Vector3(0, 0.57f, 0);
+        }
     }
 
     private void OutlineAttackableEnemiesWrapper(TileController tile)
