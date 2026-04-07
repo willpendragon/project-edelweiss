@@ -333,12 +333,29 @@ public class MapEditorWindow : EditorWindow
         float cellWidth = size.x + inBetweenTilesXOffset;
         float cellDepth = size.z + inBetweenTilesZOffset;
 
+        // Calcoliamo l'offset necessario per spostare le linee sui bordi del tile
+        float offsetX = cellWidth / 2f;
+        float offsetZ = cellDepth / 2f;
+
         Handles.color = new Color(0, 1, 1, 0.2f);
         
         for (int x = 0; x <= gridWidth; x++)
-            Handles.DrawLine(new Vector3(x * cellWidth, 0, 0), new Vector3(x * cellWidth, 0, gridHeight * cellDepth));
+        {
+            float lineX = (x * cellWidth) - offsetX;
+            Handles.DrawLine(
+                new Vector3(lineX, 0, -offsetZ), 
+                new Vector3(lineX, 0, (gridHeight * cellDepth) - offsetZ)
+            );
+        }
+            
         for (int z = 0; z <= gridHeight; z++)
-            Handles.DrawLine(new Vector3(0, 0, z * cellDepth), new Vector3(gridWidth * cellWidth, 0, z * cellDepth));
+        {
+            float lineZ = (z * cellDepth) - offsetZ;
+            Handles.DrawLine(
+                new Vector3(-offsetX, 0, lineZ), 
+                new Vector3((gridWidth * cellWidth) - offsetX, 0, lineZ)
+            );
+        }
     }
 
     private void DrawPreview(Vector3Int gridPos)
