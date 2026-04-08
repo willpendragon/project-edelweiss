@@ -68,37 +68,69 @@ public class PhysicalAttackBehavior : ScriptableObject
         if (defender.unitType == Unit.UnitType.Deity)
             return;
 
-        bool modifierIsActive = true;
-        HitTarget(attacker, defender, modifierIsActive);
         ExecuteKnockback(attacker, defender);
+
+        Vector3Int defenderPos = defender.ownedTile.gridPosition;
+        Vector3Int validGridPos = defenderPos;
+        TileController finalDestinationTile = null;
+        bool isWallKnockback = false;
+
+        // Step-by-step path check to find true walls and prevent jumping through solid terrain columns
+        for (int i = 1; i <= knockbackStrength; i++)
+        {
+            Vector3Int stepPos = defenderPos + (knockbackDirection * i);
+            stepPos = ClampGridPosition(stepPos);
+
+            // Always get the highest visible surface block at this X/Z column, ignoring underground blocks!
+            TileController stepTile = GridManager.Instance.GetTileControllerInstance(stepPos.x, stepPos.z);
+
+            // If there's no map tile here, or the surface is strictly higher than our current height, we hit a wall/barrier!
+            if (stepTile == null || stepTile.gridPosition.y > defenderPos.y)
+            {
+                isWallKnockback = true;
+                break; // Stop pushing
+            }
+
+            // If another unit is standing on this step tile, we also stop pushing and do not occupy that space
+            if (stepTile.detectedUnit != null)
+            {
+                break;
+            }
+
+            // It's a valid empty tile (either same height or a cliff drop-down). Store it as our max push distance so far.
+            validGridPos = stepPos;
+            finalDestinationTile = stepTile;
+        }
+
+        // --- Apply Damage and Modifiers ---
+        bool modifierIsActive = true;
         
+        HitTarget(attacker, defender, modifierIsActive, isWallKnockback);
+
         if (OnKnockbackFired != null)
             OnKnockbackFired();
 
-        // 3D Voxel Coordinate Handling
-        Vector3Int defenderPos = defender.ownedTile.gridPosition;
-        Vector3Int newGridPos = defenderPos + (knockbackDirection * knockbackStrength);
-
-        newGridPos = ClampGridPosition(newGridPos);
-
-        TileController projectedTile = GridManager.Instance.GetTileControllerInstance(newGridPos.x, newGridPos.y, newGridPos.z);
-        if (projectedTile == null)
-            return;
-        if (projectedTile.detectedUnit != null)
-            return;
-
-        // Unit.MoveUnit deve ricevere le coord X e Z (se non l'hai convertito al Vector3Int pieno)
-        if (defender.MoveUnit(newGridPos.x, newGridPos.z, true) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+        if (isWallKnockback)
         {
-            defender.ownedTile.detectedUnit = null;
-            defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-            defender.ownedTile.tileShaderController.ResetEnemyTileFeedback();
-
-            TileController destinationTile = projectedTile;
-            MoveUnitToTile(defender, destinationTile);
-            
-            destinationTile.tileShaderController.EnemyTileFeedback();
+            Debug.Log($"{defender.unitTemplate.unitName} was slammed into a wall!");
         }
+
+        // --- Execute valid movement ---
+        // If we found a valid empty tile before hitting the wall (ex: knocked 1 tile, then hit a wall on the 2nd)
+        if (finalDestinationTile != null && validGridPos != defenderPos)
+        {
+            if (defender.MoveUnit(validGridPos.x, validGridPos.z, true) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+            {
+                defender.ownedTile.detectedUnit = null;
+                defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                defender.ownedTile.tileShaderController.ResetEnemyTileFeedback();
+
+                MoveUnitToTile(defender, finalDestinationTile);
+                
+                finalDestinationTile.tileShaderController.EnemyTileFeedback();
+            }
+        }
+
         var defenderAgent = defender.gameObject.GetComponent<EnemyAgent>();
         if (defenderAgent != null)
             defenderAgent.RemoveElementalBuff(defenderAgent);
@@ -112,7 +144,7 @@ public class PhysicalAttackBehavior : ScriptableObject
         Vector3Int defenderPos = defender.ownedTile.gridPosition;
 
         int deltaX = attackerPos.x - defenderPos.x;
-        int deltaZ = attackerPos.z - defenderPos.z; // Z al posto della Y!
+        int deltaZ = attackerPos.z - defenderPos.z; // Use Z instead of Y!
 
         knockbackDirection = Vector3Int.zero;
         if (Mathf.Abs(deltaX) > Mathf.Abs(deltaZ))
@@ -178,18 +210,25 @@ public class PhysicalAttackBehavior : ScriptableObject
         return meleeRange;
     }
 
-    protected void HitTarget(Unit attacker, Unit defender, bool modifierIsActive)
+    protected void HitTarget(Unit attacker, Unit defender, bool modifierIsActive, bool isWallKnockback = false)
     {
-        float damage = CalculateDamage(attacker, defender, modifierIsActive);
+        float damage = CalculateDamage(attacker, defender, modifierIsActive, isWallKnockback);
         defender.TakeDamage(damage);
-        BroadcastAttackNotification($"{attacker.unitTemplate.unitName} used Melee Attack");
+        
+        string wallMessage = isWallKnockback ? " (Wall Slam!)" : "";
+        BroadcastAttackNotification($"{attacker.unitTemplate.unitName} used Melee Attack" + wallMessage);
     }
 
-    private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive)
+    private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive, bool isWallKnockback = false)
     {
         float damageOutput = attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage;
         if (modifierIsActive)
             damageOutput += 2;
+            
+        // Extra punitive damage for hitting the wall!
+        if (isWallKnockback)
+            damageOutput += 3;
+            
         return damageOutput;
     }
 }
