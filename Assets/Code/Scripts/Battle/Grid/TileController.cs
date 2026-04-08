@@ -148,18 +148,67 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     {
         if (GridManager.IsUnitMoving)
             return;
-        if (detectedUnit == null)
-            return;
-        if (detectedUnit.CompareTag("Player"))
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray, 100f);
+
+        // Sort the hits by distance so we evaluate them front-to-back
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        TileController actualTargetTile = this;
+        int highestPriority = -1;
+
+        foreach (var hit in hits)
+        {
+            TileController hitTile = hit.collider.GetComponentInParent<TileController>();
+            if (hitTile != null)
+            {
+                int currentPriority = 0; // default for an empty tile
+
+                if (hitTile.detectedUnit != null)
+                {
+                    // Highest priority: Unselected playable units
+                    if (hitTile.detectedUnit.CompareTag("Player"))
+                        currentPriority = 2;
+                    // Lower priority: Enemies or the already Active Unit
+                    else if (hitTile.detectedUnit.CompareTag("Enemy") || hitTile.detectedUnit.CompareTag("ActivePlayerUnit"))
+                        currentPriority = 1;
+                }
+
+                // Update best target if this tile is higher priority
+                if (currentPriority > highestPriority)
+                {
+                    highestPriority = currentPriority;
+                    actualTargetTile = hitTile;
+
+                    // If we found the absolute highest priority (Unselected Player), stop looking deeper
+                    if (highestPriority == 2)
+                        break; 
+                }
+                else if (highestPriority == -1 && currentPriority == 0)
+                {
+                    // Fallback to the first empty tile if no units have been hit yet
+                    highestPriority = 0;
+                    actualTargetTile = hitTile;
+                }
+            }
+        }
+
+        if (actualTargetTile != null && actualTargetTile.detectedUnit != null)
         {
             var unitSelection = FindAnyObjectByType<UnitSelectionController>();
-            unitSelection.SelectPlayerUnit(detectedUnit.GetComponent<Unit>());
+            
+            if (actualTargetTile.detectedUnit.CompareTag("Player") || actualTargetTile.detectedUnit.CompareTag("ActivePlayerUnit"))
+            {
+                unitSelection.SelectPlayerUnit(actualTargetTile.detectedUnit.GetComponent<Unit>());
+            }
+            else if (actualTargetTile.detectedUnit.CompareTag("Enemy"))
+            {
+                unitSelection.SelectEnemy(actualTargetTile.detectedUnit.GetComponent<Unit>());
+            }
         }
-        else if (detectedUnit.CompareTag("Enemy"))
-        {
 
-        }
-        OnClickedOnTile(this);
+        OnClickedOnTile(actualTargetTile);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
