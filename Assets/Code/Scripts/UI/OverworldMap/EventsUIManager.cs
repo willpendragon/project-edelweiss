@@ -56,11 +56,13 @@ public class EventsUIManager : MonoBehaviour
 
         Sequence s = DOTween.Sequence();
 
+        _canvasGroup.blocksRaycasts = true;
         s.Append(_canvasGroup.DOFade(1f, 0.5f))
          .AppendInterval(2.5f)
          .Append(_canvasGroup.DOFade(0f, 0.5f))
          .OnComplete(() =>
          {
+             _canvasGroup.blocksRaycasts = false;
              DOVirtual.DelayedCall(0.2f, () => ProcessQueue());
          });
     }

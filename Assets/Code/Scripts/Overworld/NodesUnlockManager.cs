@@ -46,8 +46,8 @@ public class NodesUnlockManager : MonoBehaviour
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
         int keyCount = gameSaveData.resourceData.puzzleLevelKeys;
-        string message = $"Key Count: {keyCount}"; // Also add the reference to the icon in the Font Asset.
-        OverworldUIManager.Instance.UpdateKeyCounterText(keyCount.ToString());
+        string message = $"Keys<sprite=109> {keyCount}"; // Also add the reference to the icon in the Font Asset.
+        OverworldUIManager.Instance.UpdateKeyCounterText(message);
     }
 
     private bool IsLevelKeyAvailable()
@@ -70,6 +70,12 @@ public class NodesUnlockManager : MonoBehaviour
     }
     private void GenerateNode()
     {
+        MeshRenderer existingMesh = _nodeSpawnPoint.GetComponentInChildren<MeshRenderer>();
+        if (existingMesh != null)
+        {
+            Destroy(existingMesh.gameObject);
+        }
+
         // Notify Node Appearing
         // Spawn the Node GameObject
         GameObject unlockedNode = Instantiate(_mapNode, _nodeSpawnPoint);
