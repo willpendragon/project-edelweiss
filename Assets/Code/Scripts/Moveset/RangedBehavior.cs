@@ -4,31 +4,35 @@ using UnityEngine;
 public class RangedBehavior : PhysicalAttackBehavior
 {
     [Header("Ranged Specifics")]
-    public int maxAttackRange = 10; // Set to 10 as requested!
-    public int minAttackRange = 1;  // Set to 2 if you want "dead zones" right next to the archer
+    public int maxAttackRange = 10;
+    public int minAttackRange = 2;
+
+    [Header("Ranged Damage Modifiers")]
+    [Tooltip("Percentage damage increase per flat tile of distance (e.g. 0.1 for +10% per tile)")]
+    public float distanceDamageMultiplier = 0.1f;
+    [Tooltip("Percentage damage increase per tile of vertical advantage (e.g. 0.15 for +15% per tile higher)")]
+    public float heightDamageMultiplier = 0.15f;
 
     public override void AttackSequence(Unit targetUnit, TileController targetTile, Unit activePlayerUnit)
     {
-        // 1. Get Positions
-        Vector2Int attackerPos = activePlayerUnit.GetGridPosition();
+        // 1. Get completely accurate 3D Voxel positions
+        Vector3Int attackerPos = activePlayerUnit.ownedTile.gridPosition;
+        Vector3Int targetPos = targetTile.gridPosition;
 
-        // If we have a unit, get its position. If we are hitting an empty tile/obstacle, get the tile's position.
-        Vector2Int targetPos = targetUnit != null ? targetUnit.GetGridPosition() : GetTilePosition(targetTile);
-
-        // 2. Calculate Distance (Chebyshev / Square style for easy diagonal targeting)
-        int distanceX = Mathf.Abs(attackerPos.x - targetPos.x);
-        int distanceY = Mathf.Abs(attackerPos.y - targetPos.y);
-        int distance = Mathf.Max(distanceX, distanceY);
-
-        /* // NOTE: If you decide you want the classic Final Fantasy Tactics "Diamond" shape range instead, 
-        // comment out the line above and uncomment the line below:
-        // int distance = distanceX + distanceY; 
-        */
-
-        // 3. Validate Range
-        if (distance < minAttackRange || distance > maxAttackRange)
+        if (targetUnit != null && targetUnit.ownedTile != null)
         {
-            Debug.LogWarning($"Attack canceled! Target is at distance {distance}, but range is {minAttackRange}-{maxAttackRange}.");
+            targetPos = targetUnit.ownedTile.gridPosition;
+        }
+
+        // 2. Calculate Distance (Chebyshev / Square style on the flat X/Z plane)
+        int distanceX = Mathf.Abs(attackerPos.x - targetPos.x);
+        int distanceZ = Mathf.Abs(attackerPos.z - targetPos.z);
+        int flatDistance = Mathf.Max(distanceX, distanceZ);
+
+        // 3. Validate Range (We enforce Minimum and Maximum horizontally only, ignoring Y to prevent illegal close drop-shots)
+        if (flatDistance < minAttackRange || flatDistance > maxAttackRange)
+        {
+            Debug.LogWarning($"Attack canceled! Target is at flat distance {flatDistance}, but range is {minAttackRange}-{maxAttackRange}.");
             return;
         }
 
@@ -42,40 +46,37 @@ public class RangedBehavior : PhysicalAttackBehavior
             Beacon beacon = targetTile.detectedUnit?.GetComponent<Beacon>();
             if (beacon != null) beacon.OnHitByUnit();
 
-            // Trigger Ranged Animation here when you have it set up in your BattleFeedbackController
+            // Trigger Animation 
             // activePlayerUnit.GetComponent<BattleFeedbackController>().PlayRangedAttackAnimation(activePlayerUnit, targetUnit);
 
             return;
         }
 
-        // 5. Handle Unit Attacks (Direct Damage, NO Knockback)
+        // 5. Handle Unit Attacks (Direct Damage calculation allowing custom height/range multipliers)
         if (targetUnit != null && targetUnit.unitType != Unit.UnitType.Deity)
         {
             // Subtract Opportunity Points
             activePlayerUnit.unitOpportunityPoints -= 1;
 
-            // Apply Damage directly. We pass 'false' because knockback modifiers don't apply here.
-            HitTarget(activePlayerUnit, targetUnit, false);
+            // Calculate vertical difference
+            int elevationDifference = attackerPos.y - targetPos.y;
 
-            Debug.Log($"{activePlayerUnit.unitTemplate.unitName} fired a ranged attack at {targetUnit.unitTemplate.unitName} from {distance} tiles away!");
+            // Calculate base identical to old HitTarget setup
+            float baseDamageOutput = activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage;
+            
+            // Apply Distant & Elevation Multipliers
+            float distanceBonus = distanceDamageMultiplier * flatDistance;
+            float elevationBonus = elevationDifference > 0 ? (heightDamageMultiplier * elevationDifference) : 0f;
+
+            // Compile the final damage output
+            float finalDamage = baseDamageOutput * (1f + distanceBonus + elevationBonus);
+
+            // Apply Damage directly and fire UI text via Broadcast
+            targetUnit.TakeDamage(finalDamage);
+            BroadcastAttackNotification($"{activePlayerUnit.unitTemplate.unitName} used Ranged Attack");
+
+            Debug.Log($"{activePlayerUnit.unitTemplate.unitName} fired a ranged attack at {targetUnit.unitTemplate.unitName}! Distance: {flatDistance}, Elevation: {elevationDifference}, Final Damage: {finalDamage}");
         }
-    }
-
-    // Helper method to extract grid coordinates from a TileController
-    private Vector2Int GetTilePosition(TileController tile)
-    {
-        // Assuming your TileController has an X and Y coordinate. 
-        // You may need to tweak this depending on how your specific TileController stores its grid position!
-        // Example: return new Vector2Int(tile.gridX, tile.gridY);
-
-        if (tile != null)
-        {
-            // Fallback: If your tile doesn't store gridX/gridY but uses world position, 
-            // you might need to convert transform.position to grid coordinates here.
-            Debug.LogWarning("Make sure GetTilePosition is correctly pulling your tile's grid coordinates!");
-        }
-
-        return Vector2Int.zero;
     }
 
     public override int GetAttackRange()
