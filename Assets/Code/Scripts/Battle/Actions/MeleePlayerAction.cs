@@ -41,12 +41,24 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
     }
     private bool IsEnemyReachable(Unit activePlayerUnit, TileController targetTile)
     {
-        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-        int distance = gridMovementController.GetDistance(activePlayerUnit.ownedTile, targetTile);
+        // Voxel Distance Calculation (Manhattan Distance)
+        Vector3Int pPos = activePlayerUnit.ownedTile.gridPosition;
+        Vector3Int targetPos = targetTile.gridPosition;
 
-        meleeRange = activePlayerUnit.unitTemplate.physicAttackBehavior.GetAttackRange(); // Retrieve melee range from SO.
+        // Quanti "blocchi" di mappa tra l'attaccante e il difensore?
+        // Z rimpiazza la vecchia Y per la profondità orizzontale.
+        int distanceX = Mathf.Abs(pPos.x - targetPos.x);
+        int distanceZ = Mathf.Abs(pPos.z - targetPos.z);
+        
+        // Puoi decidere che l'attacco valga anche per i dislivelli Y, e aggiungere:
+        // int distanceY = Mathf.Abs(pPos.y - targetPos.y); 
+        // per far sì che colpire un nemico su una torre alta 3 blocchi ti costi "3 range".
+        // Per ora calcoliamo in piano come fosse FFTactics standard:
+        int actualDistance = distanceX + distanceZ;
 
-        if (distance > meleeRange)
+        meleeRange = activePlayerUnit.unitTemplate.physicAttackBehavior.GetAttackRange(); 
+
+        if (actualDistance > meleeRange)
         {
             return false;
         }

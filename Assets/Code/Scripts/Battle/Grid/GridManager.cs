@@ -111,31 +111,32 @@ public class GridManager : MonoBehaviour
             return;
         }
 
-        // Set Grid Boundaries
         GridManager.Instance.gridHorizontalSize = currentMapData.horizontalSize;
         GridManager.Instance.gridVerticalSize = currentMapData.verticalSize;
 
+        Vector3 tileSize = GetTileWorldSize3D(); // USA L'HELPER!
+
         foreach (var tileData in currentMapData.tilePositions)
         {
-            Vector3 tilePosition = new Vector3(tileData.position.x * (1 + inBetweenTilesXOffset), tileVerticalOffset, tileData.position.y * (1 + inBetweenTilesYOffset));
+            Vector3 tilePosition = new Vector3(
+                tileData.position.x * (tileSize.x + inBetweenTilesXOffset), 
+                tileData.position.y * tileSize.y, 
+                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondità
+            );
+
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
             TileController tileController = tilePrefabInstance.GetComponent<TileController>();
-            tileController.tileXCoordinate = tileData.position.x;
-            tileController.tileYCoordinate = tileData.position.y;
-            tileController.tileType = tileData.tileType; // Set the tile type
-            PositionKey positionKey = new PositionKey(tileData.position.x, tileData.position.y, tilePrefab);
+            
+            tileController.gridPosition = tileData.position;
+            tileController.tileType = tileData.tileType; 
+            
+            PositionKey positionKey = new PositionKey(tileData.position, tilePrefab);
 
             if (!gridMapDictionary.ContainsKey(positionKey))
             {
                 gridMapDictionary.Add(positionKey, tileController);
             }
-            else
-            {
-                Debug.LogWarning("Duplicate key found when adding GameObject to dictionary!");
-            }
         }
-
-        //Debug.Log("Dictionary Count: " + gridMapDictionary.Count);
     }
 
     private void ClearGridMap()
@@ -158,37 +159,34 @@ public class GridManager : MonoBehaviour
         return lineRendererInstance;
     }
 
-    public TileController GetTileControllerInstance(int xCoordinate, int yCoordinate)
+    public TileController GetTileControllerInstance(int xCoordinate, int elevationY, int zCoordinate)
     {
-        PositionKey positionKeyToFind = new PositionKey(xCoordinate, yCoordinate, null);
+        PositionKey positionKeyToFind = new PositionKey(xCoordinate, elevationY, zCoordinate, null);
 
         if (gridMapDictionary.TryGetValue(positionKeyToFind, out TileController result))
         {
-            if (result != null)
-            {
-                TileController tileController = result.GetComponent<TileController>();
-
-                if (tileController != null)
-                {
-                    return tileController;
-                }
-                else
-                {
-                    Debug.LogError("TileController component not found");
-                    return null;
-                }
-            }
-            else
-            {
-                Debug.LogError("GameObject is null.");
-                return null;
-            }
+            return result;
         }
-        else
+        return null;
+    }
+    
+    // VERSIONE "SOVRACCARICATA" EXTRA 2D PER NON ROMPERE TUTTO SUBITO
+    // Molti tuoi script passano ancora (X, Y) credendo sia la vista dall'alto (dove la loro vecchia Y è ora la nostra Z)
+    // Usiamo questa per cercare i tile al "Piano Terra" (Elevazione 0).
+    public TileController GetTileControllerInstance(int xCoordinate, int zOrOldYCoordinate)
+    {
+        // Partiamo da un'elevazione massima (es. 20 blocchi di altezza) e scendiamo
+        // finché non troviamo il primo blocco fisico esistente.
+        for (int y = 20; y >= 0; y--)
         {
-            Debug.Log("Key not found");
-            return null;
+            TileController tile = GetTileControllerInstance(xCoordinate, y, zOrOldYCoordinate);
+            if (tile != null)
+            {
+                return tile; // Trovato! Restituiamo il Voxel sulla cima della collina!
+            }
         }
+        
+        return null; // Nessun tile in questa colonna
     }
     public List<Vector2Int> GetExistingTileCoordinates()
     {
@@ -233,16 +231,37 @@ public class GridManager : MonoBehaviour
             Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
         }
     }
-    public Vector3 GetWorldPositionFromGridCoordinates(int x, int y)
+    public Vector3 GetWorldPositionFromGridCoordinates(int x, int z)
     {
-        float worldX = x * (1 + inBetweenTilesXOffset);
-        float worldZ = y * (1 + inBetweenTilesYOffset);
+        for (int y = 20; y >= 0; y--)
+        {
+            TileController tile = GetTileControllerInstance(x, y, z);
+            if (tile != null)
+            {
+                float surfaceY = tile.transform.position.y;
+                BoxCollider col = tile.GetComponent<BoxCollider>();
+                if (col != null)
+                {
+                    surfaceY += col.bounds.extents.y;
+                }
+                
+                return new Vector3(tile.transform.position.x, surfaceY, tile.transform.position.z);
+            }
+        }
+        
+        // CORREZIONE AL FALLBACK
+        Vector3 tileSize = GetTileWorldSize3D();
+        float worldX = x * (tileSize.x + inBetweenTilesXOffset);
+        float worldZ = z * (tileSize.z + inBetweenTilesYOffset);
         return new Vector3(worldX, 0, worldZ);
     }
     public Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPosition)
     {
-        int x = Mathf.RoundToInt(worldPosition.x / (1 + inBetweenTilesXOffset));
-        int y = Mathf.RoundToInt(worldPosition.z / (1 + inBetweenTilesYOffset));
+        // CORREZIONE DELLA VETTORIZZZAZIONE INVERSA
+        Vector3 tileSize = GetTileWorldSize3D();
+        int x = Mathf.RoundToInt(worldPosition.x / (tileSize.x + inBetweenTilesXOffset));
+        int y = Mathf.RoundToInt(worldPosition.z / (tileSize.z + inBetweenTilesYOffset));
+
         return new Vector2Int(x, y);
     }
     public void RemoveTrapSelection()
@@ -291,5 +310,44 @@ public class GridManager : MonoBehaviour
         {
             tileShader.SetTileGlowIntensity(0f);
         }
+    }
+
+    /// <summary>
+    /// Posiziona un GameObject (es. Unità) esattamente sopra la superficie calpestabile di un Tile,
+    /// compensando in automatico qualsiasi offset errato o pivot strano dei figli (SpriteRenderer).
+    /// </summary>
+    public void PlaceUnitOnTileSurface(GameObject unitToPlace, TileController targetTile)
+    {
+        if (unitToPlace == null || targetTile == null) return;
+
+        // Anziché usare posizioni relative o bounds, usiamo la cima esatta del Renderer o del Collider!
+        float finalY = targetTile.transform.position.y;
+        
+        Collider col = targetTile.GetComponent<Collider>();
+        if (col != null)
+        {
+            // bounds.max.y ti dà il punto ASSOLUTO in altezza top nello spazio mondo di QUEL cubo!
+            finalY = col.bounds.max.y;
+        }
+
+        Debug.Log($"[VOXEL MATH] Sposto {unitToPlace.name} ad altezza reale Y = {finalY}");
+
+        unitToPlace.transform.position = new Vector3(
+            targetTile.transform.position.x,
+            finalY,
+            targetTile.transform.position.z
+        );
+    }
+
+    public Vector3 GetTileWorldSize3D()
+    {
+        if (tilePrefab == null) return Vector3.one;
+        BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
+        if (col != null) 
+        {
+            // Moltiplica la grandezza pura per la scala del Prefab! (Es: 1 * 1.5 = 1.5)
+            return Vector3.Scale(col.size, tilePrefab.transform.localScale);
+        }
+        return tilePrefab.transform.localScale;
     }
 }
