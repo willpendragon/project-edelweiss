@@ -1,6 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum NodeType
+{
+    RegularBattle,
+    PuzzleBattle,
+    MinibossBattle,
+    BossBattle
+}
+
 public class OverworldMapGenerator : MonoBehaviour
 {
     public List<Domain> domains = new List<Domain>();
@@ -10,6 +18,12 @@ public class OverworldMapGenerator : MonoBehaviour
     [Header("Configuration")]
     [Tooltip("Assegna qui la tua configurazione ScriptableObject")]
     public MapGenerationConfig config;
+
+    [Header("Node Distribution Weights")]
+    [Range(0, 100)] public float regularBattleWeight = 70f;
+    [Range(0, 100)] public float puzzleBattleWeight = 20f;
+    [Range(0, 100)] public float minibossBattleWeight = 10f;
+    [Range(0, 100)] public float bossBattleWeight = 0f; // Typically placed deliberately
 
     [Header("Visuals & UI")]
     [Tooltip("Materiale per la linea del percorso (evita il bug della linea fucsia)")]
@@ -26,7 +40,6 @@ public class OverworldMapGenerator : MonoBehaviour
 
     public Transform currentMapNodeTransform;
 
-    private LineRenderer lineRenderer;
     private List<Vector3> nodePositions = new List<Vector3>();
     private int currentDomainId = 0;
 
@@ -34,6 +47,7 @@ public class OverworldMapGenerator : MonoBehaviour
     private Domain currentDomain;
     private List<GameObject> spawnedNodes = new List<GameObject>();
     private List<GameObject> spawnedPartyIcons = new List<GameObject>();
+    private List<GameObject> spawnedLines = new List<GameObject>();
     private bool needsRegeneration = false;
 
     private float lastMapWidth;
@@ -84,7 +98,6 @@ public class OverworldMapGenerator : MonoBehaviour
         }
     }
 
-    // Aggiungiamo comunque OnValidate per sicurezza sulla checkbox
     private void OnValidate()
     {
         if (Application.isPlaying && autoUpdateInPlayMode)
@@ -109,39 +122,9 @@ public class OverworldMapGenerator : MonoBehaviour
         GameSaveData gameSaveData = SaveStateManager.LoadGame();
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
 
-        lineRenderer = GetComponent<LineRenderer>();
-        if (lineRenderer == null)
-        {
-            lineRenderer = gameObject.AddComponent<LineRenderer>();
-        }
-
-        // --- FIX LINE RENDERER TWISTING ---
-        // Imposta l'allineamento della linea rispetto all'asse Z del Transform anziché alla telecamera
-        lineRenderer.alignment = LineAlignment.TransformZ;
-        
-        // Ruota il Transform in modo che il suo asse Z guardi verso l'alto (sull'asse Y globale).
-        // (Assicurati che questo script sia assegnato a un GameObject che può essere ruotato senza rompere altro, 
-        // altrimenti è meglio creare un GameObject figlio dedicato solo per il LineRenderer).
-        lineRenderer.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-
-        // Aggiunge vertici per arrotondare gli angoli: evita del tutto gli "spigoli rotti"
-        lineRenderer.numCornerVertices = 4;
-        lineRenderer.numCapVertices = 4;
-        // ----------------------------------
-
-        // Assegniamo il materiale se è stato fornito
-        if (pathLineMaterial != null)
-        {
-            lineRenderer.material = pathLineMaterial;
-        }
-        
-        lineRenderer.positionCount = domainLevelSelection.levelList.Length;
-        lineRenderer.startWidth = 0.5f;
-        lineRenderer.endWidth = 0.5f;
-        lineRenderer.useWorldSpace = true; // Assicura l'allineamento assoluto
-
         List<Vector3> scatteredPositions = new List<Vector3>();
 
+        // 1. Scatter nodes avoiding overlapping
         for (int i = 0; i < domainLevelSelection.levelList.Length; i++)
         {
             Vector3 testPosition = Vector3.zero;
@@ -170,38 +153,86 @@ public class OverworldMapGenerator : MonoBehaviour
             scatteredPositions.Add(testPosition);
         }
 
+        // 2. Sort from left to right to build an advancing mesh
         scatteredPositions.Sort((a, b) => a.x.CompareTo(b.x));
 
+        // 3. Determine mesh connections (multi-path)
+        List<Vector2Int> connections = new List<Vector2Int>();
+        for (int i = 0; i < scatteredPositions.Count; i++)
+        {
+            List<int> forwardNeighbors = new List<int>();
+            for (int j = i + 1; j < scatteredPositions.Count; j++)
+            {
+                forwardNeighbors.Add(j);
+            }
+            
+            // Sort remaining forward nodes by distance
+            forwardNeighbors.Sort((a, b) => Vector3.Distance(scatteredPositions[i], scatteredPositions[a]).CompareTo(Vector3.Distance(scatteredPositions[i], scatteredPositions[b])));
+            
+            // Randomly branch 1 to 2 paths ahead towards the nearest nodes
+            int branchingPaths = Mathf.Min(Random.Range(1, 3), forwardNeighbors.Count);
+            for (int k = 0; k < branchingPaths; k++)
+            {
+                connections.Add(new Vector2Int(i, forwardNeighbors[k]));
+            }
+        }
+
+        // 4. Instantiate lines
+        foreach (Vector2Int edge in connections)
+        {
+            GameObject lineObj = new GameObject($"MapLine_{edge.x}_{edge.y}");
+            lineObj.transform.SetParent(mapNodeTransform);
+            LineRenderer lr = lineObj.AddComponent<LineRenderer>();
+            
+            lr.alignment = LineAlignment.TransformZ;
+            lr.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            lr.numCornerVertices = 4;
+            lr.numCapVertices = 4;
+            if (pathLineMaterial != null) lr.material = pathLineMaterial;
+            
+            lr.startWidth = 0.5f;
+            lr.endWidth = 0.5f;
+            lr.useWorldSpace = true;
+            
+            lr.positionCount = 2;
+            lr.SetPosition(0, scatteredPositions[edge.x] + new Vector3(0, lineVerticalOffset, 0));
+            lr.SetPosition(1, scatteredPositions[edge.y] + new Vector3(0, lineVerticalOffset, 0));
+            
+            spawnedLines.Add(lineObj);
+        }
+
+        // 5. Instantiate node objects
         for (int i = 0; i < domainLevelSelection.levelList.Length; i++)
         {
             Vector3 finalPosition = scatteredPositions[i];
-            
+
             GameObject newNode = Instantiate(mapNode, finalPosition, Quaternion.identity);
-            
+            NodeType nodeType = GenerateNodeType();
+
+            MapNodeController nodeController = newNode.GetComponentInChildren<MapNodeController>();
+            if (nodeController != null)
+            {
+                nodeController.type = nodeType;
+            }
+
             spawnedNodes.Add(newNode);
 
             newNode.GetComponent<EnemySelection>().enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
             newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
             newNode.GetComponent<EnemySelection>().mapData = domainLevelSelection.levelList[i].map;
 
+            // Make all nodes interactable
+            UpdateNodeVisuals(newNode);
+            UnlockLevel(newNode);
+
+            // Keep the party member visual on the relevant progression node
             if (i == highestUnlockedLevel)
             {
                 currentMapNodeTransform = newNode.transform;
-                UpdateNodeVisuals(newNode);
-                UnlockLevel(newNode);
                 UpdatePartyMemberVisuals(newNode);
-            }
-            else
-            {
-                newNode.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
-                newNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelLocked;
             }
 
             nodePositions.Add(finalPosition);
-
-            // Alziamo la posizione della linea rispetto al nodo per evitare compenetrazioni (Z-Fighting)
-            Vector3 linePosition = finalPosition + new Vector3(0, lineVerticalOffset, 0);
-            lineRenderer.SetPosition(i, linePosition);
         }
     }
 
@@ -227,7 +258,37 @@ public class OverworldMapGenerator : MonoBehaviour
 
     private void UpdateNodeVisuals(GameObject mapNode)
     {
-        mapNode.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+        MapNodeController nodeController = mapNode.GetComponentInChildren<MapNodeController>();
+        Color color = nodeController != null ? GetNodeTypeColor(nodeController.type) : Color.green;
+        mapNode.GetComponentInChildren<MeshRenderer>().material.color = color;
+    }
+
+    private Color GetNodeTypeColor(NodeType type)
+    {
+        switch (type)
+        {
+            case NodeType.RegularBattle: return Color.white;
+            case NodeType.PuzzleBattle: return Color.blue;
+            case NodeType.MinibossBattle: return Color.yellow;
+            case NodeType.BossBattle: return Color.red;
+            default: return Color.white;
+        }
+    }
+
+    private NodeType GenerateNodeType()
+    {
+        float totalWeight = regularBattleWeight + puzzleBattleWeight + minibossBattleWeight + bossBattleWeight;
+        float randomVal = Random.Range(0, totalWeight);
+
+        if (randomVal < regularBattleWeight) return NodeType.RegularBattle;
+        randomVal -= regularBattleWeight;
+
+        if (randomVal < puzzleBattleWeight) return NodeType.PuzzleBattle;
+        randomVal -= puzzleBattleWeight;
+
+        if (randomVal < minibossBattleWeight) return NodeType.MinibossBattle;
+
+        return NodeType.BossBattle;
     }
 
     private void RegenerateMap()
@@ -249,9 +310,14 @@ public class OverworldMapGenerator : MonoBehaviour
             if (icon != null) Destroy(icon);
         }
         spawnedPartyIcons.Clear();
+        
+        foreach (var line in spawnedLines)
+        {
+            if (line != null) Destroy(line);
+        }
+        spawnedLines.Clear();
 
         nodePositions.Clear();
-        if (lineRenderer != null) lineRenderer.positionCount = 0;
     }
 
     private void OnDrawGizmosSelected()

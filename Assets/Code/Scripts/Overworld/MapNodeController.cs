@@ -16,13 +16,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         levelUnlocked
     }
 
-    public enum MapNodeType
-    {
-        RegularBattleNode,
-        BossBattleNode
-    }
-
-    public MapNodeType type;
+    public NodeType type;
     public LockStatus currentLockStatus;
     [SerializeField] List<Vector2> playerUnitsBossBattleStartingCoords;
 
@@ -78,11 +72,15 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     {
         switch (type)
         {
-            case MapNodeType.RegularBattleNode:
+            case NodeType.RegularBattle:
+            case NodeType.PuzzleBattle:
+            case NodeType.MinibossBattle:
+            case NodeType.BossBattle:
                 HandleRegularBattle();
                 break;
         }
     }
+    
     private void HandleRegularBattle()
     {
         NodesUnlockManager nodesUnlockManager = GameManager.Instance.NodesUnlockManager;
