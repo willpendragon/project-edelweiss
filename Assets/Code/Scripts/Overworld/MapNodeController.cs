@@ -19,6 +19,10 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     public NodeType type;
     public LockStatus currentLockStatus;
     [SerializeField] List<Vector2> playerUnitsBossBattleStartingCoords;
+    
+    // Identifier for tracking the map progression graph
+    [HideInInspector] public int nodeId;
+    [HideInInspector] public OverworldMapGenerator mapGenerator;
 
     void Start()
     {
@@ -35,7 +39,16 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            OpenLocationEnterPanel();
+            // If the player party is already on this node, try entering the battle. 
+            // Otherwise, attempt to step towards it.
+            if (mapGenerator != null && mapGenerator.currentNodeId == this.nodeId)
+            {
+                OpenLocationEnterPanel();
+            }
+            else if (mapGenerator != null)
+            {
+                mapGenerator.MoveToNode(this.nodeId);
+            }
         }
     }
 
@@ -93,12 +106,13 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         Time.timeScale = 1f;
         enemySelection.SelectMapNode();
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
-        OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(_dayCost);
+        OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(_dayCost); // We increment it additionally here inside interaction optionally.
     }
 
     private void SetOverworldUIVisibility(float alpha)
     {
         var mapMenuController = FindAnyObjectByType<OverworldMapUIController>();
-        mapMenuController.transform.GetComponent<CanvasGroup>().alpha = alpha;
+        if (mapMenuController != null && mapMenuController.transform.GetComponent<CanvasGroup>() != null)
+            mapMenuController.transform.GetComponent<CanvasGroup>().alpha = alpha;
     }
 }

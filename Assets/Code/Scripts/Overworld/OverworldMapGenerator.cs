@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening; // Import DOTween 
 
 public enum NodeType
 {
@@ -38,7 +40,8 @@ public class OverworldMapGenerator : MonoBehaviour
     [Tooltip("Se attivo, le modifiche all'inspector rigenereranno la mappa in tempo reale")]
     public bool autoUpdateInPlayMode = true;
 
-    public Transform currentMapNodeTransform;
+    [HideInInspector] public Transform currentMapNodeTransform;
+    [HideInInspector] public int currentNodeId; 
 
     private List<Vector3> nodePositions = new List<Vector3>();
     private int currentDomainId = 0;
@@ -49,6 +52,9 @@ public class OverworldMapGenerator : MonoBehaviour
     private List<GameObject> spawnedPartyIcons = new List<GameObject>();
     private List<GameObject> spawnedLines = new List<GameObject>();
     private bool needsRegeneration = false;
+    
+    private Dictionary<int, List<int>> adjacencyList = new Dictionary<int, List<int>>();
+    private bool isMoving = false;
 
     private float lastMapWidth;
     private float lastMapDepth;
@@ -123,6 +129,7 @@ public class OverworldMapGenerator : MonoBehaviour
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
 
         List<Vector3> scatteredPositions = new List<Vector3>();
+        adjacencyList.Clear();
 
         // 1. Scatter nodes avoiding overlapping
         for (int i = 0; i < domainLevelSelection.levelList.Length; i++)
@@ -151,6 +158,7 @@ public class OverworldMapGenerator : MonoBehaviour
             }
 
             scatteredPositions.Add(testPosition);
+            adjacencyList[i] = new List<int>(); // Build up our graph representation mapping.
         }
 
         // 2. Sort from left to right to build an advancing mesh
@@ -174,6 +182,8 @@ public class OverworldMapGenerator : MonoBehaviour
             for (int k = 0; k < branchingPaths; k++)
             {
                 connections.Add(new Vector2Int(i, forwardNeighbors[k]));
+                adjacencyList[i].Add(forwardNeighbors[k]);
+                adjacencyList[forwardNeighbors[k]].Add(i); // Make paths bidirectional.
             }
         }
 
@@ -213,6 +223,8 @@ public class OverworldMapGenerator : MonoBehaviour
             if (nodeController != null)
             {
                 nodeController.type = nodeType;
+                nodeController.nodeId = i;
+                nodeController.mapGenerator = this;
             }
 
             spawnedNodes.Add(newNode);
@@ -221,19 +233,117 @@ public class OverworldMapGenerator : MonoBehaviour
             newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
             newNode.GetComponent<EnemySelection>().mapData = domainLevelSelection.levelList[i].map;
 
-            // Make all nodes interactable
+            // Make all nodes interactable globally, but control state via IDs.
             UpdateNodeVisuals(newNode);
             UnlockLevel(newNode);
 
+            // Determine if this is the start position (fallback to highest unlocked level dynamically).
+            int visualStartNodeId = gameSaveData.currentNodeId;
+            if (visualStartNodeId < 0 || visualStartNodeId >= domainLevelSelection.levelList.Length)
+            {
+                visualStartNodeId = highestUnlockedLevel;
+            }
+
             // Keep the party member visual on the relevant progression node
-            if (i == highestUnlockedLevel)
+            if (i == visualStartNodeId)
             {
                 currentMapNodeTransform = newNode.transform;
+                currentNodeId = i; 
                 UpdatePartyMemberVisuals(newNode);
             }
 
             nodePositions.Add(finalPosition);
         }
+    }
+
+    public void MoveToNode(int targetId)
+    {
+        if (isMoving || currentNodeId == targetId) return;
+
+        List<int> shortestPath = PathfindingBFS(currentNodeId, targetId);
+        
+        if (shortestPath != null && shortestPath.Count > 1) 
+        {
+            StartCoroutine(MovePartyRoutine(shortestPath));
+        }
+    }
+
+    private List<int> PathfindingBFS(int start, int target)
+    {
+        Queue<int> pathQueue = new Queue<int>();
+        Dictionary<int, int> parentMap = new Dictionary<int, int>();
+        
+        pathQueue.Enqueue(start);
+        parentMap[start] = -1;
+
+        while (pathQueue.Count > 0)
+        {
+            int current = pathQueue.Dequeue();
+            if (current == target) break;
+
+            foreach (int neighbor in adjacencyList[current])
+            {
+                if (!parentMap.ContainsKey(neighbor))
+                {
+                    parentMap[neighbor] = current;
+                    pathQueue.Enqueue(neighbor);
+                }
+            }
+        }
+
+        if (!parentMap.ContainsKey(target)) return null; // Path blocked / not found. Re-routes shouldn't happen unless broken manually.
+
+        List<int> calculatedPath = new List<int>();
+        int backtrackNode = target;
+
+        while (backtrackNode != -1)
+        {
+            calculatedPath.Add(backtrackNode);
+            backtrackNode = parentMap[backtrackNode];
+        }
+        
+        calculatedPath.Reverse();
+        return calculatedPath;
+    }
+
+    private IEnumerator MovePartyRoutine(List<int> path)
+    {
+        isMoving = true;
+        
+        GameStatsManager gameStatsManager = FindAnyObjectByType<GameStatsManager>();
+
+        for (int i = 1; i < path.Count; i++) // Starts from 1 assuming 0 is actual Start Position.
+        {
+            int nextNode = path[i];
+            Vector3 targetPosition = nodePositions[nextNode];
+            
+            Sequence stepSequence = DOTween.Sequence();
+            
+            float horizontalOffset = 2; 
+            float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f; 
+
+            for (int pIndex = 0; pIndex < spawnedPartyIcons.Count; pIndex++)
+            {
+                Vector3 destOffsetPosition = new Vector3(startOffset + horizontalOffset * pIndex, 0, iconZOffset);
+
+                stepSequence.Join(spawnedPartyIcons[pIndex].transform.DOMove(targetPosition + destOffsetPosition, 0.4f)
+                    .SetEase(Ease.InOutSine));
+            }
+
+            // Wait for characters animation layout gap to finish stepping.
+            yield return stepSequence.WaitForCompletion();
+            
+            currentNodeId = nextNode;
+            
+            if (gameStatsManager != null)
+            {
+                gameStatsManager.SaveCurrentNodeId(currentNodeId);
+            }
+            
+            // NOTE: Here we iterate steps and we currently can implement step tracking logic, later integrating the `CalendarController` hooks.
+        }
+
+        isMoving = false;
     }
 
     private void UpdatePartyMemberVisuals(GameObject mapNode)
@@ -318,6 +428,7 @@ public class OverworldMapGenerator : MonoBehaviour
         spawnedLines.Clear();
 
         nodePositions.Clear();
+        adjacencyList.Clear();
     }
 
     private void OnDrawGizmosSelected()

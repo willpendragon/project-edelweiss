@@ -15,6 +15,8 @@ public class GameStatsManager : MonoBehaviour
 
     [SerializeField] private bool _secretLevelUnlocked; // Flow related bool.
 
+    public int currentNodeId; // Expose to Unity Editor logically
+
     public Inventory inventory;
     [SerializeField] FaithController faithController;
     [SerializeField] TurnController _turnController;
@@ -30,6 +32,7 @@ public class GameStatsManager : MonoBehaviour
         LoadEnemiesKilled();
         LoadUsedSingleTargetSpells();
         LoadUnlockedKeys();
+        LoadCurrentNodeId(); // Bind the retrieval sequence
     }
     void Start()
     {
@@ -416,6 +419,27 @@ public class GameStatsManager : MonoBehaviour
             gameSaveData.gameFlowData.secretLevelUnlocked = hasUnlockedSecretLevel;
             SaveStateManager.SaveGame(gameSaveData);
             Debug.Log($"Saved Game Flow Data: Has Unlocked Secret Level = {hasUnlockedSecretLevel}");
+        }
+    }
+
+    public void LoadCurrentNodeId()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            currentNodeId = gameSaveData.currentNodeId;
+        }
+    }
+
+    public void SaveCurrentNodeId(int nodeId)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            gameSaveData.currentNodeId = nodeId;
+            currentNodeId = nodeId;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Player's Current Node Map position ID: {nodeId}");
         }
     }
 }
