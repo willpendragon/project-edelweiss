@@ -13,7 +13,8 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     public enum LockStatus
     {
         levelLocked,
-        levelUnlocked
+        levelUnlocked,
+        levelCleared
     }
 
     public NodeType type;
@@ -31,16 +32,17 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         {
             _iconCanvas.alpha = 1f;
         }
+        else if (currentLockStatus == LockStatus.levelCleared)
+        {
+            _iconCanvas.alpha = 0f;
+        }
         _mapMenuController = FindAnyObjectByType<OverworldMapUIController>();
-
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            // If the player party is already on this node, try entering the battle. 
-            // Otherwise, attempt to step towards it.
             if (mapGenerator != null && mapGenerator.currentNodeId == this.nodeId)
             {
                 OpenLocationEnterPanel();
@@ -52,11 +54,10 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    // UI Managements method must be moved in a dedicated class.
-
     private void OpenLocationEnterPanel()
     {
-        if (currentLockStatus == LockStatus.levelLocked)
+        // Prevent access if the node is locked or already cleared
+        if (currentLockStatus == LockStatus.levelLocked || currentLockStatus == LockStatus.levelCleared)
             return;
 
         SetCanvasVisibility(1f, true, true, Vector3.one);
@@ -102,11 +103,10 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             nodesUnlockManager.SpendKeyResource();
         }
 
-        // The sequence happening when the Player clicks on a node.
         Time.timeScale = 1f;
         enemySelection.SelectMapNode();
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
-        OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(_dayCost); // We increment it additionally here inside interaction optionally.
+        OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(_dayCost);
     }
 
     private void SetOverworldUIVisibility(float alpha)
@@ -114,5 +114,17 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         var mapMenuController = FindAnyObjectByType<OverworldMapUIController>();
         if (mapMenuController != null && mapMenuController.transform.GetComponent<CanvasGroup>() != null)
             mapMenuController.transform.GetComponent<CanvasGroup>().alpha = alpha;
+    }
+
+    public void SetCleared()
+    {
+        currentLockStatus = LockStatus.levelCleared;
+        if (_iconCanvas != null) _iconCanvas.alpha = 0f;
+    }
+
+    public void SetUnlocked()
+    {
+        currentLockStatus = LockStatus.levelUnlocked;
+        if (_iconCanvas != null) _iconCanvas.alpha = 1f;
     }
 }

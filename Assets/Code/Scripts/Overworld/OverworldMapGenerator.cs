@@ -234,8 +234,18 @@ public class OverworldMapGenerator : MonoBehaviour
             newNode.GetComponent<EnemySelection>().mapData = domainLevelSelection.levelList[i].map;
 
             // Make all nodes interactable globally, but control state via IDs.
-            UpdateNodeVisuals(newNode);
-            UnlockLevel(newNode);
+            bool isCleared = i < highestUnlockedLevel;
+
+            if (isCleared)
+            {
+                nodeController.SetCleared();
+            }
+            else
+            {
+                nodeController.SetUnlocked();
+            }
+
+            UpdateNodeVisuals(newNode, isCleared);
 
             // Determine if this is the start position (fallback to highest unlocked level dynamically).
             int visualStartNodeId = gameSaveData.currentNodeId;
@@ -317,21 +327,29 @@ public class OverworldMapGenerator : MonoBehaviour
             int nextNode = path[i];
             Vector3 targetPosition = nodePositions[nextNode];
             
-            Sequence stepSequence = DOTween.Sequence();
-            
             float horizontalOffset = 2; 
             float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f; 
 
+            Tween waitTween = null;
+
             for (int pIndex = 0; pIndex < spawnedPartyIcons.Count; pIndex++)
             {
-                Vector3 destOffsetPosition = new Vector3(startOffset + horizontalOffset * pIndex, 0, iconZOffset);
+                if (spawnedPartyIcons[pIndex] != null)
+                {
+                    Vector3 destOffsetPosition = new Vector3(startOffset + horizontalOffset * pIndex, 0, iconZOffset);
 
-                stepSequence.Join(spawnedPartyIcons[pIndex].transform.DOMove(targetPosition + destOffsetPosition, 0.4f)
-                    .SetEase(Ease.InOutSine));
+                    // Fire independent DOTween commands for each figure parallelly
+                    waitTween = spawnedPartyIcons[pIndex].transform
+                        .DOMove(targetPosition + destOffsetPosition, 0.4f)
+                        .SetEase(Ease.InOutSine);
+                }
             }
 
-            // Wait for characters animation layout gap to finish stepping.
-            yield return stepSequence.WaitForCompletion();
+            // Wait for the final character's animation (which matches the others) to finish stepping.
+            if (waitTween != null)
+            {
+                yield return waitTween.WaitForCompletion();
+            }
             
             currentNodeId = nextNode;
             
@@ -339,8 +357,6 @@ public class OverworldMapGenerator : MonoBehaviour
             {
                 gameStatsManager.SaveCurrentNodeId(currentNodeId);
             }
-            
-            // NOTE: Here we iterate steps and we currently can implement step tracking logic, later integrating the `CalendarController` hooks.
         }
 
         isMoving = false;
@@ -355,9 +371,24 @@ public class OverworldMapGenerator : MonoBehaviour
         for (int j = 0; j < partyMemberIcons.Length; j++)
         {
             Vector3 offsetPosition = new Vector3(startOffset + horizontalOffset * j, 0, 0);
-            GameObject newIcon = Instantiate(partyMemberIcons[j], partyMemberIconPosition + offsetPosition, Quaternion.identity);
             
-            spawnedPartyIcons.Add(newIcon);
+            // 1. Create an empty wrapper GameObject to act as our uncontested move target
+            GameObject iconWrapper = new GameObject($"PartyIconWrapper_{j}");
+            iconWrapper.transform.position = partyMemberIconPosition + offsetPosition;
+
+            // 2. Instantiate the prefab DIRECTLY as a local child. 
+            // Passing 'false' prevents World-to-Local conversion mathematical jumps when the Animator activates.
+            GameObject newIcon = Instantiate(partyMemberIcons[j], iconWrapper.transform, false);
+
+            // 3. Defensively disable root motion so Animator curves only govern local graphical bounce/sway, not physics.
+            Animator[] animators = newIcon.GetComponentsInChildren<Animator>();
+            foreach (var anim in animators)
+            {
+                anim.applyRootMotion = false;
+            }
+            
+            // 4. Track the wrapper so DOTween moves it instead of the animated child
+            spawnedPartyIcons.Add(iconWrapper);
         }
     }
 
@@ -366,10 +397,16 @@ public class OverworldMapGenerator : MonoBehaviour
         mapNode.GetComponentInChildren<MapNodeController>().currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
     }
 
-    private void UpdateNodeVisuals(GameObject mapNode)
+    private void UpdateNodeVisuals(GameObject mapNode, bool isCleared = false)
     {
         MapNodeController nodeController = mapNode.GetComponentInChildren<MapNodeController>();
-        Color color = nodeController != null ? GetNodeTypeColor(nodeController.type) : Color.green;
+        Color color = nodeController != null ? GetNodeTypeColor(nodeController.type) : Color.white;
+        
+        if (isCleared)
+        {
+            color = Color.gray; // Visually indicate the node has been cleared
+        }
+        
         mapNode.GetComponentInChildren<MeshRenderer>().material.color = color;
     }
 
