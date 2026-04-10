@@ -20,6 +20,10 @@ public class OverworldMapGenerator : MonoBehaviour
     [Header("Configuration")]
     [Tooltip("Assegna qui la tua configurazione ScriptableObject")]
     public MapGenerationConfig config;
+    
+    [Header("Game Rules")]
+    [Tooltip("If true, players can replay Regular Battles that they have already cleared to prevent softlocks.")]
+    public bool allowRepeatableRegularBattles = true;
 
     [Header("Node Distribution Weights")]
     [Range(0, 100)] public float regularBattleWeight = 70f;
@@ -163,13 +167,32 @@ public class OverworldMapGenerator : MonoBehaviour
 
         // 2. Sort from left to right to build an advancing mesh
         scatteredPositions.Sort((a, b) => a.x.CompareTo(b.x));
-
-        // 3. Determine mesh connections (multi-path)
-        List<Vector2Int> connections = new List<Vector2Int>();
+        
+        // 3. Pre-generate node types to identify gateways (choke points) early
+        NodeType[] predefinedNodeTypes = new NodeType[scatteredPositions.Count];
         for (int i = 0; i < scatteredPositions.Count; i++)
         {
+            predefinedNodeTypes[i] = GenerateNodeType();
+        }
+
+        // 4. Determine mesh connections (multi-path) restricted by Gateways
+        List<Vector2Int> connections = new List<Vector2Int>();
+        for (int i = 0; i < scatteredPositions.Count - 1; i++) // Skip the last node since it has no forward neighbors
+        {
+            // Find the closest gateway node ahead of the current node
+            int nextGateway = scatteredPositions.Count - 1; // Default to the very last node if no gateway is found
+            for (int g = i + 1; g < scatteredPositions.Count; g++)
+            {
+                if (predefinedNodeTypes[g] == NodeType.MinibossBattle || predefinedNodeTypes[g] == NodeType.BossBattle)
+                {
+                    nextGateway = g;
+                    break;
+                }
+            }
+
             List<int> forwardNeighbors = new List<int>();
-            for (int j = i + 1; j < scatteredPositions.Count; j++)
+            // You can only connect to nodes up to the next gateway
+            for (int j = i + 1; j <= nextGateway; j++)
             {
                 forwardNeighbors.Add(j);
             }
@@ -181,13 +204,25 @@ public class OverworldMapGenerator : MonoBehaviour
             int branchingPaths = Mathf.Min(Random.Range(1, 3), forwardNeighbors.Count);
             for (int k = 0; k < branchingPaths; k++)
             {
-                connections.Add(new Vector2Int(i, forwardNeighbors[k]));
-                adjacencyList[i].Add(forwardNeighbors[k]);
-                adjacencyList[forwardNeighbors[k]].Add(i); // Make paths bidirectional.
+                int target = forwardNeighbors[k];
+                if (!adjacencyList[i].Contains(target))
+                {
+                    connections.Add(new Vector2Int(i, target));
+                    adjacencyList[i].Add(target);
+                    adjacencyList[target].Add(i); // Bidirectional path mapping
+                }
+            }
+            
+            // Failsafe: Guarantee the graph connects structurally at the gateway itself
+            if (i == nextGateway - 1 && !adjacencyList[i].Contains(nextGateway))
+            {
+                connections.Add(new Vector2Int(i, nextGateway));
+                adjacencyList[i].Add(nextGateway);
+                adjacencyList[nextGateway].Add(i);
             }
         }
 
-        // 4. Instantiate lines
+        // 5. Instantiate lines
         foreach (Vector2Int edge in connections)
         {
             GameObject lineObj = new GameObject($"MapLine_{edge.x}_{edge.y}");
@@ -211,13 +246,13 @@ public class OverworldMapGenerator : MonoBehaviour
             spawnedLines.Add(lineObj);
         }
 
-        // 5. Instantiate node objects
+        // 6. Instantiate node objects
         for (int i = 0; i < domainLevelSelection.levelList.Length; i++)
         {
             Vector3 finalPosition = scatteredPositions[i];
 
             GameObject newNode = Instantiate(mapNode, finalPosition, Quaternion.identity);
-            NodeType nodeType = GenerateNodeType();
+            NodeType nodeType = predefinedNodeTypes[i];
 
             MapNodeController nodeController = newNode.GetComponentInChildren<MapNodeController>();
             if (nodeController != null)
@@ -276,6 +311,34 @@ public class OverworldMapGenerator : MonoBehaviour
         {
             StartCoroutine(MovePartyRoutine(shortestPath));
         }
+        else
+        {
+            // The path is blocked by a gateway or is unreachable. Provide visual feedback.
+            StartCoroutine(ShakePartyRoutine());
+        }
+    }
+
+    private IEnumerator ShakePartyRoutine()
+    {
+        isMoving = true;
+        Tween waitTween = null;
+
+        for (int pIndex = 0; pIndex < spawnedPartyIcons.Count; pIndex++)
+        {
+            if (spawnedPartyIcons[pIndex] != null)
+            {
+                // Shake on the X/Z axis slightly to indicate "nope"
+                waitTween = spawnedPartyIcons[pIndex].transform
+                    .DOShakePosition(0.3f, new Vector3(0.5f, 0, 0.5f), 15, 90f, false, true);
+            }
+        }
+
+        if (waitTween != null)
+        {
+            yield return waitTween.WaitForCompletion();
+        }
+
+        isMoving = false;
     }
 
     private List<int> PathfindingBFS(int start, int target)
@@ -289,19 +352,44 @@ public class OverworldMapGenerator : MonoBehaviour
         while (pathQueue.Count > 0)
         {
             int current = pathQueue.Dequeue();
+            
             if (current == target) break;
 
             foreach (int neighbor in adjacencyList[current])
             {
                 if (!parentMap.ContainsKey(neighbor))
                 {
+                    MapNodeController currentController = spawnedNodes[current].GetComponentInChildren<MapNodeController>();
+                    MapNodeController neighborController = spawnedNodes[neighbor].GetComponentInChildren<MapNodeController>();
+
+                    bool currentIsUnclearedGateway = currentController != null && 
+                        (currentController.type == NodeType.MinibossBattle || currentController.type == NodeType.BossBattle) && 
+                        currentController.currentLockStatus != MapNodeController.LockStatus.levelCleared;
+
+                    bool neighborIsUnclearedGateway = neighborController != null && 
+                        (neighborController.type == NodeType.MinibossBattle || neighborController.type == NodeType.BossBattle) && 
+                        neighborController.currentLockStatus != MapNodeController.LockStatus.levelCleared;
+
+                    // 1. Strict Barrier: You cannot move FORWARD from an uncleared Gateway to any other node. 
+                    // (But retreating BACKWARD to a lower ID is allowed)
+                    if (currentIsUnclearedGateway && neighbor > current)
+                    {
+                        continue;
+                    }
+
+                    // 2. Choke Point check: You cannot path THROUGH an uncleared Gateway to reach something else.
+                    if (neighborIsUnclearedGateway && neighbor != target && neighbor > current)
+                    {
+                        continue; 
+                    }
+
                     parentMap[neighbor] = current;
                     pathQueue.Enqueue(neighbor);
                 }
             }
         }
 
-        if (!parentMap.ContainsKey(target)) return null; // Path blocked / not found. Re-routes shouldn't happen unless broken manually.
+        if (!parentMap.ContainsKey(target)) return null; // Path blocked / not found.
 
         List<int> calculatedPath = new List<int>();
         int backtrackNode = target;

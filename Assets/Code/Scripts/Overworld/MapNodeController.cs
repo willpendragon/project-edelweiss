@@ -76,10 +76,28 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
 
     private void OpenLocationEnterPanel()
     {
-        if (currentLockStatus == LockStatus.levelLocked || currentLockStatus == LockStatus.levelCleared)
+        // 1. Locked nodes can never be entered
+        if (currentLockStatus == LockStatus.levelLocked)
+        {
             return;
+        }
 
-        // Gatekeeping logic for different Node Types
+        // 2. Cleared Nodes repeatability check
+        if (currentLockStatus == LockStatus.levelCleared)
+        {
+            if (type == NodeType.RegularBattle && mapGenerator != null && mapGenerator.allowRepeatableRegularBattles)
+            {
+                // OK to proceed: it's a regular battle and the developer allowed it.
+                Debug.Log("Re-entering a cleared Regular Battle.");
+            }
+            else
+            {
+                Debug.Log($"Can't re-enter. {type} is not repeatable.");
+                return;
+            }
+        }
+
+        // 3. Gatekeeping logic for different Node Types (before entry)
         if (type == NodeType.PuzzleBattle)
         {
             GameStatsManager gameStatsManager = FindAnyObjectByType<GameStatsManager>();
@@ -91,8 +109,9 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         }
         else if (type == NodeType.MinibossBattle || type == NodeType.BossBattle)
         {
-             Debug.Log($"Can't enter: {type} is locked (Keys not implemented yet).");
-             return;
+             // TODO: Needs proper keys if we implement Miniboss/Boss keys. 
+             // Right now we let them enter if they are 'levelUnlocked' (the first time)
+             // If you want them strictly gated by items, add that check here.
         }
 
         SetCanvasVisibility(1f, true, true, Vector3.one);
