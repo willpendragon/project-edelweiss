@@ -16,3 +16,10 @@ MonoBehaviour:
   mapDepth: 17.6
   minDistanceApart: 6.7
   randomSeed: 12345
+  allowRepeatableRegularBattles: 1
+  regularBattleWeight: 51.1
+  puzzleBattleWeight: 20
+  minibossBattleWeight: 10
+  bossBattleWeight: 0
+  puzzleBattleThreshold: 3
+  minibossBattleThreshold: 5

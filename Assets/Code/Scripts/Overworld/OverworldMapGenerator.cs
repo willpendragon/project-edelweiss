@@ -18,24 +18,8 @@ public class OverworldMapGenerator : MonoBehaviour
     public Transform mapNodeTransform;
 
     [Header("Configuration")]
-    [Tooltip("Assegna qui la tua configurazione ScriptableObject")]
+    [Tooltip("Assegna qui la tua configurazione ScriptableObject per regole e pesi.")]
     public MapGenerationConfig config;
-    
-    [Header("Game Rules")]
-    [Tooltip("If true, players can replay Regular Battles that they have already cleared to prevent softlocks.")]
-    public bool allowRepeatableRegularBattles = true;
-
-    [Header("Node Distribution Weights")]
-    [Range(0, 100)] public float regularBattleWeight = 70f;
-    [Range(0, 100)] public float puzzleBattleWeight = 20f;
-    [Range(0, 100)] public float minibossBattleWeight = 10f;
-    [Range(0, 100)] public float bossBattleWeight = 0f; // Typically placed deliberately
-
-    [Header("Node Spawn Thresholds")]
-    [Tooltip("Node index after which Puzzle Battles can spawn")]
-    public int puzzleBattleThreshold = 3;
-    [Tooltip("Node index after which Miniboss Battles can spawn")]
-    public int minibossBattleThreshold = 5;
 
     [Header("Visuals & UI")]
     [Tooltip("Materiale per la linea del percorso (evita il bug della linea fucsia)")]
@@ -513,6 +497,9 @@ public class OverworldMapGenerator : MonoBehaviour
 
     private NodeType GenerateNodeType(int nodeIndex, int totalNodes)
     {
+        // Require the config to be set, otherwise fallback to regular nodes.
+        if (config == null) return NodeType.RegularBattle;
+
         // 1. Boss Battle can only spawn as the last node.
         if (nodeIndex == totalNodes - 1)
         {
@@ -520,19 +507,19 @@ public class OverworldMapGenerator : MonoBehaviour
         }
 
         // 2. Evaluate thresholds for other special nodes.
-        float currentPuzzleWeight = (nodeIndex >= puzzleBattleThreshold) ? puzzleBattleWeight : 0f;
-        float currentMinibossWeight = (nodeIndex >= minibossBattleThreshold) ? minibossBattleWeight : 0f;
+        float currentPuzzleWeight = (nodeIndex >= config.puzzleBattleThreshold) ? config.puzzleBattleWeight : 0f;
+        float currentMinibossWeight = (nodeIndex >= config.minibossBattleThreshold) ? config.minibossBattleWeight : 0f;
 
-        // 3. Calculate total valid weights for this specific index. (Boss weight excluded as it's forced at the end)
-        float totalWeight = regularBattleWeight + currentPuzzleWeight + currentMinibossWeight;
+        // 3. Calculate total valid weights for this specific index.
+        float totalWeight = config.regularBattleWeight + currentPuzzleWeight + currentMinibossWeight;
 
         // Fallback safety
         if (totalWeight <= 0f) return NodeType.RegularBattle;
 
         float randomVal = Random.Range(0, totalWeight);
 
-        if (randomVal < regularBattleWeight) return NodeType.RegularBattle;
-        randomVal -= regularBattleWeight;
+        if (randomVal < config.regularBattleWeight) return NodeType.RegularBattle;
+        randomVal -= config.regularBattleWeight;
 
         if (randomVal < currentPuzzleWeight) return NodeType.PuzzleBattle;
         
