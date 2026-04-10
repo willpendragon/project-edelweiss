@@ -193,13 +193,12 @@ public class GridManager : MonoBehaviour
         List<Vector2Int> existingTiles = new List<Vector2Int>();
         foreach (var key in gridMapDictionary.Keys)
         {
-            existingTiles.Add(new Vector2Int(key.indexTileXPosition, key.indexTileYPosition));
-            //// Test: Exclude tiles marked as obstacles.
-            //if (key.tileController.GetComponent<TileController>().tileType != TileType.Obstacle)
-            //{
-            //}
+            // indexTileZPosition corresponds to the logical Y coordinate in your 2D top-down grid scripts
+            existingTiles.Add(new Vector2Int(key.indexTileXPosition, key.indexTileZPosition));
         }
-        return existingTiles;
+        
+        // Remove duplicates if multiple Voxel tiles are stacked on the same (X, Z) coordinate column
+        return existingTiles.Distinct().ToList();
     }
 
     public void MoveCurrentPlayerUnit(int targetX, int targetY)
