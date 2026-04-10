@@ -13,18 +13,17 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     public enum LockStatus
     {
         levelLocked,
-        levelUnlocked
+        levelUnlocked,
+        levelCleared
     }
 
-    public enum MapNodeType
-    {
-        RegularBattleNode,
-        BossBattleNode
-    }
-
-    public MapNodeType type;
+    public NodeType type;
     public LockStatus currentLockStatus;
     [SerializeField] List<Vector2> playerUnitsBossBattleStartingCoords;
+    
+    // Identifier for tracking the map progression graph
+    [HideInInspector] public int nodeId;
+    [HideInInspector] public OverworldMapGenerator mapGenerator;
 
     void Start()
     {
@@ -33,24 +32,82 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         {
             _iconCanvas.alpha = 1f;
         }
+        else if (currentLockStatus == LockStatus.levelCleared)
+        {
+            _iconCanvas.alpha = 0f;
+        }
         _mapMenuController = FindAnyObjectByType<OverworldMapUIController>();
-
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            OpenLocationEnterPanel();
+            if (mapGenerator != null && mapGenerator.currentNodeId == this.nodeId)
+            {
+                OpenLocationEnterPanel();
+            }
+            else if (mapGenerator != null)
+            {
+                mapGenerator.MoveToNode(this.nodeId);
+            }
         }
     }
 
-    // UI Managements method must be moved in a dedicated class.
+    // Safely unlocks the node and updates its visual icon
+    public void SetUnlocked()
+    {
+        currentLockStatus = LockStatus.levelUnlocked;
+        if (_iconCanvas != null)
+        {
+            _iconCanvas.alpha = 1f;
+        }
+    }
+
+    // NEW METHOD: Sets the node as cleared and hides its interaction icon
+    public void SetCleared()
+    {
+        currentLockStatus = LockStatus.levelCleared;
+        if (_iconCanvas != null)
+        {
+            _iconCanvas.alpha = 0f;
+        }
+    }
 
     private void OpenLocationEnterPanel()
     {
         if (currentLockStatus == LockStatus.levelLocked)
             return;
+
+        // Cleared Nodes repeatability check pointing to the Config SO
+        if (currentLockStatus == LockStatus.levelCleared)
+        {
+            if (type == NodeType.RegularBattle && mapGenerator != null && mapGenerator.config != null && mapGenerator.config.allowRepeatableRegularBattles)
+            {
+                Debug.Log("Re-entering a cleared Regular Battle.");
+            }
+            else
+            {
+                Debug.Log($"Can't re-enter. {type} is not repeatable.");
+                return;
+            }
+        }
+
+        // Gatekeeping logic for different Node Types
+        if (type == NodeType.PuzzleBattle)
+        {
+            GameStatsManager gameStatsManager = FindAnyObjectByType<GameStatsManager>();
+            if (gameStatsManager == null || gameStatsManager.unlockedPuzzleKeys <= 0)
+            {
+                Debug.Log("Can't enter: Not enough Puzzle Keys.");
+                return;
+            }
+        }
+        else if (type == NodeType.MinibossBattle || type == NodeType.BossBattle)
+        {
+             Debug.Log($"Can't enter: {type} is locked (Keys not implemented yet).");
+             // return; // Uncomment this to block boss access when Keys exist eventually.
+        }
 
         SetCanvasVisibility(1f, true, true, Vector3.one);
         Time.timeScale = 0f;
@@ -78,11 +135,15 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     {
         switch (type)
         {
-            case MapNodeType.RegularBattleNode:
+            case NodeType.RegularBattle:
+            case NodeType.PuzzleBattle:
+            case NodeType.MinibossBattle:
+            case NodeType.BossBattle:
                 HandleRegularBattle();
                 break;
         }
     }
+    
     private void HandleRegularBattle()
     {
         NodesUnlockManager nodesUnlockManager = GameManager.Instance.NodesUnlockManager;
@@ -95,12 +156,13 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         Time.timeScale = 1f;
         enemySelection.SelectMapNode();
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
-        OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(_dayCost);
+        OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(_dayCost); // We increment it additionally here inside interaction optionally.
     }
 
     private void SetOverworldUIVisibility(float alpha)
     {
         var mapMenuController = FindAnyObjectByType<OverworldMapUIController>();
-        mapMenuController.transform.GetComponent<CanvasGroup>().alpha = alpha;
+        if (mapMenuController != null && mapMenuController.transform.GetComponent<CanvasGroup>() != null)
+            mapMenuController.transform.GetComponent<CanvasGroup>().alpha = alpha;
     }
 }
