@@ -31,6 +31,12 @@ public class OverworldMapGenerator : MonoBehaviour
     [Range(0, 100)] public float minibossBattleWeight = 10f;
     [Range(0, 100)] public float bossBattleWeight = 0f; // Typically placed deliberately
 
+    [Header("Node Spawn Thresholds")]
+    [Tooltip("Node index after which Puzzle Battles can spawn")]
+    public int puzzleBattleThreshold = 3;
+    [Tooltip("Node index after which Miniboss Battles can spawn")]
+    public int minibossBattleThreshold = 5;
+
     [Header("Visuals & UI")]
     [Tooltip("Materiale per la linea del percorso (evita il bug della linea fucsia)")]
     public Material pathLineMaterial;
@@ -172,7 +178,7 @@ public class OverworldMapGenerator : MonoBehaviour
         NodeType[] predefinedNodeTypes = new NodeType[scatteredPositions.Count];
         for (int i = 0; i < scatteredPositions.Count; i++)
         {
-            predefinedNodeTypes[i] = GenerateNodeType();
+            predefinedNodeTypes[i] = GenerateNodeType(i, scatteredPositions.Count);
         }
 
         // 4. Determine mesh connections (multi-path) restricted by Gateways
@@ -200,7 +206,7 @@ public class OverworldMapGenerator : MonoBehaviour
             // Sort remaining forward nodes by distance
             forwardNeighbors.Sort((a, b) => Vector3.Distance(scatteredPositions[i], scatteredPositions[a]).CompareTo(Vector3.Distance(scatteredPositions[i], scatteredPositions[b])));
             
-            // Randomly branch 1 to 2 paths ahead towards the nearest nodes
+            // Branch 1 to 2 paths ahead
             int branchingPaths = Mathf.Min(Random.Range(1, 3), forwardNeighbors.Count);
             for (int k = 0; k < branchingPaths; k++)
             {
@@ -209,12 +215,12 @@ public class OverworldMapGenerator : MonoBehaviour
                 {
                     connections.Add(new Vector2Int(i, target));
                     adjacencyList[i].Add(target);
-                    adjacencyList[target].Add(i); // Bidirectional path mapping
+                    adjacencyList[target].Add(i); // Bidirectional mapping
                 }
             }
             
-            // Failsafe: Guarantee the graph connects structurally at the gateway itself
-            if (i == nextGateway - 1 && !adjacencyList[i].Contains(nextGateway))
+            // Failsafe: Guarantee connection reaching the gateway to prevent dead islands
+            if (!adjacencyList[i].Contains(nextGateway) && nextGateway == i + 1)
             {
                 connections.Add(new Vector2Int(i, nextGateway));
                 adjacencyList[i].Add(nextGateway);
@@ -229,6 +235,7 @@ public class OverworldMapGenerator : MonoBehaviour
             lineObj.transform.SetParent(mapNodeTransform);
             LineRenderer lr = lineObj.AddComponent<LineRenderer>();
             
+            // Visual configuration
             lr.alignment = LineAlignment.TransformZ;
             lr.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
             lr.numCornerVertices = 4;
@@ -239,6 +246,7 @@ public class OverworldMapGenerator : MonoBehaviour
             lr.endWidth = 0.5f;
             lr.useWorldSpace = true;
             
+            // Position mapping
             lr.positionCount = 2;
             lr.SetPosition(0, scatteredPositions[edge.x] + new Vector3(0, lineVerticalOffset, 0));
             lr.SetPosition(1, scatteredPositions[edge.y] + new Vector3(0, lineVerticalOffset, 0));
@@ -250,9 +258,10 @@ public class OverworldMapGenerator : MonoBehaviour
         for (int i = 0; i < domainLevelSelection.levelList.Length; i++)
         {
             Vector3 finalPosition = scatteredPositions[i];
-
             GameObject newNode = Instantiate(mapNode, finalPosition, Quaternion.identity);
-            NodeType nodeType = predefinedNodeTypes[i];
+            
+            // Assign the type calculated earlier
+            NodeType nodeType = predefinedNodeTypes[i]; 
 
             MapNodeController nodeController = newNode.GetComponentInChildren<MapNodeController>();
             if (nodeController != null)
@@ -268,28 +277,20 @@ public class OverworldMapGenerator : MonoBehaviour
             newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
             newNode.GetComponent<EnemySelection>().mapData = domainLevelSelection.levelList[i].map;
 
-            // Make all nodes interactable globally, but control state via IDs.
+            // Make all nodes interactable globally, control state via IDs
             bool isCleared = i < highestUnlockedLevel;
 
-            if (isCleared)
-            {
-                nodeController.SetCleared();
-            }
-            else
-            {
-                nodeController.SetUnlocked();
-            }
+            if (isCleared) nodeController.SetCleared();
+            else nodeController.SetUnlocked();
 
             UpdateNodeVisuals(newNode, isCleared);
 
-            // Determine if this is the start position (fallback to highest unlocked level dynamically).
             int visualStartNodeId = gameSaveData.currentNodeId;
             if (visualStartNodeId < 0 || visualStartNodeId >= domainLevelSelection.levelList.Length)
             {
                 visualStartNodeId = highestUnlockedLevel;
             }
 
-            // Keep the party member visual on the relevant progression node
             if (i == visualStartNodeId)
             {
                 currentMapNodeTransform = newNode.transform;
@@ -510,20 +511,32 @@ public class OverworldMapGenerator : MonoBehaviour
         }
     }
 
-    private NodeType GenerateNodeType()
+    private NodeType GenerateNodeType(int nodeIndex, int totalNodes)
     {
-        float totalWeight = regularBattleWeight + puzzleBattleWeight + minibossBattleWeight + bossBattleWeight;
+        // 1. Boss Battle can only spawn as the last node.
+        if (nodeIndex == totalNodes - 1)
+        {
+            return NodeType.BossBattle;
+        }
+
+        // 2. Evaluate thresholds for other special nodes.
+        float currentPuzzleWeight = (nodeIndex >= puzzleBattleThreshold) ? puzzleBattleWeight : 0f;
+        float currentMinibossWeight = (nodeIndex >= minibossBattleThreshold) ? minibossBattleWeight : 0f;
+
+        // 3. Calculate total valid weights for this specific index. (Boss weight excluded as it's forced at the end)
+        float totalWeight = regularBattleWeight + currentPuzzleWeight + currentMinibossWeight;
+
+        // Fallback safety
+        if (totalWeight <= 0f) return NodeType.RegularBattle;
+
         float randomVal = Random.Range(0, totalWeight);
 
         if (randomVal < regularBattleWeight) return NodeType.RegularBattle;
         randomVal -= regularBattleWeight;
 
-        if (randomVal < puzzleBattleWeight) return NodeType.PuzzleBattle;
-        randomVal -= puzzleBattleWeight;
-
-        if (randomVal < minibossBattleWeight) return NodeType.MinibossBattle;
-
-        return NodeType.BossBattle;
+        if (randomVal < currentPuzzleWeight) return NodeType.PuzzleBattle;
+        
+        return NodeType.MinibossBattle;
     }
 
     private void RegenerateMap()
