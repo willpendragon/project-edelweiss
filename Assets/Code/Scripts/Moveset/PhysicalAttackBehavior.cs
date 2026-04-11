@@ -36,7 +36,10 @@ public class PhysicalAttackBehavior : ScriptableObject
             return;
         }
 
-        bool canKnockback = IsKnockbackPossible(activePlayerUnit, targetUnit.ownedTile) && targetUnit.unitType != Unit.UnitType.Deity;
+        // Safely disallow knockbacking static grid items like Chests or towering Deity monoliths
+        bool canKnockback = IsKnockbackPossible(activePlayerUnit, targetUnit.ownedTile) 
+            && targetUnit.unitType != Unit.UnitType.Deity 
+            && !targetUnit.gameObject.CompareTag("Chest");
 
         if (canKnockback)
         {
@@ -65,7 +68,7 @@ public class PhysicalAttackBehavior : ScriptableObject
     {
         if (!IsKnockbackPossible(attacker, defender.ownedTile))
             return;
-        if (defender.unitType == Unit.UnitType.Deity)
+        if (defender.unitType == Unit.UnitType.Deity || defender.gameObject.CompareTag("Chest"))
             return;
 
         ExecuteKnockback(attacker, defender);

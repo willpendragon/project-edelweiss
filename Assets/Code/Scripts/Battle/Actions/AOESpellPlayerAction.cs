@@ -137,20 +137,21 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
         foreach (var tile in affectedTiles)
         {
-            if (tile.detectedUnit == null || tile.detectedUnit.tag != "Enemy")
+            if (tile.detectedUnit == null || (tile.detectedUnit.tag != "Enemy" && tile.detectedUnit.tag != "Chest"))
                 continue;
 
-            Unit enemy = tile.detectedUnit.GetComponent<Unit>();
-            if (enemy.currentUnitLifeCondition != Unit.UnitLifeCondition.unitAlive)
+            Unit targetUnit = tile.detectedUnit.GetComponent<Unit>();
+            if (targetUnit == null || targetUnit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitAlive)
                 continue;
 
             int damageToApply = CalculateSpellDamage(spell);
-            enemy.TakeDamage(damageToApply);
+            targetUnit.TakeDamage(damageToApply);
 
-            if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun)
-                TriggerSecondaryEffect(enemy);
+            // Avoid attempting to Stun a lifeless Chest
+            if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun && !tile.detectedUnit.CompareTag("Chest"))
+                TriggerSecondaryEffect(targetUnit);
 
-            PlaySpellFeedback(activePlayerUnit, enemy, spell);
+            PlaySpellFeedback(activePlayerUnit, targetUnit, spell);
             DeityEnmityCheck(spell.alignment);
             PlayVFX(spell.spellVFX, tile, spell.spellVFXOffset);
         }
@@ -222,16 +223,21 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         if (targetTile.detectedUnit == null)
             return false;
+
         Unit targetUnit = targetTile.detectedUnit.GetComponent<Unit>();
-        if (IsEnemy(targetTile.detectedUnit) && EnemyIsAlive(targetUnit))
+        if (targetUnit == null)
+            return false;
+            
+        if (IsAttackable(targetTile.detectedUnit) && EnemyIsAlive(targetUnit))
             return true;
         else
             return false;
     }
 
-    public bool IsEnemy(GameObject detectedUnit)
+    public bool IsAttackable(GameObject detectedUnit)
     {
-        if (detectedUnit.gameObject.tag == "Enemy")
+        // Treat both proper enemies and breakable chests as attackable elements
+        if (detectedUnit.gameObject.CompareTag("Enemy") || detectedUnit.gameObject.CompareTag("Chest"))
             return true;
         else
             return false;

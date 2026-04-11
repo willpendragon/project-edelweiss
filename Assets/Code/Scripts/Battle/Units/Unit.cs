@@ -148,7 +148,7 @@ public class Unit : MonoBehaviour
         HealthPoints -= effectiveDamage;
 
         // Invoke the event with the received damage before mitigation.
-        OnTakenDamage.Invoke(receivedDamage);
+        OnTakenDamage?.Invoke(receivedDamage);
         // Log the received and effective damage.
 
         var slider = transform.GetComponentInChildren<Slider>();
@@ -159,7 +159,8 @@ public class Unit : MonoBehaviour
             Debug.Log($"Unit receives {receivedDamage} damage, mitigated to {effectiveDamage} effective damage");
         }
 
-        if (this.gameObject.tag != GameTags.Enemy)
+        // Only update Player UI if the damaged unit is truly a Player.
+        if (this.gameObject.CompareTag(GameTags.Player) || this.gameObject.CompareTag(GameTags.ActivePlayerUnit))
         {
             BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateHPWrapper(this.unitTemplate.unitName);
         }
@@ -253,8 +254,7 @@ public class Unit : MonoBehaviour
             return false;
         }
     }
-
-    public void CheckUnitHealthStatus()
+    public virtual void CheckUnitHealthStatus()
     {
         // This logic works for both Player Units and Enemies.
         if (unitHealthPoints > 0)
@@ -284,29 +284,45 @@ public class Unit : MonoBehaviour
                 meshRenderer.material.color = Color.black;
             }
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
-            Destroy(unitProfilePanel);
-            Destroy(GameObject.FindGameObjectWithTag("EnemyTargetIcon"));
+            
+            if (unitProfilePanel != null)
+                Destroy(unitProfilePanel);
+
+            var enemyTargetIcon = GameObject.FindGameObjectWithTag("EnemyTargetIcon");
+            if (enemyTargetIcon != null)
+                Destroy(enemyTargetIcon);
 
             // Destroy Stun Icon, temporary solution.
-            if (battleFeedbackController.stunIcon != null)
-                Destroy(battleFeedbackController.stunIcon);
+            if (battleFeedbackController != null)
+            {
+                // Destroy Stun Icon, temporary solution.
+                if (battleFeedbackController.stunIcon != null)
+                    Destroy(battleFeedbackController.stunIcon);
+            }
+
             CheckEnemyDefeat();
 
             // Reset TileController color to Movement Range.
             // This assumes that a tile occupied by dead enemy is always in the Movement Range (vertical slice only).
-            ownedTile.tileShaderController.SetTileToMoveRangeColor();
-            ownedTile.tileShaderController.SetTileGlowIntensity(1f);
-            OnCheckGameOver();
+            if (ownedTile != null)
+            {
+                ownedTile.tileShaderController.SetTileToMoveRangeColor();
+                ownedTile.tileShaderController.SetTileGlowIntensity(1f);
+            }
+            
+            OnCheckGameOver?.Invoke();
 
             // Deactivates Player Unit Profile when applicable.
-            if (gameObject.tag == GameTags.Player || gameObject.tag == GameTags.ActivePlayerUnit)
+            if (gameObject.CompareTag(GameTags.Player) || gameObject.CompareTag(GameTags.ActivePlayerUnit))
             {
-                BattleInterface.Instance.PlayerPartyProfilesUIManager.SetDeadUnitProfile(unitTemplate.unitName);
+                if (unitTemplate != null)
+                {
+                    BattleInterface.Instance.PlayerPartyProfilesUIManager.SetDeadUnitProfile(unitTemplate.unitName);
+                }
             }
         }
     }
-
-    private void CheckEnemyDefeat()
+    protected virtual void CheckEnemyDefeat()
     {
         if (this.gameObject.tag != "Enemy")
             return;
@@ -380,7 +396,7 @@ public class Unit : MonoBehaviour
         {
             // Troviamo il tile...
             // NOTA: Usa GetTileControllerInstance Voxel o quello di compatibilità
-            TileController targetTile = GridManager.Instance.GetTileControllerInstance(x, z); 
+            TileController targetTile = GridManager.Instance.GetTileControllerInstance(x, z);
             if (targetTile != null)
             {
                 // Appoggia perfettamente il giocatore!

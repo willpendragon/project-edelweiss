@@ -288,6 +288,26 @@ public class MapEditorWindow : EditorWindow
                 }
             }
         }
+        else if (type == TileType.Chest)
+        {
+            Transform gridBoundsTransform = tile.transform.Find("GridBounds");
+            if (gridBoundsTransform != null)
+            {
+                Renderer renderer = gridBoundsTransform.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    MaterialPropertyBlock block = new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(block);
+                    
+                    // Violet/Purple color for Chest previews
+                    Color chestColor = new Color(0.5f, 0.0f, 0.8f, 1f);
+                    block.SetColor("_BaseColor", chestColor); 
+                    block.SetColor("_Color", chestColor);
+                    
+                    renderer.SetPropertyBlock(block);
+                }
+            }
+        }
     }
 
     private void DeleteTile(Vector3Int position)
