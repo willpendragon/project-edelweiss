@@ -288,7 +288,7 @@ public class MapEditorWindow : EditorWindow
                 }
             }
         }
-        else if (type == TileType.Chest)
+        else if (type == TileType.Chest || type == TileType.MinibossChest || type == TileType.BossChest)
         {
             Transform gridBoundsTransform = tile.transform.Find("GridBounds");
             if (gridBoundsTransform != null)
@@ -299,8 +299,14 @@ public class MapEditorWindow : EditorWindow
                     MaterialPropertyBlock block = new MaterialPropertyBlock();
                     renderer.GetPropertyBlock(block);
                     
-                    // Violet/Purple color for Chest previews
-                    Color chestColor = new Color(0.5f, 0.0f, 0.8f, 1f);
+                    // Select Specific Color
+                    Color chestColor = new Color(0.5f, 0.0f, 0.8f, 1f); // Default Purple
+                    
+                    if (type == TileType.MinibossChest)
+                        chestColor = Color.yellow;
+                    else if (type == TileType.BossChest)
+                        chestColor = Color.red;
+
                     block.SetColor("_BaseColor", chestColor); 
                     block.SetColor("_Color", chestColor);
                     

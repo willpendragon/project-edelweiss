@@ -138,7 +138,7 @@ public class GridManager : MonoBehaviour
             }
 
             // [PROTOTYPE] Spawn a purple Cube to represent the chest directly on the generated tile
-            if (tileData.tileType == TileType.Chest)
+            if (tileData.tileType == TileType.Chest || tileData.tileType == TileType.MinibossChest || tileData.tileType == TileType.BossChest)
             {
                 GameObject chestPrototype = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 chestPrototype.name = "Chest_Prototype";
@@ -150,11 +150,16 @@ public class GridManager : MonoBehaviour
                     Destroy(prototypeCollider);
                 }
 
-                // Set the purple color to distinguish it
+                // Set the color to distinguish it based on type
                 Renderer renderer = chestPrototype.GetComponent<Renderer>();
                 if (renderer != null)
                 {
-                    renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f);
+                    if (tileData.tileType == TileType.MinibossChest)
+                        renderer.material.color = Color.yellow;
+                    else if (tileData.tileType == TileType.BossChest)
+                        renderer.material.color = Color.red;
+                    else
+                        renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f); // Default Purple
                 }
 
                 // Parent it to the tile and position it firmly on the surface
@@ -174,13 +179,19 @@ public class GridManager : MonoBehaviour
                 {
                     var chestUnit = chestPrototype.AddComponent<ChestUnit>();
                     chestUnit.HealthPoints = 10;
-                    chestUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive; // VERY IMPORTANT!
+                    chestUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive;
                     chestUnit.ownedTile = tileController;
                     chestUnit.bossFlag = false;
 
-                    // Fully sync all logical coordinates so battle initialization scripts don't reset it to 0,0
+                    // Sync logical coordinates so battle initialization scripts don't reset it to 0,0
                     chestUnit.currentXCoordinate = tileData.position.x;
                     chestUnit.currentYCoordinate = tileData.position.z;
+
+                    // TODO: Assign the specific Scriptable Object Template here based on tileData.tileType!
+                    if (tileData.tileType == TileType.MinibossChest)
+                        chestUnit.unitTemplate = Resources.Load<ChestTemplate>("MinibossChestTemplate");
+                    else if (tileData.tileType == TileType.BossChest)
+                        chestUnit.unitTemplate = Resources.Load<ChestTemplate>("BossChestTemplate");
                 }
             }
         }

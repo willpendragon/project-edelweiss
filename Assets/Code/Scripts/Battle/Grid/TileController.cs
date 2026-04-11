@@ -33,7 +33,9 @@ public enum TileType
     Obstacle,
     Mirror,
     Triad,
-    Chest
+    Chest,
+    MinibossChest,
+    BossChest
 }
 
 public enum TileElement // Such properties could be moved in an SO.
