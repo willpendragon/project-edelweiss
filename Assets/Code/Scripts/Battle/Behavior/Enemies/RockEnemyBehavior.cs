@@ -1,6 +1,8 @@
 using DG.Tweening;
 using ProjectEdelweiss.Utils;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 [CreateAssetMenu(fileName = "RockEnemyBehavior", menuName = "EnemyBehavior/RockEnemy")]
 public class RockEnemyBehavior : BumperEnemyBehavior
@@ -119,8 +121,44 @@ public class RockEnemyBehavior : BumperEnemyBehavior
     private void MoveEnemyToTileTarget(TileController targetTile, EnemyAgent enemyAgent) // Reach Tile, receive imbue.
     {
         Unit enemyUnit = enemyAgent.GetComponent<Unit>();
-        MoveUnitToTile(enemyUnit, targetTile);
-        enemyAgent.ReceiveElement(targetTile, enemyAgent);
-        OnRockEnemyAttack?.Invoke($"{enemyUnit.unitTemplate.unitName} receives {enemyAgent.elementalImbue} buff");
+        TileController startTile = enemyUnit.ownedTile;
+
+        if (startTile == null || targetTile == null) return;
+
+        List<TileController> fullPath = RetracePathToTarget(startTile, targetTile);
+
+        if (fullPath == null || fullPath.Count == 0) return;
+
+        // Uses property from BumperEnemyBehavior
+        // movementLimit is private in BumperEnemy, you might need to make it protected as well:
+        // [SerializeField] protected int movementLimit = 4; 
+        // For now, if you get an error accessing movementLimit, update BumperEnemyBehavior.movementLimit to protected.
+        List<TileController> limitedPath = LimitPath(fullPath, 4, targetTile); // Replace 4 with movementLimit if made protected
+
+        if (limitedPath.Count > 0 && limitedPath.Last() == targetTile)
+        {
+            limitedPath.RemoveAt(limitedPath.Count - 1);
+        }
+
+        // Backtrack to find a valid tile that isn't occupied by a prize or unit
+        while (limitedPath.Count > 0)
+        {
+            TileController prospectiveDestination = limitedPath.Last();
+            
+            if (IsTileValidDestination(prospectiveDestination))
+            {
+                MoveUnitToTile(enemyUnit, prospectiveDestination);
+
+                // Check if the destination we actually landed on matches the elemental tile we wanted
+                if (prospectiveDestination.tileElement == targetTile.tileElement)
+                {
+                    enemyAgent.ReceiveElement(prospectiveDestination, enemyAgent);
+                    OnRockEnemyAttack?.Invoke($"{enemyUnit.unitTemplate.unitName} receives {enemyAgent.elementalImbue} buff");
+                }
+                return;
+            }
+            
+            limitedPath.RemoveAt(limitedPath.Count - 1);
+        }
     }
 }

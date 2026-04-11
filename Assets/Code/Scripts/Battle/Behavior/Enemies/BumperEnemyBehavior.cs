@@ -132,20 +132,27 @@ public class BumperEnemyBehavior : EnemyBehavior
             limitedPath.RemoveAt(limitedPath.Count - 1);
         }
 
-        if (limitedPath.Count == 0 || limitedPath.Last() == startTile) return false;
-
-        TileController destinationTile = limitedPath.Last();
-
-        if (destinationTile == null || destinationTile.currentSingleTileCondition != SingleTileCondition.free || destinationTile.detectedUnit != null)
+        // Backtrack the path until we find a finalized valid destination where we can stop
+        // e.g. If the final planned tile has a prize on it, trim the path slightly shorter.
+        while (limitedPath.Count > 0)
         {
-            return false;
+            TileController prospectiveDestination = limitedPath.Last();
+            
+            if (IsTileValidDestination(prospectiveDestination))
+            {
+                MoveUnitToTile(enemyUnit, prospectiveDestination);
+                return true;
+            }
+            
+            // Tile is occupied by another Unit or a Prize, step backward by 1 evaluating the previous tile.
+            limitedPath.RemoveAt(limitedPath.Count - 1);
         }
 
-        MoveUnitToTile(enemyUnit, destinationTile);
-        return true;
+        // Failed to find any suitable ground along the path
+        return false;
     }
 
-    private List<TileController> RetracePathToTarget(TileController startTile, TileController targetTile)
+    protected List<TileController> RetracePathToTarget(TileController startTile, TileController targetTile)
     {
         List<TileController> openSet = new List<TileController> { startTile };
         HashSet<TileController> closedSet = new HashSet<TileController>();
@@ -192,7 +199,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         return null;
     }
 
-    private List<TileController> LimitPath(List<TileController> fullPath, int movementLimit, TileController targetTile)
+    protected List<TileController> LimitPath(List<TileController> fullPath, int movementLimit, TileController targetTile)
     {
         return fullPath.Take(movementLimit).ToList(); // Temporarily allow paths that include the target.
     }
