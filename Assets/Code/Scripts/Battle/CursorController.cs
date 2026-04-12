@@ -152,24 +152,75 @@ public class CursorController : MonoBehaviour
     {
         Vector3 mousePosition = Input.mousePosition;
         Ray rayOrigin = Camera.main.ScreenPointToRay(mousePosition);
-        RaycastHit hitInfo;
+        
+        // Shoot through everything to find all potential targets under the cursor
+        RaycastHit[] hits = Physics.RaycastAll(rayOrigin).OrderBy(h => h.distance).ToArray();
 
-        if (Physics.Raycast(rayOrigin, out hitInfo))
+        // PASS 1: Prioritize Action Buttons immediately
+        foreach (var hitInfo in hits)
+        {
+            if (hitInfo.collider.gameObject.CompareTag("ActionButton"))
+            {
+                hitInfo.collider.gameObject.GetComponent<RadialMenuEntry>().FireAction();
+                Debug.Log($"Hit: {hitInfo.collider.name}");
+                return;
+            }
+        }
+
+        // PASS 1.5: Environment Blocking!
+        // If the very first thing the cursor touched (excluding UI) was a decorative wall/pillar, 
+        // we stop right here. We do not want to click 'through' the pillar and select the tile/unit behind it.
+        var firstPhysicalHit = hits.FirstOrDefault(h => !h.collider.gameObject.CompareTag("ActionButton"));
+        if (firstPhysicalHit.collider != null)
+        {
+            // Assuming your decorations have a "Decorations" or "Environment" tag. 
+            // If they are untagged, we check if they are attached to a Tile that is Environment.
+            TileController hitTc = firstPhysicalHit.collider.GetComponentInParent<TileController>();
+            
+            // If we clearly hit an Environment tile mesh or a purely visual decoration prefab 
+            // (You can also check for CompareTag("Obstacle") or whatever your prefab is tagged)
+            if ((hitTc != null && hitTc.tileType == TileType.Environment) || firstPhysicalHit.collider.gameObject.CompareTag("DecorationEnvironment"))
+            {
+                Debug.Log("Clicked directly on non-interactable Environment. Ignoring Raycast.");
+                CloseRadialMenu();
+                return;
+            }
+        }
+
+        // PASS 2: Prioritize Enemies & Players
+        foreach (var hitInfo in hits)
+        {
+            if (hitInfo.collider.gameObject.CompareTag("Enemy") || hitInfo.collider.gameObject.CompareTag("Player") || hitInfo.collider.gameObject.CompareTag("ActivePlayerUnit"))
+            {
+                Unit hitUnit = hitInfo.collider.gameObject.GetComponentInParent<Unit>();
+                if (hitUnit != null && hitUnit.ownedTile != null)
+                {
+                    RetrieveTileStatus(hitUnit.ownedTile);
+                    return;
+                }
+            }
+        }
+
+        // PASS 3: Fallback to the Grid Map Tiles (Only legitimate map tiles)
+        foreach (var hitInfo in hits)
         {
             if (hitInfo.collider.gameObject.CompareTag("Tile"))
             {
-                RetrieveTileStatus(hitInfo.collider.gameObject.GetComponent<TileController>());
-            }
-            else if (hitInfo.collider.gameObject.CompareTag("ActionButton"))
-            {
-                hitInfo.collider.gameObject.gameObject.GetComponent<RadialMenuEntry>().FireAction();
-                Debug.Log($"Hit: {hitInfo.collider.name}");
-            }
-            else
-            {
-                CloseRadialMenu();
+                TileController tc = hitInfo.collider.gameObject.GetComponent<TileController>();
+                
+                if (tc != null)
+                {
+                    // Prevent clicking on purely visual decorations that act as fake tiles
+                    if (!GridManager.Instance.gridMapDictionary.ContainsValue(tc))
+                        continue;
+
+                    RetrieveTileStatus(tc);
+                    return;
+                }
             }
         }
+
+        CloseRadialMenu();
     }
 
     private void RetrieveTileStatus(TileController tileController)
