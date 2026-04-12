@@ -12,12 +12,15 @@ public class MapEditorWindow : EditorWindow
     public float inBetweenTilesZOffset = 0f;
 
     private GameObject tilePrefab;
+    private GameObject decorationPrefab; // NEW: Prefab for decorations
     private MapData currentMap;
     private TileType selectedTileType = TileType.Basic;
 
     private Dictionary<Vector3Int, GameObject> tiles = new Dictionary<Vector3Int, GameObject>();
+    private Dictionary<Vector3Int, GameObject> decorations = new Dictionary<Vector3Int, GameObject>(); // NEW: Track decorations
 
     private bool isPlacingTile = false;
+    private bool isPlacingDecoration = false; // NEW: State for decoration painting
     private bool isDeletingTile = false;
     private bool clearOnClose = false;
     private Vector3Int lastGridPosition = new Vector3Int(-1, -1, -1);
@@ -105,9 +108,12 @@ public class MapEditorWindow : EditorWindow
         
         EditorGUI.BeginChangeCheck();
         tilePrefab = (GameObject)EditorGUILayout.ObjectField("Tile Prefab", tilePrefab, typeof(GameObject), false);
+        decorationPrefab = (GameObject)EditorGUILayout.ObjectField("Decoration Prefab", decorationPrefab, typeof(GameObject), false); // NEW
+        
         if (EditorGUI.EndChangeCheck() && tilePrefab != null)
         {
             EditorPrefs.SetString("MapEditor_TilePrefabPath", AssetDatabase.GetAssetPath(tilePrefab));
+            // You can also save the decorationPrefab path similarly if you want!
         }
 
         currentMap = (MapData)EditorGUILayout.ObjectField("Current Map Asset", currentMap, typeof(MapData), false);
@@ -121,9 +127,11 @@ public class MapEditorWindow : EditorWindow
         EditorGUILayout.Space();
         if (GUILayout.Button("Generate/Clear Map")) GenerateMap();
 
+        // UPDATED: Mutually exclusive buttons
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Toggle(isPlacingTile, "Paint Mode (ESC to exit)", "Button")) { isPlacingTile = true; isDeletingTile = false; }
-        if (GUILayout.Toggle(isDeletingTile, "Delete Mode (ESC to exit)", "Button")) { isPlacingTile = false; isDeletingTile = true; }
+        if (GUILayout.Toggle(isPlacingTile, "Paint Tile", "Button")) { isPlacingTile = true; isPlacingDecoration = false; isDeletingTile = false; }
+        if (GUILayout.Toggle(isPlacingDecoration, "Paint Decoration", "Button")) { isPlacingTile = false; isPlacingDecoration = true; isDeletingTile = false; }
+        if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { isPlacingTile = false; isPlacingDecoration = false; isDeletingTile = true; }
         EditorGUILayout.EndHorizontal();
 
         if (GUILayout.Button("Sync & Reload from Scene")) SyncDictionaryFromScene();
@@ -140,6 +148,7 @@ public class MapEditorWindow : EditorWindow
         if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
         {
             isPlacingTile = false;
+            isPlacingDecoration = false; // NEW
             isDeletingTile = false;
             Repaint();
             sceneView.Repaint();
@@ -148,7 +157,7 @@ public class MapEditorWindow : EditorWindow
         }
 
         int controlID = GUIUtility.GetControlID(FocusType.Passive);
-        if (isPlacingTile || isDeletingTile)
+        if (isPlacingTile || isPlacingDecoration || isDeletingTile) // UPDATED
         {
             HandleUtility.AddDefaultControl(controlID);
         }
@@ -157,40 +166,70 @@ public class MapEditorWindow : EditorWindow
         
         bool hasHit = false;
         Vector3Int targetGridPos = Vector3Int.zero;
+        Vector3 tileSize = GetTileWorldSize3D();
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        // 1. MATHEMATICAL CHECK (Perfect for Decorations without Colliders)
+        float closestDist = float.MaxValue;
+        
+        // Loop through placed decorations and check if the ray hits their mathematical bounds
+        foreach (var kvp in decorations)
         {
-            hasHit = true;
-            TileController hitTile = hitInfo.collider.GetComponentInParent<TileController>();
+            Vector3 worldPos = GridToWorld(kvp.Key, tileSize);
+            // We assume the pivot is the bottom-corner. If it's center, remove the '+ tileSize / 2f'
+            Bounds decoBounds = new Bounds(worldPos + tileSize / 2f, tileSize); 
             
-            if (hitTile != null)
+            if (decoBounds.IntersectRay(ray, out float dist))
             {
-                Vector3Int basePos = hitTile.gridPosition;
-                Vector3 hitNormal = hitInfo.normal;
-                Vector3Int normalOffset = new Vector3Int(
-                    Mathf.RoundToInt(hitNormal.x),
-                    Mathf.RoundToInt(hitNormal.y),
-                    Mathf.RoundToInt(hitNormal.z)
-                );
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                    targetGridPos = kvp.Key;
+                    
+                    // If we are placing, we want the block ON TOP of the decoration, otherwise just target it
+                    if (isPlacingDecoration || isPlacingTile) targetGridPos.y += 1;
+                    
+                    hasHit = true;
+                }
+            }
+        }
 
-                if (isDeletingTile) targetGridPos = basePos;
-                else targetGridPos = basePos + normalOffset; 
+        // 2. PHYSICS CHECK (For Base tiles and empty space)
+        if (!hasHit)
+        {
+            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            {
+                hasHit = true;
+                TileController hitTile = hitInfo.collider.GetComponentInParent<TileController>();
+                
+                if (hitTile != null)
+                {
+                    Vector3Int basePos = hitTile.gridPosition;
+                    Vector3 hitNormal = hitInfo.normal;
+                    Vector3Int normalOffset = new Vector3Int(
+                        Mathf.RoundToInt(hitNormal.x),
+                        Mathf.RoundToInt(hitNormal.y),
+                        Mathf.RoundToInt(hitNormal.z)
+                    );
+
+                    if (isDeletingTile) targetGridPos = basePos;
+                    else targetGridPos = basePos + normalOffset; 
+                }
+                else
+                {
+                    Vector3 offsetPos = hitInfo.point + (isDeletingTile ? -hitInfo.normal : hitInfo.normal) * 0.1f;
+                    targetGridPos = GetGridCoordinatesFromWorldPosition(offsetPos);
+                }
             }
             else
             {
-                Vector3 offsetPos = hitInfo.point + (isDeletingTile ? -hitInfo.normal : hitInfo.normal) * 0.1f;
-                targetGridPos = GetGridCoordinatesFromWorldPosition(offsetPos);
-            }
-        }
-        else
-        {
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-            if (groundPlane.Raycast(ray, out float enter))
-            {
-                hasHit = true;
-                Vector3 hitPoint = ray.GetPoint(enter);
-                targetGridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
-                targetGridPos.y = 0; 
+                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+                if (groundPlane.Raycast(ray, out float enter))
+                {
+                    hasHit = true;
+                    Vector3 hitPoint = ray.GetPoint(enter);
+                    targetGridPos = GetGridCoordinatesFromWorldPosition(hitPoint);
+                    targetGridPos.y = 0; 
+                }
             }
         }
 
@@ -222,6 +261,7 @@ public class MapEditorWindow : EditorWindow
                 if (cooldownPassed)
                 {
                     if (isPlacingTile) PlaceTile(targetGridPos, selectedTileType);
+                    else if (isPlacingDecoration) PlaceDecoration(targetGridPos); // NEW
                     else if (isDeletingTile) DeleteTile(targetGridPos);
                     
                     lastGridPosition = targetGridPos;
@@ -320,6 +360,15 @@ public class MapEditorWindow : EditorWindow
     {
         SyncDictionaryFromScene();
 
+        // 1. Delete decoration if one exists at this location
+        if (decorations.ContainsKey(position))
+        {
+            GameObject deco = decorations[position];
+            decorations.Remove(position);
+            Undo.DestroyObjectImmediate(deco);
+        }
+
+        // 2. Delete base tile if one exists at this location
         if (tiles.ContainsKey(position))
         {
             GameObject tile = tiles[position];
@@ -431,6 +480,8 @@ public class MapEditorWindow : EditorWindow
     {
         if (currentMap == null) return;
         SyncDictionaryFromScene(); 
+        
+        // Save Tiles
         currentMap.tilePositions.Clear();
         foreach (var kvp in tiles)
         {
@@ -441,6 +492,17 @@ public class MapEditorWindow : EditorWindow
                 tileType = controller ? controller.tileType : TileType.Basic
             });
         }
+        
+        // Save Decorations
+        currentMap.decorationPositions.Clear();
+        foreach (var kvp in decorations)
+        {
+            currentMap.decorationPositions.Add(new MapData.DecorationData
+            {
+                position = kvp.Key
+            });
+        }
+
         currentMap.horizontalSize = gridWidth;
         currentMap.depthSize = gridDepth;
         currentMap.verticalSize = gridHeight;
@@ -451,39 +513,65 @@ public class MapEditorWindow : EditorWindow
 
     private void LoadFromAsset()
     {
-        if (currentMap == null || tilePrefab == null) return;
+        if (currentMap == null) return;
 
         SyncDictionaryFromScene();
+        
+        // Clear Existing Tiles & Decorations
         foreach (var obj in tiles.Values) DestroyImmediate(obj);
         tiles.Clear();
+        
+        foreach (var obj in decorations.Values) DestroyImmediate(obj);
+        decorations.Clear();
 
         Vector3 tileSize = GetTileWorldSize3D();
-        foreach (var data in currentMap.tilePositions)
+        
+        // Load Tiles
+        if (tilePrefab != null)
         {
-            Vector3 worldPos = GridToWorld(data.position, tileSize);
-            GameObject tile = (GameObject)PrefabUtility.InstantiatePrefab(tilePrefab);
-            tile.transform.position = worldPos;
-            tile.name = $"Tile_{data.position.x}_{data.position.y}_{data.position.z}";
-
-            var controller = tile.GetComponent<TileController>();
-            if (controller != null) 
+            foreach (var data in currentMap.tilePositions)
             {
-                controller.tileType = data.tileType;
-                controller.gridPosition = data.position;
-            }
+                Vector3 worldPos = GridToWorld(data.position, tileSize);
+                GameObject tile = (GameObject)PrefabUtility.InstantiatePrefab(tilePrefab);
+                tile.transform.position = worldPos;
+                tile.name = $"Tile_{data.position.x}_{data.position.y}_{data.position.z}";
 
-            tiles[data.position] = tile;
-            HideTileEffects(tile);
-            
-            ApplyDecorativeColor(tile, data.tileType);
+                var controller = tile.GetComponent<TileController>();
+                if (controller != null) 
+                {
+                    controller.tileType = data.tileType;
+                    controller.gridPosition = data.position;
+                }
+
+                tiles[data.position] = tile;
+                HideTileEffects(tile);
+                
+                ApplyDecorativeColor(tile, data.tileType);
+            }
+        }
+
+        // Load Decorations
+        if (decorationPrefab != null)
+        {
+            foreach (var data in currentMap.decorationPositions)
+            {
+                Vector3 worldPos = GridToWorld(data.position, tileSize);
+                GameObject deco = (GameObject)PrefabUtility.InstantiatePrefab(decorationPrefab);
+                deco.transform.position = worldPos;
+                deco.name = $"Deco_{data.position.x}_{data.position.y}_{data.position.z}";
+
+                decorations[data.position] = deco;
+            }
         }
     }
 
     private void SyncDictionaryFromScene()
     {
         tiles.Clear();
-        GameObject[] allTiles = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-        foreach (var t in allTiles)
+        decorations.Clear();
+        
+        GameObject[] allObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        foreach (var t in allObjects)
         {
             if (t.name.StartsWith("Tile_"))
             {
@@ -494,7 +582,20 @@ public class MapEditorWindow : EditorWindow
                 }
                 else if (parts.Length == 3 && int.TryParse(parts[1], out int oldX) && int.TryParse(parts[2], out int oldZ))
                 {
+                    // Fallback for older maps
                     tiles[new Vector3Int(oldX, 0, oldZ)] = t;
+                }
+            }
+            else if (t.name.StartsWith("Deco_"))
+            {
+                string[] parts = t.name.Split('_');
+                if (parts.Length == 4 && int.TryParse(parts[1], out int x) && int.TryParse(parts[2], out int y) && int.TryParse(parts[3], out int z))
+                {
+                    decorations[new Vector3Int(x, y, z)] = t;
+                }
+                else if (parts.Length == 3 && int.TryParse(parts[1], out int oldX) && int.TryParse(parts[2], out int oldZ))
+                {
+                    decorations[new Vector3Int(oldX, 0, oldZ)] = t;
                 }
             }
         }
@@ -503,7 +604,33 @@ public class MapEditorWindow : EditorWindow
     private void GenerateMap()
     {
         SyncDictionaryFromScene();
+        
         foreach (var obj in tiles.Values) Undo.DestroyObjectImmediate(obj);
         tiles.Clear();
+        
+        foreach (var obj in decorations.Values) Undo.DestroyObjectImmediate(obj);
+        decorations.Clear();
+    }
+
+    private void PlaceDecoration(Vector3Int position)
+    {
+        if (decorationPrefab == null) return;
+
+        SyncDictionaryFromScene();
+
+        // If you want to allow a decoration AND a tile in the same spot, 
+        // we check the decorations Dictionary instead of the tiles Dictionary.
+        if (decorations.ContainsKey(position)) return;
+
+        Vector3 tileSize = GetTileWorldSize3D();
+        Vector3 worldPos = GridToWorld(position, tileSize);
+
+        GameObject deco = (GameObject)PrefabUtility.InstantiatePrefab(decorationPrefab);
+        deco.transform.position = worldPos;
+        deco.name = $"Deco_{position.x}_{position.y}_{position.z}";
+
+        Undo.RegisterCreatedObjectUndo(deco, "Place Decoration");
+
+        decorations[position] = deco;
     }
 }
