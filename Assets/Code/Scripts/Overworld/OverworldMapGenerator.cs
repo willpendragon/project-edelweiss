@@ -299,8 +299,14 @@ public class OverworldMapGenerator : MonoBehaviour
         else
         {
             // The path is blocked by a gateway or is unreachable. Provide visual feedback.
-            StartCoroutine(ShakePartyRoutine());
+            TriggerShakePartyRoutine();
         }
+    }
+
+    // Making this public gives map nodes the ability to intentionally trigger a rejection shake!
+    public void TriggerShakePartyRoutine()
+    {
+        StartCoroutine(ShakePartyRoutine());
     }
 
     private IEnumerator ShakePartyRoutine()

@@ -89,6 +89,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             else
             {
                 Debug.Log($"Can't re-enter. {type} is not repeatable.");
+                if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
             }
         }
@@ -100,6 +101,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             if (gameStatsManager == null || gameStatsManager.unlockedPuzzleKeys <= 0)
             {
                 Debug.Log("Can't enter: Not enough Puzzle Keys.");
+                if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
             }
         }
@@ -110,12 +112,14 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             if (type == NodeType.MinibossBattle && (gameStatsManager == null || !gameStatsManager.hasMinibossKey))
             {
                 Debug.Log($"Can't enter: {type} is locked. Miniboss Key required.");
+                if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
             }
             
             if (type == NodeType.BossBattle && (gameStatsManager == null || !gameStatsManager.hasBossKey))
             {
                 Debug.Log($"Can't enter: {type} is locked. Boss Key required.");
+                if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
             }
         }
