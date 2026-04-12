@@ -220,7 +220,16 @@ public class GridManager : MonoBehaviour
                 GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition, Quaternion.identity);
                 decoInstance.transform.SetParent(this.transform); // Raggruppa sotto al GridManager per pulizia
 
-                // --- NEW: Block movement on the tile ---
+                // --- NEW: Hide GridBounds during gameplay ---
+                Transform gridBounds = decoInstance.transform.Find("GridBounds");
+                if (gridBounds != null)
+                {
+                    Renderer boundsRenderer = gridBounds.GetComponent<Renderer>();
+                    if (boundsRenderer != null)
+                        boundsRenderer.enabled = false; // Makes it invisible but keeps colliders intact!
+                }
+
+                // --- Block movement on the tile ---
                 // Decoration is visually "on top" of the tile, so it exists at Y + 1 according to the save data
                 TileController occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y - 1, decoData.position.z);
                 
@@ -234,7 +243,7 @@ public class GridManager : MonoBehaviour
                 if (occupiedTile != null)
                 {
                     occupiedTile.currentSingleTileCondition = SingleTileCondition.occupied;
-                    occupiedTile.tileType = TileType.Environment; // <-- FIX: Set explicitly to Environment
+                    occupiedTile.tileType = TileType.Environment; // Set explicitly to Environment
                     occupiedTile.detectedUnit = decoInstance; 
                 }
             }
