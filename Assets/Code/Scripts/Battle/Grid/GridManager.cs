@@ -203,6 +203,46 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
+
+        // --- NEW: Load Decorations at runtime ---
+        GameObject runtimeDecorationPrefab = Resources.Load<GameObject>("DecorationPrefab"); 
+        
+        if (runtimeDecorationPrefab != null && currentMapData.decorationPositions != null)
+        {
+            foreach (var decoData in currentMapData.decorationPositions)
+            {
+                Vector3 decoPosition = new Vector3(
+                    decoData.position.x * (tileSize.x + inBetweenTilesXOffset),
+                    decoData.position.y * tileSize.y,
+                    decoData.position.z * (tileSize.z + inBetweenTilesYOffset)
+                );
+
+                GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition, Quaternion.identity);
+                decoInstance.transform.SetParent(this.transform); // Raggruppa sotto al GridManager per pulizia
+
+                // --- NEW: Block movement on the tile ---
+                // Decoration is visually "on top" of the tile, so it exists at Y + 1 according to the save data
+                TileController occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y - 1, decoData.position.z);
+                
+                // Fallback: Just in case the decoration was saved at the exact same Y coordinate as the base tile
+                if (occupiedTile == null)
+                {
+                    occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y, decoData.position.z);
+                }
+
+                // If we found the base walkable tile under the decoration, mark it as a physical obstacle
+                if (occupiedTile != null)
+                {
+                    occupiedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                    occupiedTile.tileType = TileType.Environment; // <-- FIX: Set explicitly to Environment
+                    occupiedTile.detectedUnit = decoInstance; 
+                }
+            }
+        }
+        else if (currentMapData.decorationPositions != null && currentMapData.decorationPositions.Count > 0)
+        {
+            Debug.LogWarning("GridManager: Ti manca un prefab per le decorazioni! Assicurati di posizionare 'DecorationPrefab' nella cartella Resources.");
+        }
     }
 
     private void ClearGridMap()
