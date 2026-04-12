@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Playables;
+using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
@@ -91,9 +92,21 @@ public class BattleManager : MonoBehaviour
     public void UnlockNextLevel()
     {
         GameSaveData saveData = SaveStateManager.saveData;
-        saveData.highestUnlockedLevel++;
+        int currentId = saveData.currentNodeId;
+
+        // Failsafe configuration
+        if (saveData.clearedNodesId == null)
+            saveData.clearedNodesId = new List<int>();
+
+        // Only append to cleared list and increase logic if the player hasn't already beaten this node
+        if (!saveData.clearedNodesId.Contains(currentId))
+        {
+            saveData.clearedNodesId.Add(currentId);
+            saveData.highestUnlockedLevel++; // We retain this metric for legacy scripts relying on total progression counting
+        }
+        
         SaveStateManager.SaveGame(saveData);
-        Debug.Log("Unlocking Next Level");
+        Debug.Log($"Cleared Node {currentId}!");
     }
 
     public void PlayCameraBattleEndAnimation()

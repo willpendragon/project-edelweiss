@@ -261,8 +261,8 @@ public class OverworldMapGenerator : MonoBehaviour
             newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
             newNode.GetComponent<EnemySelection>().mapData = domainLevelSelection.levelList[i].map;
 
-            // Make all nodes interactable globally, control state via IDs
-            bool isCleared = i < highestUnlockedLevel;
+            // Make all nodes interactable globally, control state via exact IDs
+            bool isCleared = gameSaveData.clearedNodesId != null && gameSaveData.clearedNodesId.Contains(i);
 
             if (isCleared) nodeController.SetCleared();
             else nodeController.SetUnlocked();

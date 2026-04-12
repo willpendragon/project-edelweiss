@@ -7,6 +7,7 @@ public class GameSaveData
     public int enemiesKilled;
     public int highestUnlockedLevel;
     public int currentNodeId; // Add this line here
+    public List<int> clearedNodesId = new List<int>();
     public int timesSingleTargetSpellWasUsed;
     public int convoIndex;
     public int lastConvoNumber;
