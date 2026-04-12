@@ -32,19 +32,22 @@ public class ChestUnit : Unit
         // Instead of typical enemy rewards, we process the specific chest loot
         if (unitTemplate is ChestTemplate chestConfig)
         {
-            Debug.Log($"[CHEST] Destroyed! Dropping specific key: {chestConfig.chestPrizeType}");
+            Debug.Log($"[CHEST] Destroyed! Spawning Field Prize for: {chestConfig.chestPrizeType}");
 
-            switch (chestConfig.chestPrizeType)
+            if (fieldPrizeController != null)
             {
-                case ChestTemplate.ChestPrizeType.SimpleKey:
-                    // Drop Simple Key Logic
-                    break;
-                case ChestTemplate.ChestPrizeType.MinibossKey:
-                    // Drop Miniboss Key Logic
-                    break;
-                case ChestTemplate.ChestPrizeType.BossKey:
-                    // Drop Boss Key Logic
-                    break;
+                ItemFieldPrize prizeSOToLoad = null;
+
+                if (chestConfig.chestPrizeType == ChestTemplate.ChestPrizeType.MinibossKey)
+                    prizeSOToLoad = Resources.Load<ItemFieldPrize>("MinibossKeyPrize");
+                else if (chestConfig.chestPrizeType == ChestTemplate.ChestPrizeType.BossKey)
+                    prizeSOToLoad = Resources.Load<ItemFieldPrize>("BossKeyPrize");
+
+                fieldPrizeController.DropSpecificPrize(ownedTile, chestConfig.chestPrizeType, prizeSOToLoad);
+            }
+            else
+            {
+                Debug.LogWarning("[CHEST] Missing PrizeReleaseController! Cannot drop loot.");
             }
         }
         else

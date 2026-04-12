@@ -73,6 +73,8 @@ public class ResourceData
     public float experiencePointsReward;
     public int captureCrystalsCount;
     public int puzzleLevelKeys;
+    public bool hasMinibossKey;
+    public bool hasBossKey;
 }
 
 [System.Serializable]

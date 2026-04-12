@@ -182,6 +182,14 @@ public class GridManager : MonoBehaviour
                     chestUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive;
                     chestUnit.ownedTile = tileController;
                     chestUnit.bossFlag = false;
+                    
+                    // Construct local PrizeReleaseController purely to handle the immediate drop sequence
+                    if (!chestPrototype.GetComponent<PrizeReleaseController>())
+                    {
+                        var releaseController = chestPrototype.AddComponent<PrizeReleaseController>();
+                        chestUnit.fieldPrizeController = releaseController;
+                    }
+                    
 
                     // Sync logical coordinates so battle initialization scripts don't reset it to 0,0
                     chestUnit.currentXCoordinate = tileData.position.x;

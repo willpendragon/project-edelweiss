@@ -105,8 +105,19 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         }
         else if (type == NodeType.MinibossBattle || type == NodeType.BossBattle)
         {
-             Debug.Log($"Can't enter: {type} is locked (Keys not implemented yet).");
-             // return; // Uncomment this to block boss access when Keys exist eventually.
+            GameStatsManager gameStatsManager = FindAnyObjectByType<GameStatsManager>();
+            
+            if (type == NodeType.MinibossBattle && (gameStatsManager == null || !gameStatsManager.hasMinibossKey))
+            {
+                Debug.Log($"Can't enter: {type} is locked. Miniboss Key required.");
+                return;
+            }
+            
+            if (type == NodeType.BossBattle && (gameStatsManager == null || !gameStatsManager.hasBossKey))
+            {
+                Debug.Log($"Can't enter: {type} is locked. Boss Key required.");
+                return;
+            }
         }
 
         SetCanvasVisibility(1f, true, true, Vector3.one);

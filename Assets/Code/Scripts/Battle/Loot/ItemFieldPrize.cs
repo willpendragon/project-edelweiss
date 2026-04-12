@@ -6,7 +6,9 @@ public enum ItemFieldPrizeType
 {
     attackPowerUp,
     magicPowerUp,
-    PuzzleLevelKey
+    PuzzleLevelKey,
+    MinibossKey,
+    BossKey
 }
 [CreateAssetMenu(fileName = "ItemFieldPrize", menuName = "Items/FieldPrize", order = 1)]
 

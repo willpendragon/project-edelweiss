@@ -12,6 +12,8 @@ public class GameStatsManager : MonoBehaviour
     public int timesSingleTargetSpellWasUsed;
     public int captureCrystalsCount;
     public int unlockedPuzzleKeys;
+    public bool hasMinibossKey;
+    public bool hasBossKey;
 
     [SerializeField] private bool _secretLevelUnlocked; // Flow related bool.
 
@@ -32,6 +34,7 @@ public class GameStatsManager : MonoBehaviour
         LoadEnemiesKilled();
         LoadUsedSingleTargetSpells();
         LoadUnlockedKeys();
+        LoadBossKeys();
         LoadCurrentNodeId(); // Bind the retrieval sequence
     }
     void Start()
@@ -234,6 +237,40 @@ public class GameStatsManager : MonoBehaviour
             gameSaveData.resourceData.puzzleLevelKeys += unlockedKeys;
             SaveStateManager.SaveGame(gameSaveData);
             Debug.Log($"Saved Keys: {unlockedKeys}");
+        }
+    }
+
+    public void LoadBossKeys()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.resourceData != null)
+        {
+            hasMinibossKey = gameSaveData.resourceData.hasMinibossKey;
+            hasBossKey = gameSaveData.resourceData.hasBossKey;
+        }
+    }
+
+    public void SaveMinibossKey(bool hasKey)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.hasMinibossKey = hasKey;
+            hasMinibossKey = hasKey;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Miniboss Key Status: {hasKey}");
+        }
+    }
+
+    public void SaveBossKey(bool hasKey)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.hasBossKey = hasKey;
+            hasBossKey = hasKey;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Boss Key Status: {hasKey}");
         }
     }
     public void LoadEnemiesKilled()

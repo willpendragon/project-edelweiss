@@ -8,6 +8,10 @@ public class BattleRewardsController : MonoBehaviour
     public float experienceRewardPool;
     public int multiKillCounter;
     public List<Ingredient> ingredients;
+    
+    public bool acquiredMinibossKey;
+    public bool acquiredBossKey;
+
     public void AddCoinsRewardToCoinsRewardPool(float coinsRewardToAdd)
     {
         coinsRewardPool += coinsRewardToAdd;
@@ -40,6 +44,10 @@ public class BattleRewardsController : MonoBehaviour
 
         // Saves the Looted Ingredients
         gameStatsManager.SaveIngredients();
+
+        // Flush acquired story keys to Persistent Saver now that victory is guaranteed!
+        if (acquiredMinibossKey) gameStatsManager.SaveMinibossKey(true);
+        if (acquiredBossKey) gameStatsManager.SaveBossKey(true);
     }
 
     public void IncreaseMultiKillCounter(int newKill)
