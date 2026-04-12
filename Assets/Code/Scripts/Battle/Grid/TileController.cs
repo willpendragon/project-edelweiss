@@ -32,7 +32,10 @@ public enum TileType
     ActivationPlatform,
     Obstacle,
     Mirror,
-    Triad
+    Triad,
+    Chest,
+    MinibossChest,
+    BossChest
 }
 
 public enum TileElement // Such properties could be moved in an SO.
@@ -170,8 +173,8 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
                     // Highest priority: Unselected playable units
                     if (hitTile.detectedUnit.CompareTag("Player"))
                         currentPriority = 2;
-                    // Lower priority: Enemies or the already Active Unit
-                    else if (hitTile.detectedUnit.CompareTag("Enemy") || hitTile.detectedUnit.CompareTag("ActivePlayerUnit"))
+                    // Lower priority: Enemies, Chests, or the already Active Unit
+                    else if (hitTile.detectedUnit.CompareTag("Enemy") || hitTile.detectedUnit.CompareTag("Chest") || hitTile.detectedUnit.CompareTag("ActivePlayerUnit"))
                         currentPriority = 1;
                 }
 

@@ -288,6 +288,32 @@ public class MapEditorWindow : EditorWindow
                 }
             }
         }
+        else if (type == TileType.Chest || type == TileType.MinibossChest || type == TileType.BossChest)
+        {
+            Transform gridBoundsTransform = tile.transform.Find("GridBounds");
+            if (gridBoundsTransform != null)
+            {
+                Renderer renderer = gridBoundsTransform.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    MaterialPropertyBlock block = new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(block);
+                    
+                    // Select Specific Color
+                    Color chestColor = new Color(0.5f, 0.0f, 0.8f, 1f); // Default Purple
+                    
+                    if (type == TileType.MinibossChest)
+                        chestColor = Color.yellow;
+                    else if (type == TileType.BossChest)
+                        chestColor = Color.red;
+
+                    block.SetColor("_BaseColor", chestColor); 
+                    block.SetColor("_Color", chestColor);
+                    
+                    renderer.SetPropertyBlock(block);
+                }
+            }
+        }
     }
 
     private void DeleteTile(Vector3Int position)

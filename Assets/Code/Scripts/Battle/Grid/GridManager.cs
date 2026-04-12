@@ -119,22 +119,88 @@ public class GridManager : MonoBehaviour
         foreach (var tileData in currentMapData.tilePositions)
         {
             Vector3 tilePosition = new Vector3(
-                tileData.position.x * (tileSize.x + inBetweenTilesXOffset), 
-                tileData.position.y * tileSize.y, 
-                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondità
+                tileData.position.x * (tileSize.x + inBetweenTilesXOffset),
+                tileData.position.y * tileSize.y,
+                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondit
             );
 
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
             TileController tileController = tilePrefabInstance.GetComponent<TileController>();
-            
+
             tileController.gridPosition = tileData.position;
-            tileController.tileType = tileData.tileType; 
-            
+            tileController.tileType = tileData.tileType;
+
             PositionKey positionKey = new PositionKey(tileData.position, tilePrefab);
 
             if (!gridMapDictionary.ContainsKey(positionKey))
             {
                 gridMapDictionary.Add(positionKey, tileController);
+            }
+
+            // [PROTOTYPE] Spawn a purple Cube to represent the chest directly on the generated tile
+            if (tileData.tileType == TileType.Chest || tileData.tileType == TileType.MinibossChest || tileData.tileType == TileType.BossChest)
+            {
+                GameObject chestPrototype = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                chestPrototype.name = "Chest_Prototype";
+
+                // Remove the collider so it doesn't block tile raycasts
+                BoxCollider prototypeCollider = chestPrototype.GetComponent<BoxCollider>();
+                if (prototypeCollider != null)
+                {
+                    Destroy(prototypeCollider);
+                }
+
+                // Set the color to distinguish it based on type
+                Renderer renderer = chestPrototype.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    if (tileData.tileType == TileType.MinibossChest)
+                        renderer.material.color = Color.yellow;
+                    else if (tileData.tileType == TileType.BossChest)
+                        renderer.material.color = Color.red;
+                    else
+                        renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f); // Default Purple
+                }
+
+                // Parent it to the tile and position it firmly on the surface
+                chestPrototype.transform.SetParent(tilePrefabInstance.transform);
+                chestPrototype.transform.localScale = Vector3.one * 0.5f; // Small size cube
+                PlaceUnitOnTileSurface(chestPrototype, tileController);
+
+                // Make the tile mathematically occupied by the chest so units can't walk on it
+                tileController.detectedUnit = chestPrototype;
+                tileController.currentSingleTileCondition = SingleTileCondition.occupied;
+
+                // Tag it properly as a Chest
+                chestPrototype.tag = "Chest";
+
+                // Add a custom ChestUnit component to handle specific chest logic
+                if (!chestPrototype.GetComponent<ChestUnit>())
+                {
+                    var chestUnit = chestPrototype.AddComponent<ChestUnit>();
+                    chestUnit.HealthPoints = 10;
+                    chestUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive;
+                    chestUnit.ownedTile = tileController;
+                    chestUnit.bossFlag = false;
+                    
+                    // Construct local PrizeReleaseController purely to handle the immediate drop sequence
+                    if (!chestPrototype.GetComponent<PrizeReleaseController>())
+                    {
+                        var releaseController = chestPrototype.AddComponent<PrizeReleaseController>();
+                        chestUnit.fieldPrizeController = releaseController;
+                    }
+                    
+
+                    // Sync logical coordinates so battle initialization scripts don't reset it to 0,0
+                    chestUnit.currentXCoordinate = tileData.position.x;
+                    chestUnit.currentYCoordinate = tileData.position.z;
+
+                    // TODO: Assign the specific Scriptable Object Template here based on tileData.tileType!
+                    if (tileData.tileType == TileType.MinibossChest)
+                        chestUnit.unitTemplate = Resources.Load<ChestTemplate>("MinibossChestTemplate");
+                    else if (tileData.tileType == TileType.BossChest)
+                        chestUnit.unitTemplate = Resources.Load<ChestTemplate>("BossChestTemplate");
+                }
             }
         }
     }
@@ -169,7 +235,7 @@ public class GridManager : MonoBehaviour
         }
         return null;
     }
-    
+
     // VERSIONE "SOVRACCARICATA" EXTRA 2D PER NON ROMPERE TUTTO SUBITO
     // Molti tuoi script passano ancora (X, Y) credendo sia la vista dall'alto (dove la loro vecchia Y è ora la nostra Z)
     // Usiamo questa per cercare i tile al "Piano Terra" (Elevazione 0).
@@ -185,7 +251,7 @@ public class GridManager : MonoBehaviour
                 return tile; // Trovato! Restituiamo il Voxel sulla cima della collina!
             }
         }
-        
+
         return null; // Nessun tile in questa colonna
     }
     public List<Vector2Int> GetExistingTileCoordinates()
@@ -196,7 +262,7 @@ public class GridManager : MonoBehaviour
             // indexTileZPosition corresponds to the logical Y coordinate in your 2D top-down grid scripts
             existingTiles.Add(new Vector2Int(key.indexTileXPosition, key.indexTileZPosition));
         }
-        
+
         // Remove duplicates if multiple Voxel tiles are stacked on the same (X, Z) coordinate column
         return existingTiles.Distinct().ToList();
     }
@@ -243,11 +309,11 @@ public class GridManager : MonoBehaviour
                 {
                     surfaceY += col.bounds.extents.y;
                 }
-                
+
                 return new Vector3(tile.transform.position.x, surfaceY, tile.transform.position.z);
             }
         }
-        
+
         // CORREZIONE AL FALLBACK
         Vector3 tileSize = GetTileWorldSize3D();
         float worldX = x * (tileSize.x + inBetweenTilesXOffset);
@@ -321,7 +387,7 @@ public class GridManager : MonoBehaviour
 
         // Anziché usare posizioni relative o bounds, usiamo la cima esatta del Renderer o del Collider!
         float finalY = targetTile.transform.position.y;
-        
+
         Collider col = targetTile.GetComponent<Collider>();
         if (col != null)
         {
@@ -342,7 +408,7 @@ public class GridManager : MonoBehaviour
     {
         if (tilePrefab == null) return Vector3.one;
         BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
-        if (col != null) 
+        if (col != null)
         {
             // Moltiplica la grandezza pura per la scala del Prefab! (Es: 1 * 1.5 = 1.5)
             return Vector3.Scale(col.size, tilePrefab.transform.localScale);

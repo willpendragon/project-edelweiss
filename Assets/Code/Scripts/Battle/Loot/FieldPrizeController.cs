@@ -15,14 +15,15 @@ public class FieldPrizeController : MonoBehaviour
         _powerUpAmount = fieldPrizeTemplate.powerUpAmount;
         _itemFieldPrizeType = fieldPrizeTemplate.itemFieldPrizeType;
 
-        if (fieldPrizeTemplate.itemFieldPrizeType != ItemFieldPrizeType.PuzzleLevelKey)
+        if (fieldPrizeTemplate.itemFieldPrizeType == ItemFieldPrizeType.attackPowerUp || 
+            fieldPrizeTemplate.itemFieldPrizeType == ItemFieldPrizeType.magicPowerUp)
         {
             SetTextLabel();
             SetPrizeColor();
         }
         else
         {
-            _fieldPrizeLabel.text = ""; // Band-aid solution, should be retrieved from SO.
+            _fieldPrizeLabel.text = ""; // Band-aid solution, prevents keys from overriding labels.
         }
     }
 

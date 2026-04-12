@@ -15,9 +15,18 @@ public class PrizeReleaseController : MonoBehaviour
     [SerializeField] private List<ItemFieldPrize> _upgradePrizes;
     [SerializeField] private List<ItemFieldPrize> _keyPrizes;
 
+    // Chest Key specific drops are loaded locally during DropSpecificPrize to keep enemy instances clean
+
     [Header("Drop Chances")]
     [Tooltip("Index 0 is Loss chance. Index 1+ is Win chance.")]
     [SerializeField] private List<int> weights = new List<int> { 70, 30 };
+
+    // Expose FieldPrizeGO internally for dynamic chest loading
+    public GameObject FieldPrizePrefab
+    {
+        get => _fieldPrizeGO;
+        set => _fieldPrizeGO = value;
+    }
 
     public void UnlockFieldPrize(TileController fieldPrizeTile)
     {
@@ -125,6 +134,41 @@ public class PrizeReleaseController : MonoBehaviour
         {
             fieldPrizeController.fieldPrizeTemplate = rolledItem;
             fieldPrizeController.SetupPrize();
+        }
+    }
+
+    public void DropSpecificPrize(TileController fieldPrizeTile, ChestTemplate.ChestPrizeType prizeType, ItemFieldPrize specificKeyLoadedSO)
+    {
+        if (fieldPrizeTile.tileCurrentFieldPrize != null)
+        {
+            Debug.Log($"Tile {fieldPrizeTile.name} already has a prize. Skipping spawn.");
+            return; // Prevent stacking
+        }
+
+        // Guaranteed Failsafe: Dynamically load the base prefab if missing (e.g., dynamically built Chests)
+        if (_fieldPrizeGO == null)
+        {
+            _fieldPrizeGO = Resources.Load<GameObject>("GenericKeyPrize");
+            if (_fieldPrizeGO == null)
+            {
+                Debug.LogError("[PrizeReleaseController] Critical Error: 'GenericKeyPrize' prefab not found in Resources folder!");
+                return;
+            }
+        }
+
+        Vector3 prizeSpawnPosition = fieldPrizeTile.gameObject.transform.position + Vector3.up;
+
+        if (specificKeyLoadedSO != null)
+        {
+            SpawnPrize(fieldPrizeTile, prizeSpawnPosition, specificKeyLoadedSO);
+        }
+        else if (prizeType == ChestTemplate.ChestPrizeType.SimpleKey && _keyPrizes.Count > 0)
+        {
+            SpawnPrize(fieldPrizeTile, prizeSpawnPosition, _keyPrizes[0]); // Fallback generic key
+        }
+        else
+        {
+            Debug.LogWarning($"[PrizeReleaseController] Missing Loaded SO Reference for specific {prizeType} chest drop!");
         }
     }
 }

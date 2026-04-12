@@ -20,7 +20,11 @@ public class EnemyProfileController : MonoBehaviour
         var enemies = _battleManager.enemiesOnBattlefield;
         foreach (var enemy in enemies)
         {
-            _enemySliders.Add(enemy.GetComponentInChildren<Slider>());
+            var slider = enemy.GetComponentInChildren<Slider>();
+            if (slider != null)
+            {
+                _enemySliders.Add(slider);
+            }
         }
         GetSliderValues();
     }
@@ -29,10 +33,18 @@ public class EnemyProfileController : MonoBehaviour
     {
         if (_enemySliders.Count <= 0)
             return;
+
         foreach (var enemySlider in _enemySliders)
         {
-            enemySlider.maxValue = enemySlider.GetComponentInParent<Unit>().unitHealthPoints;
-            enemySlider.value = enemySlider.GetComponentInParent<Unit>().unitHealthPoints;
+            // Failsafe check in case a slider was destroyed or malformed
+            if (enemySlider == null) continue;
+
+            var parentUnit = enemySlider.GetComponentInParent<Unit>();
+            if (parentUnit != null)
+            {
+                enemySlider.maxValue = parentUnit.unitHealthPoints;
+                enemySlider.value = parentUnit.unitHealthPoints;
+            }
         }
     }
 }

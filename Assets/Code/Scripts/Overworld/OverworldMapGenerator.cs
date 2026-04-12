@@ -261,8 +261,8 @@ public class OverworldMapGenerator : MonoBehaviour
             newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
             newNode.GetComponent<EnemySelection>().mapData = domainLevelSelection.levelList[i].map;
 
-            // Make all nodes interactable globally, control state via IDs
-            bool isCleared = i < highestUnlockedLevel;
+            // Make all nodes interactable globally, control state via exact IDs
+            bool isCleared = gameSaveData.clearedNodesId != null && gameSaveData.clearedNodesId.Contains(i);
 
             if (isCleared) nodeController.SetCleared();
             else nodeController.SetUnlocked();
@@ -299,8 +299,14 @@ public class OverworldMapGenerator : MonoBehaviour
         else
         {
             // The path is blocked by a gateway or is unreachable. Provide visual feedback.
-            StartCoroutine(ShakePartyRoutine());
+            TriggerShakePartyRoutine();
         }
+    }
+
+    // Making this public gives map nodes the ability to intentionally trigger a rejection shake!
+    public void TriggerShakePartyRoutine()
+    {
+        StartCoroutine(ShakePartyRoutine());
     }
 
     private IEnumerator ShakePartyRoutine()

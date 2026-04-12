@@ -34,6 +34,19 @@ public class PrizeCollectionHelper : MonoBehaviour
                 gameStatsManager.SaveUnlockedKeys(gameStatsManager.unlockedPuzzleKeys);
                 Debug.Log("Added Key to Game Stats Manager and saved to game state");
             }
+            else if (fieldPrizeController != null && fieldPrizeController.ItemFieldPrizeType == ItemFieldPrizeType.MinibossKey)
+            {
+                BattleManager.Instance.battleRewardsController.acquiredMinibossKey = true;
+                Debug.Log("Added Miniboss Key to current battle pool. Will save upon victory.");
+                // Optional: Play Sound/VFX here
+            }
+            else if (fieldPrizeController != null && fieldPrizeController.ItemFieldPrizeType == ItemFieldPrizeType.BossKey)
+            {
+                BattleManager.Instance.battleRewardsController.acquiredBossKey = true;
+                Debug.Log("Added Boss Key to current battle pool. Will save upon victory.");
+                // Optional: Play Sound/VFX here
+            }
+
             UpdateCombatValues();
             Destroy(fieldPrizeController.gameObject);
         }
