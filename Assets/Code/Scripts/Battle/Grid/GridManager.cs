@@ -121,7 +121,7 @@ public class GridManager : MonoBehaviour
             Vector3 tilePosition = new Vector3(
                 tileData.position.x * (tileSize.x + inBetweenTilesXOffset),
                 tileData.position.y * tileSize.y,
-                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondit
+                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondità
             );
 
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
@@ -135,6 +135,17 @@ public class GridManager : MonoBehaviour
             if (!gridMapDictionary.ContainsKey(positionKey))
             {
                 gridMapDictionary.Add(positionKey, tileController);
+            }
+
+            // --- NEW: Hide GridBounds during gameplay for ALL physical Map tiles ---
+            Transform gridBounds = tilePrefabInstance.transform.Find("GridBounds");
+            if (gridBounds != null)
+            {
+                Renderer boundsRenderer = gridBounds.GetComponent<Renderer>();
+                if (boundsRenderer != null)
+                {
+                    boundsRenderer.enabled = false;
+                }
             }
 
             // [PROTOTYPE] Spawn a purple Cube to represent the chest directly on the generated tile
