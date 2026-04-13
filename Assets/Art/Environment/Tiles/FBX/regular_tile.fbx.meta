@@ -1,9 +1,14 @@
 fileFormatVersion: 2
-guid: 961f2ec00fcbf5545bf7c4dd6d15a93e
+guid: e7cf2c21cb4505e459eb9c7a05fd9b7d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: texture.001
+    second: {fileID: 2100000, guid: f05b96af9306f644a9a61ee8fca3f5c3, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -43,8 +48,8 @@ ModelImporter:
     importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
-    importCameras: 1
-    importLights: 1
+    importCameras: 0
+    importLights: 0
     nodeNameCollisionStrategy: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
