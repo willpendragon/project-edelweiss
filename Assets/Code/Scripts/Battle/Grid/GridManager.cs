@@ -215,13 +215,22 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        // --- NEW: Load Decorations at runtime ---
-        GameObject runtimeDecorationPrefab = Resources.Load<GameObject>("DecorationPrefab"); 
-        
-        if (runtimeDecorationPrefab != null && currentMapData.decorationPositions != null)
+        // --- NEW: Load specific Decorations at runtime via PrefabName ---
+        if (currentMapData.decorationPositions != null)
         {
             foreach (var decoData in currentMapData.decorationPositions)
             {
+                // Fallback to "DecorationPrefab" if the map was saved before the prefab update
+                string targetPrefabName = string.IsNullOrEmpty(decoData.prefabName) ? "DecorationPrefab" : decoData.prefabName;
+
+                GameObject runtimeDecorationPrefab = Resources.Load<GameObject>(targetPrefabName); 
+                
+                if (runtimeDecorationPrefab == null)
+                {
+                    Debug.LogWarning($"GridManager: Missing Decoration Prefab '{targetPrefabName}' in Resources folder!");
+                    continue; // Skip placement if missing
+                }
+
                 Vector3 decoPosition = new Vector3(
                     decoData.position.x * (tileSize.x + inBetweenTilesXOffset),
                     decoData.position.y * tileSize.y,
@@ -229,32 +238,29 @@ public class GridManager : MonoBehaviour
                 );
 
                 GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition, Quaternion.identity);
-                decoInstance.transform.SetParent(this.transform); // Raggruppa sotto al GridManager per pulizia
+                decoInstance.transform.SetParent(this.transform); // Group it cleanly
 
-                // --- NEW: Hide GridBounds during gameplay ---
+                // --- Hide GridBounds during gameplay ---
                 Transform gridBounds = decoInstance.transform.Find("GridBounds");
                 if (gridBounds != null)
                 {
                     Renderer boundsRenderer = gridBounds.GetComponent<Renderer>();
                     if (boundsRenderer != null)
-                        boundsRenderer.enabled = false; // Makes it invisible but keeps colliders intact!
+                        boundsRenderer.enabled = false;
                 }
 
                 // --- Block movement on the tile ---
-                // Decoration is visually "on top" of the tile, so it exists at Y + 1 according to the save data
                 TileController occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y - 1, decoData.position.z);
                 
-                // Fallback: Just in case the decoration was saved at the exact same Y coordinate as the base tile
                 if (occupiedTile == null)
                 {
                     occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y, decoData.position.z);
                 }
 
-                // If we found the base walkable tile under the decoration, mark it as a physical obstacle
                 if (occupiedTile != null)
                 {
                     occupiedTile.currentSingleTileCondition = SingleTileCondition.occupied;
-                    occupiedTile.tileType = TileType.Environment; // Set explicitly to Environment
+                    occupiedTile.tileType = TileType.Environment; 
                     occupiedTile.detectedUnit = decoInstance; 
                 }
             }
