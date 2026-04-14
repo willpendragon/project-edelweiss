@@ -23,7 +23,7 @@ public class MapData : ScriptableObject
     public struct DecorationData
     {
         public Vector3Int position;
-        // When you add multiple decoration types, you can add an ID or string prefabID here!
+        public string prefabName; // <-- NEW: Store the name of the prefab loaded from Resources!
     }
 
     public List<TileData> tilePositions = new List<TileData>();
