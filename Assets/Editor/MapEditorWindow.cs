@@ -7,7 +7,7 @@ public class MapEditorWindow : EditorWindow
 {
     private int gridWidth = 10;
     private int gridHeight = 10; // Z
-    private int gridDepth = 10;  // Y,
+    private int gridDepth = 10;  // Y
 
     public float inBetweenTilesXOffset = 0f;
     public float inBetweenTilesZOffset = 0f;
@@ -15,13 +15,13 @@ public class MapEditorWindow : EditorWindow
     private GameObject tilePrefab;
     private GameObject decorationPrefab; // Currently selected active decoration
 
-    // --- NEW: Multiple Decorations List ---
+    // --- Multiple Decorations List ---
     public List<GameObject> decorationPrefabs = new List<GameObject>();
     private SerializedObject _so;
     private SerializedProperty _decorationsProp;
     private int _selectedDecorationIndex = 0;
     private Vector2 _decorScrollPos;
-    private Vector2 _mainScrollPos; // <-- ADD THIS LINE
+    private Vector2 _mainScrollPos; 
 
     private MapData currentMap;
     private TileType selectedTileType = TileType.Basic;
@@ -33,7 +33,9 @@ public class MapEditorWindow : EditorWindow
     private bool isPlacingDecoration = false;
     private bool isDeletingTile = false;
     private bool clearOnClose = false;
+    
     private Vector3Int lastGridPosition = new Vector3Int(-1, -1, -1);
+    private Vector3Int lastPaintedPosition = new Vector3Int(-1, -1, -1); // Tracks actual final point for Aseprite Shift-Draw
 
     public float paintDelay = 0.15f;
     private double lastPaintTime = 0.0;
@@ -154,7 +156,8 @@ public class MapEditorWindow : EditorWindow
         {
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Select Active Decoration:", EditorStyles.label);
-            _decorScrollPos = EditorGUILayout.BeginScrollView(_decorScrollPos, GUILayout.Height(85));
+            
+            _decorScrollPos = EditorGUILayout.BeginScrollView(_decorScrollPos, GUILayout.Height(105));
             EditorGUILayout.BeginHorizontal();
 
             for (int i = 0; i < decorationPrefabs.Count; i++)
@@ -163,10 +166,7 @@ public class MapEditorWindow : EditorWindow
                 if (prefab == null) continue;
 
                 Texture2D preview = AssetPreview.GetAssetPreview(prefab);
-
-                // Highlight the selected element
                 GUI.backgroundColor = (i == _selectedDecorationIndex) ? Color.green : Color.white;
-
                 GUIContent content = preview != null ? new GUIContent(preview, prefab.name) : new GUIContent(prefab.name);
 
                 // Lock the buttons to exactly 64x64 so they don't stretch
@@ -204,11 +204,6 @@ public class MapEditorWindow : EditorWindow
         if (GUILayout.Button("Sync & Reload from Scene")) SyncDictionaryFromScene();
 
         EditorGUILayout.Space();
-
-        if (decorationPrefabs.Count > 1)
-        {
-            //EditorGUILayout.HelpBox("Warning: Currently 'Save Map' only saves decoration positions. Multi-Prefabs won't be saved in MapData correctly until MapData logic is upgraded!", MessageType.Warning);
-        }
 
         if (GUILayout.Button("Save Map to Asset", GUILayout.Height(30))) SaveMap();
         if (GUILayout.Button("Load Map from Asset", GUILayout.Height(30))) LoadFromAsset();
@@ -261,7 +256,6 @@ public class MapEditorWindow : EditorWindow
         }
 
         Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
-
         bool hasHit = false;
         Vector3Int targetGridPos = Vector3Int.zero;
         Vector3 tileSize = GetTileWorldSize3D();
@@ -325,12 +319,20 @@ public class MapEditorWindow : EditorWindow
             }
         }
 
-
         if (hasHit)
         {
             if (!IsInsideGrid(targetGridPos) || e.alt) return;
 
-            DrawPreview(targetGridPos);
+            // PREVIEW MULTIPLE (LINE) OR SINGLE
+            if (e.shift && lastPaintedPosition.x != -1)
+            {
+                var points = GetLinePoints(lastPaintedPosition, targetGridPos);
+                foreach (var p in points) DrawPreview(p);
+            }
+            else
+            {
+                DrawPreview(targetGridPos);
+            }
 
             if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0)
             {
@@ -347,11 +349,27 @@ public class MapEditorWindow : EditorWindow
 
                 if (cooldownPassed)
                 {
-                    if (isPlacingTile) PlaceTile(targetGridPos, selectedTileType);
-                    else if (isPlacingDecoration) PlaceDecoration(targetGridPos);
-                    else if (isDeletingTile) DeleteTile(targetGridPos);
+                    // MULTIPLE PLACEMENT (SHIFT DRAW)
+                    if (e.shift && lastPaintedPosition.x != -1)
+                    {
+                        var points = GetLinePoints(lastPaintedPosition, targetGridPos);
+                        foreach (var p in points)
+                        {
+                            if (isPlacingTile) PlaceTile(p, selectedTileType);
+                            else if (isPlacingDecoration) PlaceDecoration(p);
+                            else if (isDeletingTile) DeleteTile(p);
+                        }
+                    }
+                    // SINGLE PLACEMENT
+                    else
+                    {
+                        if (isPlacingTile) PlaceTile(targetGridPos, selectedTileType);
+                        else if (isPlacingDecoration) PlaceDecoration(targetGridPos);
+                        else if (isDeletingTile) DeleteTile(targetGridPos);
+                    }
 
                     lastGridPosition = targetGridPos;
+                    lastPaintedPosition = targetGridPos; // Important: anchor new point!
                     lastPaintTime = currentTime;
                 }
 
@@ -359,11 +377,19 @@ public class MapEditorWindow : EditorWindow
             }
         }
 
-        if (e.type == EventType.MouseUp) lastGridPosition = new Vector3Int(-1, -1, -1);
+        if (e.type == EventType.MouseUp) 
+        {
+            lastGridPosition = new Vector3Int(-1, -1, -1);
+            // We intentionally DO NOT reset lastPaintedPosition so Shift-chaining works seamlessly
+        }
 
         DrawGrid();
         sceneView.Repaint();
     }
+
+    // ===============================================
+    // ================ HELPER METHODS ===============
+    // ===============================================
 
     private void PlaceTile(Vector3Int position, TileType type)
     {
@@ -393,6 +419,26 @@ public class MapEditorWindow : EditorWindow
         }
 
         ApplyDecorativeColor(tile, type);
+    }
+
+    private void PlaceDecoration(Vector3Int position)
+    {
+        if (decorationPrefab == null) return;
+
+        SyncDictionaryFromScene();
+
+        if (decorations.ContainsKey(position)) return;
+
+        Vector3 tileSize = GetTileWorldSize3D();
+        Vector3 worldPos = GridToWorld(position, tileSize);
+
+        GameObject deco = (GameObject)PrefabUtility.InstantiatePrefab(decorationPrefab);
+        deco.transform.position = worldPos;
+        deco.name = $"{decorationPrefab.name}_{position.x}_{position.y}_{position.z}";
+
+        Undo.RegisterCreatedObjectUndo(deco, "Place Decoration");
+
+        decorations[position] = deco;
     }
 
     private void ApplyDecorativeColor(GameObject tile, TileType type)
@@ -528,16 +574,10 @@ public class MapEditorWindow : EditorWindow
         Vector3 scale = tilePrefab.transform.localScale;
 
         Transform bounds = tilePrefab.transform.Find("GridBounds");
-        if (bounds != null)
-        {
-            return Vector3.Scale(bounds.localScale, scale);
-        }
+        if (bounds != null) return Vector3.Scale(bounds.localScale, scale);
 
         BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
-        if (col != null)
-        {
-            return Vector3.Scale(col.size, scale);
-        }
+        if (col != null) return Vector3.Scale(col.size, scale);
 
         return scale;
     }
@@ -626,7 +666,6 @@ public class MapEditorWindow : EditorWindow
 
                 tiles[data.position] = tile;
                 HideTileEffects(tile);
-
                 ApplyDecorativeColor(tile, data.tileType);
             }
         }
@@ -650,8 +689,6 @@ public class MapEditorWindow : EditorWindow
                 Vector3 worldPos = GridToWorld(data.position, tileSize);
                 GameObject deco = (GameObject)PrefabUtility.InstantiatePrefab(targetPrefab);
                 deco.transform.position = worldPos;
-
-                // Keep naming format identical so SyncDictionaryFromScene finds it on next refresh!
                 deco.name = $"{targetPrefab.name}_{data.position.x}_{data.position.y}_{data.position.z}";
 
                 decorations[data.position] = deco;
@@ -693,27 +730,6 @@ public class MapEditorWindow : EditorWindow
         }
     }
 
-    private void PlaceDecoration(Vector3Int position)
-    {
-        if (decorationPrefab == null) return;
-
-        SyncDictionaryFromScene();
-
-        if (decorations.ContainsKey(position)) return;
-
-        Vector3 tileSize = GetTileWorldSize3D();
-        Vector3 worldPos = GridToWorld(position, tileSize);
-
-        GameObject deco = (GameObject)PrefabUtility.InstantiatePrefab(decorationPrefab);
-        deco.transform.position = worldPos;
-        // Name it by its actual Prefab Name so SaveMap can harvest the ID!
-        deco.name = $"{decorationPrefab.name}_{position.x}_{position.y}_{position.z}";
-
-        Undo.RegisterCreatedObjectUndo(deco, "Place Decoration");
-
-        decorations[position] = deco;
-    }
-
     private void GenerateMap()
     {
         SyncDictionaryFromScene();
@@ -723,5 +739,30 @@ public class MapEditorWindow : EditorWindow
 
         foreach (var obj in decorations.Values) Undo.DestroyObjectImmediate(obj);
         decorations.Clear();
+    }
+
+    /// <summary>
+    /// Calculates all discrete grid coordinates to form a straight line between two Voxel points.
+    /// </summary>
+    private List<Vector3Int> GetLinePoints(Vector3Int start, Vector3Int end)
+    {
+        List<Vector3Int> points = new List<Vector3Int>();
+
+        // Chebyshev distance ensures continuous diagonals
+        int steps = Mathf.Max(Mathf.Abs(start.x - end.x), Mathf.Max(Mathf.Abs(start.y - end.y), Mathf.Abs(start.z - end.z)));
+
+        if (steps == 0)
+        {
+            points.Add(start);
+            return points;
+        }
+
+        for (int i = 0; i <= steps; i++)
+        {
+            Vector3 lerped = Vector3.Lerp(start, end, (float)i / steps);
+            points.Add(new Vector3Int(Mathf.RoundToInt(lerped.x), Mathf.RoundToInt(lerped.y), Mathf.RoundToInt(lerped.z)));
+        }
+
+        return points.Distinct().ToList(); 
     }
 }
