@@ -7,7 +7,9 @@ public class MapData : ScriptableObject
     public enum LevelType
     {
         Regular,
-        Puzzle
+        Puzzle,
+        Miniboss,
+        Boss
     }
 
     [System.Serializable]
