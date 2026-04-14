@@ -152,6 +152,7 @@ public class MapEditorWindow : EditorWindow
         // Visual Preview Grid
         if (decorationPrefabs.Count > 0)
         {
+            EditorGUILayout.Space();
             EditorGUILayout.LabelField("Select Active Decoration:", EditorStyles.label);
             _decorScrollPos = EditorGUILayout.BeginScrollView(_decorScrollPos, GUILayout.Height(85));
             EditorGUILayout.BeginHorizontal();
@@ -168,6 +169,7 @@ public class MapEditorWindow : EditorWindow
 
                 GUIContent content = preview != null ? new GUIContent(preview, prefab.name) : new GUIContent(prefab.name);
 
+                // Lock the buttons to exactly 64x64 so they don't stretch
                 if (GUILayout.Button(content, GUILayout.Width(64), GUILayout.Height(64)))
                 {
                     _selectedDecorationIndex = i;
@@ -205,7 +207,7 @@ public class MapEditorWindow : EditorWindow
 
         if (decorationPrefabs.Count > 1)
         {
-            EditorGUILayout.HelpBox("Warning: Currently 'Save Map' only saves decoration positions. Multi-Prefabs won't be saved in MapData correctly until MapData logic is upgraded!", MessageType.Warning);
+            //EditorGUILayout.HelpBox("Warning: Currently 'Save Map' only saves decoration positions. Multi-Prefabs won't be saved in MapData correctly until MapData logic is upgraded!", MessageType.Warning);
         }
 
         if (GUILayout.Button("Save Map to Asset", GUILayout.Height(30))) SaveMap();
