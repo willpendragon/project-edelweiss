@@ -94,9 +94,14 @@ public class PhysicalAttackBehavior : ScriptableObject
                 break; // Stop pushing
             }
 
-            // If another unit is standing on this step tile, we also stop pushing and do not occupy that space
+            // If another unit/object is standing on this step tile, we stop pushing.
             if (stepTile.detectedUnit != null)
             {
+                // If the object standing here is an Environment piece (like our decorations), it counts as a Wall Slam!
+                if (stepTile.tileType == TileType.Environment)
+                {
+                    isWallKnockback = true;
+                }
                 break;
             }
 
@@ -115,7 +120,7 @@ public class PhysicalAttackBehavior : ScriptableObject
 
         if (isWallKnockback)
         {
-            Debug.Log($"{defender.unitTemplate.unitName} was slammed into a wall!");
+            Debug.Log($"{defender.unitTemplate.unitName} was slammed into a wall or environment object!");
         }
 
         // --- Execute valid movement ---

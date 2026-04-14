@@ -7,6 +7,23 @@ public class GridMovementController : MonoBehaviour
 
     public int maxJumpHeight = 1; // Dislivello massimo (in numero di blocchi) che un'unità può salire/scendere
 
+    public int GetDistance(TileController nodeA, TileController nodeB)
+    {
+        int dstX = Mathf.Abs(nodeA.gridPosition.x - nodeB.gridPosition.x);
+        int dstZ = Mathf.Abs(nodeA.gridPosition.z - nodeB.gridPosition.z); // Era Y
+        
+        int flatDistance = (dstX > dstZ) ? 
+            14 * dstZ + 10 * (dstX - dstZ) : 
+            14 * dstX + 10 * (dstZ - dstX);
+
+        // A* shouldn't penalize hill climbing more than taking a long flat path! 
+        // We reduce the elevation penalty to a tiny tie-breaker so it just favors flat routes when EQUAL
+        int dstY = Mathf.Abs(nodeA.gridPosition.y - nodeB.gridPosition.y); 
+        int elevationPenalty = dstY * 1; 
+        
+        return flatDistance + elevationPenalty;
+    }
+    
     public List<TileController> FindPath(int startX, int startY, int targetX, int targetY)
     {
         TileController startTile = GridManager.Instance.GetTileControllerInstance(startX, startY);
@@ -44,7 +61,7 @@ public class GridMovementController : MonoBehaviour
             {
                 if (neighbour == null || neighbour.currentSingleTileCondition == SingleTileCondition.occupied || closedSet.Contains(neighbour))
                 {
-                    continue;
+                    continue; // Skip occupied tiles cleanly!
                 }
 
                 int newMovementCostToNeighbour = currentTile.gCost + GetDistance(currentTile, neighbour);
@@ -56,47 +73,6 @@ public class GridMovementController : MonoBehaviour
 
                     if (!openSet.Contains(neighbour))
                         openSet.Add(neighbour);
-                }
-            }
-
-            // Check for L-shaped moves
-            if (Mathf.Abs(currentTile.tileXCoordinate - targetTile.tileXCoordinate) == 1 && Mathf.Abs(currentTile.tileYCoordinate - targetTile.tileYCoordinate) == 1)
-            {
-                // Find the intermediate tile
-                int midX1 = currentTile.tileXCoordinate;
-                int midY1 = targetTile.tileYCoordinate;
-                int midX2 = targetTile.tileXCoordinate;
-                int midY2 = currentTile.tileYCoordinate;
-
-                TileController midTile1 = GridManager.Instance.GetTileControllerInstance(midX1, midY1);
-                TileController midTile2 = GridManager.Instance.GetTileControllerInstance(midX2, midY2);
-
-                if (midTile1 != null && midTile1.currentSingleTileCondition != SingleTileCondition.occupied && !closedSet.Contains(midTile1))
-                {
-                    int newMovementCostToMidTile1 = currentTile.gCost + GetDistance(currentTile, midTile1);
-                    if (newMovementCostToMidTile1 < midTile1.gCost || !openSet.Contains(midTile1))
-                    {
-                        midTile1.gCost = newMovementCostToMidTile1;
-                        midTile1.hCost = GetDistance(midTile1, targetTile);
-                        midTile1.parent = currentTile;
-
-                        if (!openSet.Contains(midTile1))
-                            openSet.Add(midTile1);
-                    }
-                }
-
-                if (midTile2 != null && midTile2.currentSingleTileCondition != SingleTileCondition.occupied && !closedSet.Contains(midTile2))
-                {
-                    int newMovementCostToMidTile2 = currentTile.gCost + GetDistance(currentTile, midTile2);
-                    if (newMovementCostToMidTile2 < midTile2.gCost || !openSet.Contains(midTile2))
-                    {
-                        midTile2.gCost = newMovementCostToMidTile2;
-                        midTile2.hCost = GetDistance(midTile2, targetTile);
-                        midTile2.parent = currentTile;
-
-                        if (!openSet.Contains(midTile2))
-                            openSet.Add(midTile2);
-                    }
                 }
             }
         }
@@ -198,59 +174,48 @@ public class GridMovementController : MonoBehaviour
         return tilesInRange;
     }
 
-    public int GetDistance(TileController nodeA, TileController nodeB)
-    {
-        int dstX = Mathf.Abs(nodeA.gridPosition.x - nodeB.gridPosition.x);
-        int dstZ = Mathf.Abs(nodeA.gridPosition.z - nodeB.gridPosition.z); // Era Y
-        int dstY = Mathf.Abs(nodeA.gridPosition.y - nodeB.gridPosition.y); // Dislivello verticale
-        
-        // Puoi decidere se il dislivello costa punti movimento extra o è "gratis" 
-        // finché rientra nel maxJumpHeight. Di base:
-        int flatDistance = (dstX > dstZ) ? 
-            14 * dstZ + 10 * (dstX - dstZ) : 
-            14 * dstX + 10 * (dstZ - dstX);
-
-        // Aggiungiamo un peso al dislivello se lo desideri
-        int elevationPenalty = dstY * 10; 
-        
-        return flatDistance + elevationPenalty;
-    }
-
-    public List<TileController> GetTilesInDirection(int startX, int startY, Beacon.FacingDirection direction, int range)
+    public List<TileController> GetTilesInDirection(int startX, int startZ, Beacon.FacingDirection direction, int range)
     {
         List<TileController> tiles = new List<TileController>();
 
-        // Determine the X and Y movement per step based on direction
+        // Determine the X and Z movement per step based on direction
         int dirX = 0;
-        int dirY = 0;
+        int dirZ = 0; // Using Z for depth in the voxel map
 
         switch (direction)
         {
-            case Beacon.FacingDirection.Up: dirY = 1; break;
-            case Beacon.FacingDirection.Down: dirY = -1; break;
+            case Beacon.FacingDirection.Up: dirZ = 1; break;
+            case Beacon.FacingDirection.Down: dirZ = -1; break;
             case Beacon.FacingDirection.Left: dirX = -1; break;
             case Beacon.FacingDirection.Right: dirX = 1; break;
         }
+
+        TileController beaconTile = GridManager.Instance.GetTileControllerInstance(startX, startZ);
 
         // Loop through the range, starting from 1 tile away from the beacon
         for (int i = 1; i <= range; i++)
         {
             int checkX = startX + (dirX * i);
-            int checkY = startY + (dirY * i);
+            int checkZ = startZ + (dirZ * i);
 
-            // Check if the coordinates are within the grid boundaries
-            if (checkX >= 0 && checkX < gridManager.gridHorizontalSize &&
-                checkY >= 0 && checkY < gridManager.gridVerticalSize)
+            // Fetch the highest tile at that X/Z column
+            TileController tile = GridManager.Instance.GetTileControllerInstance(checkX, checkZ);
+            
+            if (tile != null)
             {
-                TileController tile = gridManager.GetTileControllerInstance(checkX, checkY);
-                if (tile != null)
+                tiles.Add(tile);
+
+                // Stop the beam if it hits a solid Wall/Environment, an Obstacle, or a cliff face taller than the Beacon!
+                if (tile.tileType == TileType.Obstacle || 
+                    tile.tileType == TileType.Environment || 
+                    (beaconTile != null && tile.gridPosition.y > beaconTile.gridPosition.y))
                 {
-                    tiles.Add(tile);
+                    break;
                 }
             }
             else
             {
-                // Stop if we hit the edge of the map
+                // Stop if we hit the edge of the map (no tiles found)
                 break;
             }
         }

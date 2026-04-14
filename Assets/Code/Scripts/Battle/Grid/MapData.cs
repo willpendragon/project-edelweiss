@@ -18,7 +18,16 @@ public class MapData : ScriptableObject
         public TileType tileType;
     }
 
+    // --- NEW: Decoration Data Storage ---
+    [System.Serializable]
+    public struct DecorationData
+    {
+        public Vector3Int position;
+        public string prefabName; // <-- NEW: Store the name of the prefab loaded from Resources!
+    }
+
     public List<TileData> tilePositions = new List<TileData>();
+    public List<DecorationData> decorationPositions = new List<DecorationData>(); // NEW
 
     public int horizontalSize; // X
     public int verticalSize;   // Z

@@ -121,7 +121,7 @@ public class GridManager : MonoBehaviour
             Vector3 tilePosition = new Vector3(
                 tileData.position.x * (tileSize.x + inBetweenTilesXOffset),
                 tileData.position.y * tileSize.y,
-                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondit
+                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondità
             );
 
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
@@ -135,6 +135,17 @@ public class GridManager : MonoBehaviour
             if (!gridMapDictionary.ContainsKey(positionKey))
             {
                 gridMapDictionary.Add(positionKey, tileController);
+            }
+
+            // --- NEW: Hide GridBounds during gameplay for ALL physical Map tiles ---
+            Transform gridBounds = tilePrefabInstance.transform.Find("GridBounds");
+            if (gridBounds != null)
+            {
+                Renderer boundsRenderer = gridBounds.GetComponent<Renderer>();
+                if (boundsRenderer != null)
+                {
+                    boundsRenderer.enabled = false;
+                }
             }
 
             // [PROTOTYPE] Spawn a purple Cube to represent the chest directly on the generated tile
@@ -202,6 +213,61 @@ public class GridManager : MonoBehaviour
                         chestUnit.unitTemplate = Resources.Load<ChestTemplate>("BossChestTemplate");
                 }
             }
+        }
+
+        // --- NEW: Load specific Decorations at runtime via PrefabName ---
+        if (currentMapData.decorationPositions != null)
+        {
+            foreach (var decoData in currentMapData.decorationPositions)
+            {
+                // Fallback to "DecorationPrefab" if the map was saved before the prefab update
+                string targetPrefabName = string.IsNullOrEmpty(decoData.prefabName) ? "DecorationPrefab" : decoData.prefabName;
+
+                GameObject runtimeDecorationPrefab = Resources.Load<GameObject>(targetPrefabName); 
+                
+                if (runtimeDecorationPrefab == null)
+                {
+                    Debug.LogWarning($"GridManager: Missing Decoration Prefab '{targetPrefabName}' in Resources folder!");
+                    continue; // Skip placement if missing
+                }
+
+                Vector3 decoPosition = new Vector3(
+                    decoData.position.x * (tileSize.x + inBetweenTilesXOffset),
+                    decoData.position.y * tileSize.y,
+                    decoData.position.z * (tileSize.z + inBetweenTilesYOffset)
+                );
+
+                GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition, Quaternion.identity);
+                decoInstance.transform.SetParent(this.transform); // Group it cleanly
+
+                // --- Hide GridBounds during gameplay ---
+                Transform gridBounds = decoInstance.transform.Find("GridBounds");
+                if (gridBounds != null)
+                {
+                    Renderer boundsRenderer = gridBounds.GetComponent<Renderer>();
+                    if (boundsRenderer != null)
+                        boundsRenderer.enabled = false;
+                }
+
+                // --- Block movement on the tile ---
+                TileController occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y - 1, decoData.position.z);
+                
+                if (occupiedTile == null)
+                {
+                    occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y, decoData.position.z);
+                }
+
+                if (occupiedTile != null)
+                {
+                    occupiedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                    occupiedTile.tileType = TileType.Environment; 
+                    occupiedTile.detectedUnit = decoInstance; 
+                }
+            }
+        }
+        else if (currentMapData.decorationPositions != null && currentMapData.decorationPositions.Count > 0)
+        {
+            Debug.LogWarning("GridManager: Ti manca un prefab per le decorazioni! Assicurati di posizionare 'DecorationPrefab' nella cartella Resources.");
         }
     }
 

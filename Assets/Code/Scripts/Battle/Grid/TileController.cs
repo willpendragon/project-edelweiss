@@ -35,7 +35,8 @@ public enum TileType
     Triad,
     Chest,
     MinibossChest,
-    BossChest
+    BossChest,
+    Environment // <-- NEW: Used for solid decorative tiles
 }
 
 public enum TileElement // Such properties could be moved in an SO.
