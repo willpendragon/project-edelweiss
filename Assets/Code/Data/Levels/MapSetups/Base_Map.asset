@@ -13,298 +13,379 @@ MonoBehaviour:
   m_Name: Base_Map
   m_EditorClassIdentifier: 
   tilePositions:
-  - position: {x: 3, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 2, y: 1, z: 8}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 1, y: 1, z: 9}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 6}
+  - position: {x: 2, y: 0, z: 3}
     tileType: 0
   - position: {x: 6, y: 0, z: 7}
     tileType: 0
-  - position: {x: 2, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 9, y: 1, z: 8}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 3, y: 2, z: 9}
-    tileType: 0
-  - position: {x: 7, y: 4, z: 9}
-    tileType: 0
-  - position: {x: 2, y: 2, z: 9}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 1, y: 1, z: 8}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 2, y: 1, z: 9}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 9, y: 2, z: 8}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 3, y: 3, z: 9}
-    tileType: 0
-  - position: {x: 3, y: 1, z: 8}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 7, y: 1, z: 9}
+  - position: {x: 5, y: 0, z: 7}
     tileType: 0
   - position: {x: 1, y: 0, z: 2}
     tileType: 0
-  - position: {x: 5, y: 0, z: 2}
+  - position: {x: 6, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 6}
     tileType: 0
   - position: {x: 3, y: 0, z: 3}
     tileType: 6
-  - position: {x: 1, y: 0, z: 6}
+  - position: {x: 3, y: 2, z: 9}
     tileType: 0
   - position: {x: 5, y: 4, z: 9}
     tileType: 0
-  - position: {x: 0, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 1}
-    tileType: 0
   - position: {x: 0, y: 0, z: 6}
     tileType: 0
-  - position: {x: 6, y: 4, z: 9}
+  - position: {x: 2, y: 0, z: 7}
     tileType: 0
-  - position: {x: 4, y: 0, z: 7}
+  - position: {x: 5, y: 0, z: 1}
     tileType: 0
-  - position: {x: 5, y: 0, z: 7}
+  - position: {x: 3, y: 0, z: 9}
     tileType: 0
-  - position: {x: 8, y: 1, z: 8}
+  - position: {x: 1, y: 0, z: 7}
     tileType: 0
-  - position: {x: 3, y: 1, z: 9}
+  - position: {x: 5, y: 0, z: 3}
     tileType: 0
-  - position: {x: 2, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 7, y: 2, z: 9}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 4, y: 4, z: 9}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 6}
-    tileType: 7
-  - position: {x: 7, y: 3, z: 9}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 9}
+  - position: {x: 6, y: 0, z: 9}
     tileType: 0
   - position: {x: 0, y: 0, z: 5}
     tileType: 0
+  - position: {x: 7, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 3, y: 3, z: 9}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 2, y: 1, z: 8}
+    tileType: 0
+  - position: {x: 3, y: 1, z: 8}
+    tileType: 0
+  - position: {x: 2, y: 1, z: 9}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 6}
+    tileType: 7
+  - position: {x: 4, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 3, y: 1, z: 9}
+    tileType: 0
+  - position: {x: 7, y: 1, z: 9}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 9, y: 1, z: 8}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 7, y: 4, z: 9}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 1, y: 1, z: 9}
+    tileType: 0
+  - position: {x: 6, y: 4, z: 9}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 9, y: 2, z: 8}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 7, y: 3, z: 9}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 1, y: 1, z: 8}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 4, y: 4, z: 9}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 7, y: 2, z: 9}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 8, y: 1, z: 8}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 3}
+    tileType: 0
   - position: {x: 3, y: 0, z: 6}
     tileType: 0
+  - position: {x: 3, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 2, y: 2, z: 9}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 2}
+    tileType: 0
   decorationPositions:
-  - position: {x: 10, y: 1, z: 9}
-  - position: {x: 4, y: 0, z: 10}
-  - position: {x: 7, y: 0, z: 10}
-  - position: {x: 1, y: 1, z: 0}
-  - position: {x: 10, y: 0, z: 10}
-  - position: {x: 0, y: 0, z: 0}
-  - position: {x: 6, y: 0, z: 10}
-  - position: {x: 0, y: 0, z: 10}
-  - position: {x: 0, y: 1, z: 5}
-  - position: {x: 1, y: 1, z: 10}
-  - position: {x: 10, y: 0, z: 3}
-  - position: {x: 2, y: 1, z: 0}
-  - position: {x: 0, y: 1, z: 7}
-  - position: {x: 8, y: 1, z: 10}
-  - position: {x: 5, y: 0, z: 10}
-  - position: {x: 10, y: 0, z: 7}
-  - position: {x: 10, y: 0, z: 2}
-  - position: {x: 2, y: 0, z: 0}
-  - position: {x: 0, y: 1, z: 3}
-  - position: {x: 9, y: 1, z: 10}
-  - position: {x: 10, y: 1, z: 5}
-  - position: {x: 6, y: 1, z: 0}
-  - position: {x: 2, y: 0, z: 10}
-  - position: {x: 7, y: 1, z: 0}
-  - position: {x: 3, y: 0, z: 0}
-  - position: {x: 10, y: 0, z: 0}
-  - position: {x: 0, y: 1, z: 0}
-  - position: {x: 8, y: 0, z: 10}
-  - position: {x: 10, y: 1, z: 7}
-  - position: {x: 6, y: 1, z: 10}
-  - position: {x: 3, y: 1, z: 10}
-  - position: {x: 0, y: 1, z: 4}
-  - position: {x: 4, y: 1, z: 10}
-  - position: {x: 2, y: 1, z: 10}
-  - position: {x: 0, y: 1, z: 2}
-  - position: {x: 3, y: 1, z: 0}
-  - position: {x: 4, y: 1, z: 0}
-  - position: {x: 5, y: 0, z: 0}
-  - position: {x: 10, y: 1, z: 0}
-  - position: {x: 9, y: 0, z: 10}
-  - position: {x: 10, y: 0, z: 6}
+  - position: {x: 5, y: 1, z: 5}
+    prefabName: DecorationChick
   - position: {x: 7, y: 0, z: 0}
-  - position: {x: 10, y: 1, z: 4}
-  - position: {x: 10, y: 1, z: 2}
-  - position: {x: 0, y: 1, z: 9}
-  - position: {x: 9, y: 1, z: 0}
-  - position: {x: 0, y: 1, z: 10}
-  - position: {x: 10, y: 0, z: 1}
-  - position: {x: 10, y: 0, z: 9}
-  - position: {x: 10, y: 0, z: 4}
-  - position: {x: 4, y: 0, z: 0}
-  - position: {x: 8, y: 0, z: 0}
-  - position: {x: 10, y: 0, z: 8}
-  - position: {x: 6, y: 0, z: 0}
-  - position: {x: 7, y: 1, z: 10}
-  - position: {x: 1, y: 0, z: 0}
-  - position: {x: 10, y: 1, z: 1}
-  - position: {x: 0, y: 1, z: 1}
-  - position: {x: 10, y: 1, z: 10}
-  - position: {x: 10, y: 1, z: 8}
-  - position: {x: 1, y: 0, z: 10}
-  - position: {x: 5, y: 1, z: 0}
-  - position: {x: 10, y: 0, z: 5}
-  - position: {x: 8, y: 1, z: 0}
-  - position: {x: 5, y: 1, z: 10}
-  - position: {x: 3, y: 0, z: 10}
-  - position: {x: 0, y: 1, z: 6}
-  - position: {x: 10, y: 1, z: 3}
+    prefabName: DecorationPrefab
   - position: {x: 0, y: 1, z: 8}
-  - position: {x: 10, y: 1, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 3}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 3}
+    prefabName: DecorationPrefab
   - position: {x: 9, y: 0, z: 0}
-  horizontalSize: 12
-  verticalSize: 12
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 2, z: 5}
+    prefabName: DecorationChick
+  - position: {x: 7, y: 1, z: 5}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 3, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 3}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 5}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 2, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 3, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 3, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 5}
+    prefabName: DecorationPrefab
+  - position: {x: 5, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 5}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 5, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 3, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 5, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 3, z: 4}
+    prefabName: DecorationChick
+  - position: {x: 0, y: 1, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 5, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  horizontalSize: 10
+  verticalSize: 10
   depthSize: 10
   environment: {fileID: 8544985649793520265, guid: df72b9480c0abe046bf2b9e4e26e14b7, type: 3}
   levelType: 0
