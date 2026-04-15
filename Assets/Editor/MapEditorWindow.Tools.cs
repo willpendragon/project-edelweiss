@@ -91,7 +91,7 @@ public partial class MapEditorWindow
 
             if (targetHadTile)
             {
-                // REPLACE MODE: 3D Flood Fill. Replace all contiguous blocks of returning type, adapting to all elevations and stairs!
+                // REPLACE MODE: 3D Flood Fill. 
                 Vector3Int[] neighbors3D = {
                     curr + Vector3Int.right, curr + Vector3Int.left,
                     curr + new Vector3Int(0, 0, 1), curr + new Vector3Int(0, 0, -1),
@@ -115,7 +115,7 @@ public partial class MapEditorWindow
             }
             else
             {
-                // EMPTY SPACE MODE: 2D Flood Fill. Perfectly fill an enclosed room strictly on the exact Y layer.
+                // EMPTY SPACE MODE: 2D Flood Fill strictly confined by physical floors.
                 Vector3Int[] neighborsHorizontal = {
                     curr + Vector3Int.right, curr + Vector3Int.left,
                     curr + new Vector3Int(0, 0, 1), curr + new Vector3Int(0, 0, -1)
@@ -125,13 +125,28 @@ public partial class MapEditorWindow
                 {
                     if (IsInsideGrid(n) && !visited.Contains(n))
                     {
-                        // Safely check if empty
-                        bool isEmpty = !tiles.TryGetValue(n, out GameObject neighborObj) || neighborObj == null;
+                        bool isNeighborEmpty = !tiles.TryGetValue(n, out GameObject neighborObj) || neighborObj == null;
                         
-                        if (isEmpty)
+                        if (isNeighborEmpty)
                         {
-                            visited.Add(n);
-                            queue.Enqueue(n);
+                            // THE FLOOR RULE: Does this exact column have a floor exactly 1 block beneath it?
+                            // Ground level (y=0) is inherently supported by the void floor.
+                            bool hasFloorBeneath = n.y == 0;
+                            
+                            if (n.y > 0)
+                            {
+                                Vector3Int floorBelow = new Vector3Int(n.x, n.y - 1, n.z);
+                                if (tiles.TryGetValue(floorBelow, out GameObject floorTile) && floorTile != null)
+                                {
+                                    hasFloorBeneath = true;
+                                }
+                            }
+
+                            if (hasFloorBeneath)
+                            {
+                                visited.Add(n);
+                                queue.Enqueue(n);
+                            }
                         }
                     }
                 }
