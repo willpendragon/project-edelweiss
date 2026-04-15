@@ -62,7 +62,25 @@ public class UnitSelectionController : MonoBehaviour
     }
     private void SetPlayerUnits()
     {
-        _playerUnits = GameManager.Instance.playerPartyMembersInstances;
+        _playerUnits = new List<Unit>();
+
+        // Grab the freshly spawned dynamic units from the updated Party Controller!
+        GameObject partyControllerObj = GameObject.FindGameObjectWithTag("PlayerPartyController");
+        if (partyControllerObj != null)
+        {
+            var partyController = partyControllerObj.GetComponent<PlayerPartyController>();
+            if (partyController != null && partyController.playerUnitsOnBattlefield != null)
+            {
+                foreach (var unitObj in partyController.playerUnitsOnBattlefield)
+                {
+                    if (unitObj != null)
+                    {
+                        Unit u = unitObj.GetComponent<Unit>();
+                        if (u != null) _playerUnits.Add(u);
+                    }
+                }
+            }
+        }
     }
 
     public void SelectPlayerUnit(Unit playerUnit)
@@ -171,7 +189,11 @@ public class UnitSelectionController : MonoBehaviour
 
         foreach (var playerUnit in _playerUnits)
         {
-            playerUnit.tag = GameTags.Player;
+            // Null-check prevents any remaining destroyed artifacts from crashing the loop
+            if (playerUnit != null && playerUnit.gameObject != null)
+            {
+                playerUnit.tag = GameTags.Player;
+            }
         }
 
         if (selectedTileInstance != null)
@@ -267,9 +289,13 @@ public class UnitSelectionController : MonoBehaviour
         GridManager.Instance.currentPlayerUnit = null;
         ClearPanelsByTag(GameTags.ActiveCharacterUnitProfile);
         ClearPanelsByTag(GameTags.EnemyUnitProfile);
+        
         foreach (var unitGO in _playerUnits)
         {
-            unitGO.GetComponent<Unit>().currentUnitPhase = Unit.UnitPhase.Waiting;
+            if (unitGO != null) // Null-check safety
+            {
+                unitGO.GetComponent<Unit>().currentUnitPhase = Unit.UnitPhase.Waiting;
+            }
         }
         OnUnitTurnEnded?.Invoke();
         // Hides the tiles where the Active Player Unit could move to.

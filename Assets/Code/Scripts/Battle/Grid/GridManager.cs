@@ -244,31 +244,85 @@ public class GridManager : MonoBehaviour
         }
 
         // --- NEW: Load Player Spawn Points ---
-        if (currentMapData.playerSpawnPositions != null)
+        if (currentMapData.playerSpawnPositions != null && currentMapData.playerSpawnPositions.Count > 0)
         {
+            List<GameObject> dynamicPlayerUnits = new List<GameObject>();
+
             foreach (var spawnData in currentMapData.playerSpawnPositions)
             {
                 if (string.IsNullOrEmpty(spawnData.prefabName)) continue;
-
-                GameObject runtimeUnitPrefab = Resources.Load<GameObject>(spawnData.prefabName); 
-                if (runtimeUnitPrefab == null)
-                {
-                    Debug.LogWarning($"GridManager: Missing Unit Prefab '{spawnData.prefabName}' in Resources!");
-                    continue; 
-                }
 
                 TileController targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
                 if (targetTile == null) targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1, spawnData.position.z);
 
                 if (targetTile != null)
                 {
-                    GameObject unitInstance = Instantiate(runtimeUnitPrefab);
-                    
-                    PlaceUnitOnTileSurface(unitInstance, targetTile);
+                    // 1. Fetch the EXISTING persistent unit from the GameManager instead of instantiating a clone
+                    Unit persistentUnit = null;
+                    if (GameManager.Instance != null && GameManager.Instance.playerPartyMembersInstances != null)
+                    {
+                        persistentUnit = GameManager.Instance.playerPartyMembersInstances.FirstOrDefault(u => 
+                            u != null && (u.gameObject.name.Contains(spawnData.prefabName) || 
+                            (u.unitTemplate != null && u.unitTemplate.name == spawnData.prefabName || u.unitTemplate.unitName == spawnData.prefabName))
+                        );
+                    }
 
-                    targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
-                    targetTile.detectedUnit = unitInstance;
+                    if (persistentUnit != null)
+                    {
+                        GameObject unitInstance = persistentUnit.gameObject;
+                        unitInstance.SetActive(true); // Make sure it's visible in the scene
+                        
+                        PlaceUnitOnTileSurface(unitInstance, targetTile);
+
+                        targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                        targetTile.detectedUnit = unitInstance;
+
+                        // Ensure tag is correct for battle scripts
+                        unitInstance.tag = "Player";
+
+                        // Sync the 3D Voxel coordinate properties to the persistent Unit
+                        persistentUnit.startingXCoordinate = spawnData.position.x;
+                        persistentUnit.startingYCoordinate = spawnData.position.z;
+                        persistentUnit.currentXCoordinate = spawnData.position.x;
+                        persistentUnit.currentYCoordinate = spawnData.position.z;
+                        persistentUnit.ownedTile = targetTile;
+
+                        dynamicPlayerUnits.Add(unitInstance);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"GridManager: Could not find persistent unit '{spawnData.prefabName}' in GameManager!");
+                    }
                 }
+            }
+
+            // --- OVERRIDE HARDCODED LOGIC ---
+            if (dynamicPlayerUnits.Count > 0)
+            {
+                // Instantly deactivate any old legacy hardcoded scene units so they don't interfere
+                GameObject[] allScenePlayers = GameObject.FindGameObjectsWithTag("Player");
+                foreach (var legacyPlayer in allScenePlayers)
+                {
+                    if (legacyPlayer != null && !dynamicPlayerUnits.Contains(legacyPlayer))
+                    {
+                        legacyPlayer.SetActive(false); 
+                        Destroy(legacyPlayer);
+                    }
+                }
+
+                GameObject partyControllerObj = GameObject.FindGameObjectWithTag("PlayerPartyController");
+                if (partyControllerObj != null)
+                {
+                    PlayerPartyController partyController = partyControllerObj.GetComponent<PlayerPartyController>();
+                    if (partyController != null)
+                    {
+                        // Hand the persistent units over to the Battle's logic controller
+                        partyController.playerUnitsOnBattlefield = dynamicPlayerUnits.ToArray();
+                    }
+                }
+                
+                // Note: We DO NOT overwrite GameManager.playerPartyMembersInstances anymore,
+                // because we are directly manipulating its existing persistent units!
             }
         }
     }
