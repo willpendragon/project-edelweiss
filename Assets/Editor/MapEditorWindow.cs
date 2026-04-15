@@ -13,9 +13,8 @@ public class MapEditorWindow : EditorWindow
     public float inBetweenTilesZOffset = 0f;
 
     private GameObject tilePrefab;
-    private GameObject decorationPrefab; // Currently selected active decoration
+    private GameObject decorationPrefab; 
 
-    // --- Multiple Decorations List ---
     public List<GameObject> decorationPrefabs = new List<GameObject>();
     private SerializedObject _so;
     private SerializedProperty _decorationsProp;
@@ -32,16 +31,16 @@ public class MapEditorWindow : EditorWindow
     private bool isPlacingTile = false;
     private bool isPlacingDecoration = false;
     private bool isDeletingTile = false;
+    private bool isBucketMode = false; // --- NEW: Bucket Mode ---
     private bool clearOnClose = false;
     
     private Vector3Int lastGridPosition = new Vector3Int(-1, -1, -1);
-    private Vector3Int lastPaintedPosition = new Vector3Int(-1, -1, -1); // Tracks actual final point for Aseprite Shift-Draw
+    private Vector3Int lastPaintedPosition = new Vector3Int(-1, -1, -1); 
+    private int brushSize = 1;
 
     public float paintDelay = 0.15f;
     private double lastPaintTime = 0.0;
     private Texture2D headerImage;
-
-    private int brushSize = 1;
 
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
@@ -63,7 +62,6 @@ public class MapEditorWindow : EditorWindow
         clearOnClose = EditorPrefs.GetBool("MapEditor_ClearOnClose", false);
         paintDelay = EditorPrefs.GetFloat("MapEditor_PaintDelay", 0.15f);
 
-        // --- NEW: Load Prefabs ---
         _so = new SerializedObject(this);
         _decorationsProp = _so.FindProperty("decorationPrefabs");
         LoadDecoPrefabsFromPrefs();
@@ -94,7 +92,7 @@ public class MapEditorWindow : EditorWindow
         }
         else
         {
-            EditorGUILayout.HelpBox("Per mostrare un Banner in cima all'Editor, posizionare l'immagine 'MapEditorBanner.png' inside 'Assets/Editor/Resources'.", MessageType.Info);
+            EditorGUILayout.HelpBox("Per mostrare un Banner in cima all'Editor, posizionare l'immagine 'MapEditorBanner.png' dentro 'Assets/Editor/Resources'.", MessageType.Info);
         }
 
         // 2. DIMENSIONI DELLA MAPPA
@@ -132,7 +130,6 @@ public class MapEditorWindow : EditorWindow
             EditorPrefs.SetString("MapEditor_TilePrefabPath", AssetDatabase.GetAssetPath(tilePrefab));
         }
 
-        // --- NEW: Multiple Decorations Panel ---
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Decoration Prefabs Box", EditorStyles.boldLabel);
 
@@ -144,16 +141,11 @@ public class MapEditorWindow : EditorWindow
             _so.ApplyModifiedProperties();
             SaveDecoPrefabsToPrefs();
 
-            if (_selectedDecorationIndex >= decorationPrefabs.Count)
-                _selectedDecorationIndex = 0;
-
-            if (decorationPrefabs.Count > 0)
-                decorationPrefab = decorationPrefabs[_selectedDecorationIndex];
-            else
-                decorationPrefab = null;
+            if (_selectedDecorationIndex >= decorationPrefabs.Count) _selectedDecorationIndex = 0;
+            if (decorationPrefabs.Count > 0) decorationPrefab = decorationPrefabs[_selectedDecorationIndex];
+            else decorationPrefab = null;
         }
 
-        // Visual Preview Grid
         if (decorationPrefabs.Count > 0)
         {
             EditorGUILayout.Space();
@@ -171,7 +163,6 @@ public class MapEditorWindow : EditorWindow
                 GUI.backgroundColor = (i == _selectedDecorationIndex) ? Color.green : Color.white;
                 GUIContent content = preview != null ? new GUIContent(preview, prefab.name) : new GUIContent(prefab.name);
 
-                // Lock the buttons to exactly 64x64 so they don't stretch
                 if (GUILayout.Button(content, GUILayout.Width(64), GUILayout.Height(64)))
                 {
                     _selectedDecorationIndex = i;
@@ -197,20 +188,20 @@ public class MapEditorWindow : EditorWindow
         EditorGUILayout.Space();
         if (GUILayout.Button("Generate/Clear Map")) GenerateMap();
 
+        // --- NEW: Added Bucket Fill Toggle ---
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Toggle(isPlacingTile, "Paint Tile", "Button")) { isPlacingTile = true; isPlacingDecoration = false; isDeletingTile = false; }
         if (GUILayout.Toggle(isPlacingDecoration, "Paint Decoration", "Button")) { isPlacingTile = false; isPlacingDecoration = true; isDeletingTile = false; }
         if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { isPlacingTile = false; isPlacingDecoration = false; isDeletingTile = true; }
+        isBucketMode = GUILayout.Toggle(isBucketMode, "Bucket Fill (B)", "Button");
         EditorGUILayout.EndHorizontal();
 
-        // --- NEW: Brush Size Slider ---
         EditorGUILayout.Space();
         brushSize = EditorGUILayout.IntSlider("Brush Size (Number Keys 1-6)", brushSize, 1, 6);
 
         if (GUILayout.Button("Sync & Reload from Scene")) SyncDictionaryFromScene();
 
         EditorGUILayout.Space();
-
         if (GUILayout.Button("Save Map to Asset", GUILayout.Height(30))) SaveMap();
         if (GUILayout.Button("Load Map from Asset", GUILayout.Height(30))) LoadFromAsset();
 
@@ -236,14 +227,14 @@ public class MapEditorWindow : EditorWindow
                 if (p != null) decorationPrefabs.Add(p);
             }
         }
-        if (decorationPrefabs.Count > 0)
-            decorationPrefab = decorationPrefabs[0];
+        if (decorationPrefabs.Count > 0) decorationPrefab = decorationPrefabs[0];
     }
 
     private void OnSceneGUI(SceneView sceneView)
     {
         Event e = Event.current;
 
+        // Ensure to intercept Keyboard events for Scene Window tools!
         if (e.type == EventType.KeyDown)
         {
             if (e.keyCode == KeyCode.Escape)
@@ -251,16 +242,24 @@ public class MapEditorWindow : EditorWindow
                 isPlacingTile = false;
                 isPlacingDecoration = false;
                 isDeletingTile = false;
+                isBucketMode = false;
                 Repaint();
                 sceneView.Repaint();
                 e.Use();
                 return;
             }
-            
-            // --- NEW: Number key mapping for Brush Size ---
+
             if (e.keyCode >= KeyCode.Alpha1 && e.keyCode <= KeyCode.Alpha6)
             {
                 brushSize = (e.keyCode - KeyCode.Alpha1) + 1;
+                Repaint();
+                sceneView.Repaint();
+                e.Use();
+            }
+
+            if (e.keyCode == KeyCode.B)
+            {
+                isBucketMode = !isBucketMode;
                 Repaint();
                 sceneView.Repaint();
                 e.Use();
@@ -341,29 +340,33 @@ public class MapEditorWindow : EditorWindow
         {
             if (e.alt) return;
 
-            // --- NEW: Calculate all points for the brush ---
             List<Vector3Int> pointsToAffect = new List<Vector3Int>();
 
-            if (e.shift && lastPaintedPosition.x != -1)
+            if (isBucketMode)
             {
-                var lineCenters = GetLinePoints(lastPaintedPosition, targetGridPos);
-                foreach (var center in lineCenters)
-                {
-                    pointsToAffect.AddRange(GetBrushPoints(center, brushSize));
-                }
+                DrawPreview(targetGridPos); // Bucket only previews center initially
             }
             else
             {
-                pointsToAffect.AddRange(GetBrushPoints(targetGridPos, brushSize));
-            }
-            
-            // Remove duplicates where brush iterations overlapped
-            pointsToAffect = pointsToAffect.Distinct().ToList();
+                if (e.shift && lastPaintedPosition.x != -1)
+                {
+                    var lineCenters = GetLinePoints(lastPaintedPosition, targetGridPos);
+                    foreach (var center in lineCenters)
+                    {
+                        pointsToAffect.AddRange(GetBrushPoints(center, brushSize));
+                    }
+                }
+                else
+                {
+                    pointsToAffect.AddRange(GetBrushPoints(targetGridPos, brushSize));
+                }
 
-            // Draw all previews
-            foreach (var p in pointsToAffect)
-            {
-                if (IsInsideGrid(p)) DrawPreview(p);
+                pointsToAffect = pointsToAffect.Distinct().ToList();
+
+                foreach (var p in pointsToAffect)
+                {
+                    if (IsInsideGrid(p)) DrawPreview(p);
+                }
             }
 
             if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0)
@@ -380,14 +383,20 @@ public class MapEditorWindow : EditorWindow
 
                 if (cooldownPassed)
                 {
-                    // Paint all points
-                    foreach (var p in pointsToAffect)
+                    if (isBucketMode && e.type == EventType.MouseDown)
                     {
-                        if (!IsInsideGrid(p)) continue;
-                        
-                        if (isPlacingTile) PlaceTile(p, selectedTileType);
-                        else if (isPlacingDecoration) PlaceDecoration(p);
-                        else if (isDeletingTile) DeleteTile(p);
+                        ApplyBucketFill(targetGridPos);
+                    }
+                    else if (!isBucketMode)
+                    {
+                        foreach (var p in pointsToAffect)
+                        {
+                            if (!IsInsideGrid(p)) continue;
+                            
+                            if (isPlacingTile) PlaceTile(p, selectedTileType);
+                            else if (isPlacingDecoration) PlaceDecoration(p);
+                            else if (isDeletingTile) DeleteTile(p);
+                        }
                     }
 
                     lastGridPosition = targetGridPos;
@@ -408,16 +417,10 @@ public class MapEditorWindow : EditorWindow
         sceneView.Repaint();
     }
 
-    // ===============================================
-    // ================ HELPER METHODS ===============
-    // ===============================================
-
     private void PlaceTile(Vector3Int position, TileType type)
     {
         if (tilePrefab == null) return;
-
         SyncDictionaryFromScene();
-
         if (tiles.ContainsKey(position)) return;
 
         Vector3 tileSize = GetTileWorldSize3D();
@@ -445,9 +448,7 @@ public class MapEditorWindow : EditorWindow
     private void PlaceDecoration(Vector3Int position)
     {
         if (decorationPrefab == null) return;
-
         SyncDictionaryFromScene();
-
         if (decorations.ContainsKey(position)) return;
 
         Vector3 tileSize = GetTileWorldSize3D();
@@ -494,11 +495,8 @@ public class MapEditorWindow : EditorWindow
                     renderer.GetPropertyBlock(block);
 
                     Color chestColor = new Color(0.5f, 0.0f, 0.8f, 1f);
-
-                    if (type == TileType.MinibossChest)
-                        chestColor = Color.yellow;
-                    else if (type == TileType.BossChest)
-                        chestColor = Color.red;
+                    if (type == TileType.MinibossChest) chestColor = Color.yellow;
+                    else if (type == TileType.BossChest) chestColor = Color.red;
 
                     block.SetColor("_BaseColor", chestColor);
                     block.SetColor("_Color", chestColor);
@@ -525,6 +523,88 @@ public class MapEditorWindow : EditorWindow
             GameObject tile = tiles[position];
             tiles.Remove(position);
             Undo.DestroyObjectImmediate(tile);
+        }
+    }
+
+    private void GenerateMap()
+    {
+        SyncDictionaryFromScene();
+
+        foreach (var obj in tiles.Values) Undo.DestroyObjectImmediate(obj);
+        tiles.Clear();
+
+        foreach (var obj in decorations.Values) Undo.DestroyObjectImmediate(obj);
+        decorations.Clear();
+    }
+
+    private void ApplyBucketFill(Vector3Int startPos)
+    {
+        if (!IsInsideGrid(startPos)) return;
+
+        bool targetHadTile = tiles.ContainsKey(startPos);
+        TileType? targetTileType = null;
+        if (targetHadTile)
+        {
+            var controller = tiles[startPos].GetComponent<TileController>();
+            if (controller != null) targetTileType = controller.tileType;
+        }
+
+        // Prevent infinite loop when replacing with same type
+        if (isPlacingTile && targetHadTile && targetTileType == selectedTileType) return;
+
+        Queue<Vector3Int> queue = new Queue<Vector3Int>();
+        HashSet<Vector3Int> visited = new HashSet<Vector3Int>();
+
+        queue.Enqueue(startPos);
+        visited.Add(startPos);
+
+        List<Vector3Int> pointsToFill = new List<Vector3Int>();
+
+        while (queue.Count > 0 && pointsToFill.Count < 3000) // Safety limit to prevent memory crash
+        {
+            Vector3Int curr = queue.Dequeue();
+            pointsToFill.Add(curr);
+
+            // We only flood fill expanding on X and Z axes (same elevation level)
+            Vector3Int[] neighbors = {
+                curr + Vector3Int.right,
+                curr + Vector3Int.left,
+                curr + new Vector3Int(0, 0, 1),
+                curr + new Vector3Int(0, 0, -1)
+            };
+
+            foreach (var n in neighbors)
+            {
+                if (!IsInsideGrid(n)) continue;
+                if (visited.Contains(n)) continue;
+
+                bool nHasTile = tiles.ContainsKey(n);
+                bool match = false;
+
+                if (!targetHadTile && !nHasTile) match = true;
+                else if (targetHadTile && nHasTile)
+                {
+                    var controller = tiles[n].GetComponent<TileController>();
+                    if (controller != null && controller.tileType == targetTileType) match = true;
+                }
+
+                if (match)
+                {
+                    visited.Add(n);
+                    queue.Enqueue(n);
+                }
+            }
+        }
+
+        foreach (var p in pointsToFill)
+        {
+            if (isPlacingTile)
+            {
+                if (targetHadTile) DeleteTile(p);
+                PlaceTile(p, selectedTileType);
+            }
+            else if (isPlacingDecoration) PlaceDecoration(p);
+            else if (isDeletingTile) DeleteTile(p);
         }
     }
 
@@ -585,6 +665,7 @@ public class MapEditorWindow : EditorWindow
         Vector3 size = GetTileWorldSize3D();
         Vector3 center = GridToWorld(gridPos, size);
         Handles.color = isDeletingTile ? Color.red : Color.green;
+        if (isBucketMode) Handles.color = Color.cyan;
         Handles.DrawWireCube(center, size);
     }
 
@@ -595,10 +676,16 @@ public class MapEditorWindow : EditorWindow
         Vector3 scale = tilePrefab.transform.localScale;
 
         Transform bounds = tilePrefab.transform.Find("GridBounds");
-        if (bounds != null) return Vector3.Scale(bounds.localScale, scale);
+        if (bounds != null)
+        {
+            return Vector3.Scale(bounds.localScale, scale);
+        }
 
         BoxCollider col = tilePrefab.GetComponent<BoxCollider>();
-        if (col != null) return Vector3.Scale(col.size, scale);
+        if (col != null)
+        {
+            return Vector3.Scale(col.size, scale);
+        }
 
         return scale;
     }
@@ -612,6 +699,42 @@ public class MapEditorWindow : EditorWindow
     {
         Transform effects = tile.transform.Find("TileEffects");
         if (effects != null) SceneVisibilityManager.instance.Hide(effects.gameObject, true);
+    }
+
+    private List<Vector3Int> GetLinePoints(Vector3Int start, Vector3Int end)
+    {
+        List<Vector3Int> points = new List<Vector3Int>();
+        int steps = Mathf.Max(Mathf.Abs(start.x - end.x), Mathf.Max(Mathf.Abs(start.y - end.y), Mathf.Abs(start.z - end.z)));
+
+        if (steps == 0)
+        {
+            points.Add(start);
+            return points;
+        }
+
+        for (int i = 0; i <= steps; i++)
+        {
+            Vector3 lerped = Vector3.Lerp(start, end, (float)i / steps);
+            points.Add(new Vector3Int(Mathf.RoundToInt(lerped.x), Mathf.RoundToInt(lerped.y), Mathf.RoundToInt(lerped.z)));
+        }
+
+        return points.Distinct().ToList(); 
+    }
+
+    private List<Vector3Int> GetBrushPoints(Vector3Int center, int size)
+    {
+        List<Vector3Int> points = new List<Vector3Int>();
+        int offsetStart = -(size - 1) / 2;
+        int offsetEnd = size / 2;
+
+        for (int x = offsetStart; x <= offsetEnd; x++)
+        {
+            for (int z = offsetStart; z <= offsetEnd; z++)
+            {
+                points.Add(new Vector3Int(center.x + x, center.y, center.z + z));
+            }
+        }
+        return points;
     }
 
     private void SaveMap()
@@ -630,20 +753,16 @@ public class MapEditorWindow : EditorWindow
             });
         }
 
-        // UPDATED: Save Decoration Prefab Names!
         currentMap.decorationPositions.Clear();
         foreach (var kvp in decorations)
         {
-            string cleanName = kvp.Value.name.Split('_')[0]; // Strip coordinates from name, e.g. "Deco_1_2_3" to "Deco" or "Pillar"
-
-            // Hack to get actual prefab name if instantiated via Editor
             var sourcePrefab = PrefabUtility.GetCorrespondingObjectFromSource(kvp.Value);
             string pName = sourcePrefab != null ? sourcePrefab.name : kvp.Value.name.Replace("(Clone)", "").Trim();
 
             currentMap.decorationPositions.Add(new MapData.DecorationData
             {
                 position = kvp.Key,
-                prefabName = pName // Save the prefab name!
+                prefabName = pName 
             });
         }
 
@@ -691,19 +810,11 @@ public class MapEditorWindow : EditorWindow
             }
         }
 
-        // UPDATED: Load specific decoration prefab by name!
         foreach (var data in currentMap.decorationPositions)
         {
-            // Attempt to find the matching prefab from our list
             GameObject targetPrefab = decorationPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName);
-
-            // Fallback to Resources loading (just like runtime will)
-            if (targetPrefab == null && !string.IsNullOrEmpty(data.prefabName))
-                targetPrefab = Resources.Load<GameObject>(data.prefabName);
-
-            // Absolute fallback
-            if (targetPrefab == null)
-                targetPrefab = decorationPrefab;
+            if (targetPrefab == null && !string.IsNullOrEmpty(data.prefabName)) targetPrefab = Resources.Load<GameObject>(data.prefabName);
+            if (targetPrefab == null) targetPrefab = decorationPrefab;
 
             if (targetPrefab != null)
             {
@@ -737,11 +848,9 @@ public class MapEditorWindow : EditorWindow
                     tiles[new Vector3Int(oldX, 0, oldZ)] = t;
                 }
             }
-            // CHANGED logic slightly to allow dynamic names like "Pillar_1_2_3" instead of just "Deco_1_2_3"
             else if (decorations.ContainsValue(t) || decorationPrefabs.Any(p => p != null && t.name.StartsWith(p.name + "_")))
             {
                 string[] parts = t.name.Split('_');
-                // The last 3 parts should always be the coordinates X, Y, Z
                 int len = parts.Length;
                 if (len >= 4 && int.TryParse(parts[len - 3], out int dx) && int.TryParse(parts[len - 2], out int dy) && int.TryParse(parts[len - 1], out int dz))
                 {
@@ -749,60 +858,5 @@ public class MapEditorWindow : EditorWindow
                 }
             }
         }
-    }
-
-    private void GenerateMap()
-    {
-        SyncDictionaryFromScene();
-
-        foreach (var obj in tiles.Values) Undo.DestroyObjectImmediate(obj);
-        tiles.Clear();
-
-        foreach (var obj in decorations.Values) Undo.DestroyObjectImmediate(obj);
-        decorations.Clear();
-    }
-
-    /// <summary>
-    /// Calculates all discrete grid coordinates to form a straight line between two Voxel points.
-    /// </summary>
-    private List<Vector3Int> GetLinePoints(Vector3Int start, Vector3Int end)
-    {
-        List<Vector3Int> points = new List<Vector3Int>();
-
-        // Chebyshev distance ensures continuous diagonals
-        int steps = Mathf.Max(Mathf.Abs(start.x - end.x), Mathf.Max(Mathf.Abs(start.y - end.y), Mathf.Abs(start.z - end.z)));
-
-        if (steps == 0)
-        {
-            points.Add(start);
-            return points;
-        }
-
-        for (int i = 0; i <= steps; i++)
-        {
-            Vector3 lerped = Vector3.Lerp(start, end, (float)i / steps);
-            points.Add(new Vector3Int(Mathf.RoundToInt(lerped.x), Mathf.RoundToInt(lerped.y), Mathf.RoundToInt(lerped.z)));
-        }
-
-        return points.Distinct().ToList(); 
-    }
-
-    /// <summary>
-    /// Extrapolates a box of points around a center based on brush size (X and Z axis)
-    /// </summary>
-    private List<Vector3Int> GetBrushPoints(Vector3Int center, int size)
-    {
-        List<Vector3Int> points = new List<Vector3Int>();
-        int offsetStart = -(size - 1) / 2;
-        int offsetEnd = size / 2;
-
-        for (int x = offsetStart; x <= offsetEnd; x++)
-        {
-            for (int z = offsetStart; z <= offsetEnd; z++)
-            {
-                points.Add(new Vector3Int(center.x + x, center.y, center.z + z));
-            }
-        }
-        return points;
     }
 }
