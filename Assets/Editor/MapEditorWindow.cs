@@ -41,6 +41,8 @@ public class MapEditorWindow : EditorWindow
     private double lastPaintTime = 0.0;
     private Texture2D headerImage;
 
+    private int brushSize = 1;
+
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
 
@@ -92,7 +94,7 @@ public class MapEditorWindow : EditorWindow
         }
         else
         {
-            EditorGUILayout.HelpBox("Per mostrare un Banner in cima all'Editor, posizionare l'immagine 'MapEditorBanner.png' dentro 'Assets/Editor/Resources'.", MessageType.Info);
+            EditorGUILayout.HelpBox("Per mostrare un Banner in cima all'Editor, posizionare l'immagine 'MapEditorBanner.png' inside 'Assets/Editor/Resources'.", MessageType.Info);
         }
 
         // 2. DIMENSIONI DELLA MAPPA
@@ -201,6 +203,10 @@ public class MapEditorWindow : EditorWindow
         if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { isPlacingTile = false; isPlacingDecoration = false; isDeletingTile = true; }
         EditorGUILayout.EndHorizontal();
 
+        // --- NEW: Brush Size Slider ---
+        EditorGUILayout.Space();
+        brushSize = EditorGUILayout.IntSlider("Brush Size (Number Keys 1-6)", brushSize, 1, 6);
+
         if (GUILayout.Button("Sync & Reload from Scene")) SyncDictionaryFromScene();
 
         EditorGUILayout.Space();
@@ -238,15 +244,27 @@ public class MapEditorWindow : EditorWindow
     {
         Event e = Event.current;
 
-        if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
+        if (e.type == EventType.KeyDown)
         {
-            isPlacingTile = false;
-            isPlacingDecoration = false;
-            isDeletingTile = false;
-            Repaint();
-            sceneView.Repaint();
-            e.Use();
-            return;
+            if (e.keyCode == KeyCode.Escape)
+            {
+                isPlacingTile = false;
+                isPlacingDecoration = false;
+                isDeletingTile = false;
+                Repaint();
+                sceneView.Repaint();
+                e.Use();
+                return;
+            }
+            
+            // --- NEW: Number key mapping for Brush Size ---
+            if (e.keyCode >= KeyCode.Alpha1 && e.keyCode <= KeyCode.Alpha6)
+            {
+                brushSize = (e.keyCode - KeyCode.Alpha1) + 1;
+                Repaint();
+                sceneView.Repaint();
+                e.Use();
+            }
         }
 
         int controlID = GUIUtility.GetControlID(FocusType.Passive);
@@ -321,23 +339,36 @@ public class MapEditorWindow : EditorWindow
 
         if (hasHit)
         {
-            if (!IsInsideGrid(targetGridPos) || e.alt) return;
+            if (e.alt) return;
 
-            // PREVIEW MULTIPLE (LINE) OR SINGLE
+            // --- NEW: Calculate all points for the brush ---
+            List<Vector3Int> pointsToAffect = new List<Vector3Int>();
+
             if (e.shift && lastPaintedPosition.x != -1)
             {
-                var points = GetLinePoints(lastPaintedPosition, targetGridPos);
-                foreach (var p in points) DrawPreview(p);
+                var lineCenters = GetLinePoints(lastPaintedPosition, targetGridPos);
+                foreach (var center in lineCenters)
+                {
+                    pointsToAffect.AddRange(GetBrushPoints(center, brushSize));
+                }
             }
             else
             {
-                DrawPreview(targetGridPos);
+                pointsToAffect.AddRange(GetBrushPoints(targetGridPos, brushSize));
+            }
+            
+            // Remove duplicates where brush iterations overlapped
+            pointsToAffect = pointsToAffect.Distinct().ToList();
+
+            // Draw all previews
+            foreach (var p in pointsToAffect)
+            {
+                if (IsInsideGrid(p)) DrawPreview(p);
             }
 
             if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0)
             {
                 double currentTime = EditorApplication.timeSinceStartup;
-
                 bool cooldownPassed = (currentTime - lastPaintTime) > paintDelay;
                 bool isSameCellAsLast = (targetGridPos == lastGridPosition);
 
@@ -349,27 +380,18 @@ public class MapEditorWindow : EditorWindow
 
                 if (cooldownPassed)
                 {
-                    // MULTIPLE PLACEMENT (SHIFT DRAW)
-                    if (e.shift && lastPaintedPosition.x != -1)
+                    // Paint all points
+                    foreach (var p in pointsToAffect)
                     {
-                        var points = GetLinePoints(lastPaintedPosition, targetGridPos);
-                        foreach (var p in points)
-                        {
-                            if (isPlacingTile) PlaceTile(p, selectedTileType);
-                            else if (isPlacingDecoration) PlaceDecoration(p);
-                            else if (isDeletingTile) DeleteTile(p);
-                        }
-                    }
-                    // SINGLE PLACEMENT
-                    else
-                    {
-                        if (isPlacingTile) PlaceTile(targetGridPos, selectedTileType);
-                        else if (isPlacingDecoration) PlaceDecoration(targetGridPos);
-                        else if (isDeletingTile) DeleteTile(targetGridPos);
+                        if (!IsInsideGrid(p)) continue;
+                        
+                        if (isPlacingTile) PlaceTile(p, selectedTileType);
+                        else if (isPlacingDecoration) PlaceDecoration(p);
+                        else if (isDeletingTile) DeleteTile(p);
                     }
 
                     lastGridPosition = targetGridPos;
-                    lastPaintedPosition = targetGridPos; // Important: anchor new point!
+                    lastPaintedPosition = targetGridPos; 
                     lastPaintTime = currentTime;
                 }
 
@@ -380,7 +402,6 @@ public class MapEditorWindow : EditorWindow
         if (e.type == EventType.MouseUp) 
         {
             lastGridPosition = new Vector3Int(-1, -1, -1);
-            // We intentionally DO NOT reset lastPaintedPosition so Shift-chaining works seamlessly
         }
 
         DrawGrid();
@@ -764,5 +785,24 @@ public class MapEditorWindow : EditorWindow
         }
 
         return points.Distinct().ToList(); 
+    }
+
+    /// <summary>
+    /// Extrapolates a box of points around a center based on brush size (X and Z axis)
+    /// </summary>
+    private List<Vector3Int> GetBrushPoints(Vector3Int center, int size)
+    {
+        List<Vector3Int> points = new List<Vector3Int>();
+        int offsetStart = -(size - 1) / 2;
+        int offsetEnd = size / 2;
+
+        for (int x = offsetStart; x <= offsetEnd; x++)
+        {
+            for (int z = offsetStart; z <= offsetEnd; z++)
+            {
+                points.Add(new Vector3Int(center.x + x, center.y, center.z + z));
+            }
+        }
+        return points;
     }
 }
