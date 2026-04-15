@@ -257,41 +257,70 @@ public class GridManager : MonoBehaviour
 
                 if (targetTile != null)
                 {
-                    // 1. Fetch the EXISTING persistent unit from the GameManager instead of instantiating a clone
-                    Unit persistentUnit = null;
-                    if (GameManager.Instance != null && GameManager.Instance.playerPartyMembersInstances != null)
+                    // 1. Load the painted prefab to inspect its true underlying Template Data
+                    GameObject runtimeUnitPrefab = Resources.Load<GameObject>(spawnData.prefabName);
+
+                    if (runtimeUnitPrefab == null)
                     {
-                        persistentUnit = GameManager.Instance.playerPartyMembersInstances.FirstOrDefault(u => 
-                            u != null && (u.gameObject.name.Contains(spawnData.prefabName) || 
-                            (u.unitTemplate != null && u.unitTemplate.name == spawnData.prefabName || u.unitTemplate.unitName == spawnData.prefabName))
+                        Debug.LogWarning($"GridManager: Missing Painted Unit Prefab '{spawnData.prefabName}' in Resources folder!");
+                        continue;
+                    }
+
+                    // Extract the core UnitName from the Prefab's template
+                    Unit prefabUnitComponent = runtimeUnitPrefab.GetComponent<Unit>();
+                    string paintedUnitName = (prefabUnitComponent != null && prefabUnitComponent.unitTemplate != null) 
+                        ? prefabUnitComponent.unitTemplate.unitName 
+                        : string.Empty;
+
+                    // 2. Try to find a match in the persistent Global Player Party using ONLY the unitTemplate.unitName
+                    Unit persistentPlayerMatch = null;
+                    if (!string.IsNullOrEmpty(paintedUnitName) && GameManager.Instance != null && GameManager.Instance.playerPartyMembersInstances != null)
+                    {
+                        persistentPlayerMatch = GameManager.Instance.playerPartyMembersInstances.FirstOrDefault(u => 
+                            u != null && u.unitTemplate != null && u.unitTemplate.unitName == paintedUnitName
                         );
                     }
 
-                    if (persistentUnit != null)
+                    if (persistentPlayerMatch != null)
                     {
-                        GameObject unitInstance = persistentUnit.gameObject;
-                        unitInstance.SetActive(true); // Make sure it's visible in the scene
+                        // Match Found! Teleport the persistent player unit to the painted map coordinates
+                        GameObject unitInstance = persistentPlayerMatch.gameObject;
+                        unitInstance.SetActive(true); 
                         
                         PlaceUnitOnTileSurface(unitInstance, targetTile);
 
                         targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
                         targetTile.detectedUnit = unitInstance;
 
-                        // Ensure tag is correct for battle scripts
-                        unitInstance.tag = "Player";
-
-                        // Sync the 3D Voxel coordinate properties to the persistent Unit
-                        persistentUnit.startingXCoordinate = spawnData.position.x;
-                        persistentUnit.startingYCoordinate = spawnData.position.z;
-                        persistentUnit.currentXCoordinate = spawnData.position.x;
-                        persistentUnit.currentYCoordinate = spawnData.position.z;
-                        persistentUnit.ownedTile = targetTile;
+                        persistentPlayerMatch.startingXCoordinate = spawnData.position.x;
+                        persistentPlayerMatch.startingYCoordinate = spawnData.position.z;
+                        persistentPlayerMatch.currentXCoordinate = spawnData.position.x;
+                        persistentPlayerMatch.currentYCoordinate = spawnData.position.z;
+                        persistentPlayerMatch.ownedTile = targetTile;
 
                         dynamicPlayerUnits.Add(unitInstance);
                     }
                     else
                     {
-                        Debug.LogWarning($"GridManager: Could not find persistent unit '{spawnData.prefabName}' in GameManager!");
+                        // No player match found. It's an Enemy or a Deity painted on the map! Instantiating it.
+                        GameObject unitInstance = Instantiate(runtimeUnitPrefab, this.transform);
+                        Unit paintedEnemy = unitInstance.GetComponent<Unit>();
+                        
+                        if (paintedEnemy != null)
+                        {
+                            // Force template load before Enum evaluation to prevent fake Game-Over
+                            if (paintedEnemy.unitTemplate != null) paintedEnemy.RetrieveTemplateValues();
+
+                            PlaceUnitOnTileSurface(unitInstance, targetTile);
+                            targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                            targetTile.detectedUnit = unitInstance;
+
+                            paintedEnemy.startingXCoordinate = spawnData.position.x;
+                            paintedEnemy.startingYCoordinate = spawnData.position.z;
+                            paintedEnemy.currentXCoordinate = spawnData.position.x;
+                            paintedEnemy.currentYCoordinate = spawnData.position.z;
+                            paintedEnemy.ownedTile = targetTile;
+                        }
                     }
                 }
             }
@@ -306,23 +335,28 @@ public class GridManager : MonoBehaviour
                     if (legacyPlayer != null && !dynamicPlayerUnits.Contains(legacyPlayer))
                     {
                         legacyPlayer.SetActive(false); 
-                        Destroy(legacyPlayer);
                     }
                 }
 
                 GameObject partyControllerObj = GameObject.FindGameObjectWithTag("PlayerPartyController");
                 if (partyControllerObj != null)
                 {
-                    PlayerPartyController partyController = partyControllerObj.GetComponent<PlayerPartyController>();
+                    // Update PlayerPartyController to use ONLY what the map data dictates
+                    var partyController = partyControllerObj.GetComponent<PlayerPartyController>();
                     if (partyController != null)
                     {
-                        // Hand the persistent units over to the Battle's logic controller
                         partyController.playerUnitsOnBattlefield = dynamicPlayerUnits.ToArray();
                     }
                 }
-                
-                // Note: We DO NOT overwrite GameManager.playerPartyMembersInstances anymore,
-                // because we are directly manipulating its existing persistent units!
+
+                // STABILIZER: Because GameStatsManager relies on Start(), 
+                // we must manually invoke it here to pour the saved depleted 
+                // HP, Mana, and Faith into these freshly deployed player units.
+                GameStatsManager statsManager = FindObjectOfType<GameStatsManager>();
+                if (statsManager != null)
+                {
+                    statsManager.LoadCharacterData();
+                }
             }
         }
     }
