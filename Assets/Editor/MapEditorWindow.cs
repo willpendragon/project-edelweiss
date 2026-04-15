@@ -165,13 +165,22 @@ public partial class MapEditorWindow : EditorWindow
         EditorGUILayout.EndScrollView();
     }
 
-    // Removed bucket from here so it doesn't accidentally reset the tool selection
-    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool delete = false)
+    // The bucket toggle is passed so it correctly enables/disables without affecting other tools
+    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool delete = false, bool bucket = false)
     {
         isPlacingTile = tile;
         isPlacingDecoration = deco;
         isPlacingUnit = unit;
         isDeletingTile = delete;
+        // Allows switching tools while keeping Bucket mode active
+        if (bucket)
+        {
+            isBucketMode = true; 
+        }
+        else if (tile == false && deco == false && unit == false && delete == false)
+        {
+            isBucketMode = false; // Only turn off bucket if we hit ESCAPE (all tools false)
+        }
     }
 
     private void DrawPrefabPool(string label, ref SerializedProperty prop, List<GameObject> prefabs, ref int index, ref GameObject activePrefab, ref Vector2 scroll, System.Action saveCallback)

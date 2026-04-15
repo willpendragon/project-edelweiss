@@ -13,8 +13,8 @@ public partial class MapEditorWindow
         {
             if (e.keyCode == KeyCode.Escape)
             {
-                SetMode(); // Resets all brushes to false
-                isBucketMode = false; // Add this line! Resets bucket explicitly
+                SetMode();
+                isBucketMode = false;
                 Repaint(); sceneView.Repaint(); e.Use(); return;
             }
             if (e.keyCode >= KeyCode.Alpha1 && e.keyCode <= KeyCode.Alpha6)
@@ -24,7 +24,7 @@ public partial class MapEditorWindow
             }
             if (e.keyCode == KeyCode.B)
             {
-                isBucketMode = !isBucketMode; // B key is safely independent
+                SetMode(bucket: !isBucketMode);
                 Repaint(); sceneView.Repaint(); e.Use();
             }
         }
@@ -49,12 +49,15 @@ public partial class MapEditorWindow
                 {
                     closestDist = dist;
                     targetGridPos = kvp.Key;
-                    if (!isBucketMode && !isDeletingTile) targetGridPos.y += 1;
+                    
+                    // FIXED: Both Bucket Paint and regular Paint target the space above the tile
+                    if (!isDeletingTile) targetGridPos.y += 1;
+                    
                     hasHit = true;
                 }
             }
         }
-
+        
         CheckHits(decorations);
         CheckHits(spawnedUnits);
 
@@ -70,11 +73,13 @@ public partial class MapEditorWindow
                 {
                     Vector3Int basePos = hitTile.gridPosition;
                     Vector3Int normalOff = new Vector3Int(Mathf.RoundToInt(hitInfo.normal.x), Mathf.RoundToInt(hitInfo.normal.y), Mathf.RoundToInt(hitInfo.normal.z));
-                    targetGridPos = (isDeletingTile || isBucketMode) ? basePos : basePos + normalOff;
+                    
+                    // FIXED: If Deleting, target the exact block. If Painting (Bucket or Single), target the face you clicked!
+                    targetGridPos = isDeletingTile ? basePos : basePos + normalOff;
                 }
                 else
                 {
-                    Vector3 offsetPos = hitInfo.point + (isDeletingTile || isBucketMode ? -hitInfo.normal : hitInfo.normal) * 0.1f;
+                    Vector3 offsetPos = hitInfo.point + (isDeletingTile ? -hitInfo.normal : hitInfo.normal) * 0.1f;
                     targetGridPos = GetGridCoordinatesFromWorldPosition(offsetPos);
                 }
             }
@@ -94,12 +99,12 @@ public partial class MapEditorWindow
         {
             List<Vector3Int> pointsToAffect = new List<Vector3Int>();
 
-            if (isBucketMode) DrawPreview(targetGridPos);
+            if (isBucketMode) DrawPreview(targetGridPos); 
             else
             {
                 if (e.shift && lastPaintedPosition.x != -1)
                 {
-                    foreach (var center in GetLinePoints(lastPaintedPosition, targetGridPos))
+                    foreach (var center in GetLinePoints(lastPaintedPosition, targetGridPos)) 
                         pointsToAffect.AddRange(GetBrushPoints(center, brushSize));
                 }
                 else pointsToAffect.AddRange(GetBrushPoints(targetGridPos, brushSize));
@@ -129,7 +134,7 @@ public partial class MapEditorWindow
                     }
 
                     lastGridPosition = targetGridPos;
-                    lastPaintedPosition = targetGridPos;
+                    lastPaintedPosition = targetGridPos; 
                     lastPaintTime = currentTime;
                 }
                 e.Use();

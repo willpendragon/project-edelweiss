@@ -5,7 +5,6 @@ using UnityEngine;
 
 public partial class MapEditorWindow
 {
-    // Note the default 'sync = true' parameters here. This fixes the error you were seeing!
     private void PlaceTile(Vector3Int position, TileType type, bool sync = true)
     {
         if (tilePrefab == null) return;
@@ -61,17 +60,21 @@ public partial class MapEditorWindow
     {
         if (sync) SyncDictionaryFromScene();
 
-        if (spawnedUnits.TryGetValue(position, out GameObject u)) { spawnedUnits.Remove(position); Undo.DestroyObjectImmediate(u); }
-        if (decorations.TryGetValue(position, out GameObject d)) { decorations.Remove(position); Undo.DestroyObjectImmediate(d); }
-        if (tiles.TryGetValue(position, out GameObject t)) { tiles.Remove(position); Undo.DestroyObjectImmediate(t); }
+        if (spawnedUnits.TryGetValue(position, out GameObject u) && u != null) { spawnedUnits.Remove(position); Undo.DestroyObjectImmediate(u); }
+        if (decorations.TryGetValue(position, out GameObject d) && d != null) { decorations.Remove(position); Undo.DestroyObjectImmediate(d); }
+        if (tiles.TryGetValue(position, out GameObject t) && t != null) { tiles.Remove(position); Undo.DestroyObjectImmediate(t); }
     }
 
     private void ApplyBucketFill(Vector3Int startPos)
     {
         if (!IsInsideGrid(startPos)) return;
-        bool targetHadTile = tiles.ContainsKey(startPos);
-        TileType? targetTileType = targetHadTile ? tiles[startPos].GetComponent<TileController>()?.tileType : null;
+        
+        // Safely check if we clicked on an existing tile
+        tiles.TryGetValue(startPos, out GameObject startTile);
+        bool targetHadTile = startTile != null;
+        TileType? targetTileType = targetHadTile ? startTile.GetComponent<TileController>()?.tileType : null;
 
+        // Prevent infinite loops when replacing with the exact same type
         if (isPlacingTile && targetHadTile && targetTileType == selectedTileType) return;
 
         Queue<Vector3Int> queue = new Queue<Vector3Int>();
@@ -81,30 +84,69 @@ public partial class MapEditorWindow
         queue.Enqueue(startPos);
         visited.Add(startPos);
 
-        while (queue.Count > 0 && pointsToFill.Count < 3000)
+        while (queue.Count > 0 && pointsToFill.Count < 5000) 
         {
             Vector3Int curr = queue.Dequeue();
             pointsToFill.Add(curr);
 
-            Vector3Int[] neighbors = { curr + Vector3Int.right, curr + Vector3Int.left, curr + new Vector3Int(0, 0, 1), curr + new Vector3Int(0, 0, -1) };
-            foreach (var n in neighbors)
+            if (targetHadTile)
             {
-                if (!IsInsideGrid(n) || visited.Contains(n)) continue;
+                // REPLACE MODE: 3D Flood Fill. Replace all contiguous blocks of returning type, adapting to all elevations and stairs!
+                Vector3Int[] neighbors3D = {
+                    curr + Vector3Int.right, curr + Vector3Int.left,
+                    curr + new Vector3Int(0, 0, 1), curr + new Vector3Int(0, 0, -1),
+                    curr + Vector3Int.up, curr + Vector3Int.down
+                };
 
-                bool nHasTile = tiles.ContainsKey(n);
-                bool match = (!targetHadTile && !nHasTile) || (targetHadTile && nHasTile && tiles[n].GetComponent<TileController>()?.tileType == targetTileType);
+                foreach (var n in neighbors3D)
+                {
+                    if (IsInsideGrid(n) && !visited.Contains(n))
+                    {
+                        if (tiles.TryGetValue(n, out GameObject neighborTile) && neighborTile != null)
+                        {
+                            if (neighborTile.GetComponent<TileController>()?.tileType == targetTileType)
+                            {
+                                visited.Add(n);
+                                queue.Enqueue(n);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // EMPTY SPACE MODE: 2D Flood Fill. Perfectly fill an enclosed room strictly on the exact Y layer.
+                Vector3Int[] neighborsHorizontal = {
+                    curr + Vector3Int.right, curr + Vector3Int.left,
+                    curr + new Vector3Int(0, 0, 1), curr + new Vector3Int(0, 0, -1)
+                };
 
-                if (match) { visited.Add(n); queue.Enqueue(n); }
+                foreach (var n in neighborsHorizontal)
+                {
+                    if (IsInsideGrid(n) && !visited.Contains(n))
+                    {
+                        // Safely check if empty
+                        bool isEmpty = !tiles.TryGetValue(n, out GameObject neighborObj) || neighborObj == null;
+                        
+                        if (isEmpty)
+                        {
+                            visited.Add(n);
+                            queue.Enqueue(n);
+                        }
+                    }
+                }
             }
         }
 
+        // Apply modifications
         foreach (var p in pointsToFill)
         {
-            if (isPlacingTile) { if (targetHadTile) DeleteTile(p, false); PlaceTile(p, selectedTileType, false); }
+            if (isPlacingTile) { if(targetHadTile) DeleteTile(p, false); PlaceTile(p, selectedTileType, false); }
             else if (isPlacingDecoration) PlaceDecoration(p, false);
             else if (isPlacingUnit) PlaceUnit(p, false);
             else if (isDeletingTile) DeleteTile(p, false);
         }
+        
         SyncDictionaryFromScene();
     }
 
