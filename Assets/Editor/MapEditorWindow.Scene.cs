@@ -1,0 +1,142 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+
+public partial class MapEditorWindow
+{
+    private void OnSceneGUI(SceneView sceneView)
+    {
+        Event e = Event.current;
+
+        if (e.type == EventType.KeyDown)
+        {
+            if (e.keyCode == KeyCode.Escape)
+            {
+                SetMode(); // Resets all brushes to false
+                isBucketMode = false; // Add this line! Resets bucket explicitly
+                Repaint(); sceneView.Repaint(); e.Use(); return;
+            }
+            if (e.keyCode >= KeyCode.Alpha1 && e.keyCode <= KeyCode.Alpha6)
+            {
+                brushSize = (e.keyCode - KeyCode.Alpha1) + 1;
+                Repaint(); sceneView.Repaint(); e.Use();
+            }
+            if (e.keyCode == KeyCode.B)
+            {
+                isBucketMode = !isBucketMode; // B key is safely independent
+                Repaint(); sceneView.Repaint(); e.Use();
+            }
+        }
+
+        int controlID = GUIUtility.GetControlID(FocusType.Passive);
+        if (isPlacingTile || isPlacingDecoration || isPlacingUnit || isDeletingTile || isBucketMode)
+            HandleUtility.AddDefaultControl(controlID);
+
+        Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
+        bool hasHit = false;
+        Vector3Int targetGridPos = Vector3Int.zero;
+        Vector3 tileSize = GetTileWorldSize3D();
+        float closestDist = float.MaxValue;
+
+        // Raycast over custom lists
+        void CheckHits(Dictionary<Vector3Int, GameObject> dict)
+        {
+            foreach (var kvp in dict)
+            {
+                Bounds bounds = new Bounds(GridToWorld(kvp.Key, tileSize) + tileSize / 2f, tileSize);
+                if (bounds.IntersectRay(ray, out float dist) && dist < closestDist)
+                {
+                    closestDist = dist;
+                    targetGridPos = kvp.Key;
+                    if (!isBucketMode && !isDeletingTile) targetGridPos.y += 1;
+                    hasHit = true;
+                }
+            }
+        }
+
+        CheckHits(decorations);
+        CheckHits(spawnedUnits);
+
+        // Raycast over physics tiles / ground
+        if (!hasHit)
+        {
+            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            {
+                hasHit = true;
+                TileController hitTile = hitInfo.collider.GetComponentInParent<TileController>();
+
+                if (hitTile != null)
+                {
+                    Vector3Int basePos = hitTile.gridPosition;
+                    Vector3Int normalOff = new Vector3Int(Mathf.RoundToInt(hitInfo.normal.x), Mathf.RoundToInt(hitInfo.normal.y), Mathf.RoundToInt(hitInfo.normal.z));
+                    targetGridPos = (isDeletingTile || isBucketMode) ? basePos : basePos + normalOff;
+                }
+                else
+                {
+                    Vector3 offsetPos = hitInfo.point + (isDeletingTile || isBucketMode ? -hitInfo.normal : hitInfo.normal) * 0.1f;
+                    targetGridPos = GetGridCoordinatesFromWorldPosition(offsetPos);
+                }
+            }
+            else
+            {
+                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+                if (groundPlane.Raycast(ray, out float enter))
+                {
+                    hasHit = true;
+                    targetGridPos = GetGridCoordinatesFromWorldPosition(ray.GetPoint(enter));
+                    targetGridPos.y = 0;
+                }
+            }
+        }
+
+        if (hasHit && !e.alt)
+        {
+            List<Vector3Int> pointsToAffect = new List<Vector3Int>();
+
+            if (isBucketMode) DrawPreview(targetGridPos);
+            else
+            {
+                if (e.shift && lastPaintedPosition.x != -1)
+                {
+                    foreach (var center in GetLinePoints(lastPaintedPosition, targetGridPos))
+                        pointsToAffect.AddRange(GetBrushPoints(center, brushSize));
+                }
+                else pointsToAffect.AddRange(GetBrushPoints(targetGridPos, brushSize));
+
+                pointsToAffect = pointsToAffect.Distinct().ToList();
+                foreach (var p in pointsToAffect.Where(IsInsideGrid)) DrawPreview(p);
+            }
+
+            if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0)
+            {
+                double currentTime = EditorApplication.timeSinceStartup;
+                if (e.type == EventType.MouseDrag && targetGridPos == lastGridPosition) { e.Use(); return; }
+
+                if ((currentTime - lastPaintTime) > paintDelay)
+                {
+                    if (isBucketMode && e.type == EventType.MouseDown) ApplyBucketFill(targetGridPos);
+                    else if (!isBucketMode)
+                    {
+                        foreach (var p in pointsToAffect.Where(IsInsideGrid))
+                        {
+                            if (isPlacingTile) PlaceTile(p, selectedTileType, false);
+                            else if (isPlacingDecoration) PlaceDecoration(p, false);
+                            else if (isPlacingUnit) PlaceUnit(p, false);
+                            else if (isDeletingTile) DeleteTile(p, false);
+                        }
+                        SyncDictionaryFromScene();
+                    }
+
+                    lastGridPosition = targetGridPos;
+                    lastPaintedPosition = targetGridPos;
+                    lastPaintTime = currentTime;
+                }
+                e.Use();
+            }
+        }
+
+        if (e.type == EventType.MouseUp) lastGridPosition = new Vector3Int(-1, -1, -1);
+        DrawGrid(); sceneView.Repaint();
+    }
+}

@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewMap", menuName = "Level Design/Map")]
 public class MapData : ScriptableObject
@@ -15,31 +15,38 @@ public class MapData : ScriptableObject
     [System.Serializable]
     public struct TileData
     {
-        // Cambiato da Vector2Int a Vector3Int per il supporto Voxel
         public Vector3Int position;
         public TileType tileType;
     }
 
-    // --- NEW: Decoration Data Storage ---
     [System.Serializable]
     public struct DecorationData
     {
         public Vector3Int position;
-        public string prefabName; // <-- NEW: Store the name of the prefab loaded from Resources!
+        public string prefabName; 
+    }
+
+    // --- NEW: Player Spawn Data Storage ---
+    [System.Serializable]
+    public struct SpawnData
+    {
+        public Vector3Int position;
+        public string prefabName; 
     }
 
     public List<TileData> tilePositions = new List<TileData>();
-    public List<DecorationData> decorationPositions = new List<DecorationData>(); // NEW
+    public List<DecorationData> decorationPositions = new List<DecorationData>();
+    public List<SpawnData> playerSpawnPositions = new List<SpawnData>(); // NEW
 
     public int horizontalSize; // X
     public int verticalSize;   // Z
-    public int depthSize = 1;  // Y (Nuova proprietà: altezza massima della griglia)
+    public int depthSize = 1;  // Y
 
     public GameObject environment;
     public LevelType levelType;
     public Vector3 environmentSpawnpoint;
 
-    public GameObject fixedDeity; // Use this only for cases where you need to spawn a Deity in a specific level without requiring achievement-based unlock logic.
+    public GameObject fixedDeity; 
 
     public GameObject RetrieveDeity()
     {
