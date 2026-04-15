@@ -65,16 +65,24 @@ public partial class MapEditorWindow
         if (tiles.TryGetValue(position, out GameObject t) && t != null) { tiles.Remove(position); Undo.DestroyObjectImmediate(t); }
     }
 
+    // HELPER: Universally checks if ANY block (Tile, Deco, Unit) exists at this specific coordinate
+    private bool HasBlockAt(Vector3Int pos)
+    {
+        return (tiles.TryGetValue(pos, out GameObject t) && t != null) ||
+               (decorations.TryGetValue(pos, out GameObject d) && d != null) ||
+               (spawnedUnits.TryGetValue(pos, out GameObject u) && u != null);
+    }
+
     private void ApplyBucketFill(Vector3Int startPos)
     {
         if (!IsInsideGrid(startPos)) return;
         
-        // Safely check if we clicked on an existing tile
+        // Check if we clicked on an existing physics object
         tiles.TryGetValue(startPos, out GameObject startTile);
         bool targetHadTile = startTile != null;
         TileType? targetTileType = targetHadTile ? startTile.GetComponent<TileController>()?.tileType : null;
 
-        // Prevent infinite loops when replacing with the exact same type
+        // Prevent infinite loops when substituting same exact types
         if (isPlacingTile && targetHadTile && targetTileType == selectedTileType) return;
 
         Queue<Vector3Int> queue = new Queue<Vector3Int>();
@@ -91,7 +99,7 @@ public partial class MapEditorWindow
 
             if (targetHadTile)
             {
-                // REPLACE MODE: 3D Flood Fill. 
+                // REPLACE MODE: 3D Flood Fill. Replace all contiguous blocks of returning type.
                 Vector3Int[] neighbors3D = {
                     curr + Vector3Int.right, curr + Vector3Int.left,
                     curr + new Vector3Int(0, 0, 1), curr + new Vector3Int(0, 0, -1),
@@ -115,7 +123,7 @@ public partial class MapEditorWindow
             }
             else
             {
-                // EMPTY SPACE MODE: 2D Flood Fill strictly confined by physical floors.
+                // EMPTY SPACE MODE: 2D Flood Fill strictly confined by physics blockers and floors.
                 Vector3Int[] neighborsHorizontal = {
                     curr + Vector3Int.right, curr + Vector3Int.left,
                     curr + new Vector3Int(0, 0, 1), curr + new Vector3Int(0, 0, -1)
@@ -125,22 +133,13 @@ public partial class MapEditorWindow
                 {
                     if (IsInsideGrid(n) && !visited.Contains(n))
                     {
-                        bool isNeighborEmpty = !tiles.TryGetValue(n, out GameObject neighborObj) || neighborObj == null;
+                        // Safely check if there are absolutely zero blockers (Tiles, Decos, Units) in the way
+                        bool isNeighborEmpty = !HasBlockAt(n);
                         
                         if (isNeighborEmpty)
                         {
-                            // THE FLOOR RULE: Does this exact column have a floor exactly 1 block beneath it?
-                            // Ground level (y=0) is inherently supported by the void floor.
-                            bool hasFloorBeneath = n.y == 0;
-                            
-                            if (n.y > 0)
-                            {
-                                Vector3Int floorBelow = new Vector3Int(n.x, n.y - 1, n.z);
-                                if (tiles.TryGetValue(floorBelow, out GameObject floorTile) && floorTile != null)
-                                {
-                                    hasFloorBeneath = true;
-                                }
-                            }
+                            // THE FLOOR RULE: Does this exact column have ANY block exactly 1 step beneath it?
+                            bool hasFloorBeneath = n.y == 0 || HasBlockAt(new Vector3Int(n.x, n.y - 1, n.z));
 
                             if (hasFloorBeneath)
                             {
@@ -153,7 +152,7 @@ public partial class MapEditorWindow
             }
         }
 
-        // Apply modifications
+        // Apply bulk modifications quickly
         foreach (var p in pointsToFill)
         {
             if (isPlacingTile) { if(targetHadTile) DeleteTile(p, false); PlaceTile(p, selectedTileType, false); }
