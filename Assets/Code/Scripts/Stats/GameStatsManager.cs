@@ -60,11 +60,14 @@ public class GameStatsManager : MonoBehaviour
 
     public void SaveCharacterData()
     {
+        if (GameManager.Instance == null) return;
         List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
         GameSaveData characterSaveData = SaveStateManager.saveData;
 
         foreach (var playerUnit in playerUnits)
         {
+            if (playerUnit == null || playerUnit.gameObject == null) continue;
+
             CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
 
             if (existingCharacterData != null)
@@ -81,7 +84,7 @@ public class GameStatsManager : MonoBehaviour
 
                 SaveBuffsToData(playerUnit.gameObject, existingCharacterData);
             }
-            else if (existingCharacterData == null)
+            else
             {
                 // Add new character data
                 CharacterData newCharacterData = new CharacterData()
@@ -108,28 +111,40 @@ public class GameStatsManager : MonoBehaviour
     {
         if (GameManager.Instance == null)
             return;
+            
         List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
-
         GameSaveData characterSaveData = SaveStateManager.saveData;
+        
         foreach (var playerUnit in playerUnits)
         {
-            Unit unitComponent = playerUnit.GetComponent<Unit>();
-            CharacterData loadedCharacterData = characterSaveData.characterData.Find(character => character.unitId == unitComponent.Id);
+            if (playerUnit == null || playerUnit.gameObject == null) continue;
+
+            // Initialize base limits first before applying the overriding save data
+            if (playerUnit.unitTemplate != null && playerUnit.unitMaxHealthPoints == 0)
+            {
+                playerUnit.RetrieveTemplateValues();
+            }
+
+            CharacterData loadedCharacterData = characterSaveData?.characterData?.Find(character => character.unitId == playerUnit.Id);
             if (loadedCharacterData != null)
             {
-                unitComponent.unitHealthPoints = loadedCharacterData.unitHealthPoints;
-                unitComponent.unitManaPoints = loadedCharacterData.unitSavedManaPoints;
-                unitComponent.unitShieldPoints = loadedCharacterData.unitShieldPoints;
-                unitComponent.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
-                unitComponent.unitAttackPower = loadedCharacterData.unitAttackPower;
-                unitComponent.unitMagicPower = loadedCharacterData.unitMagicPower;
-                unitComponent.unitFaithPoints = loadedCharacterData.unitFaithPoints;
-                Debug.Log("Restoring Player Units HP and Mana");
-                // Loads the occupied food slots. The Saving happens in the Café only and when buffs expire.
-                unitComponent.unitOccupiedFoodSlots = loadedCharacterData.unitOccupiedFoodSlots;
-
-                LoadBuffsFromData(unitComponent.gameObject, loadedCharacterData);
+                // Correctly apply the saved, potentially depleted stats to the unit
+                playerUnit.unitHealthPoints = loadedCharacterData.unitHealthPoints;
+                playerUnit.unitManaPoints = loadedCharacterData.unitSavedManaPoints;
+                playerUnit.unitShieldPoints = loadedCharacterData.unitShieldPoints;
+                playerUnit.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
+                playerUnit.unitAttackPower = loadedCharacterData.unitAttackPower;
+                playerUnit.unitMagicPower = loadedCharacterData.unitMagicPower;
+                playerUnit.unitFaithPoints = loadedCharacterData.unitFaithPoints;
+                
+                Debug.Log($"Restoring Player Units HP, Mana, and Faith for {playerUnit.gameObject.name}");
+                
+                playerUnit.unitOccupiedFoodSlots = loadedCharacterData.unitOccupiedFoodSlots;
+                LoadBuffsFromData(playerUnit.gameObject, loadedCharacterData);
             }
+            
+            // Will trigger death sequence accurately if HP is loaded as 0
+            playerUnit.CheckUnitHealthStatus();
         }
     }
     public void LoadWarFunds()
