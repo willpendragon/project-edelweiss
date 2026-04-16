@@ -12,7 +12,7 @@ public class MapGenerationConfig : ScriptableObject
     public int randomSeed = 12345;
     
     // --- UPDATED TOOLTIP ---
-    [Tooltip("If true, generates a new random map layout each run while strictly obeying the sliders below. (Note: ignored if 'Fully Randomize Rules' is checked below).")]
+    [Tooltip("If true, generates a new unpredictable seed per run. Creates a fresh map layout and randomly selects maps from the difficulty pools (while respectful of the difficulty threshold set in the OverworldMapGenerator), persisting the layout across reloads. (Ignored if 'Fully Randomize Rules' is checked).")]
     public bool randomizeSeedOnGeneration = false;
 
     [Header("Game Rules")]
