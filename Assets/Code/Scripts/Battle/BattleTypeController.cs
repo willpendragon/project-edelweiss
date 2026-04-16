@@ -59,15 +59,17 @@ public class BattleTypeController : MonoBehaviour
             // Add specific logic for Puzzle Battles, to be further developed
             // Spawn Puzzle Deity (demo logic).
             currentBattleType = BattleType.PuzzleBattle;
-            if (GridManager.Instance.currentMapData.RetrieveDeity() == null)
-                return;
+            
+            GameObject puzzleDeity = GridManager.Instance.currentMapData.RetrieveDeity();
+            if (puzzleDeity == null)
+            {
+                Debug.LogWarning("Puzzle map data is missing a Deity!");
+            }
             else
             {
-                GameObject puzzleDeity = GridManager.Instance.currentMapData.RetrieveDeity(); // Retrieve Deity
                 _deitySpawner.SpawnDeity(puzzleDeity);
             }
         }
-
         else if (currentBattleType == BattleType.RegularBattle && achievementsManager != null)
         {
             currentBattleType = achievementsManager.TriggerDeityAchievementLogic();
