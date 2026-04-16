@@ -10,7 +10,9 @@ public class MapGenerationConfig : ScriptableObject
 
     [Header("Seed Settings")]
     public int randomSeed = 12345;
-    [Tooltip("If true, a new random seed is generated every time a domain is loaded.")]
+    
+    // --- UPDATED TOOLTIP ---
+    [Tooltip("If true, generates a new random map layout each run while strictly obeying the sliders below. (Note: ignored if 'Fully Randomize Rules' is checked below).")]
     public bool randomizeSeedOnGeneration = false;
 
     [Header("Game Rules")]
@@ -30,7 +32,8 @@ public class MapGenerationConfig : ScriptableObject
     public int minibossBattleThreshold = 5;
 
     [Header("Total Randomization (Roguelike Mode)")]
-    [Tooltip("If true, ignores the exact values above and randomizes the weights, scatter, and thresholds within the ranges below before generating.")]
+    // --- UPDATED TOOLTIP ---
+    [Tooltip("If true, creates a new random map layout AND randomizes all weights, scatter, and thresholds within the ranges below. Overrides Seed Settings and exact sliders.")]
     public bool fullyRandomizeRules = false;
     
     // Bounds for randomization
