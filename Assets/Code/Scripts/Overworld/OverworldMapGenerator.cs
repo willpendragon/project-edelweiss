@@ -70,6 +70,14 @@ public class OverworldMapGenerator : MonoBehaviour
     private float lastMapDepth;
     private float lastMinDistance;
     private int lastSeed;
+    
+    // --- NEW: Tracking config weights and thresholds ---
+    private float lastRegularWeight;
+    private float lastPuzzleWeight;
+    private float lastMinibossWeight;
+    private float lastBossWeight;
+    private int lastPuzzleThreshold;
+    private int lastMinibossThreshold;
 
     private void Start()
     {
@@ -87,6 +95,14 @@ public class OverworldMapGenerator : MonoBehaviour
             lastMapDepth = config.mapDepth;
             lastMinDistance = config.minDistanceApart;
             lastSeed = config.randomSeed;
+            
+            // --- NEW ---
+            lastRegularWeight = config.regularBattleWeight;
+            lastPuzzleWeight = config.puzzleBattleWeight;
+            lastMinibossWeight = config.minibossBattleWeight;
+            lastBossWeight = config.bossBattleWeight;
+            lastPuzzleThreshold = config.puzzleBattleThreshold;
+            lastMinibossThreshold = config.minibossBattleThreshold;
         }
     }
 
@@ -97,7 +113,14 @@ public class OverworldMapGenerator : MonoBehaviour
         return lastMapWidth != config.mapWidth ||
                lastMapDepth != config.mapDepth ||
                lastMinDistance != config.minDistanceApart ||
-               lastSeed != config.randomSeed;
+               lastSeed != config.randomSeed ||
+               // --- NEW ---
+               lastRegularWeight != config.regularBattleWeight ||
+               lastPuzzleWeight != config.puzzleBattleWeight ||
+               lastMinibossWeight != config.minibossBattleWeight ||
+               lastBossWeight != config.bossBattleWeight ||
+               lastPuzzleThreshold != config.puzzleBattleThreshold ||
+               lastMinibossThreshold != config.minibossBattleThreshold;
     }
 
     private void Update()
