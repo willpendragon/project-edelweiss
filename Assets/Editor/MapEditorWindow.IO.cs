@@ -53,6 +53,16 @@ public partial class MapEditorWindow
             currentMap.playerSpawnPositions.Add(new MapData.SpawnData { position = kvp.Key, prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Trim() });
         }
 
+        // ADD THIS TO SAVE BEACONS
+        if (currentMap.beaconPositions != null)
+        {
+            currentMap.beaconPositions.Clear();
+            foreach (var kvp in spawnedBeacons)
+            {
+                currentMap.beaconPositions.Add(kvp.Key);
+            }
+        }
+
         currentMap.horizontalSize = gridWidth;
         currentMap.depthSize = gridDepth;
         currentMap.verticalSize = gridHeight;
@@ -116,11 +126,33 @@ public partial class MapEditorWindow
                 spawnedUnits[data.position] = obj;
             }
         }
+
+        // ADD THIS TO LOAD BEACONS
+        if (currentMap.beaconPositions != null)
+        {
+            GameObject beaconPrefab = Resources.Load<GameObject>("Beacon");
+            if (beaconPrefab != null)
+            {
+                foreach (var pos in currentMap.beaconPositions)
+                {
+                    GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(beaconPrefab);
+                    obj.transform.position = GridToWorld(pos, tileSize);
+                    obj.name = $"SpawnBeacon_{pos.x}_{pos.y}_{pos.z}";
+                    spawnedBeacons[pos] = obj;
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Beacon prefab not found in Resources folder while loading Map!");
+            }
+        }
     }
 
     private void SyncDictionaryFromScene()
     {
-        tiles.Clear(); decorations.Clear(); spawnedUnits.Clear();
+        tiles.Clear(); decorations.Clear(); spawnedUnits.Clear(); 
+        spawnedBeacons.Clear(); // <-- Add this
+
         foreach (var t in GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
         {
             if (t.name.StartsWith("Tile_"))
@@ -139,6 +171,12 @@ public partial class MapEditorWindow
                 string[] p = t.name.Split('_');
                 if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) decorations[new Vector3Int(x, y, z)] = t;
             }
+            // NEW: Detect Beacons in the scene from their name
+            else if (t.name.StartsWith("SpawnBeacon_") || spawnedBeacons.ContainsValue(t))
+            {
+                string[] p = t.name.Split('_');
+                if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) spawnedBeacons[new Vector3Int(x, y, z)] = t;
+            }
         }
     }
 
@@ -148,7 +186,12 @@ public partial class MapEditorWindow
         foreach (var obj in tiles.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in decorations.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedUnits.Values) Undo.DestroyObjectImmediate(obj);
-        tiles.Clear(); decorations.Clear(); spawnedUnits.Clear();
+        
+        // NEW: Destroy Beacons when clearing the map
+        foreach (var obj in spawnedBeacons.Values) Undo.DestroyObjectImmediate(obj);
+        
+        tiles.Clear(); decorations.Clear(); spawnedUnits.Clear(); 
+        spawnedBeacons.Clear(); // <-- Add this
     }
 
     private Vector3Int GetGridCoordinatesFromWorldPosition(Vector3 worldPos)

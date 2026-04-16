@@ -358,8 +358,41 @@ public class GridManager : MonoBehaviour
                     statsManager.LoadCharacterData();
                 }
             }
+        } // <--- End of if (currentMapData.playerSpawnPositions != null)
+
+        // --- NEW: Spawn Beacons ---
+        if (currentMapData.beaconPositions != null && currentMapData.beaconPositions.Count > 0)
+        {
+            GameObject runtimeBeaconPrefab = Resources.Load<GameObject>("Beacon");
+
+            if (runtimeBeaconPrefab == null)
+            {
+                Debug.LogWarning("GridManager: Missing 'Beacon' Prefab in Resources folder! Beacons could not be spawned.");
+            }
+            else
+            {
+                foreach (var beaconPos in currentMapData.beaconPositions)
+                {
+                    TileController targetTile = GetTileControllerInstance(beaconPos.x, beaconPos.y, beaconPos.z);
+                    if (targetTile == null) targetTile = GetTileControllerInstance(beaconPos.x, beaconPos.y - 1, beaconPos.z);
+
+                    if (targetTile != null)
+                    {
+                        GameObject beaconInstance = Instantiate(runtimeBeaconPrefab, this.transform);
+                        PlaceUnitOnTileSurface(beaconInstance, targetTile);
+
+                        targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                        targetTile.detectedUnit = beaconInstance;
+
+                        // Se hai uno script agganciato al Beacon che necessita info, puoi inizializzarlo qui.
+                        // Esempio:
+                        // BeaconController beaconScript = beaconInstance.GetComponent<BeaconController>();
+                        // if (beaconScript != null) { beaconScript.InitializeOnTile(targetTile); }
+                    }
+                }
+            }
         }
-    }
+    } // <--- End of GenerateGridMapFromData()
 
     private void ClearGridMap()
     {

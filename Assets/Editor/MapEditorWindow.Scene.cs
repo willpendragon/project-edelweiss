@@ -126,6 +126,7 @@ public partial class MapEditorWindow
                         foreach (var p in pointsToAffect.Where(IsInsideGrid))
                         {
                             if (isPlacingTile) PlaceTile(p, selectedTileType, false);
+                            else if (isPlacingBeacon) PlaceBeacon(p, false); // <---- CALLS THE NEW TOOL
                             else if (isPlacingDecoration) PlaceDecoration(p, false);
                             else if (isPlacingUnit) PlaceUnit(p, false);
                             else if (isDeletingTile) DeleteTile(p, false);

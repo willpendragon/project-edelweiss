@@ -56,10 +56,34 @@ public partial class MapEditorWindow
         spawnedUnits[position] = unit;
     }
 
+    private void PlaceBeacon(Vector3Int position, bool sync = true)
+    {
+        if (sync) SyncDictionaryFromScene();
+        if (spawnedBeacons.ContainsKey(position)) return;
+
+        // Automatically load the Beacon prefab from the Resources folder
+        GameObject beaconPrefab = Resources.Load<GameObject>("Beacon");
+        if (beaconPrefab == null)
+        {
+            Debug.LogWarning("Beacon prefab not found in Resources folder!");
+            return;
+        }
+
+        Vector3 worldPos = GridToWorld(position, GetTileWorldSize3D());
+        GameObject beaconObj = (GameObject)PrefabUtility.InstantiatePrefab(beaconPrefab);
+        beaconObj.transform.position = worldPos;
+        beaconObj.name = $"SpawnBeacon_{position.x}_{position.y}_{position.z}";
+
+        Undo.RegisterCreatedObjectUndo(beaconObj, "Place Beacon");
+        spawnedBeacons[position] = beaconObj;
+    }
+
     private void DeleteTile(Vector3Int position, bool sync = true)
     {
         if (sync) SyncDictionaryFromScene();
 
+        // 2. UPDATE TO DELETE BEACONS
+        if (spawnedBeacons.TryGetValue(position, out GameObject b) && b != null) { spawnedBeacons.Remove(position); Undo.DestroyObjectImmediate(b); }
         if (spawnedUnits.TryGetValue(position, out GameObject u) && u != null) { spawnedUnits.Remove(position); Undo.DestroyObjectImmediate(u); }
         if (decorations.TryGetValue(position, out GameObject d) && d != null) { decorations.Remove(position); Undo.DestroyObjectImmediate(d); }
         if (tiles.TryGetValue(position, out GameObject t) && t != null) { tiles.Remove(position); Undo.DestroyObjectImmediate(t); }
@@ -68,7 +92,9 @@ public partial class MapEditorWindow
     // HELPER: Universally checks if ANY block (Tile, Deco, Unit) exists at this specific coordinate
     private bool HasBlockAt(Vector3Int pos)
     {
+        // 3. UPDATE TO DETECT BEACONS FOR BUCKET FILL
         return (tiles.TryGetValue(pos, out GameObject t) && t != null) ||
+               (spawnedBeacons.TryGetValue(pos, out GameObject b) && b != null) ||
                (decorations.TryGetValue(pos, out GameObject d) && d != null) ||
                (spawnedUnits.TryGetValue(pos, out GameObject u) && u != null);
     }
@@ -123,7 +149,7 @@ public partial class MapEditorWindow
             }
             else
             {
-                // EMPTY SPACE MODE: 2D Flood Fill strictly confined by physics blockers and floors.
+                // EMPTY SPACE MODE: 2D Flood Fill strictly confined to physics blockers and floors.
                 Vector3Int[] neighborsHorizontal = {
                     curr + Vector3Int.right, curr + Vector3Int.left,
                     curr + new Vector3Int(0, 0, 1), curr + new Vector3Int(0, 0, -1)
@@ -168,22 +194,54 @@ public partial class MapEditorWindow
     {
         Transform bounds = tile.transform.Find("GridBounds");
         Renderer r = bounds?.GetComponent<Renderer>();
+        
+        // Clean up any existing visual previews in case the tile type was changed
+        for (int i = tile.transform.childCount - 1; i >= 0; i--)
+        {
+            Transform child = tile.transform.GetChild(i);
+            if (child.name == "EditorPreview") 
+            {
+                Undo.DestroyObjectImmediate(child.gameObject);
+            }
+        }
+
         if (r == null) return;
 
         MaterialPropertyBlock block = new MaterialPropertyBlock();
         r.GetPropertyBlock(block);
 
         Color c = Color.white;
+        
         if (type == TileType.Obstacle) c = new Color(0.15f, 0.15f, 0.15f, 1f);
         else if (type == TileType.Chest) c = new Color(0.5f, 0.0f, 0.8f, 1f);
         else if (type == TileType.MinibossChest) c = Color.yellow;
         else if (type == TileType.BossChest) c = Color.red;
+        else if (type == TileType.Beacon)
+        {
+            // REMOVED c = Color.cyan; -> The tile will remain a normal uncolored base tile.
+            
+            // Load and spawn the actual Beacon prefab for editor visualization
+            GameObject beaconPrefab = Resources.Load<GameObject>("Beacon");
+            if (beaconPrefab != null)
+            {
+                GameObject preview = (GameObject)PrefabUtility.InstantiatePrefab(beaconPrefab);
+                preview.name = "EditorPreview";
+                preview.transform.SetParent(tile.transform);
+                
+                // You may need to change 0.56f to 0f if the beacon appears floating without the giant block
+                preview.transform.localPosition = new Vector3(0, 0f, 0); 
+            }
+        }
 
         if (c != Color.white)
         {
             block.SetColor("_BaseColor", c);
             block.SetColor("_Color", c);
             r.SetPropertyBlock(block);
+        }
+        else
+        {
+            r.SetPropertyBlock(null); // Reset color to default for Basic tiles
         }
     }
 

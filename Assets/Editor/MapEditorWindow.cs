@@ -40,10 +40,14 @@ public partial class MapEditorWindow : EditorWindow
     private Dictionary<Vector3Int, GameObject> tiles = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> decorations = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> spawnedUnits = new Dictionary<Vector3Int, GameObject>(); 
+    
+    // ADD THIS NEW TRACKER:
+    private Dictionary<Vector3Int, GameObject> spawnedBeacons = new Dictionary<Vector3Int, GameObject>();
 
     private bool isPlacingTile = false;
     private bool isPlacingDecoration = false;
-    private bool isPlacingUnit = false; 
+    private bool isPlacingUnit = false;
+    private bool isPlacingBeacon = false;
     private bool isDeletingTile = false;
     private bool isBucketMode = false; 
     private bool clearOnClose = false;
@@ -145,6 +149,7 @@ public partial class MapEditorWindow : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Toggle(isPlacingTile, "Paint Tile", "Button")) { SetMode(tile: true); }
+        if (GUILayout.Toggle(isPlacingBeacon, "Paint Beacon", "Button")) { SetMode(beacon: true); } // <--- NEW BUTTON
         if (GUILayout.Toggle(isPlacingDecoration, "Paint Decoration", "Button")) { SetMode(deco: true); }
         if (GUILayout.Toggle(isPlacingUnit, "Paint Unit", "Button")) { SetMode(unit: true); }
         if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { SetMode(delete: true); }
@@ -166,21 +171,16 @@ public partial class MapEditorWindow : EditorWindow
     }
 
     // The bucket toggle is passed so it correctly enables/disables without affecting other tools
-    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool delete = false, bool bucket = false)
+    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool beacon = false, bool delete = false, bool bucket = false)
     {
         isPlacingTile = tile;
         isPlacingDecoration = deco;
         isPlacingUnit = unit;
+        isPlacingBeacon = beacon; // <--- ADD THIS
         isDeletingTile = delete;
-        // Allows switching tools while keeping Bucket mode active
-        if (bucket)
-        {
-            isBucketMode = true; 
-        }
-        else if (tile == false && deco == false && unit == false && delete == false)
-        {
-            isBucketMode = false; // Only turn off bucket if we hit ESCAPE (all tools false)
-        }
+        
+        if (bucket) isBucketMode = true; 
+        else if (!tile && !deco && !unit && !beacon && !delete) isBucketMode = false;
     }
 
     private void DrawPrefabPool(string label, ref SerializedProperty prop, List<GameObject> prefabs, ref int index, ref GameObject activePrefab, ref Vector2 scroll, System.Action saveCallback)
