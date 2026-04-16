@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening; // Import DOTween 
+using DG.Tweening;
 
 public enum NodeType
 {
@@ -20,6 +20,14 @@ public class OverworldMapGenerator : MonoBehaviour
     [Header("Configuration")]
     [Tooltip("Assegna qui la tua configurazione ScriptableObject per regole e pesi.")]
     public MapGenerationConfig config;
+
+    // --- NEW: Map Data Pools ---
+    [Header("Map Data Pools")]
+    [Tooltip("Maps to randomly select from based on the generated Node Type.")]
+    public List<MapData> regularMaps = new List<MapData>();
+    public List<MapData> puzzleMaps = new List<MapData>();
+    public List<MapData> minibossMaps = new List<MapData>();
+    public List<MapData> bossMaps = new List<MapData>();
 
     [Header("Visuals & UI")]
     [Tooltip("Materiale per la linea del percorso (evita il bug della linea fucsia)")]
@@ -257,9 +265,21 @@ public class OverworldMapGenerator : MonoBehaviour
 
             spawnedNodes.Add(newNode);
 
-            newNode.GetComponent<EnemySelection>().enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
-            newNode.GetComponent<EnemySelection>().levelNumber = domainLevelSelection.levelList[i].levelNumber;
-            newNode.GetComponent<EnemySelection>().mapData = domainLevelSelection.levelList[i].map;
+            var enemySelection = newNode.GetComponent<EnemySelection>();
+            enemySelection.enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
+            enemySelection.levelNumber = domainLevelSelection.levelList[i].levelNumber;
+            
+            // --- NEW: Assign MapData dynamically from the specified pools based on NodeType ---
+            MapData randomlySelectedMap = GetRandomMapForType(nodeType);
+            if (randomlySelectedMap != null)
+            {
+                enemySelection.mapData = randomlySelectedMap;
+            }
+            else
+            {
+                // Fallback gracefully just in case a pool is empty
+                enemySelection.mapData = domainLevelSelection.levelList[i].map;
+            }
 
             // Make all nodes interactable globally, control state via exact IDs
             bool isCleared = gameSaveData.clearedNodesId != null && gameSaveData.clearedNodesId.Contains(i);
@@ -284,6 +304,28 @@ public class OverworldMapGenerator : MonoBehaviour
 
             nodePositions.Add(finalPosition);
         }
+    }
+
+    // --- NEW: Random Map Fetcher ---
+    private MapData GetRandomMapForType(NodeType type)
+    {
+        List<MapData> pool = null;
+
+        switch (type)
+        {
+            case NodeType.RegularBattle: pool = regularMaps; break;
+            case NodeType.PuzzleBattle: pool = puzzleMaps; break;
+            case NodeType.MinibossBattle: pool = minibossMaps; break;
+            case NodeType.BossBattle: pool = bossMaps; break;
+        }
+
+        if (pool != null && pool.Count > 0)
+        {
+            return pool[Random.Range(0, pool.Count)];
+        }
+        
+        Debug.LogWarning($"[MapGenerator] No MapData found in pool for {type}. Will fallback to default domain assignment.");
+        return null;
     }
 
     public void MoveToNode(int targetId)

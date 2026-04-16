@@ -124,7 +124,8 @@ public class Unit : MonoBehaviour
 
     public void Start()
     {
-        if (unitTemplate != null)
+        // Only load fresh template stats if GameStatsManager hasn't already processed this unit.
+        if (unitTemplate != null && unitMaxHealthPoints == 0)
         {
             RetrieveTemplateValues();
         }

@@ -114,14 +114,14 @@ public class GridManager : MonoBehaviour
         GridManager.Instance.gridHorizontalSize = currentMapData.horizontalSize;
         GridManager.Instance.gridVerticalSize = currentMapData.verticalSize;
 
-        Vector3 tileSize = GetTileWorldSize3D(); // USA L'HELPER!
+        Vector3 tileSize = GetTileWorldSize3D();
 
         foreach (var tileData in currentMapData.tilePositions)
         {
             Vector3 tilePosition = new Vector3(
                 tileData.position.x * (tileSize.x + inBetweenTilesXOffset),
                 tileData.position.y * tileSize.y,
-                tileData.position.z * (tileSize.z + inBetweenTilesYOffset) // Uso di Z per la profondità
+                tileData.position.z * (tileSize.z + inBetweenTilesYOffset)
             );
 
             GameObject tilePrefabInstance = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
@@ -137,7 +137,6 @@ public class GridManager : MonoBehaviour
                 gridMapDictionary.Add(positionKey, tileController);
             }
 
-            // --- NEW: Hide GridBounds during gameplay for ALL physical Map tiles ---
             Transform gridBounds = tilePrefabInstance.transform.Find("GridBounds");
             if (gridBounds != null)
             {
@@ -148,44 +147,31 @@ public class GridManager : MonoBehaviour
                 }
             }
 
-            // [PROTOTYPE] Spawn a purple Cube to represent the chest directly on the generated tile
             if (tileData.tileType == TileType.Chest || tileData.tileType == TileType.MinibossChest || tileData.tileType == TileType.BossChest)
             {
                 GameObject chestPrototype = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 chestPrototype.name = "Chest_Prototype";
 
-                // Remove the collider so it doesn't block tile raycasts
                 BoxCollider prototypeCollider = chestPrototype.GetComponent<BoxCollider>();
-                if (prototypeCollider != null)
-                {
-                    Destroy(prototypeCollider);
-                }
+                if (prototypeCollider != null) Destroy(prototypeCollider);
 
-                // Set the color to distinguish it based on type
                 Renderer renderer = chestPrototype.GetComponent<Renderer>();
                 if (renderer != null)
                 {
-                    if (tileData.tileType == TileType.MinibossChest)
-                        renderer.material.color = Color.yellow;
-                    else if (tileData.tileType == TileType.BossChest)
-                        renderer.material.color = Color.red;
-                    else
-                        renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f); // Default Purple
+                    if (tileData.tileType == TileType.MinibossChest) renderer.material.color = Color.yellow;
+                    else if (tileData.tileType == TileType.BossChest) renderer.material.color = Color.red;
+                    else renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f);
                 }
 
-                // Parent it to the tile and position it firmly on the surface
                 chestPrototype.transform.SetParent(tilePrefabInstance.transform);
-                chestPrototype.transform.localScale = Vector3.one * 0.5f; // Small size cube
+                chestPrototype.transform.localScale = Vector3.one * 0.5f; 
                 PlaceUnitOnTileSurface(chestPrototype, tileController);
 
-                // Make the tile mathematically occupied by the chest so units can't walk on it
                 tileController.detectedUnit = chestPrototype;
                 tileController.currentSingleTileCondition = SingleTileCondition.occupied;
 
-                // Tag it properly as a Chest
                 chestPrototype.tag = "Chest";
 
-                // Add a custom ChestUnit component to handle specific chest logic
                 if (!chestPrototype.GetComponent<ChestUnit>())
                 {
                     var chestUnit = chestPrototype.AddComponent<ChestUnit>();
@@ -194,19 +180,15 @@ public class GridManager : MonoBehaviour
                     chestUnit.ownedTile = tileController;
                     chestUnit.bossFlag = false;
                     
-                    // Construct local PrizeReleaseController purely to handle the immediate drop sequence
                     if (!chestPrototype.GetComponent<PrizeReleaseController>())
                     {
                         var releaseController = chestPrototype.AddComponent<PrizeReleaseController>();
                         chestUnit.fieldPrizeController = releaseController;
                     }
                     
-
-                    // Sync logical coordinates so battle initialization scripts don't reset it to 0,0
                     chestUnit.currentXCoordinate = tileData.position.x;
                     chestUnit.currentYCoordinate = tileData.position.z;
 
-                    // TODO: Assign the specific Scriptable Object Template here based on tileData.tileType!
                     if (tileData.tileType == TileType.MinibossChest)
                         chestUnit.unitTemplate = Resources.Load<ChestTemplate>("MinibossChestTemplate");
                     else if (tileData.tileType == TileType.BossChest)
@@ -215,12 +197,10 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        // --- NEW: Load specific Decorations at runtime via PrefabName ---
         if (currentMapData.decorationPositions != null)
         {
             foreach (var decoData in currentMapData.decorationPositions)
             {
-                // Fallback to "DecorationPrefab" if the map was saved before the prefab update
                 string targetPrefabName = string.IsNullOrEmpty(decoData.prefabName) ? "DecorationPrefab" : decoData.prefabName;
 
                 GameObject runtimeDecorationPrefab = Resources.Load<GameObject>(targetPrefabName); 
@@ -228,7 +208,7 @@ public class GridManager : MonoBehaviour
                 if (runtimeDecorationPrefab == null)
                 {
                     Debug.LogWarning($"GridManager: Missing Decoration Prefab '{targetPrefabName}' in Resources folder!");
-                    continue; // Skip placement if missing
+                    continue; 
                 }
 
                 Vector3 decoPosition = new Vector3(
@@ -238,24 +218,17 @@ public class GridManager : MonoBehaviour
                 );
 
                 GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition, Quaternion.identity);
-                decoInstance.transform.SetParent(this.transform); // Group it cleanly
+                decoInstance.transform.SetParent(this.transform); 
 
-                // --- Hide GridBounds during gameplay ---
                 Transform gridBounds = decoInstance.transform.Find("GridBounds");
                 if (gridBounds != null)
                 {
                     Renderer boundsRenderer = gridBounds.GetComponent<Renderer>();
-                    if (boundsRenderer != null)
-                        boundsRenderer.enabled = false;
+                    if (boundsRenderer != null) boundsRenderer.enabled = false;
                 }
 
-                // --- Block movement on the tile ---
                 TileController occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y - 1, decoData.position.z);
-                
-                if (occupiedTile == null)
-                {
-                    occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y, decoData.position.z);
-                }
+                if (occupiedTile == null) occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y, decoData.position.z);
 
                 if (occupiedTile != null)
                 {
@@ -268,6 +241,123 @@ public class GridManager : MonoBehaviour
         else if (currentMapData.decorationPositions != null && currentMapData.decorationPositions.Count > 0)
         {
             Debug.LogWarning("GridManager: Ti manca un prefab per le decorazioni! Assicurati di posizionare 'DecorationPrefab' nella cartella Resources.");
+        }
+
+        // --- NEW: Load Player Spawn Points ---
+        if (currentMapData.playerSpawnPositions != null && currentMapData.playerSpawnPositions.Count > 0)
+        {
+            List<GameObject> dynamicPlayerUnits = new List<GameObject>();
+
+            foreach (var spawnData in currentMapData.playerSpawnPositions)
+            {
+                if (string.IsNullOrEmpty(spawnData.prefabName)) continue;
+
+                TileController targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
+                if (targetTile == null) targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1, spawnData.position.z);
+
+                if (targetTile != null)
+                {
+                    // 1. Load the painted prefab to inspect its true underlying Template Data
+                    GameObject runtimeUnitPrefab = Resources.Load<GameObject>(spawnData.prefabName);
+
+                    if (runtimeUnitPrefab == null)
+                    {
+                        Debug.LogWarning($"GridManager: Missing Painted Unit Prefab '{spawnData.prefabName}' in Resources folder!");
+                        continue;
+                    }
+
+                    // Extract the core UnitName from the Prefab's template
+                    Unit prefabUnitComponent = runtimeUnitPrefab.GetComponent<Unit>();
+                    string paintedUnitName = (prefabUnitComponent != null && prefabUnitComponent.unitTemplate != null) 
+                        ? prefabUnitComponent.unitTemplate.unitName 
+                        : string.Empty;
+
+                    // 2. Try to find a match in the persistent Global Player Party using ONLY the unitTemplate.unitName
+                    Unit persistentPlayerMatch = null;
+                    if (!string.IsNullOrEmpty(paintedUnitName) && GameManager.Instance != null && GameManager.Instance.playerPartyMembersInstances != null)
+                    {
+                        persistentPlayerMatch = GameManager.Instance.playerPartyMembersInstances.FirstOrDefault(u => 
+                            u != null && u.unitTemplate != null && u.unitTemplate.unitName == paintedUnitName
+                        );
+                    }
+
+                    if (persistentPlayerMatch != null)
+                    {
+                        // Match Found! Teleport the persistent player unit to the painted map coordinates
+                        GameObject unitInstance = persistentPlayerMatch.gameObject;
+                        unitInstance.SetActive(true); 
+                        
+                        PlaceUnitOnTileSurface(unitInstance, targetTile);
+
+                        targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                        targetTile.detectedUnit = unitInstance;
+
+                        persistentPlayerMatch.startingXCoordinate = spawnData.position.x;
+                        persistentPlayerMatch.startingYCoordinate = spawnData.position.z;
+                        persistentPlayerMatch.currentXCoordinate = spawnData.position.x;
+                        persistentPlayerMatch.currentYCoordinate = spawnData.position.z;
+                        persistentPlayerMatch.ownedTile = targetTile;
+
+                        dynamicPlayerUnits.Add(unitInstance);
+                    }
+                    else
+                    {
+                        // No player match found. It's an Enemy or a Deity painted on the map! Instantiating it.
+                        GameObject unitInstance = Instantiate(runtimeUnitPrefab, this.transform);
+                        Unit paintedEnemy = unitInstance.GetComponent<Unit>();
+                        
+                        if (paintedEnemy != null)
+                        {
+                            // Force template load before Enum evaluation to prevent fake Game-Over
+                            if (paintedEnemy.unitTemplate != null) paintedEnemy.RetrieveTemplateValues();
+
+                            PlaceUnitOnTileSurface(unitInstance, targetTile);
+                            targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                            targetTile.detectedUnit = unitInstance;
+
+                            paintedEnemy.startingXCoordinate = spawnData.position.x;
+                            paintedEnemy.startingYCoordinate = spawnData.position.z;
+                            paintedEnemy.currentXCoordinate = spawnData.position.x;
+                            paintedEnemy.currentYCoordinate = spawnData.position.z;
+                            paintedEnemy.ownedTile = targetTile;
+                        }
+                    }
+                }
+            }
+
+            // --- OVERRIDE HARDCODED LOGIC ---
+            if (dynamicPlayerUnits.Count > 0)
+            {
+                // Instantly deactivate any old legacy hardcoded scene units so they don't interfere
+                GameObject[] allScenePlayers = GameObject.FindGameObjectsWithTag("Player");
+                foreach (var legacyPlayer in allScenePlayers)
+                {
+                    if (legacyPlayer != null && !dynamicPlayerUnits.Contains(legacyPlayer))
+                    {
+                        legacyPlayer.SetActive(false); 
+                    }
+                }
+
+                GameObject partyControllerObj = GameObject.FindGameObjectWithTag("PlayerPartyController");
+                if (partyControllerObj != null)
+                {
+                    // Update PlayerPartyController to use ONLY what the map data dictates
+                    var partyController = partyControllerObj.GetComponent<PlayerPartyController>();
+                    if (partyController != null)
+                    {
+                        partyController.playerUnitsOnBattlefield = dynamicPlayerUnits.ToArray();
+                    }
+                }
+
+                // STABILIZER: Because GameStatsManager relies on Start(), 
+                // we must manually invoke it here to pour the saved depleted 
+                // HP, Mana, and Faith into these freshly deployed player units.
+                GameStatsManager statsManager = FindObjectOfType<GameStatsManager>();
+                if (statsManager != null)
+                {
+                    statsManager.LoadCharacterData();
+                }
+            }
         }
     }
 

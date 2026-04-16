@@ -22,16 +22,23 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
     }
     private void UpdateValuesAtStart()
     {
+        if (_gameManager.playerPartyMembersInstances == null) return;
+        
         foreach (var unit in _gameManager.playerPartyMembersInstances)
         {
-            UpdateProfile(unit.unitTemplate.unitName);
+            if (unit != null && unit.unitTemplate != null)
+                UpdateProfile(unit.unitTemplate.unitName);
         }
     }
 
     private void CreatePlayerUnitsEntries()
     {
+        if (_gameManager.playerPartyMembersInstances == null) return;
+
         foreach (var unit in _gameManager.playerPartyMembersInstances)
         {
+            if (unit == null) continue;
+
             // Instantiate the Player Profile Object.
             GameObject newPlayerProfilePrefab = Instantiate(_playerProfilePrefab, _playerProfileContainer);
             // Retrieve the Helper.
@@ -39,7 +46,6 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
             // Fill the Player Profile Object Details
             playerPartyProfileHelper.FillPlayerDetails(unit.GetComponent<Unit>());
             unitsDictionary.Add(unit, playerPartyProfileHelper);
-            // Create a dictionary entry with the Player Unit's Names and the Profile Objects
         }
         PrintDictionary();
     }

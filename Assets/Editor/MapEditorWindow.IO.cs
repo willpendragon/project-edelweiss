@@ -1,0 +1,181 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+
+public partial class MapEditorWindow
+{
+    private void SaveDecoPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_DecoPrefabs", string.Join(";", decorationPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
+    private void SaveUnitPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_UnitPrefabs", string.Join(";", unitPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
+
+    private void LoadDecoPrefabsFromPrefs()
+    {
+        decorationPrefabs.Clear();
+        foreach (var p in EditorPrefs.GetString("MapEditor_DecoPrefabs", "").Split(';'))
+        {
+            var f = AssetDatabase.LoadAssetAtPath<GameObject>(p);
+            if (f != null) decorationPrefabs.Add(f);
+        }
+        if (decorationPrefabs.Count > 0) decorationPrefab = decorationPrefabs[0];
+
+        unitPrefabs.Clear();
+        foreach (var p in EditorPrefs.GetString("MapEditor_UnitPrefabs", "").Split(';'))
+        {
+            var f = AssetDatabase.LoadAssetAtPath<GameObject>(p);
+            if (f != null) unitPrefabs.Add(f);
+        }
+        if (unitPrefabs.Count > 0) unitPrefab = unitPrefabs[0];
+    }
+
+    private void SaveMap()
+    {
+        if (currentMap == null) return;
+        SyncDictionaryFromScene();
+
+        currentMap.tilePositions.Clear();
+        foreach (var kvp in tiles)
+        {
+            var ctrl = kvp.Value.GetComponent<TileController>();
+            currentMap.tilePositions.Add(new MapData.TileData { position = kvp.Key, tileType = ctrl ? ctrl.tileType : TileType.Basic });
+        }
+
+        currentMap.decorationPositions.Clear();
+        foreach (var kvp in decorations)
+        {
+            var src = PrefabUtility.GetCorrespondingObjectFromSource(kvp.Value);
+            currentMap.decorationPositions.Add(new MapData.DecorationData { position = kvp.Key, prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Trim() });
+        }
+
+        currentMap.playerSpawnPositions.Clear();
+        foreach (var kvp in spawnedUnits)
+        {
+            var src = PrefabUtility.GetCorrespondingObjectFromSource(kvp.Value);
+            currentMap.playerSpawnPositions.Add(new MapData.SpawnData { position = kvp.Key, prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Trim() });
+        }
+
+        currentMap.horizontalSize = gridWidth;
+        currentMap.depthSize = gridDepth;
+        currentMap.verticalSize = gridHeight;
+
+        EditorUtility.SetDirty(currentMap);
+        AssetDatabase.SaveAssets();
+    }
+
+    private void LoadFromAsset()
+    {
+        if (currentMap == null) return;
+        GenerateMap(); // Clears map safely
+
+        Vector3 tileSize = GetTileWorldSize3D();
+
+        if (tilePrefab != null)
+        {
+            foreach (var data in currentMap.tilePositions)
+            {
+                GameObject tile = (GameObject)PrefabUtility.InstantiatePrefab(tilePrefab);
+                tile.transform.position = GridToWorld(data.position, tileSize);
+                tile.name = $"Tile_{data.position.x}_{data.position.y}_{data.position.z}";
+
+                var ctrl = tile.GetComponent<TileController>();
+                if (ctrl != null) { ctrl.tileType = data.tileType; ctrl.gridPosition = data.position; }
+
+                tiles[data.position] = tile;
+                HideTileEffects(tile);
+                ApplyDecorativeColor(tile, data.tileType);
+            }
+        }
+
+        // LOAD DECORATIONS
+        foreach (var data in currentMap.decorationPositions)
+        {
+            GameObject target = decorationPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName);
+            if (target == null && !string.IsNullOrEmpty(data.prefabName)) target = Resources.Load<GameObject>(data.prefabName);
+            if (target == null) target = decorationPrefab;
+
+            if (target != null)
+            {
+                GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
+                obj.transform.position = GridToWorld(data.position, tileSize);
+                obj.name = $"{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                decorations[data.position] = obj;
+            }
+        }
+
+        // LOAD UNITS
+        foreach (var data in currentMap.playerSpawnPositions)
+        {
+            GameObject target = unitPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName);
+            if (target == null && !string.IsNullOrEmpty(data.prefabName)) target = Resources.Load<GameObject>(data.prefabName);
+            if (target == null) target = unitPrefab;
+
+            if (target != null)
+            {
+                GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
+                obj.transform.position = GridToWorld(data.position, tileSize);
+                obj.name = $"{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                spawnedUnits[data.position] = obj;
+            }
+        }
+    }
+
+    private void SyncDictionaryFromScene()
+    {
+        tiles.Clear(); decorations.Clear(); spawnedUnits.Clear();
+        foreach (var t in GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        {
+            if (t.name.StartsWith("Tile_"))
+            {
+                string[] p = t.name.Split('_');
+                if (p.Length >= 4 && int.TryParse(p[1], out int x) && int.TryParse(p[2], out int y) && int.TryParse(p[3], out int z)) tiles[new Vector3Int(x, y, z)] = t;
+                else if (p.Length == 3 && int.TryParse(p[1], out int ox) && int.TryParse(p[2], out int oz)) tiles[new Vector3Int(ox, 0, oz)] = t;
+            }
+            else if (t.name.StartsWith("SpawnUnit_") || spawnedUnits.ContainsValue(t) || unitPrefabs.Any(p => p != null && t.name.StartsWith(p.name + "_")))
+            {
+                string[] p = t.name.Split('_');
+                if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) spawnedUnits[new Vector3Int(x, y, z)] = t;
+            }
+            else if (decorations.ContainsValue(t) || decorationPrefabs.Any(p => p != null && t.name.StartsWith(p.name + "_")))
+            {
+                string[] p = t.name.Split('_');
+                if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) decorations[new Vector3Int(x, y, z)] = t;
+            }
+        }
+    }
+
+    private void GenerateMap()
+    {
+        SyncDictionaryFromScene();
+        foreach (var obj in tiles.Values) Undo.DestroyObjectImmediate(obj);
+        foreach (var obj in decorations.Values) Undo.DestroyObjectImmediate(obj);
+        foreach (var obj in spawnedUnits.Values) Undo.DestroyObjectImmediate(obj);
+        tiles.Clear(); decorations.Clear(); spawnedUnits.Clear();
+    }
+
+    private Vector3Int GetGridCoordinatesFromWorldPosition(Vector3 worldPos)
+    {
+        Vector3 size = GetTileWorldSize3D();
+        return new Vector3Int(Mathf.RoundToInt(worldPos.x / (size.x + inBetweenTilesXOffset)), Mathf.RoundToInt(worldPos.y / size.y), Mathf.RoundToInt(worldPos.z / (size.z + inBetweenTilesZOffset)));
+    }
+
+    private Vector3 GridToWorld(Vector3Int gridPos, Vector3 tileSize) => new Vector3(gridPos.x * (tileSize.x + inBetweenTilesXOffset), gridPos.y * tileSize.y, gridPos.z * (tileSize.z + inBetweenTilesZOffset));
+
+    private void DrawGrid()
+    {
+        Vector3 size = GetTileWorldSize3D();
+        float cellWidth = size.x + inBetweenTilesXOffset, cellDepth = size.z + inBetweenTilesZOffset;
+        float offsetX = cellWidth / 2f, offsetZ = cellDepth / 2f;
+        Handles.color = new Color(0, 1, 1, 0.2f);
+
+        for (int x = 0; x <= gridWidth; x++) Handles.DrawLine(new Vector3((x * cellWidth) - offsetX, 0, -offsetZ), new Vector3((x * cellWidth) - offsetX, 0, (gridHeight * cellDepth) - offsetZ));
+        for (int z = 0; z <= gridHeight; z++) Handles.DrawLine(new Vector3(-offsetX, 0, (z * cellDepth) - offsetZ), new Vector3((gridWidth * cellWidth) - offsetX, 0, (z * cellDepth) - offsetZ));
+    }
+
+    private void DrawPreview(Vector3Int gridPos)
+    {
+        Handles.color = isDeletingTile ? Color.red : (isBucketMode ? Color.cyan : Color.green);
+        Handles.DrawWireCube(GridToWorld(gridPos, GetTileWorldSize3D()), GetTileWorldSize3D());
+    }
+
+    private Vector3 GetTileWorldSize3D() { if (tilePrefab == null) return Vector3.one; var b = tilePrefab.transform.Find("GridBounds"); return b != null ? Vector3.Scale(b.localScale, tilePrefab.transform.localScale) : Vector3.Scale(tilePrefab.GetComponent<BoxCollider>()?.size ?? Vector3.one, tilePrefab.transform.localScale); }
+    private bool IsInsideGrid(Vector3Int pos) => pos.x >= 0 && pos.x < gridWidth && pos.y >= 0 && pos.y < gridDepth && pos.z >= 0 && pos.z < gridHeight;
+}
