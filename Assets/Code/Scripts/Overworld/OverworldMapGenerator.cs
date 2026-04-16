@@ -79,71 +79,8 @@ public class OverworldMapGenerator : MonoBehaviour
     private int lastPuzzleThreshold;
     private int lastMinibossThreshold;
 
-    private void Start()
-    {
-        if (config != null)
-        {
-            RecordCurrentConfigState();
-        }
-    }
-
-    private void RecordCurrentConfigState()
-    {
-        if (config != null)
-        {
-            lastMapWidth = config.mapWidth;
-            lastMapDepth = config.mapDepth;
-            lastMinDistance = config.minDistanceApart;
-            lastSeed = config.randomSeed;
-            
-            // --- NEW ---
-            lastRegularWeight = config.regularBattleWeight;
-            lastPuzzleWeight = config.puzzleBattleWeight;
-            lastMinibossWeight = config.minibossBattleWeight;
-            lastBossWeight = config.bossBattleWeight;
-            lastPuzzleThreshold = config.puzzleBattleThreshold;
-            lastMinibossThreshold = config.minibossBattleThreshold;
-        }
-    }
-
-    private bool HasConfigChanged()
-    {
-        if (config == null) return false;
-
-        return lastMapWidth != config.mapWidth ||
-               lastMapDepth != config.mapDepth ||
-               lastMinDistance != config.minDistanceApart ||
-               lastSeed != config.randomSeed ||
-               // --- NEW ---
-               lastRegularWeight != config.regularBattleWeight ||
-               lastPuzzleWeight != config.puzzleBattleWeight ||
-               lastMinibossWeight != config.minibossBattleWeight ||
-               lastBossWeight != config.bossBattleWeight ||
-               lastPuzzleThreshold != config.puzzleBattleThreshold ||
-               lastMinibossThreshold != config.minibossBattleThreshold;
-    }
-
-    private void Update()
-    {
-        // Controllo live per il debug in Play Mode
-        if (Application.isPlaying && autoUpdateInPlayMode && config != null && currentDomain != null)
-        {
-            if (HasConfigChanged() || needsRegeneration)
-            {
-                RecordCurrentConfigState();
-                needsRegeneration = false;
-                RegenerateMap();
-            }
-        }
-    }
-
-    private void OnValidate()
-    {
-        if (Application.isPlaying && autoUpdateInPlayMode)
-        {
-            needsRegeneration = true;
-        }
-    }
+    // Hold a runtime copy so we don't permanently modify the actual ScriptableObject in the Editor
+    private MapGenerationConfig runtimeConfig;
 
     public void GenerateLevel(Domain domainLevelSelection)
     {
@@ -154,13 +91,52 @@ public class OverworldMapGenerator : MonoBehaviour
         }
 
         currentDomain = domainLevelSelection; 
-        
-        Random.InitState(config.randomSeed);
-        Vector3 initialPosition = mapNodeTransform.position;
-
-        GameSaveData gameSaveData = SaveStateManager.LoadGame();
+        GameSaveData gameSaveData = SaveStateManager.saveData; // <--- Fetch from global memory instead
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
 
+        // --- Slay the Spire style persistence ---
+        // Create a temporary clone of the config for this generation run
+        runtimeConfig = Instantiate(config);
+
+        // If either randomization rule is active, we rely on a persistent Run Seed
+        if (runtimeConfig.randomizeSeedOnGeneration || runtimeConfig.fullyRandomizeRules)
+        {
+            // If starting a fresh run, generate a new persistent seed and save it!
+            if (gameSaveData.runSeed == 0)
+            {
+                gameSaveData.runSeed = Random.Range(1, int.MaxValue);
+                SaveStateManager.SaveGame(gameSaveData); 
+            }
+
+            // 1. Initialize Unity's randomizer with the saved Run Seed
+            Random.InitState(gameSaveData.runSeed);
+
+            // 2. Deterministically randomize the rules if Roguelike Mode is active.
+            // Because the seed is fixed for this run, these ranges will ALWAYS 
+            // yield the exact same values every time you load this save file.
+            if (runtimeConfig.fullyRandomizeRules)
+            {
+                runtimeConfig.mapWidth = Random.Range(runtimeConfig.mapWidthRange.x, runtimeConfig.mapWidthRange.y);
+                runtimeConfig.minDistanceApart = Random.Range(runtimeConfig.minDistanceRange.x, runtimeConfig.minDistanceRange.y);
+
+                runtimeConfig.regularBattleWeight = Random.Range(runtimeConfig.regularWeightRange.x, runtimeConfig.regularWeightRange.y);
+                runtimeConfig.puzzleBattleWeight = Random.Range(runtimeConfig.puzzleWeightRange.x, runtimeConfig.puzzleWeightRange.y);
+                runtimeConfig.minibossBattleWeight = Random.Range(runtimeConfig.minibossWeightRange.x, runtimeConfig.minibossWeightRange.y);
+
+                runtimeConfig.puzzleBattleThreshold = Random.Range(runtimeConfig.puzzleThresholdRange.x, runtimeConfig.puzzleThresholdRange.y + 1);
+                runtimeConfig.minibossBattleThreshold = Random.Range(runtimeConfig.minibossThresholdRange.x, runtimeConfig.minibossThresholdRange.y + 1);
+            }
+            
+            // Re-seed one more time right before node layout generation for complete safety
+            Random.InitState(gameSaveData.runSeed);
+        }
+        else
+        {
+            // If not doing a randomized run, use the standard editor config seed
+            Random.InitState(runtimeConfig.randomSeed);
+        }
+
+        Vector3 initialPosition = mapNodeTransform.position;
         List<Vector3> scatteredPositions = new List<Vector3>();
         adjacencyList.Clear();
 
@@ -174,15 +150,17 @@ public class OverworldMapGenerator : MonoBehaviour
             while (!isValid && attempt < 500)
             {
                 attempt++;
-                float randomX = Random.Range(0, config.mapWidth);
-                float randomZ = Random.Range(-config.mapDepth / 2f, config.mapDepth / 2f);
+                // IMPORTANT: Make sure you use 'runtimeConfig' instead of 'config' 
+                // in the rest of the generation maths moving forward!
+                float randomX = Random.Range(0, runtimeConfig.mapWidth);
+                float randomZ = Random.Range(-runtimeConfig.mapDepth / 2f, runtimeConfig.mapDepth / 2f);
                 testPosition = initialPosition + new Vector3(randomX, 0, randomZ);
 
                 isValid = true;
                 
                 foreach (Vector3 pos in scatteredPositions)
                 {
-                    if (Vector3.Distance(testPosition, pos) < config.minDistanceApart)
+                    if (Vector3.Distance(testPosition, pos) < runtimeConfig.minDistanceApart)
                     {
                         isValid = false;
                         break;
@@ -191,7 +169,7 @@ public class OverworldMapGenerator : MonoBehaviour
             }
 
             scatteredPositions.Add(testPosition);
-            adjacencyList[i] = new List<int>(); // Build up our graph representation mapping.
+            adjacencyList[i] = new List<int>(); 
         }
 
         // 2. Sort from left to right to build an advancing mesh
@@ -606,7 +584,7 @@ public class OverworldMapGenerator : MonoBehaviour
     private NodeType GenerateNodeType(int nodeIndex, int totalNodes)
     {
         // Require the config to be set, otherwise fallback to regular nodes.
-        if (config == null) return NodeType.RegularBattle;
+        if (runtimeConfig == null) return NodeType.RegularBattle;
 
         // 1. Boss Battle can only spawn as the last node.
         if (nodeIndex == totalNodes - 1)
@@ -615,19 +593,19 @@ public class OverworldMapGenerator : MonoBehaviour
         }
 
         // 2. Evaluate thresholds for other special nodes.
-        float currentPuzzleWeight = (nodeIndex >= config.puzzleBattleThreshold) ? config.puzzleBattleWeight : 0f;
-        float currentMinibossWeight = (nodeIndex >= config.minibossBattleThreshold) ? config.minibossBattleWeight : 0f;
+        float currentPuzzleWeight = (nodeIndex >= runtimeConfig.puzzleBattleThreshold) ? runtimeConfig.puzzleBattleWeight : 0f;
+        float currentMinibossWeight = (nodeIndex >= runtimeConfig.minibossBattleThreshold) ? runtimeConfig.minibossBattleWeight : 0f;
 
         // 3. Calculate total valid weights for this specific index.
-        float totalWeight = config.regularBattleWeight + currentPuzzleWeight + currentMinibossWeight;
+        float totalWeight = runtimeConfig.regularBattleWeight + currentPuzzleWeight + currentMinibossWeight;
 
         // Fallback safety
         if (totalWeight <= 0f) return NodeType.RegularBattle;
 
         float randomVal = Random.Range(0, totalWeight);
 
-        if (randomVal < config.regularBattleWeight) return NodeType.RegularBattle;
-        randomVal -= config.regularBattleWeight;
+        if (randomVal < runtimeConfig.regularBattleWeight) return NodeType.RegularBattle;
+        randomVal -= runtimeConfig.regularBattleWeight;
 
         if (randomVal < currentPuzzleWeight) return NodeType.PuzzleBattle;
         
