@@ -12,6 +12,14 @@ public class MapData : ScriptableObject
         Boss
     }
 
+    // --- NEW: Difficulty Enum ---
+    public enum Difficulty
+    {
+        Easy,
+        Medium,
+        Hard
+    }
+
     [System.Serializable]
     public struct TileData
     {
@@ -44,6 +52,7 @@ public class MapData : ScriptableObject
 
     public GameObject environment;
     public LevelType levelType;
+    public Difficulty difficultyLevel = Difficulty.Easy; // --- NEW: Difficulty Assignment ---
     public Vector3 environmentSpawnpoint;
 
     public GameObject fixedDeity; 

@@ -29,6 +29,14 @@ public class OverworldMapGenerator : MonoBehaviour
     public List<MapData> minibossMaps = new List<MapData>();
     public List<MapData> bossMaps = new List<MapData>();
 
+    // --- NEW: Difficulty Rules ---
+    [Header("Difficulty Progression")]
+    public bool enforceDifficultyProgression = true;
+    [Tooltip("Nodes up to this index will exclusively pull Easy maps.")]
+    public int maxEasyNodeIndex = 3;
+    [Tooltip("Nodes after Easy and up to this index will pull Medium maps. Anything higher pulls Hard maps.")]
+    public int maxMediumNodeIndex = 7;
+
     [Header("Visuals & UI")]
     [Tooltip("Materiale per la linea del percorso (evita il bug della linea fucsia)")]
     public Material pathLineMaterial;
@@ -269,15 +277,15 @@ public class OverworldMapGenerator : MonoBehaviour
             enemySelection.enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
             enemySelection.levelNumber = domainLevelSelection.levelList[i].levelNumber;
             
-            // --- NEW: Assign MapData dynamically from the specified pools based on NodeType ---
-            MapData randomlySelectedMap = GetRandomMapForType(nodeType);
+            // --- UPDATED: Pass the current index 'i' to evaluate difficulty ---
+            MapData randomlySelectedMap = GetRandomMapForType(nodeType, i);
             if (randomlySelectedMap != null)
             {
                 enemySelection.mapData = randomlySelectedMap;
             }
             else
             {
-                // Fallback gracefully just in case a pool is empty
+                // Fallback gracefully just in case a pool is completely empty
                 enemySelection.mapData = domainLevelSelection.levelList[i].map;
             }
 
@@ -306,8 +314,8 @@ public class OverworldMapGenerator : MonoBehaviour
         }
     }
 
-    // --- NEW: Random Map Fetcher ---
-    private MapData GetRandomMapForType(NodeType type)
+    // --- UPDATED: Random Map Fetcher with Difficulty Support ---
+    private MapData GetRandomMapForType(NodeType type, int nodeIndex)
     {
         List<MapData> pool = null;
 
@@ -321,6 +329,35 @@ public class OverworldMapGenerator : MonoBehaviour
 
         if (pool != null && pool.Count > 0)
         {
+            if (enforceDifficultyProgression)
+            {
+                // 1. Determine target difficulty
+                MapData.Difficulty targetDifficulty = MapData.Difficulty.Hard;
+                if (nodeIndex <= maxEasyNodeIndex)
+                {
+                    targetDifficulty = MapData.Difficulty.Easy;
+                }
+                else if (nodeIndex <= maxMediumNodeIndex)
+                {
+                    targetDifficulty = MapData.Difficulty.Medium;
+                }
+
+                // 2. Filter pool based on difficulty
+                List<MapData> filteredPool = pool.FindAll(m => m.difficultyLevel == targetDifficulty);
+
+                // 3. Return from filtered pool if possible
+                if (filteredPool.Count > 0)
+                {
+                    return filteredPool[Random.Range(0, filteredPool.Count)];
+                }
+                else
+                {
+                    Debug.LogWarning($"[MapGenerator] No MapData found for {type} with difficulty {targetDifficulty}. Falling back to any difficulty in the pool.");
+                }
+            }
+
+            // Fallback: If difficulty is disabled or the specific specific difficulty pool was empty, 
+            // pull randomly from the entire valid pool.
             return pool[Random.Range(0, pool.Count)];
         }
         
