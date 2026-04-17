@@ -7,6 +7,7 @@ public partial class MapEditorWindow
 {
     private void SaveDecoPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_DecoPrefabs", string.Join(";", decorationPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveUnitPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_UnitPrefabs", string.Join(";", unitPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
+    private void SaveInteractablePrefabsToPrefs() => EditorPrefs.SetString("MapEditor_InteractablePrefabs", string.Join(";", interactablePrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
 
     private void LoadDecoPrefabsFromPrefs()
     {
@@ -25,6 +26,14 @@ public partial class MapEditorWindow
             if (f != null) unitPrefabs.Add(f);
         }
         if (unitPrefabs.Count > 0) unitPrefab = unitPrefabs[0];
+
+        interactablePrefabs.Clear();
+        foreach (var p in EditorPrefs.GetString("MapEditor_InteractablePrefabs", "").Split(';'))
+        {
+            var f = AssetDatabase.LoadAssetAtPath<GameObject>(p);
+            if (f != null) interactablePrefabs.Add(f);
+        }
+        if (interactablePrefabs.Count > 0) interactablePrefab = interactablePrefabs[0];
     }
 
     private void SaveMap()
@@ -53,6 +62,18 @@ public partial class MapEditorWindow
             currentMap.playerSpawnPositions.Add(new MapData.SpawnData { position = kvp.Key, prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Trim() });
         }
 
+        // INTERACTABLES SAVING
+        currentMap.interactablePositions.Clear();
+        foreach (var kvp in spawnedInteractables)
+        {
+            var src = PrefabUtility.GetCorrespondingObjectFromSource(kvp.Value);
+            currentMap.interactablePositions.Add(new MapData.SpawnData
+            {
+                position = kvp.Key,
+                prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Replace("SpawnInteractable_", "").Split('_')[0].Trim()
+            });
+        }
+
         currentMap.horizontalSize = gridWidth;
         currentMap.depthSize = gridDepth;
         currentMap.verticalSize = gridHeight;
@@ -64,11 +85,12 @@ public partial class MapEditorWindow
     private void LoadFromAsset()
     {
         if (currentMap == null) return;
-        GenerateMap(); // Clears map safely
+        GenerateMap();
 
         Vector3 tileSize = GetTileWorldSize3D();
 
-        if (tilePrefab != null)
+        // --- RESTORED TILE LOADING LOGIC ---
+        if (tilePrefab != null && currentMap.tilePositions != null)
         {
             foreach (var data in currentMap.tilePositions)
             {
@@ -84,43 +106,99 @@ public partial class MapEditorWindow
                 ApplyDecorativeColor(tile, data.tileType);
             }
         }
+        // -----------------------------------
 
         // LOAD DECORATIONS
-        foreach (var data in currentMap.decorationPositions)
+        if (currentMap.decorationPositions != null)
         {
-            GameObject target = decorationPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName);
-            if (target == null && !string.IsNullOrEmpty(data.prefabName)) target = Resources.Load<GameObject>(data.prefabName);
-            if (target == null) target = decorationPrefab;
-
-            if (target != null)
+            foreach (var data in currentMap.decorationPositions)
             {
-                GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
-                obj.transform.position = GridToWorld(data.position, tileSize);
-                obj.name = $"{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
-                decorations[data.position] = obj;
+                GameObject target = decorationPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName);
+                if (target == null && !string.IsNullOrEmpty(data.prefabName)) target = Resources.Load<GameObject>(data.prefabName);
+                if (target == null) target = decorationPrefab;
+
+                if (target != null)
+                {
+                    GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
+                    obj.transform.position = GridToWorld(data.position, tileSize);
+                    obj.name = $"{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                    decorations[data.position] = obj;
+                }
             }
         }
 
         // LOAD UNITS
-        foreach (var data in currentMap.playerSpawnPositions)
+        if (currentMap.playerSpawnPositions != null)
         {
-            GameObject target = unitPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName);
-            if (target == null && !string.IsNullOrEmpty(data.prefabName)) target = Resources.Load<GameObject>(data.prefabName);
-            if (target == null) target = unitPrefab;
-
-            if (target != null)
+            foreach (var data in currentMap.playerSpawnPositions)
             {
-                GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
-                obj.transform.position = GridToWorld(data.position, tileSize);
-                obj.name = $"{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
-                spawnedUnits[data.position] = obj;
+                GameObject target = unitPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName);
+                if (target == null && !string.IsNullOrEmpty(data.prefabName)) target = Resources.Load<GameObject>(data.prefabName);
+                if (target == null) target = unitPrefab;
+
+                if (target != null)
+                {
+                    GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
+                    obj.transform.position = GridToWorld(data.position, tileSize);
+                    obj.name = $"{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                    spawnedUnits[data.position] = obj;
+                }
+            }
+        }
+
+        // INTERACTABLES LOADING
+        if (currentMap.interactablePositions != null)
+        {
+            foreach (var data in currentMap.interactablePositions)
+            {
+                // Try finding the prefab in the assigned Editor Pool
+                GameObject target = interactablePrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName);
+
+                // Fallback to searching Resources folder
+                if (target == null && !string.IsNullOrEmpty(data.prefabName)) target = Resources.Load<GameObject>(data.prefabName);
+
+                // Fallback to active selected prefab in the Editor
+                if (target == null) target = interactablePrefab;
+
+                if (target != null)
+                {
+                    GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
+                    obj.transform.position = GridToWorld(data.position, tileSize);
+                    obj.name = $"SpawnInteractable_{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                    spawnedInteractables[data.position] = obj;
+                }
             }
         }
     }
 
+    //    // ADD THIS TO LOAD BEACONS
+    //    if (currentMap.beaconPositions != null)
+    //    {
+    //        GameObject beaconPrefab = Resources.Load<GameObject>("Beacon");
+    //        if (beaconPrefab != null)
+    //        {
+    //            foreach (var pos in currentMap.beaconPositions)
+    //            {
+    //                GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(beaconPrefab);
+    //                obj.transform.position = GridToWorld(pos, tileSize);
+    //                obj.name = $"SpawnBeacon_{pos.x}_{pos.y}_{pos.z}";
+    //                spawnedBeacons[pos] = obj;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            Debug.LogWarning("Beacon prefab not found in Resources folder while loading Map!");
+    //        }
+    //    }
+    //}
+
     private void SyncDictionaryFromScene()
     {
-        tiles.Clear(); decorations.Clear(); spawnedUnits.Clear();
+        tiles.Clear(); 
+        decorations.Clear(); 
+        spawnedUnits.Clear(); 
+        spawnedInteractables.Clear(); 
+
         foreach (var t in GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
         {
             if (t.name.StartsWith("Tile_"))
@@ -129,11 +207,17 @@ public partial class MapEditorWindow
                 if (p.Length >= 4 && int.TryParse(p[1], out int x) && int.TryParse(p[2], out int y) && int.TryParse(p[3], out int z)) tiles[new Vector3Int(x, y, z)] = t;
                 else if (p.Length == 3 && int.TryParse(p[1], out int ox) && int.TryParse(p[2], out int oz)) tiles[new Vector3Int(ox, 0, oz)] = t;
             }
-            else if (t.name.StartsWith("SpawnUnit_") || spawnedUnits.ContainsValue(t) || unitPrefabs.Any(p => p != null && t.name.StartsWith(p.name + "_")))
+            else if (t.name.StartsWith("SpawnUnit_") || spawnedUnits.ContainsValue(t))
             {
                 string[] p = t.name.Split('_');
                 if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) spawnedUnits[new Vector3Int(x, y, z)] = t;
             }
+            else if (t.name.StartsWith("SpawnInteractable_") || spawnedInteractables.ContainsValue(t))
+            {
+                string[] p = t.name.Split('_');
+                if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) spawnedInteractables[new Vector3Int(x, y, z)] = t;
+            }
+            // Fallback for standard decorations
             else if (decorations.ContainsValue(t) || decorationPrefabs.Any(p => p != null && t.name.StartsWith(p.name + "_")))
             {
                 string[] p = t.name.Split('_');
@@ -148,7 +232,12 @@ public partial class MapEditorWindow
         foreach (var obj in tiles.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in decorations.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedUnits.Values) Undo.DestroyObjectImmediate(obj);
-        tiles.Clear(); decorations.Clear(); spawnedUnits.Clear();
+        foreach (var obj in spawnedInteractables.Values) Undo.DestroyObjectImmediate(obj);
+
+        tiles.Clear(); 
+        decorations.Clear(); 
+        spawnedUnits.Clear();
+        spawnedInteractables.Clear(); 
     }
 
     private Vector3Int GetGridCoordinatesFromWorldPosition(Vector3 worldPos)

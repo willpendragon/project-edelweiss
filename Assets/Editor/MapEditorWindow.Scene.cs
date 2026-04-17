@@ -29,8 +29,9 @@ public partial class MapEditorWindow
             }
         }
 
+        // Around Line 32: Add isPlacingInteractable to the control check so the mouse doesn't deselect the window
         int controlID = GUIUtility.GetControlID(FocusType.Passive);
-        if (isPlacingTile || isPlacingDecoration || isPlacingUnit || isDeletingTile || isBucketMode)
+        if (isPlacingTile || isPlacingDecoration || isPlacingInteractable || isPlacingUnit || isDeletingTile || isBucketMode)
             HandleUtility.AddDefaultControl(controlID);
 
         Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
@@ -126,6 +127,7 @@ public partial class MapEditorWindow
                         foreach (var p in pointsToAffect.Where(IsInsideGrid))
                         {
                             if (isPlacingTile) PlaceTile(p, selectedTileType, false);
+                            else if (isPlacingInteractable) PlaceInteractable(p, false); // <---- UPDATED 
                             else if (isPlacingDecoration) PlaceDecoration(p, false);
                             else if (isPlacingUnit) PlaceUnit(p, false);
                             else if (isDeletingTile) DeleteTile(p, false);
