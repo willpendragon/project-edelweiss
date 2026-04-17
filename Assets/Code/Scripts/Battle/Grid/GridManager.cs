@@ -360,35 +360,64 @@ public class GridManager : MonoBehaviour
             }
         } // <--- End of if (currentMapData.playerSpawnPositions != null)
 
-        // --- NEW: Spawn Beacons ---
-        if (currentMapData.beaconPositions != null && currentMapData.beaconPositions.Count > 0)
+        //// --- NEW: Spawn Beacons ---
+        //if (currentMapData.beaconPositions != null && currentMapData.beaconPositions.Count > 0)
+        //{
+        //    GameObject runtimeBeaconPrefab = Resources.Load<GameObject>("Beacon");
+
+        //    if (runtimeBeaconPrefab == null)
+        //    {
+        //        Debug.LogWarning("GridManager: Missing 'Beacon' Prefab in Resources folder! Beacons could not be spawned.");
+        //    }
+        //    else
+        //    {
+        //        foreach (var beaconPos in currentMapData.beaconPositions)
+        //        {
+        //            TileController targetTile = GetTileControllerInstance(beaconPos.x, beaconPos.y, beaconPos.z);
+        //            if (targetTile == null) targetTile = GetTileControllerInstance(beaconPos.x, beaconPos.y - 1, beaconPos.z);
+
+        //            if (targetTile != null)
+        //            {
+        //                GameObject beaconInstance = Instantiate(runtimeBeaconPrefab, this.transform);
+        //                PlaceUnitOnTileSurface(beaconInstance, targetTile);
+
+        //                targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+        //                targetTile.detectedUnit = beaconInstance;
+
+        //                // Se hai uno script agganciato al Beacon che necessita info, puoi inizializzarlo qui.
+        //                // Esempio:
+        //                // BeaconController beaconScript = beaconInstance.GetComponent<BeaconController>();
+        //                // if (beaconScript != null) { beaconScript.InitializeOnTile(targetTile); }
+        //            }
+        //        }
+        //    }
+        //}
+
+        // --- NEW: Spawn Interactables ---
+        if (currentMapData.interactablePositions != null && currentMapData.interactablePositions.Count > 0)
         {
-            GameObject runtimeBeaconPrefab = Resources.Load<GameObject>("Beacon");
+            foreach (var intData in currentMapData.interactablePositions)
+            {
+                if (string.IsNullOrEmpty(intData.prefabName)) continue;
 
-            if (runtimeBeaconPrefab == null)
-            {
-                Debug.LogWarning("GridManager: Missing 'Beacon' Prefab in Resources folder! Beacons could not be spawned.");
-            }
-            else
-            {
-                foreach (var beaconPos in currentMapData.beaconPositions)
+                GameObject runtimeInteractablePrefab = Resources.Load<GameObject>(intData.prefabName);
+
+                if (runtimeInteractablePrefab == null)
                 {
-                    TileController targetTile = GetTileControllerInstance(beaconPos.x, beaconPos.y, beaconPos.z);
-                    if (targetTile == null) targetTile = GetTileControllerInstance(beaconPos.x, beaconPos.y - 1, beaconPos.z);
+                    Debug.LogWarning($"GridManager: Missing '{intData.prefabName}' Prefab in Resources folder! Could not be spawned.");
+                    continue;
+                }
 
-                    if (targetTile != null)
-                    {
-                        GameObject beaconInstance = Instantiate(runtimeBeaconPrefab, this.transform);
-                        PlaceUnitOnTileSurface(beaconInstance, targetTile);
+                TileController targetTile = GetTileControllerInstance(intData.position.x, intData.position.y, intData.position.z);
+                if (targetTile == null) targetTile = GetTileControllerInstance(intData.position.x, intData.position.y - 1, intData.position.z);
 
-                        targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
-                        targetTile.detectedUnit = beaconInstance;
+                if (targetTile != null)
+                {
+                    GameObject interactableInstance = Instantiate(runtimeInteractablePrefab, this.transform);
+                    PlaceUnitOnTileSurface(interactableInstance, targetTile);
 
-                        // Se hai uno script agganciato al Beacon che necessita info, puoi inizializzarlo qui.
-                        // Esempio:
-                        // BeaconController beaconScript = beaconInstance.GetComponent<BeaconController>();
-                        // if (beaconScript != null) { beaconScript.InitializeOnTile(targetTile); }
-                    }
+                    targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                    targetTile.detectedUnit = interactableInstance;
                 }
             }
         }

@@ -15,22 +15,28 @@ public partial class MapEditorWindow : EditorWindow
 
     // --- PREFABS & POOLS ---
     private GameObject tilePrefab;
-    private GameObject decorationPrefab; 
-    private GameObject unitPrefab; 
+    private GameObject decorationPrefab;
+    private GameObject unitPrefab;
+    private GameObject interactablePrefab;
 
     public List<GameObject> decorationPrefabs = new List<GameObject>();
-    public List<GameObject> unitPrefabs = new List<GameObject>(); 
+    public List<GameObject> unitPrefabs = new List<GameObject>();
+    public List<GameObject> interactablePrefabs = new List<GameObject>();
 
     private SerializedObject _so;
     private SerializedProperty _decorationsProp;
-    private SerializedProperty _unitsProp; 
-    
+    private SerializedProperty _unitsProp;
+    private SerializedProperty _interactablesProp;
+
     private int _selectedDecorationIndex = 0;
-    private int _selectedUnitIndex = 0; 
+    private int _selectedUnitIndex = 0;
+    private int _selectedInteractableIndex = 0;
 
     // --- UI SCROLLS ---
     private Vector2 _decorScrollPos;
-    private Vector2 _unitScrollPos; 
+    private Vector2 _unitScrollPos;
+    private Vector2 _interactableScrollPos;
+    private Vector2 _beaconScrollPos;
     private Vector2 _mainScrollPos; 
 
     // --- STATE ---
@@ -39,21 +45,19 @@ public partial class MapEditorWindow : EditorWindow
 
     private Dictionary<Vector3Int, GameObject> tiles = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> decorations = new Dictionary<Vector3Int, GameObject>();
-    private Dictionary<Vector3Int, GameObject> spawnedUnits = new Dictionary<Vector3Int, GameObject>(); 
-    
-    // ADD THIS NEW TRACKER:
-    private Dictionary<Vector3Int, GameObject> spawnedBeacons = new Dictionary<Vector3Int, GameObject>();
+    private Dictionary<Vector3Int, GameObject> spawnedUnits = new Dictionary<Vector3Int, GameObject>();
+    private Dictionary<Vector3Int, GameObject> spawnedInteractables = new Dictionary<Vector3Int, GameObject>();
 
     private bool isPlacingTile = false;
     private bool isPlacingDecoration = false;
     private bool isPlacingUnit = false;
-    private bool isPlacingBeacon = false;
+    private bool isPlacingInteractable = false;
     private bool isDeletingTile = false;
-    private bool isBucketMode = false; 
+    private bool isBucketMode = false;
     private bool clearOnClose = false;
-    
+
     private Vector3Int lastGridPosition = new Vector3Int(-1, -1, -1);
-    private Vector3Int lastPaintedPosition = new Vector3Int(-1, -1, -1); 
+    private Vector3Int lastPaintedPosition = new Vector3Int(-1, -1, -1);
     private int brushSize = 1;
 
     public float paintDelay = 0.15f;
@@ -77,7 +81,8 @@ public partial class MapEditorWindow : EditorWindow
         _so = new SerializedObject(this);
         _decorationsProp = _so.FindProperty("decorationPrefabs");
         _unitsProp = _so.FindProperty("unitPrefabs");
-        
+        _interactablesProp = _so.FindProperty("interactablePrefabs");
+
         LoadDecoPrefabsFromPrefs();
         SyncDictionaryFromScene();
     }
@@ -99,7 +104,7 @@ public partial class MapEditorWindow : EditorWindow
         if (headerImage != null)
         {
             float imageWidth = EditorGUIUtility.currentViewWidth;
-            float imageHeight = imageWidth * ((float)headerImage.height / headerImage.width); 
+            float imageHeight = imageWidth * ((float)headerImage.height / headerImage.width);
             GUILayout.Label(headerImage, GUILayout.Width(imageWidth), GUILayout.Height(Mathf.Clamp(imageHeight, 50, 150)));
         }
 
@@ -110,7 +115,7 @@ public partial class MapEditorWindow : EditorWindow
 
         EditorGUILayout.Space();
         GUILayout.Label("Map Offsets & Experience", EditorStyles.boldLabel);
-        
+
         EditorGUI.BeginChangeCheck();
         inBetweenTilesXOffset = EditorGUILayout.FloatField("X Offset", inBetweenTilesXOffset);
         inBetweenTilesZOffset = EditorGUILayout.FloatField("Z Offset (Old Y)", inBetweenTilesZOffset);
@@ -125,7 +130,7 @@ public partial class MapEditorWindow : EditorWindow
 
         EditorGUILayout.Space();
         GUILayout.Label("Assets & Properties", EditorStyles.boldLabel);
-        
+
         EditorGUI.BeginChangeCheck();
         tilePrefab = (GameObject)EditorGUILayout.ObjectField("Tile Prefab", tilePrefab, typeof(GameObject), false);
         if (EditorGUI.EndChangeCheck() && tilePrefab != null)
@@ -135,6 +140,7 @@ public partial class MapEditorWindow : EditorWindow
 
         DrawPrefabPool("Decoration Pool", ref _decorationsProp, decorationPrefabs, ref _selectedDecorationIndex, ref decorationPrefab, ref _decorScrollPos, SaveDecoPrefabsToPrefs);
         DrawPrefabPool("Player Units Pool", ref _unitsProp, unitPrefabs, ref _selectedUnitIndex, ref unitPrefab, ref _unitScrollPos, SaveUnitPrefabsToPrefs);
+        DrawPrefabPool("Interactables Pool", ref _interactablesProp, interactablePrefabs, ref _selectedInteractableIndex, ref interactablePrefab, ref _interactableScrollPos, SaveInteractablePrefabsToPrefs);
 
         EditorGUILayout.Space();
         currentMap = (MapData)EditorGUILayout.ObjectField("Current Map Asset", currentMap, typeof(MapData), false);
@@ -149,13 +155,13 @@ public partial class MapEditorWindow : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Toggle(isPlacingTile, "Paint Tile", "Button")) { SetMode(tile: true); }
-        if (GUILayout.Toggle(isPlacingBeacon, "Paint Beacon", "Button")) { SetMode(beacon: true); } // <--- NEW BUTTON
+        if (GUILayout.Toggle(isPlacingInteractable, "Paint Interactable", "Button")) { SetMode(interactable: true); } // <--- RENAMED BUTTON
         if (GUILayout.Toggle(isPlacingDecoration, "Paint Decoration", "Button")) { SetMode(deco: true); }
         if (GUILayout.Toggle(isPlacingUnit, "Paint Unit", "Button")) { SetMode(unit: true); }
         if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { SetMode(delete: true); }
-        
+
         // This is now an independent toggle, so it won't disable "Paint Tile" when activated!
-        isBucketMode = GUILayout.Toggle(isBucketMode, "Bucket Fill (B)", "Button"); 
+        isBucketMode = GUILayout.Toggle(isBucketMode, "Bucket Fill (B)", "Button");
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();
@@ -171,16 +177,16 @@ public partial class MapEditorWindow : EditorWindow
     }
 
     // The bucket toggle is passed so it correctly enables/disables without affecting other tools
-    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool beacon = false, bool delete = false, bool bucket = false)
+    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool interactable = false, bool delete = false, bool bucket = false)
     {
         isPlacingTile = tile;
         isPlacingDecoration = deco;
         isPlacingUnit = unit;
-        isPlacingBeacon = beacon; // <--- ADD THIS
+        isPlacingInteractable = interactable; // <--- Maps correctly now
         isDeletingTile = delete;
-        
-        if (bucket) isBucketMode = true; 
-        else if (!tile && !deco && !unit && !beacon && !delete) isBucketMode = false;
+
+        if (bucket) isBucketMode = true;
+        else if (!tile && !deco && !unit && !interactable && !delete) isBucketMode = false;
     }
 
     private void DrawPrefabPool(string label, ref SerializedProperty prop, List<GameObject> prefabs, ref int index, ref GameObject activePrefab, ref Vector2 scroll, System.Action saveCallback)
@@ -209,7 +215,7 @@ public partial class MapEditorWindow : EditorWindow
                 if (prefabs[i] == null) continue;
                 Texture2D preview = AssetPreview.GetAssetPreview(prefabs[i]);
                 GUI.backgroundColor = (i == index) ? Color.cyan : Color.white;
-                
+
                 if (GUILayout.Button(preview != null ? new GUIContent(preview, prefabs[i].name) : new GUIContent(prefabs[i].name), GUILayout.Width(64), GUILayout.Height(64)))
                 {
                     index = i;

@@ -56,34 +56,27 @@ public partial class MapEditorWindow
         spawnedUnits[position] = unit;
     }
 
-    private void PlaceBeacon(Vector3Int position, bool sync = true)
+    private void PlaceInteractable(Vector3Int position, bool sync = true)
     {
+        if (interactablePrefab == null) return;
         if (sync) SyncDictionaryFromScene();
-        if (spawnedBeacons.ContainsKey(position)) return;
-
-        // Automatically load the Beacon prefab from the Resources folder
-        GameObject beaconPrefab = Resources.Load<GameObject>("Beacon");
-        if (beaconPrefab == null)
-        {
-            Debug.LogWarning("Beacon prefab not found in Resources folder!");
-            return;
-        }
+        if (spawnedInteractables.ContainsKey(position)) return;
 
         Vector3 worldPos = GridToWorld(position, GetTileWorldSize3D());
-        GameObject beaconObj = (GameObject)PrefabUtility.InstantiatePrefab(beaconPrefab);
-        beaconObj.transform.position = worldPos;
-        beaconObj.name = $"SpawnBeacon_{position.x}_{position.y}_{position.z}";
+        GameObject interactable = (GameObject)PrefabUtility.InstantiatePrefab(interactablePrefab);
+        interactable.transform.position = worldPos;
+        interactable.name = $"SpawnInteractable_{interactablePrefab.name}_{position.x}_{position.y}_{position.z}";
 
-        Undo.RegisterCreatedObjectUndo(beaconObj, "Place Beacon");
-        spawnedBeacons[position] = beaconObj;
+        Undo.RegisterCreatedObjectUndo(interactable, "Place Interactable");
+        spawnedInteractables[position] = interactable;
     }
 
     private void DeleteTile(Vector3Int position, bool sync = true)
     {
         if (sync) SyncDictionaryFromScene();
 
-        // 2. UPDATE TO DELETE BEACONS
-        if (spawnedBeacons.TryGetValue(position, out GameObject b) && b != null) { spawnedBeacons.Remove(position); Undo.DestroyObjectImmediate(b); }
+        // Use spawnedInteractables instead of spawnedBeacons
+        if (spawnedInteractables.TryGetValue(position, out GameObject i) && i != null) { spawnedInteractables.Remove(position); Undo.DestroyObjectImmediate(i); }
         if (spawnedUnits.TryGetValue(position, out GameObject u) && u != null) { spawnedUnits.Remove(position); Undo.DestroyObjectImmediate(u); }
         if (decorations.TryGetValue(position, out GameObject d) && d != null) { decorations.Remove(position); Undo.DestroyObjectImmediate(d); }
         if (tiles.TryGetValue(position, out GameObject t) && t != null) { tiles.Remove(position); Undo.DestroyObjectImmediate(t); }
@@ -92,9 +85,8 @@ public partial class MapEditorWindow
     // HELPER: Universally checks if ANY block (Tile, Deco, Unit) exists at this specific coordinate
     private bool HasBlockAt(Vector3Int pos)
     {
-        // 3. UPDATE TO DETECT BEACONS FOR BUCKET FILL
         return (tiles.TryGetValue(pos, out GameObject t) && t != null) ||
-               (spawnedBeacons.TryGetValue(pos, out GameObject b) && b != null) ||
+               (spawnedInteractables.TryGetValue(pos, out GameObject i) && i != null) ||
                (decorations.TryGetValue(pos, out GameObject d) && d != null) ||
                (spawnedUnits.TryGetValue(pos, out GameObject u) && u != null);
     }
