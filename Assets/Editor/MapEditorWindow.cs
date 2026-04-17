@@ -144,8 +144,29 @@ public partial class MapEditorWindow : EditorWindow
 
         EditorGUILayout.Space();
         currentMap = (MapData)EditorGUILayout.ObjectField("Current Map Asset", currentMap, typeof(MapData), false);
-        selectedTileType = (TileType)EditorGUILayout.EnumPopup("Tile Type", selectedTileType);
+        
+        EditorGUILayout.Space();
+        
+        // 1. Manually identify which TileTypes you still want to paint as base floor architecture
+        TileType[] allowedTileTypes = new TileType[] 
+        {
+            TileType.Basic,
+            TileType.Chest,
+            TileType.MinibossChest,
+            TileType.BossChest
+        };
 
+        // 2. Convert them to string arrays for the Editor UI
+        string[] displayOptions = allowedTileTypes.Select(t => t.ToString()).ToArray();
+
+        // 3. Find the current index so the dropdown stays on what you selected
+        int currentIndex = System.Array.IndexOf(allowedTileTypes, selectedTileType);
+        if (currentIndex < 0) currentIndex = 0; // Default to 'Basic' if currently selected an invalid type
+
+        // 4. Draw the customized popup menu
+        int newIndex = EditorGUILayout.Popup("Tile Type", currentIndex, displayOptions);
+        selectedTileType = allowedTileTypes[newIndex];
+        
         EditorGUILayout.Space();
         clearOnClose = EditorGUILayout.Toggle("Clear Tiles when Closing Editor", clearOnClose);
         if (GUI.changed) EditorPrefs.SetBool("MapEditor_ClearOnClose", clearOnClose);
