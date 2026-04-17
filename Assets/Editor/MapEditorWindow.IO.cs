@@ -67,10 +67,13 @@ public partial class MapEditorWindow
         foreach (var kvp in spawnedInteractables)
         {
             var src = PrefabUtility.GetCorrespondingObjectFromSource(kvp.Value);
+            int id = kvp.Value.GetComponent<InteractableLink>()?.linkID ?? 0; // Grab ID
+            
             currentMap.interactablePositions.Add(new MapData.SpawnData
             {
                 position = kvp.Key,
-                prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Replace("SpawnInteractable_", "").Split('_')[0].Trim()
+                prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Replace("SpawnInteractable_", "").Split('_')[0].Trim(),
+                linkID = id // Save ID
             });
         }
 
@@ -165,6 +168,8 @@ public partial class MapEditorWindow
                     GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
                     obj.transform.position = GridToWorld(data.position, tileSize);
                     obj.name = $"SpawnInteractable_{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                    InteractableLink link = obj.GetComponent<InteractableLink>();
+                    if (link != null) link.linkID = data.linkID; // Reapply ID
                     spawnedInteractables[data.position] = obj;
                 }
             }
