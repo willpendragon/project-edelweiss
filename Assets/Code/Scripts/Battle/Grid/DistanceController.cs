@@ -6,6 +6,13 @@ public class DistanceController : MonoBehaviour
 
     public bool CheckDistance(TileController attackerTile, TileController defenderTile, int distanceThreshold = 1)
     {
+        // 1. Safeguard against null target checks
+        if (attackerTile == null || defenderTile == null)
+        {
+            Debug.LogWarning("Distance Check: Missing attacker or defender tile. Returning false.");
+            return false;
+        }
+
         int distance = GetManhattanDistanceVoxel(attackerTile, defenderTile);
         
         if (distance <= distanceThreshold)

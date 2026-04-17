@@ -17,6 +17,25 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
             return;
 
         GameObject enemyObject = targetTile.detectedUnit;
+        
+        // --- NEW: Intercept Beacon Logic Before Unit Logic ---
+        if (enemyObject != null)
+        {
+            Beacon hitBeacon = enemyObject.GetComponent<Beacon>();
+            if (hitBeacon != null)
+            {
+                hitBeacon.OnHitByUnit(); // Trigger the Beacon!
+
+                // Manually progress the turn
+                ResetTileColours();
+                activePlayerUnit.unitOpportunityPoints--;
+                UpdateActivePlayerUnitProfile(activePlayerUnit);
+                targetTile.tileShaderController.SetTileGlowIntensity(1f);
+                return;
+            }
+        }
+        // -----------------------------------------------------
+
         activePlayerUnit.unitTemplate.physicAttackBehavior.AttackSequence(targetTile.detectedUnit.GetComponent<Unit>(), targetTile, activePlayerUnit);
         ResetTileColours();
         activePlayerUnit.unitOpportunityPoints--;
