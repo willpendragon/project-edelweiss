@@ -40,7 +40,29 @@ public partial class MapEditorWindow
         Vector3 tileSize = GetTileWorldSize3D();
         float closestDist = float.MaxValue;
 
-        // Raycast over custom lists
+        // 1. Raycast over physics tiles first to establish the baseline hit distance
+        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        {
+            hasHit = true;
+            closestDist = hitInfo.distance;
+            TileController hitTile = hitInfo.collider.GetComponentInParent<TileController>();
+
+            if (hitTile != null)
+            {
+                Vector3Int basePos = hitTile.gridPosition;
+                Vector3Int normalOff = new Vector3Int(Mathf.RoundToInt(hitInfo.normal.x), Mathf.RoundToInt(hitInfo.normal.y), Mathf.RoundToInt(hitInfo.normal.z));
+                
+                // If Painting: target the face you clicked (allows stacking sideways and vertically!)
+                targetGridPos = isDeletingTile ? basePos : basePos + normalOff;
+            }
+            else
+            {
+                Vector3 offsetPos = hitInfo.point + (isDeletingTile ? -hitInfo.normal : hitInfo.normal) * 0.1f;
+                targetGridPos = GetGridCoordinatesFromWorldPosition(offsetPos);
+            }
+        }
+
+        // 2. Raycast over custom lists (Decos, Units, Interactables) to see if they are CLOSER to the camera
         void CheckHits(Dictionary<Vector3Int, GameObject> dict)
         {
             foreach (var kvp in dict)
@@ -60,39 +82,17 @@ public partial class MapEditorWindow
         
         CheckHits(decorations);
         CheckHits(spawnedUnits);
-        CheckHits(spawnedInteractables); // <--- ADD THIS LINE HERE!
+        CheckHits(spawnedInteractables);
 
-        // Raycast over physics tiles / ground
+        // 3. Fallback back to the empty Ground Plane if absolutely nothing was hit natively
         if (!hasHit)
         {
-            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+            if (groundPlane.Raycast(ray, out float enter))
             {
                 hasHit = true;
-                TileController hitTile = hitInfo.collider.GetComponentInParent<TileController>();
-
-                if (hitTile != null)
-                {
-                    Vector3Int basePos = hitTile.gridPosition;
-                    Vector3Int normalOff = new Vector3Int(Mathf.RoundToInt(hitInfo.normal.x), Mathf.RoundToInt(hitInfo.normal.y), Mathf.RoundToInt(hitInfo.normal.z));
-                    
-                    // FIXED: If Deleting, target the exact block. If Painting (Bucket or Single), target the face you clicked!
-                    targetGridPos = isDeletingTile ? basePos : basePos + normalOff;
-                }
-                else
-                {
-                    Vector3 offsetPos = hitInfo.point + (isDeletingTile ? -hitInfo.normal : hitInfo.normal) * 0.1f;
-                    targetGridPos = GetGridCoordinatesFromWorldPosition(offsetPos);
-                }
-            }
-            else
-            {
-                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-                if (groundPlane.Raycast(ray, out float enter))
-                {
-                    hasHit = true;
-                    targetGridPos = GetGridCoordinatesFromWorldPosition(ray.GetPoint(enter));
-                    targetGridPos.y = 0;
-                }
+                targetGridPos = GetGridCoordinatesFromWorldPosition(ray.GetPoint(enter));
+                targetGridPos.y = 0;
             }
         }
 
