@@ -5,6 +5,10 @@ using UnityEngine;
 
 public partial class MapEditorWindow
 {
+    // Variables to remember what tool we were using before holding Right-Click
+    private bool _storedTile, _storedDeco, _storedUnit, _storedInteractable, _storedBucket;
+    private bool _isRightClickDeleting = false;
+
     private void OnSceneGUI(SceneView sceneView)
     {
         Event e = Event.current;
@@ -29,7 +33,33 @@ public partial class MapEditorWindow
             }
         }
 
-        // Around Line 32: Add isPlacingInteractable to the control check so the mouse doesn't deselect the window
+        // --- TEMPORARY RIGHT-CLICK DELETE OVERRIDE ---
+        if (e.type == EventType.MouseDown && e.button == 1 && !e.alt)
+        {
+            // 1. Save current states
+            _storedTile = isPlacingTile;
+            _storedDeco = isPlacingDecoration;
+            _storedUnit = isPlacingUnit;
+            _storedInteractable = isPlacingInteractable;
+            _storedBucket = isBucketMode;
+
+            // 2. Force to Delete Mode
+            SetMode(delete: true);
+            isBucketMode = false;
+            _isRightClickDeleting = true;
+
+            Repaint(); sceneView.Repaint(); 
+        }
+        else if (e.type == EventType.MouseUp && e.button == 1 && _isRightClickDeleting)
+        {
+            // 3. Restore previous states on release
+            SetMode(tile: _storedTile, deco: _storedDeco, unit: _storedUnit, interactable: _storedInteractable, delete: false, bucket: _storedBucket);
+            _isRightClickDeleting = false;
+
+            Repaint(); sceneView.Repaint(); 
+        }
+        // ---------------------------------------------
+
         int controlID = GUIUtility.GetControlID(FocusType.Passive);
         if (isPlacingTile || isPlacingDecoration || isPlacingInteractable || isPlacingUnit || isDeletingTile || isBucketMode)
             HandleUtility.AddDefaultControl(controlID);
@@ -114,7 +144,8 @@ public partial class MapEditorWindow
                 foreach (var p in pointsToAffect.Where(IsInsideGrid)) DrawPreview(p);
             }
 
-            if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0)
+            // Ensure BOTH button 0 (Left) and button 1 (Right) are allowed to process actions
+            if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && (e.button == 0 || e.button == 1))
             {
                 double currentTime = EditorApplication.timeSinceStartup;
                 if (e.type == EventType.MouseDrag && targetGridPos == lastGridPosition) { e.Use(); return; }
@@ -127,10 +158,10 @@ public partial class MapEditorWindow
                         foreach (var p in pointsToAffect.Where(IsInsideGrid))
                         {
                             if (isPlacingTile) PlaceTile(p, selectedTileType, false);
-                            else if (isPlacingInteractable) PlaceInteractable(p, false); // <---- UPDATED 
+                            else if (isPlacingInteractable) PlaceInteractable(p, false);
                             else if (isPlacingDecoration) PlaceDecoration(p, false);
                             else if (isPlacingUnit) PlaceUnit(p, false);
-                            else if (isDeletingTile) DeleteTile(p, false);
+                            else if (isDeletingTile) DeleteTile(p, false); // <--- This effortlessly handles the right click now
                         }
                         SyncDictionaryFromScene();
                     }
