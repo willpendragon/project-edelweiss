@@ -51,7 +51,6 @@ public partial class MapEditorWindow
                     closestDist = dist;
                     targetGridPos = kvp.Key;
                     
-                    // FIXED: Both Bucket Paint and regular Paint target the space above the tile
                     if (!isDeletingTile) targetGridPos.y += 1;
                     
                     hasHit = true;
@@ -61,6 +60,7 @@ public partial class MapEditorWindow
         
         CheckHits(decorations);
         CheckHits(spawnedUnits);
+        CheckHits(spawnedInteractables); // <--- ADD THIS LINE HERE!
 
         // Raycast over physics tiles / ground
         if (!hasHit)
