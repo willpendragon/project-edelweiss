@@ -206,6 +206,10 @@ public class TurnController : MonoBehaviour
                 HandleBossBattle();
                 break;
 
+            case BattleTypeController.BattleType.PuzzleBattle:
+                HandlePuzzleBattle(gameStatsManager);
+                break;
+
             default:
                 Debug.LogWarning("Unknown battle type encountered.");
                 break;
@@ -262,6 +266,19 @@ public class TurnController : MonoBehaviour
         //    Debug.Log("Boss Defeated");
         //    BattleFlowController.Instance.PlayerPartyVictorySequence("Boss Defeated", warFunds);
         //}
+    }
+    private void HandlePuzzleBattle(GameStatsManager gameStatsManager)
+    {
+        // Default sequence: Win once all enemies are defeated, lose when all player units are defeated.
+        // Feel free to modify this win/loss criteria if your puzzle ends based on different conditions.
+        if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        {
+            BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
+        }
+        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        {
+            BattleFlowController.Instance.PlayerPartyDefeatSequence();
+        }
     }
     public void RestorePlayerUnits()
     {
