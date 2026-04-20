@@ -15,15 +15,9 @@ public class UnitSetupController : MonoBehaviour
         {
             Unit playerUnit = playerUnitGO.GetComponent<Unit>();
 
-            // Ensure that the starting coordinates are within the grid boundaries.
-            if (!IsWithinGridBounds(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate))
-            {
-                Debug.LogError($"Player Unit {playerUnit.name} has invalid starting coordinates: ({playerUnit.startingXCoordinate}, {playerUnit.startingYCoordinate})");
-                continue; // Skip this unit to prevent errors.
-            }
-
-            // Get the tile at the starting position.
+            // INSTEAD OF MATH BOUNDS -> Check if the actual tile exists!
             TileController startingTile = GridManager.Instance.GetTileControllerInstance(playerUnit.startingXCoordinate, playerUnit.startingYCoordinate);
+
             if (startingTile != null)
             {
                 // Move the unit to its starting tile and update the tile's state.
@@ -36,7 +30,7 @@ public class UnitSetupController : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"Could not find a valid tile at ({playerUnit.startingXCoordinate}, {playerUnit.startingYCoordinate}) for {playerUnit.name}");
+                Debug.LogWarning($"UnitSetupController: Could not find a floor tile at ({playerUnit.startingXCoordinate}, {playerUnit.startingYCoordinate}) for {playerUnit.name}! Did you paint them in mid-air?");
             }
         }
 
@@ -44,15 +38,9 @@ public class UnitSetupController : MonoBehaviour
         {
             Unit enemyUnit = enemyUnitGO.GetComponent<Unit>();
 
-            // Ensure that the starting coordinates are within the grid boundaries.
-            if (!IsWithinGridBounds(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate))
-            {
-                Debug.LogError($"Enemy Unit {enemyUnit.name} has invalid starting coordinates: ({enemyUnit.startingXCoordinate}, {enemyUnit.startingYCoordinate})");
-                continue; // Skip this unit to prevent errors.
-            }
-
-            // Get the tile at the starting position.
+            // INSTEAD OF MATH BOUNDS -> Check if the actual tile exists!
             TileController startingTile = GridManager.Instance.GetTileControllerInstance(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate);
+
             if (startingTile != null)
             {
                 // Move the unit to its starting tile and update the tile's state.
@@ -65,7 +53,7 @@ public class UnitSetupController : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"Could not find a valid tile at ({enemyUnit.startingXCoordinate}, {enemyUnit.startingYCoordinate}) for {enemyUnit.name}");
+                Debug.LogWarning($"UnitSetupController: Could not find a floor tile at ({enemyUnit.startingXCoordinate}, {enemyUnit.startingYCoordinate}) for {enemyUnit.name}! Did you paint them in mid-air?");
             }
         }
 
