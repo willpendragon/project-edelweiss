@@ -63,6 +63,7 @@ public partial class MapEditorWindow : EditorWindow
     public float paintDelay = 0.15f;
     private double lastPaintTime = 0.0;
     private Texture2D headerImage;
+    private int currentLinkID = 1;
 
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
@@ -193,6 +194,15 @@ public partial class MapEditorWindow : EditorWindow
         EditorGUILayout.Space();
         if (GUILayout.Button("Save Map to Asset", GUILayout.Height(30))) SaveMap();
         if (GUILayout.Button("Load Map from Asset", GUILayout.Height(30))) LoadFromAsset();
+
+        EditorGUILayout.Space();
+        if (isPlacingInteractable)
+        {
+            GUI.color = Color.yellow;
+            currentLinkID = EditorGUILayout.IntField("Interactable Link ID", currentLinkID);
+            GUILayout.Label("Interactables painted now will share this ID.", EditorStyles.helpBox);
+            GUI.color = Color.white;
+        }
 
         EditorGUILayout.EndScrollView();
     }

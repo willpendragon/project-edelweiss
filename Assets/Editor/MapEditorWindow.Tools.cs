@@ -67,6 +67,10 @@ public partial class MapEditorWindow
         interactable.transform.position = worldPos;
         interactable.name = $"SpawnInteractable_{interactablePrefab.name}_{position.x}_{position.y}_{position.z}";
 
+        // Assign the ID!
+        InteractableLink link = interactable.GetComponent<InteractableLink>();
+        if (link != null) link.linkID = currentLinkID;
+
         Undo.RegisterCreatedObjectUndo(interactable, "Place Interactable");
         spawnedInteractables[position] = interactable;
     }

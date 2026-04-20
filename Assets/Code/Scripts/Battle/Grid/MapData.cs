@@ -40,6 +40,7 @@ public class MapData : ScriptableObject
     {
         public Vector3Int position;
         public string prefabName; 
+        public int linkID; // <--- ADD THIS
     }
 
     public List<TileData> tilePositions = new List<TileData>();
