@@ -421,6 +421,7 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
+        
     } // <--- End of GenerateGridMapFromData()
 
     private void ClearGridMap()

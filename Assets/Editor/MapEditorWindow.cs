@@ -65,6 +65,8 @@ public partial class MapEditorWindow : EditorWindow
     private Texture2D headerImage;
     private int currentLinkID = 1;
 
+    private Camera referenceCamera; // <--- NEW: Camera Reference
+
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
 
@@ -172,17 +174,53 @@ public partial class MapEditorWindow : EditorWindow
         clearOnClose = EditorGUILayout.Toggle("Clear Tiles when Closing Editor", clearOnClose);
         if (GUI.changed) EditorPrefs.SetBool("MapEditor_ClearOnClose", clearOnClose);
 
+        // --- NEW: Camera Settings Section ---
+        EditorGUILayout.Space();
+        GUILayout.Label("Map Camera Settings", EditorStyles.boldLabel);
+        referenceCamera = (Camera)EditorGUILayout.ObjectField("Scene Camera Reference", referenceCamera, typeof(Camera), true);
+
+        if (GUILayout.Button("Save Camera to Map Asset"))
+        {
+            if (currentMap == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Current Map Asset first!");
+            }
+            else if (referenceCamera == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Scene Camera Reference to save its transform!");
+            }
+            else
+            {
+                Undo.RecordObject(currentMap, "Save Camera Settings");
+                currentMap.overrideCameraSettings = true;
+                currentMap.cameraPosition = referenceCamera.transform.position;
+                currentMap.cameraRotation = referenceCamera.transform.eulerAngles;
+                currentMap.cameraZoom = referenceCamera.fieldOfView;
+                currentMap.isOrthographic = referenceCamera.orthographic;
+                currentMap.orthographicSize = referenceCamera.orthographicSize;
+                
+                EditorUtility.SetDirty(currentMap);
+                AssetDatabase.SaveAssets();
+                Debug.Log("Map Editor: True Camera settings successfully saved to MapData!");
+            }
+        }
+        // ------------------------------------
+
         EditorGUILayout.Space();
         if (GUILayout.Button("Generate/Clear Map")) GenerateMap();
 
         EditorGUILayout.BeginHorizontal();
+        
+        // --- NEW: Select/View Mode to allow gizmo manipulation ---
+        bool isSelectMode = !isPlacingTile && !isPlacingInteractable && !isPlacingDecoration && !isPlacingUnit && !isDeletingTile;
+        if (GUILayout.Toggle(isSelectMode, "Select / View", "Button")) { SetMode(); } 
+
         if (GUILayout.Toggle(isPlacingTile, "Paint Tile", "Button")) { SetMode(tile: true); }
-        if (GUILayout.Toggle(isPlacingInteractable, "Paint Interactable", "Button")) { SetMode(interactable: true); } // <--- RENAMED BUTTON
+        if (GUILayout.Toggle(isPlacingInteractable, "Paint Interactable", "Button")) { SetMode(interactable: true); }
         if (GUILayout.Toggle(isPlacingDecoration, "Paint Decoration", "Button")) { SetMode(deco: true); }
         if (GUILayout.Toggle(isPlacingUnit, "Paint Unit", "Button")) { SetMode(unit: true); }
         if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { SetMode(delete: true); }
 
-        // This is now an independent toggle, so it won't disable "Paint Tile" when activated!
         isBucketMode = GUILayout.Toggle(isBucketMode, "Bucket Fill (B)", "Button");
         EditorGUILayout.EndHorizontal();
 
@@ -194,6 +232,16 @@ public partial class MapEditorWindow : EditorWindow
         EditorGUILayout.Space();
         if (GUILayout.Button("Save Map to Asset", GUILayout.Height(30))) SaveMap();
         if (GUILayout.Button("Load Map from Asset", GUILayout.Height(30))) LoadFromAsset();
+
+        EditorGUILayout.Space();
+        if (currentMap != null)
+        {
+            GUILayout.Label("Camera Configuration", EditorStyles.boldLabel);
+            if (GUILayout.Button("Save Scene View Camera to current Map", GUILayout.Height(30)))
+            {
+                SaveCameraToCurrentMap();
+            }
+        }
 
         EditorGUILayout.Space();
         if (isPlacingInteractable)
@@ -218,6 +266,27 @@ public partial class MapEditorWindow : EditorWindow
 
         if (bucket) isBucketMode = true;
         else if (!tile && !deco && !unit && !interactable && !delete) isBucketMode = false;
+    }
+
+    private void SaveCameraToCurrentMap()
+    {
+        if (currentMap == null) return;
+        
+        Camera sceneCam = SceneView.lastActiveSceneView.camera;
+        if (sceneCam != null)
+        {
+            currentMap.overrideCameraSettings = true;
+            currentMap.cameraPosition = sceneCam.transform.position;
+            currentMap.cameraRotation = sceneCam.transform.eulerAngles;
+            currentMap.cameraZoom = sceneCam.fieldOfView;
+            EditorUtility.SetDirty(currentMap);
+            AssetDatabase.SaveAssets();
+            Debug.Log($"Map Editor: Saved Scene Camera transforms to [{currentMap.name}] map data.");
+        }
+        else
+        {
+            Debug.LogWarning("Map Editor: Scene View Camera not found.");
+        }
     }
 
     private void DrawPrefabPool(string label, ref SerializedProperty prop, List<GameObject> prefabs, ref int index, ref GameObject activePrefab, ref Vector2 scroll, System.Action saveCallback)
