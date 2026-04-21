@@ -238,8 +238,6 @@ public partial class MapEditorWindow : EditorWindow
         EditorGUILayout.Space();
         brushSize = EditorGUILayout.IntSlider("Brush Size (Number Keys 1-6)", brushSize, 1, 6);
 
-        if (GUILayout.Button("Sync & Reload from Scene")) SyncDictionaryFromScene();
-
         EditorGUILayout.Space();
         if (GUILayout.Button("Save Map to Asset", GUILayout.Height(30))) SaveMap();
         if (GUILayout.Button("Load Map from Asset", GUILayout.Height(30))) LoadFromAsset();
