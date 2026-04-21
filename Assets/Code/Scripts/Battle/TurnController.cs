@@ -102,10 +102,28 @@ public class TurnController : MonoBehaviour
     }
     private void Start()
     {
+        // Execute immediately so UI logic (like HP bars) can bind!
         RetrieveUnits();
         RestorePlayerUnits();
+        
+        // Start the check in a sequestered coroutine
+        StartCoroutine(StartTurnationCheckCoroutine());
+    }
+
+    private System.Collections.IEnumerator StartTurnationCheckCoroutine()
+    {
+        yield return null;
+
+        if (PixelCrushers.DialogueSystem.DialogueManager.isConversationActive)
+        {
+            // Halt ONLY the turn assignment!
+            yield return new WaitUntil(() => !PixelCrushers.DialogueSystem.DialogueManager.isConversationActive);
+        }
+
+        // Only after dialogue finishes do we decide who actually attacks.
         DecideTurn();
     }
+
     private void RetrieveUnits()
     {
         playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag(Tags.PLAYER_PARTY_CONTROLLER).GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;

@@ -36,20 +36,21 @@ public class AchievementsManager : MonoBehaviour
     public BattleTypeController.BattleType TriggerDeityAchievementLogic()
     {
         Achievement achievement = SelectAchievementUnlocked();
-        // Define the chance of spawning the deity (e.g., 10% chance)
-        // Beware, Magic Number
         double spawnChance = 0.5;
 
         // Check if there is a deity to spawn and make a probability roll
         if (CanTriggerDeityBattle(achievement, spawnChance))
         {
-            //Trigger the actual Deity Encounter logic here
+            // NEW: store the specific achievement that spawned!
+            currentAchievement = achievement;
+            
             GameObject.FindGameObjectWithTag("DeitySpawner").GetComponent<DeitySpawner>().InitiateBattleWithDeity(achievement.spawnableDeity);
             Debug.Log("Started Battle with Deity");
             return BattleTypeController.BattleType.BattleWithDeity;
         }
         else
         {
+            currentAchievement = null;
             Debug.Log("Deity spawn chance not met or Achievement already met.");
             return BattleTypeController.BattleType.RegularBattle;
         }
