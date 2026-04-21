@@ -22,7 +22,7 @@ public class DeityHuntingMenuController : MonoBehaviour
     private void PopulateAchievementBlock(Achievement achievement, GameObject newAchievementBlock)
     {
         string achievementName = achievement.achievementName;
-        string achievementDescription = achievement.achievementDescription;
+        string achievementDescription = achievement.GetDescription();
         string spawnableDeityName = achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName;
         string achievementRequirement = RetrieveRequirement(achievement);
         string achievementProgress = RetrieveAchievementProgress(achievement);
