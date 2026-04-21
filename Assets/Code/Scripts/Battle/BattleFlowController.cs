@@ -58,6 +58,23 @@ public class BattleFlowController : MonoBehaviour
                 enemiesKilledInCurrentBattle++;
                 // Increases enemy kill counter for UI display.
                 gameStatsManager.enemiesKilled++;
+
+                // Track targeted bounty kills!
+                string deadUnitName = enemy.GetComponent<Unit>().unitTemplate.unitName;
+                if (!string.IsNullOrEmpty(deadUnitName))
+                {
+                    if (SaveStateManager.saveData.killsByEnemyName == null)
+                        SaveStateManager.saveData.killsByEnemyName = new Dictionary<string, int>();
+
+                    if (SaveStateManager.saveData.killsByEnemyName.ContainsKey(deadUnitName))
+                    {
+                        SaveStateManager.saveData.killsByEnemyName[deadUnitName]++;
+                    }
+                    else
+                    {
+                        SaveStateManager.saveData.killsByEnemyName.Add(deadUnitName, 1);
+                    }
+                }
             }
         }
         // Add Ingredients to Persistent Inventory
@@ -77,6 +94,7 @@ public class BattleFlowController : MonoBehaviour
             _lootedIngredients.Add(ingredientDetails);
         }
 
+        // ApplyPartyRewardsAndSave will naturally trigger SaveStateManager.SaveGame(), saving our modified dictionary!
         BattleManager.Instance.battleRewardsController.ApplyPartyRewardsAndSave(receivedWarFunds);
         OnBattleEndDialogueUnlock();
         UpdateBattleEndUIPanel(receivedWarFunds);

@@ -3,7 +3,8 @@ using TMPro;
 
 public class DeityHuntingMenuController : MonoBehaviour
 {
-    [SerializeField] Achievement[] achievements;
+    // Made public so AchievementUnlockedNotifications can access it!
+    public Achievement[] achievements;
     [SerializeField] GameObject achievementBlock;
     [SerializeField] Transform deityHuntingMenu;
     [SerializeField] GameStatsManager gameStatsManager;
@@ -22,7 +23,7 @@ public class DeityHuntingMenuController : MonoBehaviour
     private void PopulateAchievementBlock(Achievement achievement, GameObject newAchievementBlock)
     {
         string achievementName = achievement.achievementName;
-        string achievementDescription = achievement.achievementDescription;
+        string achievementDescription = achievement.GetDescription();
         string spawnableDeityName = achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName;
         string achievementRequirement = RetrieveRequirement(achievement);
         string achievementProgress = RetrieveAchievementProgress(achievement);

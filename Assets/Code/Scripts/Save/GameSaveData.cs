@@ -24,6 +24,10 @@ public class GameSaveData
     public Dictionary<string, bool> killedDeities = new Dictionary<string, bool>();
     public List<EatenPastryData> eatenPastriesHistory = new List<EatenPastryData>();
     public int runSeed = 0; // 0 means a new run hasn't generated a seed yet
+    public Dictionary<string, int> killsByEnemyName = new Dictionary<string, int>();
+
+    // Just add this to your class!
+    public List<string> notifiedAchievements = new List<string>();
 }
 
 [System.Serializable]
