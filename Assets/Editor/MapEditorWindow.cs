@@ -245,16 +245,6 @@ public partial class MapEditorWindow : EditorWindow
         if (GUILayout.Button("Load Map from Asset", GUILayout.Height(30))) LoadFromAsset();
 
         EditorGUILayout.Space();
-        if (currentMap != null)
-        {
-            GUILayout.Label("Camera Configuration", EditorStyles.boldLabel);
-            if (GUILayout.Button("Save Scene View Camera to current Map", GUILayout.Height(30)))
-            {
-                SaveCameraToCurrentMap();
-            }
-        }
-
-        EditorGUILayout.Space();
         if (isPlacingInteractable)
         {
             GUI.color = Color.yellow;
@@ -277,27 +267,6 @@ public partial class MapEditorWindow : EditorWindow
 
         if (bucket) isBucketMode = true;
         else if (!tile && !deco && !unit && !interactable && !delete) isBucketMode = false;
-    }
-
-    private void SaveCameraToCurrentMap()
-    {
-        if (currentMap == null) return;
-        
-        Camera sceneCam = SceneView.lastActiveSceneView.camera;
-        if (sceneCam != null)
-        {
-            currentMap.overrideCameraSettings = true;
-            currentMap.cameraPosition = sceneCam.transform.position;
-            currentMap.cameraRotation = sceneCam.transform.eulerAngles;
-            currentMap.cameraZoom = sceneCam.fieldOfView;
-            EditorUtility.SetDirty(currentMap);
-            AssetDatabase.SaveAssets();
-            Debug.Log($"Map Editor: Saved Scene Camera transforms to [{currentMap.name}] map data.");
-        }
-        else
-        {
-            Debug.LogWarning("Map Editor: Scene View Camera not found.");
-        }
     }
 
     private void DrawPrefabPool(string label, ref SerializedProperty prop, List<GameObject> prefabs, ref int index, ref GameObject activePrefab, ref Vector2 scroll, System.Action saveCallback)
