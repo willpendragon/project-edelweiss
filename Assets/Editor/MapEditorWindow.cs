@@ -146,7 +146,18 @@ public partial class MapEditorWindow : EditorWindow
         DrawPrefabPool("Interactables Pool", ref _interactablesProp, interactablePrefabs, ref _selectedInteractableIndex, ref interactablePrefab, ref _interactableScrollPos, SaveInteractablePrefabsToPrefs);
 
         EditorGUILayout.Space();
+
+        // --- UPDATED: Detect assignment in slot and update Grid Dimensions automatically ---
+        EditorGUI.BeginChangeCheck();
         currentMap = (MapData)EditorGUILayout.ObjectField("Current Map Asset", currentMap, typeof(MapData), false);
+        if (EditorGUI.EndChangeCheck() && currentMap != null)
+        {
+            gridWidth = currentMap.horizontalSize;
+            gridDepth = currentMap.depthSize;
+            gridHeight = currentMap.verticalSize;
+            GUI.FocusControl(null); // Deselect to allow quick updates
+        }
+        // ----------------------------------------------------------------------------------
         
         EditorGUILayout.Space();
         

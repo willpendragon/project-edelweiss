@@ -88,6 +88,13 @@ public partial class MapEditorWindow
     private void LoadFromAsset()
     {
         if (currentMap == null) return;
+        
+        // --- NEW: Snap Map Editor Grid bounds to explicitly match the loaded file ---
+        gridWidth = currentMap.horizontalSize;
+        gridDepth = currentMap.depthSize;
+        gridHeight = currentMap.verticalSize;
+        // ----------------------------------------------------------------------------
+        
         GenerateMap();
 
         Vector3 tileSize = GetTileWorldSize3D();
