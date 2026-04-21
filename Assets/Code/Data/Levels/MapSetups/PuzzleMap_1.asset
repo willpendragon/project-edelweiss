@@ -13,620 +13,596 @@ MonoBehaviour:
   m_Name: PuzzleMap_1
   m_EditorClassIdentifier: 
   tilePositions:
-  - position: {x: 11, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 13, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 12}
-    tileType: 0
-  - position: {x: 11, y: 0, z: 3}
-    tileType: 0
   - position: {x: 5, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 13}
-    tileType: 0
-  - position: {x: 11, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 11, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 10}
-    tileType: 0
-  - position: {x: 8, y: 2, z: 2}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 9, y: 2, z: 1}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 9, y: 4, z: 1}
-    tileType: 6
-  - position: {x: 4, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 11}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 9, y: 3, z: 0}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 13}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 13}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 11, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 10}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 10}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 12, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 7, y: 1, z: 2}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 12}
-    tileType: 0
-  - position: {x: 9, y: 1, z: 2}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 12}
-    tileType: 0
-  - position: {x: 8, y: 3, z: 0}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 9, y: 3, z: 1}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 12, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 12, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 9, y: 1, z: 3}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 13}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 9, y: 2, z: 2}
-    tileType: 0
-  - position: {x: 12, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 13, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 12}
-    tileType: 0
-  - position: {x: 10, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 8}
     tileType: 0
   - position: {x: 2, y: 0, z: 8}
     tileType: 0
-  - position: {x: 13, y: 0, z: 4}
+  - position: {x: 9, y: 3, z: 1}
     tileType: 0
-  - position: {x: 4, y: 0, z: 10}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 12}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 8}
+  - position: {x: 5, y: 0, z: 6}
     tileType: 0
   - position: {x: 6, y: 0, z: 1}
     tileType: 0
-  - position: {x: 4, y: 0, z: 6}
-    tileType: 0
   - position: {x: 6, y: 0, z: 3}
     tileType: 0
-  - position: {x: 7, y: 1, z: 1}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 12}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 13}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 3}
+  - position: {x: 8, y: 2, z: 2}
     tileType: 0
   - position: {x: 8, y: 1, z: 2}
     tileType: 0
-  - position: {x: 8, y: 1, z: 3}
-    tileType: 0
-  - position: {x: 13, y: 0, z: 1}
+  - position: {x: 8, y: 0, z: 6}
     tileType: 0
   - position: {x: 9, y: 0, z: 5}
     tileType: 0
-  - position: {x: 8, y: 0, z: 3}
+  - position: {x: 7, y: 1, z: 2}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 12}
+    tileType: 0
+  - position: {x: 10, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 12, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 12}
+    tileType: 0
+  - position: {x: 9, y: 3, z: 0}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 11, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 13, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 9, y: 4, z: 1}
+    tileType: 6
+  - position: {x: 4, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 5}
     tileType: 0
   - position: {x: 10, y: 0, z: 6}
     tileType: 0
-  - position: {x: 10, y: 0, z: 7}
+  - position: {x: 3, y: 0, z: 13}
     tileType: 0
-  - position: {x: 8, y: 0, z: 13}
+  - position: {x: 12, y: 0, z: 2}
     tileType: 0
-  - position: {x: 9, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 11}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 11, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 10}
+  - position: {x: 8, y: 0, z: 7}
     tileType: 0
   - position: {x: 5, y: 0, z: 1}
     tileType: 0
-  - position: {x: 6, y: 0, z: 5}
+  - position: {x: 11, y: 0, z: 1}
     tileType: 0
-  - position: {x: 5, y: 0, z: 9}
+  - position: {x: 9, y: 0, z: 3}
     tileType: 0
-  - position: {x: 5, y: 0, z: 3}
+  - position: {x: 2, y: 0, z: 3}
     tileType: 0
-  - position: {x: 12, y: 0, z: 4}
+  - position: {x: 5, y: 0, z: 8}
     tileType: 0
-  - position: {x: 1, y: 0, z: 2}
+  - position: {x: 11, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 9, y: 1, z: 2}
+    tileType: 0
+  - position: {x: 13, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 11}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 13}
     tileType: 0
   - position: {x: 13, y: 0, z: 3}
     tileType: 0
-  - position: {x: 7, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 8, y: 2, z: 1}
-    tileType: 0
-  - position: {x: 4, y: 4, z: 4}
-    tileType: 0
   - position: {x: 6, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 13}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 13}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 10}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 8, y: 3, z: 0}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 6}
     tileType: 0
   - position: {x: 9, y: 0, z: 6}
     tileType: 0
+  - position: {x: 7, y: 1, z: 1}
+    tileType: 0
+  - position: {x: 4, y: 4, z: 4}
+    tileType: 0
+  - position: {x: 11, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 12}
+    tileType: 0
+  - position: {x: 9, y: 2, z: 1}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 12}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 10}
+    tileType: 0
+  - position: {x: 13, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 13, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 10, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 12}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 10}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 13}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 12, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 10}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 10}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 12}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 11, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 12, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 11, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 12, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 9, y: 2, z: 2}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 8, y: 1, z: 3}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 13}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 8, y: 2, z: 1}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 11}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 3}
+    tileType: 0
   decorationPositions:
+  - position: {x: 0, y: 0, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 1, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 3, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 4}
+    prefabName: DecorationPrefab
   - position: {x: 3, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 2, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 4, y: 1, z: 3}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 1, z: 9}
-    prefabName: DecorationPrefab
-  - position: {x: 3, y: 0, z: 2}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 1, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 2, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 6}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 0, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 8, y: 1, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 5, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 9}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 3, y: 0, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 1, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 3, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 2, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 7, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 13, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 13, y: 0, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 0, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 9}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 7}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 9}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 4, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 2}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 14}
     prefabName: DecorationPrefab
   - position: {x: 8, y: 0, z: 4}
     prefabName: DecorationPrefab
-  - position: {x: 1, y: 1, z: 6}
+  - position: {x: 4, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 0, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 0, z: 4}
     prefabName: DecorationPrefab
   - position: {x: 5, y: 0, z: 0}
     prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 6}
+  - position: {x: 0, y: 1, z: 0}
     prefabName: DecorationPrefab
-  - position: {x: 10, y: 2, z: 4}
+  - position: {x: 4, y: 1, z: 3}
     prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 2}
+  - position: {x: 4, y: 1, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 5}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 0, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 0, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 0, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 0, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 0, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 2, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 0, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 1, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 0, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 2, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 3, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 3, y: 0, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 5, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 0, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 1, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 0, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 2, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 1, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 1, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 0, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 0, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 1, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 12}
     prefabName: DecorationPrefab
   - position: {x: 1, y: 0, z: 6}
     prefabName: DecorationPrefab
-  - position: {x: 0, y: 1, z: 7}
+  - position: {x: 12, y: 1, z: 6}
     prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 0}
+  - position: {x: 9, y: 0, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 1, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 3}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 5}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 0, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 3}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 1, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 3, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 1, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 0, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 2, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 1, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 3, y: 0, z: 3}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 0, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 2, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 0, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 1, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 0, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 2, z: 3}
+    prefabName: DecorationChick
+  - position: {x: 5, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 2, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 1, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 5}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 0, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 2, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 1, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 1, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 0, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 7, y: 0, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 3, y: 0, z: 2}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 2, z: 10}
     prefabName: DecorationPrefab
   - position: {x: 13, y: 0, z: 6}
     prefabName: DecorationPrefab
   - position: {x: 0, y: 1, z: 3}
     prefabName: DecorationPrefab
-  - position: {x: 12, y: 1, z: 7}
+  - position: {x: 1, y: 1, z: 6}
     prefabName: DecorationPrefab
-  - position: {x: 4, y: 0, z: 0}
+  - position: {x: 14, y: 0, z: 8}
     prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 6}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 1, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 7, y: 1, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 13, y: 0, z: 0}
+  - position: {x: 10, y: 0, z: 10}
     prefabName: DecorationPrefab
   - position: {x: 0, y: 0, z: 4}
     prefabName: DecorationPrefab
-  - position: {x: 6, y: 1, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 5}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 3, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 7, y: 0, z: 2}
-    prefabName: DecorationPrefab
-  - position: {x: 6, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 8, y: 1, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 2, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 8, y: 2, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 8, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 6}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 0, z: 7}
-    prefabName: DecorationPrefab
-  - position: {x: 4, y: 1, z: 2}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 1, z: 6}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 1, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 3}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 13, y: 2, z: 6}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 3, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 9}
-    prefabName: DecorationPrefab
-  - position: {x: 4, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 7, y: 0, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 3, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 6, y: 2, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 3}
-    prefabName: DecorationPrefab
-  - position: {x: 2, y: 0, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 13, y: 0, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 5, y: 1, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 2, z: 2}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 7, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 9}
-    prefabName: DecorationPrefab
-  - position: {x: 2, y: 0, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 8, y: 1, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 13, y: 1, z: 7}
+  - position: {x: 0, y: 0, z: 1}
     prefabName: DecorationPrefab
   - position: {x: 4, y: 3, z: 4}
     prefabName: DecorationPrefab
-  - position: {x: 11, y: 1, z: 12}
+  - position: {x: 8, y: 0, z: 0}
     prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 14}
+  - position: {x: 11, y: 0, z: 10}
     prefabName: DecorationPrefab
-  - position: {x: 0, y: 2, z: 10}
+  - position: {x: 7, y: 0, z: 1}
     prefabName: DecorationPrefab
-  - position: {x: 2, y: 0, z: 6}
+  - position: {x: 3, y: 0, z: 0}
     prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 13}
+  - position: {x: 9, y: 0, z: 2}
     prefabName: DecorationPrefab
-  - position: {x: 4, y: 0, z: 2}
+  - position: {x: 9, y: 0, z: 12}
     prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 1}
+  - position: {x: 14, y: 0, z: 2}
     prefabName: DecorationPrefab
-  - position: {x: 8, y: 0, z: 2}
+  - position: {x: 0, y: 0, z: 3}
     prefabName: DecorationPrefab
-  - position: {x: 4, y: 1, z: 0}
+  - position: {x: 6, y: 0, z: 0}
     prefabName: DecorationPrefab
-  - position: {x: 13, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 1, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 4, y: 0, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 1, z: 2}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 0}
+  - position: {x: 14, y: 0, z: 12}
     prefabName: DecorationPrefab
   - position: {x: 12, y: 0, z: 7}
     prefabName: DecorationPrefab
-  - position: {x: 4, y: 0, z: 1}
+  - position: {x: 9, y: 0, z: 10}
     prefabName: DecorationPrefab
-  - position: {x: 3, y: 0, z: 3}
+  - position: {x: 12, y: 0, z: 8}
     prefabName: DecorationPrefab
-  - position: {x: 13, y: 0, z: 9}
+  - position: {x: 13, y: 1, z: 6}
     prefabName: DecorationPrefab
-  - position: {x: 13, y: 0, z: 14}
+  - position: {x: 10, y: 0, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 14, y: 0, z: 7}
+    prefabName: DecorationPrefab
+  - position: {x: 2, y: 0, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 5, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 12, y: 0, z: 12}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 9, y: 0, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 0, z: 3}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 1, z: 1}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 1, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 2, z: 6}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 0, z: 8}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 0, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 0, z: 11}
+    prefabName: DecorationPrefab
+  - position: {x: 8, y: 0, z: 14}
+    prefabName: DecorationPrefab
+  - position: {x: 11, y: 1, z: 10}
+    prefabName: DecorationPrefab
+  - position: {x: 13, y: 1, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 6, y: 1, z: 4}
+    prefabName: DecorationPrefab
+  - position: {x: 10, y: 2, z: 13}
+    prefabName: DecorationPrefab
+  - position: {x: 4, y: 1, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 0, z: 10}
     prefabName: DecorationPrefab
   - position: {x: 2, y: 0, z: 13}
     prefabName: DecorationPrefab
   - position: {x: 2, y: 0, z: 11}
     prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 5}
+  - position: {x: 14, y: 0, z: 0}
     prefabName: DecorationPrefab
-  - position: {x: 10, y: 2, z: 0}
+  - position: {x: 12, y: 0, z: 13}
     prefabName: DecorationPrefab
-  - position: {x: 4, y: 1, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 13, y: 1, z: 9}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 2}
-    prefabName: DecorationPrefab
-  - position: {x: 6, y: 1, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 2}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 7, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 3, y: 0, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 2, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 8, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 3}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 1, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 2, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 1, z: 3}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 1, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 1, z: 7}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 1, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 6, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 7, y: 1, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 2, y: 0, z: 7}
-    prefabName: DecorationPrefab
-  - position: {x: 4, y: 0, z: 3}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 7}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 1, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 1, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 13, y: 1, z: 6}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 4, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 12}
-    prefabName: DecorationPrefab
-  - position: {x: 4, y: 1, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 2, y: 1, z: 7}
-    prefabName: DecorationPrefab
-  - position: {x: 4, y: 2, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 8, y: 0, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 8, y: 0, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 0, z: 11}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 6, y: 3, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 1, z: 5}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 0, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 11, y: 1, z: 10}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 7, y: 0, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 6, y: 0, z: 4}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 1, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 14, y: 0, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 0, z: 8}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 1, z: 13}
-    prefabName: DecorationPrefab
-  - position: {x: 5, y: 0, z: 14}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 2, z: 1}
-    prefabName: DecorationPrefab
-  - position: {x: 9, y: 2, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 0, y: 0, z: 9}
-    prefabName: DecorationPrefab
-  - position: {x: 10, y: 1, z: 0}
-    prefabName: DecorationPrefab
-  - position: {x: 12, y: 1, z: 11}
+  - position: {x: 9, y: 0, z: 11}
     prefabName: DecorationPrefab
   - position: {x: 6, y: 0, z: 11}
     prefabName: DecorationPrefab
-  - position: {x: 9, y: 0, z: 10}
+  - position: {x: 8, y: 1, z: 1}
     prefabName: DecorationPrefab
-  - position: {x: 10, y: 1, z: 4}
+  - position: {x: 10, y: 0, z: 9}
     prefabName: DecorationPrefab
-  - position: {x: 12, y: 1, z: 12}
+  - position: {x: 0, y: 1, z: 7}
     prefabName: DecorationPrefab
-  - position: {x: 11, y: 0, z: 10}
+  - position: {x: 7, y: 0, z: 14}
     prefabName: DecorationPrefab
-  - position: {x: 13, y: 0, z: 10}
+  - position: {x: 0, y: 0, z: 9}
     prefabName: DecorationPrefab
-  - position: {x: 10, y: 0, z: 11}
+  - position: {x: 14, y: 0, z: 9}
+    prefabName: DecorationPrefab
+  - position: {x: 1, y: 0, z: 1}
     prefabName: DecorationPrefab
   playerSpawnPositions:
-  - position: {x: 8, y: 1, z: 9}
-    prefabName: SpawnUnit_Aliza
-    linkID: 0
-  - position: {x: 4, y: 1, z: 8}
+  - position: {x: 10, y: 1, z: 6}
     prefabName: SpawnUnit_Edel
     linkID: 0
   - position: {x: 6, y: 1, z: 12}
     prefabName: SpawnUnit_Violet
+    linkID: 0
+  - position: {x: 8, y: 1, z: 9}
+    prefabName: SpawnUnit_Aliza
     linkID: 0
   interactablePositions:
   - position: {x: 3, y: 1, z: 9}
@@ -636,10 +612,16 @@ MonoBehaviour:
     prefabName: Gate
     linkID: 1
   horizontalSize: 15
-  verticalSize: 12
-  depthSize: 15
+  verticalSize: 15
+  depthSize: 12
   environment: {fileID: 660543123897851887, guid: b91f2e96186dc0b4081142f2cf1adb55, type: 3}
   levelType: 1
   difficultyLevel: 0
   environmentSpawnpoint: {x: 8.41, y: 1.88, z: 9.47}
+  overrideCameraSettings: 1
+  cameraPosition: {x: 25, y: 12, z: -12}
+  cameraRotation: {x: 30.000008, y: 330, z: 0}
+  cameraZoom: 60
+  isOrthographic: 0
+  orthographicSize: 5
   fixedDeity: {fileID: 0}
