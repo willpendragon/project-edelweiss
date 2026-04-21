@@ -190,6 +190,7 @@ public partial class MapEditorWindow : EditorWindow
         GUILayout.Label("Map Camera Settings", EditorStyles.boldLabel);
         referenceCamera = (Camera)EditorGUILayout.ObjectField("Scene Camera Reference", referenceCamera, typeof(Camera), true);
 
+        EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Save Camera to Map Asset"))
         {
             if (currentMap == null)
@@ -215,6 +216,12 @@ public partial class MapEditorWindow : EditorWindow
                 Debug.Log("Map Editor: True Camera settings successfully saved to MapData!");
             }
         }
+
+        if (GUILayout.Button("Apply Map Camera to Scene"))
+        {
+            SyncCameraFromMap();
+        }
+        EditorGUILayout.EndHorizontal();
         // ------------------------------------
 
         EditorGUILayout.Space();
@@ -304,5 +311,49 @@ public partial class MapEditorWindow : EditorWindow
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndScrollView();
         }
+    }
+
+    private void SyncCameraFromMap()
+    {
+        if (currentMap == null)
+        {
+            Debug.LogWarning("Map Editor: Assign a Current Map Asset first to sync the camera!");
+            return;
+        }
+
+        if (!currentMap.overrideCameraSettings)
+        {
+            Debug.Log("Map Editor: Current Map Asset does not have camera override active. Skipping camera sync.");
+            return;
+        }
+
+        if (referenceCamera == null)
+        {
+            // Fallback to Main Camera if reference is null
+            referenceCamera = Camera.main;
+            if (referenceCamera == null)
+            {
+                Debug.LogWarning("Map Editor: No Scene Camera Reference assigned and no Main Camera found in the scene! Cannot apply map camera settings.");
+                return;
+            }
+            else
+            {
+                Debug.Log("Map Editor: Auto-assigned Main Camera as Scene Camera Reference.");
+            }
+        }
+
+        Undo.RecordObject(referenceCamera.transform, "Sync Camera Transform");
+        Undo.RecordObject(referenceCamera, "Sync Camera Properties");
+
+        referenceCamera.transform.position = currentMap.cameraPosition;
+        referenceCamera.transform.eulerAngles = currentMap.cameraRotation;
+        referenceCamera.orthographic = currentMap.isOrthographic;
+        
+        if (currentMap.isOrthographic)
+            referenceCamera.orthographicSize = currentMap.orthographicSize;
+        else
+            referenceCamera.fieldOfView = currentMap.cameraZoom;
+
+        Debug.Log($"Map Editor: Successfully applied camera settings from '{currentMap.name}' to '{referenceCamera.name}'.");
     }
 }
