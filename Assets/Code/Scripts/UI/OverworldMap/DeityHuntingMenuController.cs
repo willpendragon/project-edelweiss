@@ -3,7 +3,8 @@ using TMPro;
 
 public class DeityHuntingMenuController : MonoBehaviour
 {
-    [SerializeField] Achievement[] achievements;
+    // Made public so AchievementUnlockedNotifications can access it!
+    public Achievement[] achievements;
     [SerializeField] GameObject achievementBlock;
     [SerializeField] Transform deityHuntingMenu;
     [SerializeField] GameStatsManager gameStatsManager;
