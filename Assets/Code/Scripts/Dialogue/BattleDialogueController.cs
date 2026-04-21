@@ -1,22 +1,23 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using PixelCrushers.DialogueSystem;
-using System.Linq;
 
 [System.Serializable]
 public struct AchievementDialogueMapping
 {
     [Tooltip("Must match the achievementId in the Achievement ScriptableObject")]
     public string achievementId;
+    
     [Tooltip("The title of the conversation inside the PixelCrushers database")]
-    [ConversationPopup] // Optional generic Dialogue System attribute that creates a dropdown
+    [ConversationPopup] // Use this attribute to get a handy dropdown of your dialogues in the Inspector!
     public string conversationTitle;
 }
 
 public class BattleDialogueController : MonoBehaviour
 {
     [SerializeField] private DialogueSystemController _dialogueSystemController;
-    [SerializeField] private AchievementsManager _achievementsManager;
+    [SerializeField] private AchievementsManager _achievementsManager; // Reference the manager dynamically via inspector
 
     [Header("Achievement Dialogues")]
     public List<AchievementDialogueMapping> achievementDialogues = new List<AchievementDialogueMapping>();
@@ -30,6 +31,7 @@ public class BattleDialogueController : MonoBehaviour
     {
         if (_achievementsManager == null || _achievementsManager.allAchievements == null) return;
 
+        // Hook into existing GameSaveData
         GameSaveData saveData = SaveStateManager.saveData;
 
         // Failsafe for older saves
@@ -40,22 +42,22 @@ public class BattleDialogueController : MonoBehaviour
 
         foreach (var achievement in _achievementsManager.allAchievements)
         {
-            // If completed AND the dialogue hasn't been shown yet
+            // If the achievement is completed AND the dialogue hasn't been shown yet
             if (achievement.AchievementIsUnlocked() && !saveData.triggeredAchievementDialogues.Contains(achievement.achievementId))
             {
-                // Check if we defined a dialogue for this specific achievement in the Inspector
+                // Check if we defined a specific dialogue mapping in the Inspector for this ID
                 var mapping = achievementDialogues.FirstOrDefault(m => m.achievementId == achievement.achievementId);
                 
                 if (!string.IsNullOrEmpty(mapping.conversationTitle))
                 {
-                    // Remember that we've played it so it never plays again!
+                    // Add to lists and immediately save to prevent repeating!
                     saveData.triggeredAchievementDialogues.Add(achievement.achievementId);
                     SaveStateManager.SaveGame(saveData);
 
-                    // Trigger the PixelCrushers Dialogue
+                    // Trigger the PixelCrushers Dialogue, which natively blocks player action.
                     DialogueManager.StartConversation(mapping.conversationTitle);
                     
-                    // We break out of the loop because we only want ONE dialogue popping up at the start of battle.
+                    // We break out of the loop because we only want ONE dialogue popping up right now.
                     // If multiple unlocked at once, the next one will queue up on the next battle!
                     break;
                 }
