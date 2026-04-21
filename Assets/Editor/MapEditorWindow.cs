@@ -65,6 +65,8 @@ public partial class MapEditorWindow : EditorWindow
     private Texture2D headerImage;
     private int currentLinkID = 1;
 
+    private Camera referenceCamera; // <--- NEW: Camera Reference
+
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
 
@@ -144,7 +146,18 @@ public partial class MapEditorWindow : EditorWindow
         DrawPrefabPool("Interactables Pool", ref _interactablesProp, interactablePrefabs, ref _selectedInteractableIndex, ref interactablePrefab, ref _interactableScrollPos, SaveInteractablePrefabsToPrefs);
 
         EditorGUILayout.Space();
+
+        // --- UPDATED: Detect assignment in slot and update Grid Dimensions automatically ---
+        EditorGUI.BeginChangeCheck();
         currentMap = (MapData)EditorGUILayout.ObjectField("Current Map Asset", currentMap, typeof(MapData), false);
+        if (EditorGUI.EndChangeCheck() && currentMap != null)
+        {
+            gridWidth = currentMap.horizontalSize;
+            gridDepth = currentMap.depthSize;
+            gridHeight = currentMap.verticalSize;
+            GUI.FocusControl(null); // Deselect to allow quick updates
+        }
+        // ----------------------------------------------------------------------------------
         
         EditorGUILayout.Space();
         
@@ -172,24 +185,65 @@ public partial class MapEditorWindow : EditorWindow
         clearOnClose = EditorGUILayout.Toggle("Clear Tiles when Closing Editor", clearOnClose);
         if (GUI.changed) EditorPrefs.SetBool("MapEditor_ClearOnClose", clearOnClose);
 
+        // --- NEW: Camera Settings Section ---
+        EditorGUILayout.Space();
+        GUILayout.Label("Map Camera Settings", EditorStyles.boldLabel);
+        referenceCamera = (Camera)EditorGUILayout.ObjectField("Scene Camera Reference", referenceCamera, typeof(Camera), true);
+
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Save Camera to Map Asset"))
+        {
+            if (currentMap == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Current Map Asset first!");
+            }
+            else if (referenceCamera == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Scene Camera Reference to save its transform!");
+            }
+            else
+            {
+                Undo.RecordObject(currentMap, "Save Camera Settings");
+                currentMap.overrideCameraSettings = true;
+                currentMap.cameraPosition = referenceCamera.transform.position;
+                currentMap.cameraRotation = referenceCamera.transform.eulerAngles;
+                currentMap.cameraZoom = referenceCamera.fieldOfView;
+                currentMap.isOrthographic = referenceCamera.orthographic;
+                currentMap.orthographicSize = referenceCamera.orthographicSize;
+                
+                EditorUtility.SetDirty(currentMap);
+                AssetDatabase.SaveAssets();
+                Debug.Log("Map Editor: True Camera settings successfully saved to MapData!");
+            }
+        }
+
+        if (GUILayout.Button("Apply Map Camera to Scene"))
+        {
+            SyncCameraFromMap();
+        }
+        EditorGUILayout.EndHorizontal();
+        // ------------------------------------
+
         EditorGUILayout.Space();
         if (GUILayout.Button("Generate/Clear Map")) GenerateMap();
 
         EditorGUILayout.BeginHorizontal();
+        
+        // --- NEW: Select/View Mode to allow gizmo manipulation ---
+        bool isSelectMode = !isPlacingTile && !isPlacingInteractable && !isPlacingDecoration && !isPlacingUnit && !isDeletingTile;
+        if (GUILayout.Toggle(isSelectMode, "Select / View", "Button")) { SetMode(); } 
+
         if (GUILayout.Toggle(isPlacingTile, "Paint Tile", "Button")) { SetMode(tile: true); }
-        if (GUILayout.Toggle(isPlacingInteractable, "Paint Interactable", "Button")) { SetMode(interactable: true); } // <--- RENAMED BUTTON
+        if (GUILayout.Toggle(isPlacingInteractable, "Paint Interactable", "Button")) { SetMode(interactable: true); }
         if (GUILayout.Toggle(isPlacingDecoration, "Paint Decoration", "Button")) { SetMode(deco: true); }
         if (GUILayout.Toggle(isPlacingUnit, "Paint Unit", "Button")) { SetMode(unit: true); }
         if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { SetMode(delete: true); }
 
-        // This is now an independent toggle, so it won't disable "Paint Tile" when activated!
         isBucketMode = GUILayout.Toggle(isBucketMode, "Bucket Fill (B)", "Button");
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();
         brushSize = EditorGUILayout.IntSlider("Brush Size (Number Keys 1-6)", brushSize, 1, 6);
-
-        if (GUILayout.Button("Sync & Reload from Scene")) SyncDictionaryFromScene();
 
         EditorGUILayout.Space();
         if (GUILayout.Button("Save Map to Asset", GUILayout.Height(30))) SaveMap();
@@ -257,5 +311,49 @@ public partial class MapEditorWindow : EditorWindow
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndScrollView();
         }
+    }
+
+    private void SyncCameraFromMap()
+    {
+        if (currentMap == null)
+        {
+            Debug.LogWarning("Map Editor: Assign a Current Map Asset first to sync the camera!");
+            return;
+        }
+
+        if (!currentMap.overrideCameraSettings)
+        {
+            Debug.Log("Map Editor: Current Map Asset does not have camera override active. Skipping camera sync.");
+            return;
+        }
+
+        if (referenceCamera == null)
+        {
+            // Fallback to Main Camera if reference is null
+            referenceCamera = Camera.main;
+            if (referenceCamera == null)
+            {
+                Debug.LogWarning("Map Editor: No Scene Camera Reference assigned and no Main Camera found in the scene! Cannot apply map camera settings.");
+                return;
+            }
+            else
+            {
+                Debug.Log("Map Editor: Auto-assigned Main Camera as Scene Camera Reference.");
+            }
+        }
+
+        Undo.RecordObject(referenceCamera.transform, "Sync Camera Transform");
+        Undo.RecordObject(referenceCamera, "Sync Camera Properties");
+
+        referenceCamera.transform.position = currentMap.cameraPosition;
+        referenceCamera.transform.eulerAngles = currentMap.cameraRotation;
+        referenceCamera.orthographic = currentMap.isOrthographic;
+        
+        if (currentMap.isOrthographic)
+            referenceCamera.orthographicSize = currentMap.orthographicSize;
+        else
+            referenceCamera.fieldOfView = currentMap.cameraZoom;
+
+        Debug.Log($"Map Editor: Successfully applied camera settings from '{currentMap.name}' to '{referenceCamera.name}'.");
     }
 }

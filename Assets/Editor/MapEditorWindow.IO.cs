@@ -88,6 +88,13 @@ public partial class MapEditorWindow
     private void LoadFromAsset()
     {
         if (currentMap == null) return;
+        
+        // --- NEW: Snap Map Editor Grid bounds to explicitly match the loaded file ---
+        gridWidth = currentMap.horizontalSize;
+        gridDepth = currentMap.depthSize;
+        gridHeight = currentMap.verticalSize;
+        // ----------------------------------------------------------------------------
+        
         GenerateMap();
 
         Vector3 tileSize = GetTileWorldSize3D();
@@ -174,28 +181,10 @@ public partial class MapEditorWindow
                 }
             }
         }
-    }
 
-    //    // ADD THIS TO LOAD BEACONS
-    //    if (currentMap.beaconPositions != null)
-    //    {
-    //        GameObject beaconPrefab = Resources.Load<GameObject>("Beacon");
-    //        if (beaconPrefab != null)
-    //        {
-    //            foreach (var pos in currentMap.beaconPositions)
-    //            {
-    //                GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(beaconPrefab);
-    //                obj.transform.position = GridToWorld(pos, tileSize);
-    //                obj.name = $"SpawnBeacon_{pos.x}_{pos.y}_{pos.z}";
-    //                spawnedBeacons[pos] = obj;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            Debug.LogWarning("Beacon prefab not found in Resources folder while loading Map!");
-    //        }
-    //    }
-    //}
+        // --- NEW: Sync Camera Config after everything is loaded ---
+        SyncCameraFromMap();
+    }
 
     private void SyncDictionaryFromScene()
     {

@@ -57,6 +57,15 @@ public class MapData : ScriptableObject
     public Difficulty difficultyLevel = Difficulty.Easy; // --- NEW: Difficulty Assignment ---
     public Vector3 environmentSpawnpoint;
 
+    // --- NEW: Camera Config ---
+    [Header("Camera Configuration")]
+    public bool overrideCameraSettings = false;
+    public Vector3 cameraPosition;
+    public Vector3 cameraRotation;
+    public float cameraZoom = 60f;
+    public bool isOrthographic = false;
+    public float orthographicSize = 5f;
+
     public GameObject fixedDeity; 
 
     public GameObject RetrieveDeity()

@@ -33,6 +33,17 @@ public partial class MapEditorWindow
             }
         }
 
+        // --- NEW: Bypass tool logic if we are in Select/View mode ---
+        bool isAnyToolActive = isPlacingTile || isPlacingDecoration || isPlacingInteractable || isPlacingUnit || isDeletingTile || isBucketMode;
+        if (!isAnyToolActive)
+        {
+            // Keep drawing the visual grid, but skip eating the mouse events, 
+            // returning control to Unity's default selection & Gizmo system.
+            DrawGrid(); 
+            return;
+        }
+        // -------------------------------------------------------------
+
         // --- TEMPORARY RIGHT-CLICK DELETE OVERRIDE ---
         if (e.type == EventType.MouseDown && e.button == 1 && !e.alt)
         {

@@ -17,7 +17,17 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        ApplyGeneralCameraSettings();
+        // Check if GridManager has an active map with an override
+        var mapData = GridManager.Instance != null ? GridManager.Instance.currentMapData : null;
+        
+        if (mapData != null && mapData.overrideCameraSettings)
+        {
+            ApplyMapCameraSettings(mapData.cameraPosition, mapData.cameraRotation, mapData.cameraZoom, mapData.isOrthographic, mapData.orthographicSize);
+        }
+        else
+        {
+            ApplyGeneralCameraSettings();
+        }
     }
 
     private void Update()
@@ -64,6 +74,28 @@ public class CameraController : MonoBehaviour
         // Keep the original references updated so battle camera reset works correctly
         _originalCameraPosition = _cameras[0].transform.position;
         _originalZoomAmount = _cameras[0].fieldOfView;
+    }
+
+    public void ApplyMapCameraSettings(Vector3 position, Vector3 rotation, float zoom, bool isOrtho, float orthoSize)
+    {
+        if (_cameras == null || _cameras.Count == 0) return;
+
+        foreach (var cam in _cameras)
+        {
+            // Detach positioning so parent wrappers don't skew vectors
+            cam.transform.position = position;
+            cam.transform.eulerAngles = rotation;
+            cam.orthographic = isOrtho;
+            
+            if (isOrtho) {
+                cam.orthographicSize = orthoSize;
+            } else {
+                cam.fieldOfView = zoom;
+            }
+        }
+
+        _originalCameraPosition = _cameras[0].transform.position;
+        _originalZoomAmount = isOrtho ? _cameras[0].orthographicSize : _cameras[0].fieldOfView;
     }
 
     [ContextMenu("Save Current Camera To Settings")]
