@@ -518,7 +518,13 @@ public class OverworldMapGenerator : MonoBehaviour
                 gameStatsManager.SaveCurrentNodeId(currentNodeId);
             }
 
-            // --- TRIGER DEITY MOVEMENT ---
+            // --- INCREASE CALENDAR DAY ---
+            if (OverworldMapManager.Instance != null && OverworldMapManager.Instance.CalendarController != null)
+            {
+                OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(1);
+            }
+
+            // --- TRIGGER DEITY MOVEMENT ---
             if (deityController != null)
             {
                 deityController.OnPlayerMoved(currentNodeId);
