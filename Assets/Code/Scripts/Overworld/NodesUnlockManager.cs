@@ -27,7 +27,7 @@ public class NodesUnlockManager : MonoBehaviour
     {
         if (IsLevelKeyAvailable() == false)
             return;
-        DisplayNodeUnlockedMessage();
+        //DisplayNodeUnlockedMessage();
         //SpendKeyResource();
         GenerateNode();
         UpdateKeyNumberOnUI();
@@ -70,26 +70,28 @@ public class NodesUnlockManager : MonoBehaviour
     }
     private void GenerateNode()
     {
-        MeshRenderer existingMesh = _nodeSpawnPoint.GetComponentInChildren<MeshRenderer>();
-        if (existingMesh != null)
-        {
-            Destroy(existingMesh.gameObject);
-        }
+        //MeshRenderer existingMesh = _nodeSpawnPoint.GetComponentInChildren<MeshRenderer>();
+        //if (existingMesh != null)
+        //{
+        //    Destroy(existingMesh.gameObject);
+        //}
 
-        // Notify Node Appearing
-        // Spawn the Node GameObject
-        GameObject unlockedNode = Instantiate(_mapNode, _nodeSpawnPoint);
-        // Add properties to it using Scriptable Object (hard-coded is OK for demo)
-        var nodeController = unlockedNode.GetComponent<MapNodeController>();
-        nodeController.currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
-        var enemySelection = unlockedNode.GetComponent<EnemySelection>();
-        enemySelection.enemyParty = _enemies;
-        enemySelection.mapData = _mapData;
+        //// Notify Node Appearing
+        //// Spawn the Node GameObject
+        //GameObject unlockedNode = Instantiate(_mapNode, _nodeSpawnPoint);
+        //// Add properties to it using Scriptable Object (hard-coded is OK for demo)
+        //var nodeController = unlockedNode.GetComponent<MapNodeController>();
+        //nodeController.currentLockStatus = MapNodeController.LockStatus.levelUnlocked;
+        //var enemySelection = unlockedNode.GetComponent<EnemySelection>();
+        //enemySelection.enemyParty = _enemies;
+        //enemySelection.mapData = _mapData;
     }
     public void SpendKeyResource()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
-        if (gameSaveData.gameFlowData.secretLevelUnlocked == true)
+        
+        // Removed the legacy secretLevelUnlocked check that was preventing the deduction
+        if (gameSaveData != null)
         {
             gameSaveData.resourceData.puzzleLevelKeys--;
             SaveStateManager.SaveGame(gameSaveData);
