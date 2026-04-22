@@ -32,12 +32,16 @@ public class StartGameController : MonoBehaviour
         saveFilePath = Path.Combine(Application.persistentDataPath, "gameSaveData.json");
         if (File.Exists(saveFilePath))
         {
-            return true;
+            GameSaveData gameSaveData = SaveStateManager.LoadGame();
+            
+            // Validate that we have actual progress to return to rather than a fresh save file.
+            if (gameSaveData.highestUnlockedLevel > 0 || gameSaveData.currentNodeId > 0 || gameSaveData.clearedNodesId.Count > 0)
+            {
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+        
+        return false;
     }
 
     public void NewGame()

@@ -10,17 +10,19 @@ public class GameExitHandler : MonoBehaviour
         // If running in the Unity Editor.
         UnityEditor.EditorApplication.isPlaying = false;
 #else
-            // If running as a built application
-            Application.Quit();
+        // If running as a built application
+        Application.Quit();
 #endif
     }
 
     // Loads the start screen scene.
     public void LoadStartScreen()
     {
+        // Resume game time in case we were paused in a menu
+        Time.timeScale = 1f;
+        
         DestroyCurrentGameManager();
         SceneManager.LoadScene("start_screen", LoadSceneMode.Single);
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
     }
 
     private void DestroyCurrentGameManager()
