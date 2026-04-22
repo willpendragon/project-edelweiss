@@ -55,13 +55,24 @@ public class BattleManager : MonoBehaviour
     }
     void Start()
     {
-        BeginBattle();
+        // Don't wait! Grab the enemies instantly on frame 1 so UI sliders can bind to them properly!
+        TrackEnemiesOnBattlefield();
+        
+        StartCoroutine(BeginBattleCoroutine());
     }
-    private void BeginBattle()
+
+    private System.Collections.IEnumerator BeginBattleCoroutine()
     {
+        yield return null; 
+
+        if (PixelCrushers.DialogueSystem.DialogueManager.isConversationActive)
+        {
+            yield return new WaitUntil(() => !PixelCrushers.DialogueSystem.DialogueManager.isConversationActive);
+        }
+
+        // Only flash the marquee and play sound AFTER dialogue clears!
         BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen(battleStartMessage);
         BattleSFXManager.PlaySound(SoundType.BATTLEBEGINS, 1);
-        TrackEnemiesOnBattlefield();
     }
     private void TrackEnemiesOnBattlefield()
     {

@@ -28,6 +28,9 @@ public class GameSaveData
 
     // Just add this to your class!
     public List<string> notifiedAchievements = new List<string>();
+
+    // NEW: Track achievement dialogues that have already been played during battle
+    public List<string> triggeredAchievementDialogues = new List<string>();
 }
 
 [System.Serializable]
