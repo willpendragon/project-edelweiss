@@ -84,12 +84,20 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     public bool CheckAttackRange(TileController attackerTile, TileController defenderTile)
     {
-        int distance = GetDistance(attackerTile, defenderTile);
-        bool inRange = distance <= meleeRange;
+        // 1. Calculate Manhattan distance purely on the horizontal plane
+        int horizontalDistance = Mathf.Abs(attackerTile.gridPosition.x - defenderTile.gridPosition.x) + 
+                                 Mathf.Abs(attackerTile.gridPosition.z - defenderTile.gridPosition.z);
+        
+        // 2. Check the elevation difference
+        int verticalDistance = Mathf.Abs(attackerTile.gridPosition.y - defenderTile.gridPosition.y);
+
+        // Valid if horizontally in range AND vertically adjacent (max 1 tile elevation difference)
+        bool inRange = horizontalDistance <= meleeRange && verticalDistance <= 1;
 
         Debug.Log(inRange
-            ? "Enemy is within attack range."
-            : "Enemy is out of attack range.");
+            ? $"Enemy is within attack range. (H-Dist: {horizontalDistance}, V-Dist: {verticalDistance})"
+            : $"Enemy is out of attack range. (H-Dist: {horizontalDistance}, V-Dist: {verticalDistance})");
+            
         return inRange;
     }
 
@@ -133,14 +141,14 @@ public class BumperEnemyBehavior : EnemyBehavior
         }
 
         // Backtrack the path until we find a finalized valid destination where we can stop
-        // e.g. If the final planned tile has a prize on it, trim the path slightly shorter.
         while (limitedPath.Count > 0)
         {
             TileController prospectiveDestination = limitedPath.Last();
             
             if (IsTileValidDestination(prospectiveDestination))
             {
-                MoveUnitToTile(enemyUnit, prospectiveDestination);
+                // Substitute the instant teleport with our step-by-step visual sequencer
+                AnimateMovementAlongPath(enemyUnit, limitedPath);
                 return true;
             }
             
@@ -152,6 +160,42 @@ public class BumperEnemyBehavior : EnemyBehavior
         return false;
     }
 
+    public void AnimateMovementAlongPath(Unit unit, List<TileController> path)
+    {
+        if (path == null || path.Count == 0) return;
+
+        TileController startTile = unit.ownedTile;
+        TileController destinationTile = path.Last();
+
+        // Instantly update logical coordinates
+        startTile.detectedUnit = null;
+        startTile.currentSingleTileCondition = SingleTileCondition.free;
+
+        unit.ownedTile = destinationTile;
+        destinationTile.detectedUnit = unit.gameObject;
+        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+
+        unit.currentXCoordinate = destinationTile.tileXCoordinate;
+        unit.currentYCoordinate = destinationTile.tileYCoordinate;
+
+        DG.Tweening.Sequence movementSequence = DG.Tweening.DOTween.Sequence();
+        float stepDelay = 0.05f; // Matches the exact yield WaitForSeconds from Player's FollowPath
+
+        foreach (TileController stepTile in path)
+        {
+            // Snap the unit to the tile exactly like the Player does
+            movementSequence.AppendCallback(() => 
+            {
+                GridManager.Instance.PlaceUnitOnTileSurface(unit.gameObject, stepTile);
+            });
+            
+            // Wait a tiny fraction of a second before the next step
+            movementSequence.AppendInterval(stepDelay);
+        }
+
+        Debug.Log($"Unit snap-animating along path to: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
+    }
+
     protected List<TileController> RetracePathToTarget(TileController startTile, TileController targetTile)
     {
         List<TileController> openSet = new List<TileController> { startTile };
@@ -161,11 +205,22 @@ public class BumperEnemyBehavior : EnemyBehavior
         startTile.hCost = GetDistance(startTile, targetTile);
         startTile.parent = null;
 
+        // Variables to remember the closest tile we could reach during the search
+        TileController bestTile = startTile;
+        int bestDistance = startTile.hCost;
+
         while (openSet.Count > 0)
         {
             TileController currentTile = openSet.OrderBy(tile => tile.FCost).First();
             openSet.Remove(currentTile);
             closedSet.Add(currentTile);
+
+            // Track the tile closest to the target in case the path is blocked
+            if (currentTile.hCost < bestDistance)
+            {
+                bestDistance = currentTile.hCost;
+                bestTile = currentTile;
+            }
 
             if (currentTile == targetTile)
             {
@@ -195,6 +250,14 @@ public class BumperEnemyBehavior : EnemyBehavior
             }
         }
 
+        // --- FALLBACK PARTIAL PATHING ---
+        // If the player is completely walled off (e.g., by an ally on the stairs),
+        // return the path routing us as close as possible instead of giving up!
+        if (bestTile != startTile)
+        {
+            return RetracePath(startTile, bestTile);
+        }
+
         Debug.LogWarning("No valid path found to the target.");
         return null;
     }
@@ -222,8 +285,14 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     private List<TileController> GetNeighbours(TileController tile)
     {
-        List<TileController> neighbors = new List<TileController>();
+        // Delegate pathfinding neighbor detection to the new 3D Voxel controller
+        if (GridManager.Instance != null && GridManager.Instance.gridMovementController != null)
+        {
+            return GridManager.Instance.gridMovementController.GetNeighbours(tile);
+        }
 
+        // Fallback for safety (Legacy 2D)
+        List<TileController> neighbors = new List<TileController>();
         int[,] offsets = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
         for (int i = 0; i < offsets.GetLength(0); i++)
@@ -253,18 +322,23 @@ public class BumperEnemyBehavior : EnemyBehavior
         destinationTile.detectedUnit = unit.gameObject;
         destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
 
-        unit.transform.position = GridManager.Instance.GetWorldPositionFromGridCoordinates(
-            destinationTile.tileXCoordinate, destinationTile.tileYCoordinate);
-        unit.transform.position += new Vector3(0, 0.5f, 0);
+        // FIX: Use Voxel-safe placement taking the exact physical Y position of the target block, 
+        // avoiding top-down raycast assumptions which mistakenly beamed units to the roof.
+        GridManager.Instance.PlaceUnitOnTileSurface(unit.gameObject, destinationTile);
+
         unit.currentXCoordinate = destinationTile.tileXCoordinate;
         unit.currentYCoordinate = destinationTile.tileYCoordinate;
 
-        Debug.Log($"Unit moved to tile: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
+        Debug.Log($"Unit moved to voxel block: ({destinationTile.gridPosition.x}, {destinationTile.gridPosition.y}, {destinationTile.gridPosition.z})");
     }
 
     private int GetDistance(TileController tileA, TileController tileB)
     {
-        return Mathf.Abs(tileA.tileXCoordinate - tileB.tileXCoordinate) +
-               Mathf.Abs(tileA.tileYCoordinate - tileB.tileYCoordinate);
+        int dstX = Mathf.Abs(tileA.gridPosition.x - tileB.gridPosition.x);
+        int dstZ = Mathf.Abs(tileA.gridPosition.z - tileB.gridPosition.z);
+        int dstY = Mathf.Abs(tileA.gridPosition.y - tileB.gridPosition.y);
+
+        // Strict Manhattan distance forces 4-way pathing without diagonal preferences
+        return dstX + dstZ + dstY;
     }
 }

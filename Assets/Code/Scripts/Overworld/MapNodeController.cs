@@ -162,7 +162,9 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     private void HandleRegularBattle()
     {
         NodesUnlockManager nodesUnlockManager = GameManager.Instance.NodesUnlockManager;
-        if (nodesUnlockManager.MapData.levelType == MapData.LevelType.Puzzle)
+        
+        // Use the controller's own node type to determine if it's a puzzle
+        if (type == NodeType.PuzzleBattle)
         {
             nodesUnlockManager.SpendKeyResource();
         }
