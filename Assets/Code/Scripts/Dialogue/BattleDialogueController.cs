@@ -17,7 +17,7 @@ public struct AchievementDialogueMapping
 public class BattleDialogueController : MonoBehaviour
 {
     [SerializeField] private DialogueSystemController _dialogueSystemController;
-    [SerializeField] private AchievementsManager _achievementsManager; // Reference the manager dynamically via inspector
+    [SerializeField] private AchievementsManager _achievementsManager; 
 
     [Header("Achievement Dialogues")]
     public List<AchievementDialogueMapping> achievementDialogues = new List<AchievementDialogueMapping>();
@@ -29,9 +29,13 @@ public class BattleDialogueController : MonoBehaviour
 
     private void CheckAndTriggerAchievementDialogues()
     {
-        if (_achievementsManager == null || _achievementsManager.allAchievements == null) return;
+        // Cancel out entirely if there isn't a deity spawned via an Achievement this battle!
+        if (_achievementsManager == null) return;
+        if (_achievementsManager.currentAchievement == null) return;
 
-        // Hook into existing GameSaveData
+        // The Deity HAS spawned! Let's get the specific achievement!
+        Achievement activeAchievement = _achievementsManager.currentAchievement;
+
         GameSaveData saveData = SaveStateManager.saveData;
 
         // Failsafe for older saves
@@ -40,27 +44,19 @@ public class BattleDialogueController : MonoBehaviour
             saveData.triggeredAchievementDialogues = new List<string>();
         }
 
-        foreach (var achievement in _achievementsManager.allAchievements)
+        // We know it's unlocked and successfully spawned. Check if we've seen the dialogue yet.
+        if (!saveData.triggeredAchievementDialogues.Contains(activeAchievement.achievementId))
         {
-            // If the achievement is completed AND the dialogue hasn't been shown yet
-            if (achievement.AchievementIsUnlocked() && !saveData.triggeredAchievementDialogues.Contains(achievement.achievementId))
+            var mapping = achievementDialogues.FirstOrDefault(m => m.achievementId == activeAchievement.achievementId);
+            
+            if (!string.IsNullOrEmpty(mapping.conversationTitle))
             {
-                // Check if we defined a specific dialogue mapping in the Inspector for this ID
-                var mapping = achievementDialogues.FirstOrDefault(m => m.achievementId == achievement.achievementId);
-                
-                if (!string.IsNullOrEmpty(mapping.conversationTitle))
-                {
-                    // Add to lists and immediately save to prevent repeating!
-                    saveData.triggeredAchievementDialogues.Add(achievement.achievementId);
-                    SaveStateManager.SaveGame(saveData);
+                // Add to list and immediately save to prevent repeating
+                saveData.triggeredAchievementDialogues.Add(activeAchievement.achievementId);
+                SaveStateManager.SaveGame(saveData);
 
-                    // Trigger the PixelCrushers Dialogue, which natively blocks player action.
-                    DialogueManager.StartConversation(mapping.conversationTitle);
-                    
-                    // We break out of the loop because we only want ONE dialogue popping up right now.
-                    // If multiple unlocked at once, the next one will queue up on the next battle!
-                    break;
-                }
+                // Trigger the PixelCrushers Dialogue, which natively blocks player action.
+                DialogueManager.StartConversation(mapping.conversationTitle);
             }
         }
     }
