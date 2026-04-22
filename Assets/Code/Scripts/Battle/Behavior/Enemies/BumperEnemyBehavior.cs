@@ -167,7 +167,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         TileController startTile = unit.ownedTile;
         TileController destinationTile = path.Last();
 
-        // 1. Instantly update logical coordinates so combat math evaluates correctly while moving
+        // Instantly update logical coordinates
         startTile.detectedUnit = null;
         startTile.currentSingleTileCondition = SingleTileCondition.free;
 
@@ -178,29 +178,22 @@ public class BumperEnemyBehavior : EnemyBehavior
         unit.currentXCoordinate = destinationTile.tileXCoordinate;
         unit.currentYCoordinate = destinationTile.tileYCoordinate;
 
-        // 2. Visually animate the unit step-by-step using a sequence
         DG.Tweening.Sequence movementSequence = DG.Tweening.DOTween.Sequence();
-        float stepDuration = 0.15f; // Fast, linear speed per tile (Into the Breach style)
+        float stepDelay = 0.05f; // Matches the exact yield WaitForSeconds from Player's FollowPath
 
         foreach (TileController stepTile in path)
         {
-            float finalY = stepTile.transform.position.y;
-            Collider col = stepTile.GetComponent<Collider>();
-            if (col != null)
+            // Snap the unit to the tile exactly like the Player does
+            movementSequence.AppendCallback(() => 
             {
-                finalY = col.bounds.max.y; // Correctly stand on the very top of each voxel block
-            }
-
-            Vector3 targetPos = new Vector3(
-                stepTile.transform.position.x,
-                finalY + 0.5f, // Maintain your existing Y visual offset
-                stepTile.transform.position.z
-            );
-
-            movementSequence.Append(unit.transform.DOMove(targetPos, stepDuration).SetEase(DG.Tweening.Ease.Linear));
+                GridManager.Instance.PlaceUnitOnTileSurface(unit.gameObject, stepTile);
+            });
+            
+            // Wait a tiny fraction of a second before the next step
+            movementSequence.AppendInterval(stepDelay);
         }
 
-        Debug.Log($"Unit animating along path to: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
+        Debug.Log($"Unit snap-animating along path to: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
     }
 
     protected List<TileController> RetracePathToTarget(TileController startTile, TileController targetTile)
