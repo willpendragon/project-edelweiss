@@ -120,11 +120,12 @@ public class GameManager : MonoBehaviour
 
     public void InstantiateUnits()
     {
-        // 1. Physically destroy any existing unit instances in the scene first
+        // 1. Physically destroy any existing unit instances in the scene first, BUT save their current stats!
         foreach (Unit instance in playerPartyMembersInstances)
         {
             if (instance != null && instance.gameObject != null)
             {
+                SaveUnitStats(instance); // Snapshot HP/Mana before destroying
                 Destroy(instance.gameObject);
             }
         }
@@ -138,10 +139,86 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < unitsToInstantiate; i++)
         {
             Unit newUnitInstance = Instantiate(playerPartyMembers[i], this.gameObject.transform);
+            
+            // 4. Inject the saved stats (HP, Mana, etc.) into the newly created prefab clone
+            LoadUnitStats(newUnitInstance);
+            
             playerPartyMembersInstances.Add(newUnitInstance); 
         }
         
         DeityLinkManager?.ApplyDeityLinks();
+    }
+
+    /// <summary>
+    /// Snapshots the current runtime state of a living Unit into the Save Data.
+    /// </summary>
+    private void SaveUnitStats(Unit unit)
+    {
+        GameSaveData saveData = SaveStateManager.saveData;
+        if (saveData == null || string.IsNullOrEmpty(unit.Id)) return;
+
+        CharacterData charData = saveData.characterData.Find(c => c.unitId == unit.Id);
+        if (charData == null)
+        {
+            charData = new CharacterData();
+            charData.unitId = unit.Id;
+            saveData.characterData.Add(charData);
+        }
+
+        // Keep snapshot of the dynamic combat stats
+        charData.unitHealthPoints = unit.unitHealthPoints;
+        charData.unitSavedManaPoints = unit.unitManaPoints;
+        charData.unitShieldPoints = unit.unitShieldPoints;
+        charData.unitLifeCondition = unit.currentUnitLifeCondition;
+        charData.unitOccupiedFoodSlots = unit.unitOccupiedFoodSlots;
+        
+        // Keep snapshot of the progression stats (in case of cafe upgrades)
+        charData.unitAttackPower = unit.unitAttackPower;
+        charData.unitMagicPower = unit.unitMagicPower;
+        charData.unitFaithPoints = unit.unitFaithPoints;
+
+        // Optionally force a file write here, though usually handled globally later
+    }
+
+    /// <summary>
+    /// Restores the snapshot of a unit from Save Data. If no snapshot exists, creates one from the base Template.
+    /// </summary>
+    private void LoadUnitStats(Unit unit)
+    {
+        // Force the unit to load its baseline stats from its template first.
+        // This guarantees things like MaxHP or Experience curves are fully initialized.
+        if (unit.unitTemplate != null)
+        {
+            unit.RetrieveTemplateValues();
+        }
+
+        GameSaveData saveData = SaveStateManager.saveData;
+        if (saveData == null || string.IsNullOrEmpty(unit.Id)) return;
+
+        CharacterData charData = saveData.characterData.Find(c => c.unitId == unit.Id);
+        if (charData != null)
+        {
+            // Overwrite the fresh template values with the saved runtime values
+            unit.unitHealthPoints = charData.unitHealthPoints;
+            unit.unitManaPoints = charData.unitSavedManaPoints;
+            unit.unitShieldPoints = charData.unitShieldPoints;
+            unit.currentUnitLifeCondition = charData.unitLifeCondition;
+            unit.unitOccupiedFoodSlots = charData.unitOccupiedFoodSlots;
+
+            // If upgraded mid-run, apply the stronger base values too
+            if (charData.unitAttackPower > 0) unit.unitAttackPower = charData.unitAttackPower;
+            if (charData.unitMagicPower > 0) unit.unitMagicPower = charData.unitMagicPower;
+            if (charData.unitFaithPoints > 0) unit.unitFaithPoints = charData.unitFaithPoints;
+
+            // Force visual HP bar updates UI event checks
+            unit.onHealthChanged?.Invoke(unit.unitHealthPoints);
+        }
+        else
+        {
+            // This is the absolute first time this unit was ever spawned in this Save File scenario.
+            // Take the fresh Template baseline and register it in the Save memory!
+            SaveUnitStats(unit);
+        }
     }
 
     public List<Vector2Int> GetPlayerStartingCoordinates()
