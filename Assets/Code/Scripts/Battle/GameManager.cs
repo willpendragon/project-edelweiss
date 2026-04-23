@@ -44,18 +44,24 @@ public class GameManager : MonoBehaviour
     {
     }
 
+    // Determine the max active party size
+    public const int MaxActivePartySize = 3;
+
     // This can be separated in a class that manages the Units
     public void InstantiateUnits()
     {
         // Clear the existing instances list
         playerPartyMembersInstances.Clear();
 
-        // Go through all the prefabs and instantiate them
-        foreach (var unitPrefab in playerPartyMembers)
+        // Limit the instantiation to our max active party size
+        int unitsToInstantiate = Mathf.Min(MaxActivePartySize, playerPartyMembers.Count);
+
+        for (int i = 0; i < unitsToInstantiate; i++)
         {
-            Unit newUnitInstance = Instantiate(unitPrefab, this.gameObject.transform);
+            Unit newUnitInstance = Instantiate(playerPartyMembers[i], this.gameObject.transform);
             playerPartyMembersInstances.Add(newUnitInstance); // Add the new instance to the list
         }
+        
         DeityLinkManager.ApplyDeityLinks();
     }
 

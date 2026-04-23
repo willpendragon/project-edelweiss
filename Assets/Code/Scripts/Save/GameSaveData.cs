@@ -31,6 +31,10 @@ public class GameSaveData
 
     // NEW: Track achievement dialogues that have already been played during battle
     public List<string> triggeredAchievementDialogues = new List<string>();
+
+    // ADD THESE TO YOUR GameSaveData CLASS
+    public List<string> activePartyUnitIds = new List<string>();
+    public List<string> availablePartyUnitIds = new List<string>();
 }
 
 [System.Serializable]
