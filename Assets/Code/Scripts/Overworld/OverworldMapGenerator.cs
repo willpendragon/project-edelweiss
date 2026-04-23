@@ -58,7 +58,7 @@ public class OverworldMapGenerator : MonoBehaviour
 
     // --- Variabili per il tracciamento e la distruzione ---
     private Domain currentDomain;
-    private List<GameObject> spawnedNodes = new List<GameObject>();
+    public List<GameObject> spawnedNodes { get; private set; } = new List<GameObject>();
     private List<GameObject> spawnedPartyIcons = new List<GameObject>();
     private List<GameObject> spawnedLines = new List<GameObject>();
     private bool needsRegeneration = false;
@@ -480,6 +480,7 @@ public class OverworldMapGenerator : MonoBehaviour
         isMoving = true;
         
         GameStatsManager gameStatsManager = FindAnyObjectByType<GameStatsManager>();
+        RoamingDeityController deityController = FindAnyObjectByType<RoamingDeityController>();
 
         for (int i = 1; i < path.Count; i++) // Starts from 1 assuming 0 is actual Start Position.
         {
@@ -515,6 +516,21 @@ public class OverworldMapGenerator : MonoBehaviour
             if (gameStatsManager != null)
             {
                 gameStatsManager.SaveCurrentNodeId(currentNodeId);
+            }
+
+            // --- INCREASE CALENDAR DAY ---
+            if (OverworldMapManager.Instance != null && OverworldMapManager.Instance.CalendarController != null)
+            {
+                OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(1);
+            }
+
+            // --- TRIGGER DEITY MOVEMENT ---
+            if (deityController != null)
+            {
+                deityController.OnPlayerMoved(currentNodeId);
+                
+                // Optional: add a tiny visual delay if you want the deity to move visibly right after the player stats
+                yield return new WaitForSeconds(0.6f); 
             }
         }
 
