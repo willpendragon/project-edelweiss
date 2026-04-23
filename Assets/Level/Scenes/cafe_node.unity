@@ -3457,6 +3457,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   conversations: []
+  _lastUnlockedConversation: 
+  _convoIndex: 0
 --- !u!4 &858207350
 Transform:
   m_ObjectHideFlags: 0
@@ -4982,6 +4984,50 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.625, y: 1.9375, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1311573282
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1311573283}
+  - component: {fileID: 1311573284}
+  m_Layer: 0
+  m_Name: Garrison_Debug
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1311573283
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311573282}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1311573284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311573282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6e50c97f46e8e2489924c1fc090088d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1322132442 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3697044651397847791, guid: 70bff9b8392642945818fd41c81090c7, type: 3}
@@ -7405,6 +7451,10 @@ MonoBehaviour:
   timesSingleTargetSpellWasUsed: 0
   captureCrystalsCount: 0
   unlockedPuzzleKeys: 0
+  hasMinibossKey: 0
+  hasBossKey: 0
+  _secretLevelUnlocked: 0
+  currentNodeId: 0
   inventory: {fileID: 0}
   faithController: {fileID: 0}
   _turnController: {fileID: 0}
@@ -10638,3 +10688,4 @@ SceneRoots:
   - {fileID: 1176570680}
   - {fileID: 816288962}
   - {fileID: 1941949564}
+  - {fileID: 1311573283}
