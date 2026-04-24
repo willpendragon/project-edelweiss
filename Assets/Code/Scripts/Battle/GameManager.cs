@@ -67,26 +67,24 @@ public class GameManager : MonoBehaviour
     {
         GameSaveData currentSave = SaveStateManager.saveData;
 
-        // Ensure we have a master list to draw from
         if (allUnitMasterList == null || allUnitMasterList.Count == 0)
         {
             Debug.LogWarning("GameManager allUnitMasterList is empty! Assign all Unit prefabs in the Inspector.");
             return;
         }
 
-        // If the save file has party data, overwrite the default roster
         if (currentSave != null && (currentSave.activePartyUnitIds.Count > 0 || currentSave.availablePartyUnitIds.Count > 0))
         {
             playerPartyMembers.Clear();
 
-            // Load Active slots first (Ensures they are at indices 0, 1, 2)
+            // Load Active slots
             foreach (string activeId in currentSave.activePartyUnitIds)
             {
                 Unit foundPref = allUnitMasterList.Find(u => u.Id == activeId);
                 if (foundPref != null) playerPartyMembers.Add(foundPref);
             }
 
-            // Load the rest of the available recruits
+            // Load Recruits
             foreach (string availId in currentSave.availablePartyUnitIds)
             {
                  Unit foundPref = allUnitMasterList.Find(u => u.Id == availId);
@@ -98,24 +96,9 @@ public class GameManager : MonoBehaviour
             
             Debug.Log("GameManager loaded custom party configuration from Save Data.");
         }
-
-        // --- NEW SAFETY / AUTO-ADD LOGIC ---
-        // Ensure any new units added to allUnitMasterList that aren't in the save file (or default trinity)
-        // gracefully populate into the available roster! If they aren't locked, they appear automatically.
-        foreach (Unit masterUnit in allUnitMasterList)
-        {
-            if (masterUnit != null && !playerPartyMembers.Contains(masterUnit))
-            {
-                // NOTE: If you later implement a global "Unlocked/Locked" state check, wrap this add inside an 'if (isUnlocked)'
-                playerPartyMembers.Add(masterUnit);
-                
-                // Immediately push to save data to keep it perfectly synced for next boot
-                if (currentSave != null)
-                {
-                    currentSave.availablePartyUnitIds.Add(masterUnit.Id);
-                }
-            }
-        }
+        
+        // WE DELETED THE AUTO-ADD LOOP HERE.
+        // If a character is in the master list but not in the save file, they remain hidden/locked!
     }
 
     public void InstantiateUnits()
