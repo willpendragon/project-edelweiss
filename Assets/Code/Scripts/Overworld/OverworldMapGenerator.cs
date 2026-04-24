@@ -539,30 +539,70 @@ public class OverworldMapGenerator : MonoBehaviour
 
     private void UpdatePartyMemberVisuals(GameObject mapNode)
     {
+        // 0. FETCH ACTIVE PARTY FROM GAMEMANAGER
+        List<GameObject> dynamicPartyIcons = new List<GameObject>();
+        if (GameManager.Instance != null && GameManager.Instance.playerPartyMembers.Count > 0)
+        {
+            // Only spawn up to the active party cap (3)
+            int limit = Mathf.Min(GameManager.MaxActivePartySize, GameManager.Instance.playerPartyMembers.Count);
+            for (int i = 0; i < limit; i++)
+            {
+                dynamicPartyIcons.Add(GameManager.Instance.playerPartyMembers[i].gameObject);
+            }
+        }
+        else
+        {
+            // Fallback to inspector array if playing scene directly without bootup
+            dynamicPartyIcons.AddRange(partyMemberIcons);
+        }
+
         Vector3 partyMemberIconPosition = mapNode.transform.position + new Vector3(0, 0, iconZOffset);
         float horizontalOffset = 2; 
-        float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f; 
+        float startOffset = -(dynamicPartyIcons.Count - 1) * horizontalOffset * 0.5f; 
 
-        for (int j = 0; j < partyMemberIcons.Length; j++)
+        // Cache the required Layer integer natively to avoid string lookups in the loop
+        int unitMapIconLayer = LayerMask.NameToLayer("UnitMapIcon");
+
+        for (int j = 0; j < dynamicPartyIcons.Count; j++)
         {
+            if (dynamicPartyIcons[j] == null) continue;
+
             Vector3 offsetPosition = new Vector3(startOffset + horizontalOffset * j, 0, 0);
             
             // 1. Create an empty wrapper GameObject to act as our uncontested move target
-            GameObject iconWrapper = new GameObject($"PartyIconWrapper_{j}");
+            GameObject iconWrapper = new GameObject($"PartyIconWrapper_{dynamicPartyIcons[j].name}");
             iconWrapper.transform.position = partyMemberIconPosition + offsetPosition;
 
             // 2. Instantiate the prefab DIRECTLY as a local child. 
-            // Passing 'false' prevents World-to-Local conversion mathematical jumps when the Animator activates.
-            GameObject newIcon = Instantiate(partyMemberIcons[j], iconWrapper.transform, false);
+            GameObject newIcon = Instantiate(dynamicPartyIcons[j], iconWrapper.transform, false);
 
-            // 3. Defensively disable root motion so Animator curves only govern local graphical bounce/sway, not physics.
+            // Optional cleanup: Ensure the prefab instance behaves strictly as an UI prop!
+            var unitScript = newIcon.GetComponent<Unit>();
+            if (unitScript != null) Destroy(unitScript);
+
+            // 3. Defensively disable root motion so Animator curves only govern local graphical bounce/sway
             Animator[] animators = newIcon.GetComponentsInChildren<Animator>();
             foreach (var anim in animators)
             {
                 anim.applyRootMotion = false;
             }
             
-            // 4. Track the wrapper so DOTween moves it instead of the animated child
+            // 4. --- NEW: FORCE LAYER TO 'UnitMapIcon' FOR VISIBILITY ---
+            if (unitMapIconLayer != -1) // Ensure the layer actually exists in the project
+            {
+                newIcon.layer = unitMapIconLayer;
+                // Recursively set all child objects (e.g., meshes, weapons, models) to the layer
+                foreach (Transform child in newIcon.GetComponentsInChildren<Transform>(true))
+                {
+                    child.gameObject.layer = unitMapIconLayer;
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[OverworldMapGenerator] Layer 'UnitMapIcon' does not exist in your project settings!");
+            }
+            
+            // 5. Track the wrapper so DOTween moves it instead of the animated child
             spawnedPartyIcons.Add(iconWrapper);
         }
     }
