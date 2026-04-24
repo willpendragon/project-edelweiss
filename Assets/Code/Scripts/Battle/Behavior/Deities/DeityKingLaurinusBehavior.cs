@@ -84,10 +84,25 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         }
 
         TileController[] gridTiles = ExtractRandomTiles();
+        GameObject effectPrefab = Resources.Load<GameObject>("KingLaurinusOccupiedTileEffect");
+
         foreach (var tile in gridTiles)
         {
             tile.currentTileCurseStatus = TileCurseStatus.cursed;
-            Instantiate(Resources.Load("KingLaurinusOccupiedTileEffect"), tile.transform);
+
+            if (effectPrefab != null)
+            {
+                GameObject effectInstance = Instantiate(effectPrefab, tile.transform);
+                
+                // Keep it anchored to the tile center with a 0.52 Y offset
+                effectInstance.transform.localPosition = new Vector3(0f, 0.52f, 0f); 
+                
+                // Rotate 90 degrees on the X-axis to lie flat on the 3D ground
+                effectInstance.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                
+                // Scale uniform to 2.5 fitting the new 3D tile size
+                effectInstance.transform.localScale = new Vector3(2.5f, 2.5f, 2.5f);
+            }
         }
         BattleInterface.Instance.SetDeityNotification($"Deity {deityName}'s Curse spreads");
     }
