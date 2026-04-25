@@ -167,7 +167,8 @@ public partial class MapEditorWindow : EditorWindow
             TileType.Basic,
             TileType.Chest,
             TileType.MinibossChest,
-            TileType.BossChest
+            TileType.BossChest,
+            TileType.DeityTile // <-- Add this here
         };
 
         // 2. Convert them to string arrays for the Editor UI

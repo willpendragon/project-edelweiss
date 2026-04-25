@@ -37,7 +37,8 @@ public enum TileType
     MinibossChest,
     BossChest,
     Environment, // <-- NEW: Used for solid decorative tiles
-    Beacon
+    Beacon,
+    DeityTile
 }
 
 public enum TileElement // Such properties could be moved in an SO.

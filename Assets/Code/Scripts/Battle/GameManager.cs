@@ -217,6 +217,21 @@ public class GameManager : MonoBehaviour
 
     public Vector2Int GetDeityStartingCoordinates()
     {
+        // Intercept from gridMapDictionary instead of gridTileControllers to avoid Star/Awake race conditions!
+        if (GridManager.Instance != null && GridManager.Instance.gridMapDictionary != null)
+        {
+            foreach (var tile in GridManager.Instance.gridMapDictionary.Values)
+            {
+                if (tile.tileType == TileType.DeityTile)
+                {
+                    // Accessing gridPosition directly is safer since MapData paints via gridPosition
+                    // X maps to horizontal, Z maps to the logical map 'Y' depth
+                    return new Vector2Int(tile.gridPosition.x, tile.gridPosition.z);
+                }
+            }
+        }
+        
+        // Fallback hard-coded default if DeityTile is absent
         return new Vector2Int(5, 5);
     }
 

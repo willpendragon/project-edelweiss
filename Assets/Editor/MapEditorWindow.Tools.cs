@@ -212,10 +212,9 @@ public partial class MapEditorWindow
         else if (type == TileType.Chest) c = new Color(0.5f, 0.0f, 0.8f, 1f);
         else if (type == TileType.MinibossChest) c = Color.yellow;
         else if (type == TileType.BossChest) c = Color.red;
+        else if (type == TileType.DeityTile) c = Color.magenta; // <-- NEW
         else if (type == TileType.Beacon)
         {
-            // REMOVED c = Color.cyan; -> The tile will remain a normal uncolored base tile.
-            
             // Load and spawn the actual Beacon prefab for editor visualization
             GameObject beaconPrefab = Resources.Load<GameObject>("Beacon");
             if (beaconPrefab != null)
