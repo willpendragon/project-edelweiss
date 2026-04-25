@@ -127,7 +127,12 @@ public class PhysicalAttackBehavior : ScriptableObject
         // If we found a valid empty tile before hitting the wall (ex: knocked 1 tile, then hit a wall on the 2nd)
         if (finalDestinationTile != null && validGridPos != defenderPos)
         {
-            if (defender.MoveUnit(validGridPos.x, validGridPos.z, true) && defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+            // If the unit died from the hit, clean up the destination tile's visual feedback
+            if (defender.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+            {
+                finalDestinationTile.tileShaderController.ResetEnemyTileFeedback();
+            }
+            else if (defender.MoveUnit(validGridPos.x, validGridPos.z, true))
             {
                 defender.ownedTile.detectedUnit = null;
                 defender.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
