@@ -1,52 +1,89 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SimildeBehavior", menuName = "DeityBehavior/Similde")]
 public class DeitySimildeBehavior : DeityBehavior
 {
     private string deityName = "Similde";
+    private System.Random localRandom;
 
     public override void ExecuteBehavior(Deity deity)
     {
         Debug.Log("Deity is acting");
-        // Scan the Grid
-        var tileList = GridManager.Instance.gridTileControllers;
-        // Roll two random numbers
-        int randomTileIndex = Random.Range(1, tileList.Length);
-        TileController randomTile = tileList[randomTileIndex];
-        List<TileController> randomTiles = GridManager.Instance.gridMovementController.GetNeighbours(randomTile);
-        List<TileController> finalList = new List<TileController>(randomTiles);
+        
+        if (localRandom == null)
+            localRandom = new System.Random();
+            
+        // Helper: Quick way to verify if a tile is corrupted by a decoration object
+        bool IsDecoration(TileController t)
+        {
+            // Check if the tile's own GameObject holds the tag
+            if (t.gameObject.CompareTag("DecorationEnvironment")) return true;
+            
+            // Check if there is an object sitting on the tile that holds the tag
+            if (t.detectedUnit != null && t.detectedUnit.CompareTag("DecorationEnvironment")) return true;
+
+            return false;
+        }
+            
+        // 1. Filter out nulls, occupied tiles, ALREADY frozen tiles, and explicitly tagged Decorations
+        var allTiles = GridManager.Instance.gridTileControllers;
+        var validTiles = allTiles.Where(t => 
+            t != null && 
+            t.tileType == TileType.Basic && // Strictly only normal floor tiles
+            t.currentSingleTileCondition == SingleTileCondition.free && 
+            t.detectedUnit == null &&
+            t.tileElement != TileElement.Ice && // CRITICAL: Do not enchant tiles that are already iced!
+            !IsDecoration(t) // Ignore explicit DecorationEnvironment tags
+        ).ToList();
+
+        if (validTiles.Count == 0)
+        {
+            Debug.LogWarning("Similde couldn't find any valid free/unfrozen tiles to enchant.");
+            return;
+        }
+
+        // 2. Pick a random valid center tile
+        int randomTileIndex = localRandom.Next(validTiles.Count);
+        TileController randomTile = validTiles[randomTileIndex];
+        
+        // 3. Get neighbors and safely handle nulls/grid holes
+        List<TileController> rawNeighbors = GridManager.Instance.gridMovementController.GetNeighbours(randomTile);
+        List<TileController> finalList = new List<TileController>();
+        
+        if (rawNeighbors != null)
+        {
+            finalList.AddRange(rawNeighbors);
+        }
         finalList.Add(randomTile);
 
-        // Load prefab once before the loop
+        // 4. Sanitize the blast radius using the exact same aggressive filtering
+        var sanitizedList = finalList.Where(t => 
+            t != null && 
+            t.tileType == TileType.Basic && 
+            t.currentSingleTileCondition == SingleTileCondition.free && 
+            t.detectedUnit == null &&
+            t.tileElement != TileElement.Ice &&
+            !IsDecoration(t)
+        ).ToList();
+
+        // 5. Apply the VFX
         GameObject effectPrefab = Resources.Load<GameObject>("SimildePossessedTile");
-        int enchantedCount = 0; // Track how many valid tiles actually got enchanted
+        int enchantedCount = 0;
 
-        foreach (var tile in finalList)
+        foreach (var tile in sanitizedList)
         {
-            // Skip decorations, obstacles, chests, and solid things.
-            // Only enchant Basic tiles (or add others if you consider them valid targets).
-            if (tile.tileType == TileType.Environment || tile.tileType == TileType.Obstacle)
-            {
-                Debug.Log($"Skipped {tile.gameObject.name} because it is type {tile.tileType}");
-                continue;
-            }
-
             if (effectPrefab != null)
             {
                 GameObject effectInstance = Instantiate(effectPrefab, tile.transform);
                 
-                // Keep the Y-offset of 0.52 to ensure it sits safely above the floor
                 effectInstance.transform.localPosition = new Vector3(0f, 0.52f, 0f); 
-                
-                // Rotate exactly 90 degrees on the X-axis
                 effectInstance.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-                
-                // Scale uniform to exactly 0.5
                 effectInstance.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             }
 
-            Debug.Log($"Randomly picked {tile.gameObject.name} at {tile.tileXCoordinate}, {tile.tileYCoordinate}");
+            Debug.Log($"Similde enchanted {tile.gameObject.name} at {tile.tileXCoordinate}, {tile.tileYCoordinate}");
             tile.tileElement = TileElement.Ice;
             enchantedCount++;
         }

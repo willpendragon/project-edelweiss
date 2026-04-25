@@ -130,15 +130,11 @@ public class RockEnemyBehavior : BumperEnemyBehavior
         if (fullPath == null || fullPath.Count == 0) return;
 
         // Uses property from BumperEnemyBehavior
-        // movementLimit is private in BumperEnemy, you might need to make it protected as well:
-        // [SerializeField] protected int movementLimit = 4; 
-        // For now, if you get an error accessing movementLimit, update BumperEnemyBehavior.movementLimit to protected.
-        List<TileController> limitedPath = LimitPath(fullPath, 4, targetTile); // Replace 4 with movementLimit if made protected
+        // By default we use 4, ideally this should pull from a protected movementLimit in the base class.
+        List<TileController> limitedPath = LimitPath(fullPath, 4, targetTile); 
 
-        if (limitedPath.Count > 0 && limitedPath.Last() == targetTile)
-        {
-            limitedPath.RemoveAt(limitedPath.Count - 1);
-        }
+        // REMOVED: In standard Enemy AI, the last tile is removed because it belongs to the player. 
+        // Here, the target is an environmental tile, so we MUST land exactly on it! We do NOT remove the last index.
 
         // Backtrack to find a valid tile that isn't occupied by a prize or unit
         while (limitedPath.Count > 0)
@@ -147,7 +143,8 @@ public class RockEnemyBehavior : BumperEnemyBehavior
             
             if (IsTileValidDestination(prospectiveDestination))
             {
-                MoveUnitToTile(enemyUnit, prospectiveDestination);
+                // Substitute the instant teleport with your new 3D step-by-step visual sequencer
+                AnimateMovementAlongPath(enemyUnit, limitedPath);
 
                 // Check if the destination we actually landed on matches the elemental tile we wanted
                 if (prospectiveDestination.tileElement == targetTile.tileElement)
