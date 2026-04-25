@@ -18,19 +18,23 @@ public partial class MapEditorWindow : EditorWindow
     private GameObject decorationPrefab;
     private GameObject unitPrefab;
     private GameObject interactablePrefab;
+    private GameObject enemyPrefab;
 
     public List<GameObject> decorationPrefabs = new List<GameObject>();
     public List<GameObject> unitPrefabs = new List<GameObject>();
     public List<GameObject> interactablePrefabs = new List<GameObject>();
+    public List<GameObject> enemyPrefabs = new List<GameObject>();
 
     private SerializedObject _so;
     private SerializedProperty _decorationsProp;
     private SerializedProperty _unitsProp;
     private SerializedProperty _interactablesProp;
+    private SerializedProperty _enemiesProp;
 
     private int _selectedDecorationIndex = 0;
     private int _selectedUnitIndex = 0;
     private int _selectedInteractableIndex = 0;
+    private int _selectedEnemyIndex = 0;
 
     // --- UI SCROLLS ---
     private Vector2 _decorScrollPos;
@@ -38,6 +42,7 @@ public partial class MapEditorWindow : EditorWindow
     private Vector2 _interactableScrollPos;
     private Vector2 _beaconScrollPos;
     private Vector2 _mainScrollPos; 
+    private Vector2 _enemyScrollPos;
 
     // --- STATE ---
     private MapData currentMap;
@@ -47,11 +52,13 @@ public partial class MapEditorWindow : EditorWindow
     private Dictionary<Vector3Int, GameObject> decorations = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> spawnedUnits = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> spawnedInteractables = new Dictionary<Vector3Int, GameObject>();
+    private Dictionary<Vector3Int, GameObject> spawnedEnemies = new Dictionary<Vector3Int, GameObject>();
 
     private bool isPlacingTile = false;
     private bool isPlacingDecoration = false;
     private bool isPlacingUnit = false;
     private bool isPlacingInteractable = false;
+    private bool isPlacingEnemy = false;
     private bool isDeletingTile = false;
     private bool isBucketMode = false;
     private bool clearOnClose = false;
@@ -85,6 +92,7 @@ public partial class MapEditorWindow : EditorWindow
         _decorationsProp = _so.FindProperty("decorationPrefabs");
         _unitsProp = _so.FindProperty("unitPrefabs");
         _interactablesProp = _so.FindProperty("interactablePrefabs");
+        _enemiesProp = _so.FindProperty("enemyPrefabs");
 
         LoadDecoPrefabsFromPrefs();
         SyncDictionaryFromScene();
@@ -144,6 +152,7 @@ public partial class MapEditorWindow : EditorWindow
         DrawPrefabPool("Decoration Pool", ref _decorationsProp, decorationPrefabs, ref _selectedDecorationIndex, ref decorationPrefab, ref _decorScrollPos, SaveDecoPrefabsToPrefs);
         DrawPrefabPool("Player Units Pool", ref _unitsProp, unitPrefabs, ref _selectedUnitIndex, ref unitPrefab, ref _unitScrollPos, SaveUnitPrefabsToPrefs);
         DrawPrefabPool("Interactables Pool", ref _interactablesProp, interactablePrefabs, ref _selectedInteractableIndex, ref interactablePrefab, ref _interactableScrollPos, SaveInteractablePrefabsToPrefs);
+        DrawPrefabPool("Enemy Units Pool", ref _enemiesProp, enemyPrefabs, ref _selectedEnemyIndex, ref enemyPrefab, ref _enemyScrollPos, SaveEnemyPrefabsToPrefs);
 
         EditorGUILayout.Space();
 
@@ -228,18 +237,24 @@ public partial class MapEditorWindow : EditorWindow
         EditorGUILayout.Space();
         if (GUILayout.Button("Generate/Clear Map")) GenerateMap();
 
-        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.Space();
         
-        // --- NEW: Select/View Mode to allow gizmo manipulation ---
-        bool isSelectMode = !isPlacingTile && !isPlacingInteractable && !isPlacingDecoration && !isPlacingUnit && !isDeletingTile;
+        // Update Select check to include enemy mode
+        bool isSelectMode = !isPlacingTile && !isPlacingInteractable && !isPlacingDecoration && !isPlacingUnit && !isPlacingEnemy && !isDeletingTile;
+        
+        // --- BUTTON ROW 1 ---
+        EditorGUILayout.BeginHorizontal();
         if (GUILayout.Toggle(isSelectMode, "Select / View", "Button")) { SetMode(); } 
-
         if (GUILayout.Toggle(isPlacingTile, "Paint Tile", "Button")) { SetMode(tile: true); }
         if (GUILayout.Toggle(isPlacingInteractable, "Paint Interactable", "Button")) { SetMode(interactable: true); }
         if (GUILayout.Toggle(isPlacingDecoration, "Paint Decoration", "Button")) { SetMode(deco: true); }
-        if (GUILayout.Toggle(isPlacingUnit, "Paint Unit", "Button")) { SetMode(unit: true); }
-        if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { SetMode(delete: true); }
+        EditorGUILayout.EndHorizontal();
 
+        // --- BUTTON ROW 2 ---
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Toggle(isPlacingUnit, "Paint Player", "Button")) { SetMode(unit: true); }
+        if (GUILayout.Toggle(isPlacingEnemy, "Paint Enemy", "Button")) { SetMode(enemy: true); } // Correctly positioned
+        if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { SetMode(delete: true); }
         isBucketMode = GUILayout.Toggle(isBucketMode, "Bucket Fill (B)", "Button");
         EditorGUILayout.EndHorizontal();
 
@@ -263,16 +278,17 @@ public partial class MapEditorWindow : EditorWindow
     }
 
     // The bucket toggle is passed so it correctly enables/disables without affecting other tools
-    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool interactable = false, bool delete = false, bool bucket = false)
+    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool enemy = false, bool interactable = false, bool delete = false, bool bucket = false)
     {
         isPlacingTile = tile;
         isPlacingDecoration = deco;
         isPlacingUnit = unit;
-        isPlacingInteractable = interactable; // <--- Maps correctly now
+        isPlacingEnemy = enemy; // <-- NEW
+        isPlacingInteractable = interactable;
         isDeletingTile = delete;
 
         if (bucket) isBucketMode = true;
-        else if (!tile && !deco && !unit && !interactable && !delete) isBucketMode = false;
+        else if (!tile && !deco && !unit && !enemy && !interactable && !delete) isBucketMode = false;
     }
 
     private void DrawPrefabPool(string label, ref SerializedProperty prop, List<GameObject> prefabs, ref int index, ref GameObject activePrefab, ref Vector2 scroll, System.Action saveCallback)

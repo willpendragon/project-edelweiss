@@ -47,6 +47,7 @@ public class MapData : ScriptableObject
     public List<DecorationData> decorationPositions = new List<DecorationData>();
     public List<SpawnData> playerSpawnPositions = new List<SpawnData>();
     public List<SpawnData> interactablePositions = new List<SpawnData>(); 
+    public List<SpawnData> enemySpawnPositions = new List<SpawnData>();
 
     public int horizontalSize; // X
     public int verticalSize;   // Z

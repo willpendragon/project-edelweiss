@@ -75,6 +75,22 @@ public partial class MapEditorWindow
         spawnedInteractables[position] = interactable;
     }
 
+    // Add the PlaceEnemy method
+    private void PlaceEnemy(Vector3Int position, bool sync = true)
+    {
+        if (enemyPrefab == null) return;
+        if (sync) SyncDictionaryFromScene();
+        if (spawnedEnemies.ContainsKey(position)) return;
+
+        Vector3 worldPos = GridToWorld(position, GetTileWorldSize3D());
+        GameObject enemy = (GameObject)PrefabUtility.InstantiatePrefab(enemyPrefab);
+        enemy.transform.position = worldPos;
+        enemy.name = $"SpawnEnemy_{enemyPrefab.name}_{position.x}_{position.y}_{position.z}";
+
+        Undo.RegisterCreatedObjectUndo(enemy, "Place Enemy");
+        spawnedEnemies[position] = enemy;
+    }
+
     private void DeleteTile(Vector3Int position, bool sync = true)
     {
         if (sync) SyncDictionaryFromScene();
@@ -84,6 +100,7 @@ public partial class MapEditorWindow
         if (spawnedUnits.TryGetValue(position, out GameObject u) && u != null) { spawnedUnits.Remove(position); Undo.DestroyObjectImmediate(u); }
         if (decorations.TryGetValue(position, out GameObject d) && d != null) { decorations.Remove(position); Undo.DestroyObjectImmediate(d); }
         if (tiles.TryGetValue(position, out GameObject t) && t != null) { tiles.Remove(position); Undo.DestroyObjectImmediate(t); }
+        if (spawnedEnemies.TryGetValue(position, out GameObject e) && e != null) { spawnedEnemies.Remove(position); Undo.DestroyObjectImmediate(e); }
     }
 
     // HELPER: Universally checks if ANY block (Tile, Deco, Unit) exists at this specific coordinate
@@ -92,7 +109,8 @@ public partial class MapEditorWindow
         return (tiles.TryGetValue(pos, out GameObject t) && t != null) ||
                (spawnedInteractables.TryGetValue(pos, out GameObject i) && i != null) ||
                (decorations.TryGetValue(pos, out GameObject d) && d != null) ||
-               (spawnedUnits.TryGetValue(pos, out GameObject u) && u != null);
+               (spawnedUnits.TryGetValue(pos, out GameObject u) && u != null) ||
+               (spawnedEnemies.TryGetValue(pos, out GameObject e) && e != null);
     }
 
     private void ApplyBucketFill(Vector3Int startPos)
@@ -181,6 +199,7 @@ public partial class MapEditorWindow
             else if (isPlacingDecoration) PlaceDecoration(p, false);
             else if (isPlacingUnit) PlaceUnit(p, false);
             else if (isDeletingTile) DeleteTile(p, false);
+            else if (isPlacingEnemy) PlaceEnemy(p, false);
         }
         
         SyncDictionaryFromScene();

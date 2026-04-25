@@ -360,7 +360,46 @@ public class GridManager : MonoBehaviour
             }
         } // <--- End of if (currentMapData.playerSpawnPositions != null)
 
-        //// --- NEW: Spawn Beacons ---
+        // --- NEW: Load Painted Enemy Spawn Points ---
+        if (currentMapData.enemySpawnPositions != null && currentMapData.enemySpawnPositions.Count > 0)
+        {
+            foreach (var spawnData in currentMapData.enemySpawnPositions)
+            {
+                if (string.IsNullOrEmpty(spawnData.prefabName)) continue;
+
+                TileController targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
+                if (targetTile == null) targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1, spawnData.position.z);
+
+                if (targetTile != null)
+                {
+                    GameObject runtimeEnemyPrefab = Resources.Load<GameObject>(spawnData.prefabName);
+                    if (runtimeEnemyPrefab != null)
+                    {
+                        GameObject enemyInstance = Instantiate(runtimeEnemyPrefab, this.transform);
+                        Unit paintedEnemy = enemyInstance.GetComponent<Unit>();
+
+                        if (paintedEnemy != null)
+                        {
+                            if (paintedEnemy.unitTemplate != null) paintedEnemy.RetrieveTemplateValues();
+
+                            PlaceUnitOnTileSurface(enemyInstance, targetTile);
+                            
+                            // CLASH PREVENTION: This unequivocally locks out procedural gen from picking this tile
+                            targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                            targetTile.detectedUnit = enemyInstance;
+
+                            paintedEnemy.startingXCoordinate = spawnData.position.x;
+                            paintedEnemy.startingYCoordinate = spawnData.position.z;
+                            paintedEnemy.currentXCoordinate = spawnData.position.x;
+                            paintedEnemy.currentYCoordinate = spawnData.position.z;
+                            paintedEnemy.ownedTile = targetTile;
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- NEW: Spawn Beacons ---
         //if (currentMapData.beaconPositions != null && currentMapData.beaconPositions.Count > 0)
         //{
         //    GameObject runtimeBeaconPrefab = Resources.Load<GameObject>("Beacon");

@@ -7,6 +7,8 @@ public partial class MapEditorWindow
 {
     // Variables to remember what tool we were using before holding Right-Click
     private bool _storedTile, _storedDeco, _storedUnit, _storedInteractable, _storedBucket;
+    private bool _storedEnemy; // <--- NEW: temporary state for right-click
+
     private bool _isRightClickDeleting = false;
 
     private void OnSceneGUI(SceneView sceneView)
@@ -34,7 +36,7 @@ public partial class MapEditorWindow
         }
 
         // --- NEW: Bypass tool logic if we are in Select/View mode ---
-        bool isAnyToolActive = isPlacingTile || isPlacingDecoration || isPlacingInteractable || isPlacingUnit || isDeletingTile || isBucketMode;
+        bool isAnyToolActive = isPlacingTile || isPlacingDecoration || isPlacingInteractable || isPlacingUnit || isPlacingEnemy || isDeletingTile || isBucketMode;
         if (!isAnyToolActive)
         {
             // Keep drawing the visual grid, but skip eating the mouse events, 
@@ -54,6 +56,9 @@ public partial class MapEditorWindow
             _storedInteractable = isPlacingInteractable;
             _storedBucket = isBucketMode;
 
+            // Right click capture logic:
+            _storedEnemy = isPlacingEnemy;
+
             // 2. Force to Delete Mode
             SetMode(delete: true);
             isBucketMode = false;
@@ -64,7 +69,7 @@ public partial class MapEditorWindow
         else if (e.type == EventType.MouseUp && e.button == 1 && _isRightClickDeleting)
         {
             // 3. Restore previous states on release
-            SetMode(tile: _storedTile, deco: _storedDeco, unit: _storedUnit, interactable: _storedInteractable, delete: false, bucket: _storedBucket);
+            SetMode(tile: _storedTile, deco: _storedDeco, unit: _storedUnit, interactable: _storedInteractable, delete: false, bucket: _storedBucket, enemy: _storedEnemy);
             _isRightClickDeleting = false;
 
             Repaint(); sceneView.Repaint(); 
@@ -124,6 +129,7 @@ public partial class MapEditorWindow
         CheckHits(decorations);
         CheckHits(spawnedUnits);
         CheckHits(spawnedInteractables);
+        CheckHits(spawnedEnemies); // <--- NEW: check hits for enemies
 
         // 3. Fallback back to the empty Ground Plane if absolutely nothing was hit natively
         if (!hasHit)
@@ -172,6 +178,7 @@ public partial class MapEditorWindow
                             else if (isPlacingInteractable) PlaceInteractable(p, false);
                             else if (isPlacingDecoration) PlaceDecoration(p, false);
                             else if (isPlacingUnit) PlaceUnit(p, false);
+                            else if (isPlacingEnemy) PlaceEnemy(p, false); // <--- NEW: place enemy
                             else if (isDeletingTile) DeleteTile(p, false); // <--- This effortlessly handles the right click now
                         }
                         SyncDictionaryFromScene();
