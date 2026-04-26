@@ -19,22 +19,26 @@ public partial class MapEditorWindow : EditorWindow
     private GameObject unitPrefab;
     private GameObject interactablePrefab;
     private GameObject enemyPrefab;
+    private GameObject environmentPrefab;
 
     public List<GameObject> decorationPrefabs = new List<GameObject>();
     public List<GameObject> unitPrefabs = new List<GameObject>();
     public List<GameObject> interactablePrefabs = new List<GameObject>();
     public List<GameObject> enemyPrefabs = new List<GameObject>();
+    public List<GameObject> environmentPrefabs = new List<GameObject>();
 
     private SerializedObject _so;
     private SerializedProperty _decorationsProp;
     private SerializedProperty _unitsProp;
     private SerializedProperty _interactablesProp;
     private SerializedProperty _enemiesProp;
+    private SerializedProperty _environmentsProp;
 
     private int _selectedDecorationIndex = 0;
     private int _selectedUnitIndex = 0;
     private int _selectedInteractableIndex = 0;
     private int _selectedEnemyIndex = 0;
+    private int _selectedEnvironmentIndex = 0;
 
     // --- UI SCROLLS ---
     private Vector2 _decorScrollPos;
@@ -43,6 +47,7 @@ public partial class MapEditorWindow : EditorWindow
     private Vector2 _beaconScrollPos;
     private Vector2 _mainScrollPos; 
     private Vector2 _enemyScrollPos;
+    private Vector2 _envScrollPos;
 
     // --- STATE ---
     private MapData currentMap;
@@ -53,6 +58,8 @@ public partial class MapEditorWindow : EditorWindow
     private Dictionary<Vector3Int, GameObject> spawnedUnits = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> spawnedInteractables = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> spawnedEnemies = new Dictionary<Vector3Int, GameObject>();
+    private List<GameObject> spawnedEnvironments = new List<GameObject>();
+    private List<GameObject> spawnedLights = new List<GameObject>();
 
     private bool isPlacingTile = false;
     private bool isPlacingDecoration = false;
@@ -73,6 +80,7 @@ public partial class MapEditorWindow : EditorWindow
     private int currentLinkID = 1;
 
     private Camera referenceCamera; // <--- NEW: Camera Reference
+    private Light referenceDirectionalLight; // <--- NEW: Directional Light Reference
 
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
@@ -93,6 +101,7 @@ public partial class MapEditorWindow : EditorWindow
         _unitsProp = _so.FindProperty("unitPrefabs");
         _interactablesProp = _so.FindProperty("interactablePrefabs");
         _enemiesProp = _so.FindProperty("enemyPrefabs");
+        _environmentsProp = _so.FindProperty("environmentPrefabs");
 
         LoadDecoPrefabsFromPrefs();
         SyncDictionaryFromScene();
@@ -153,6 +162,7 @@ public partial class MapEditorWindow : EditorWindow
         DrawPrefabPool("Player Units Pool", ref _unitsProp, unitPrefabs, ref _selectedUnitIndex, ref unitPrefab, ref _unitScrollPos, SaveUnitPrefabsToPrefs);
         DrawPrefabPool("Interactables Pool", ref _interactablesProp, interactablePrefabs, ref _selectedInteractableIndex, ref interactablePrefab, ref _interactableScrollPos, SaveInteractablePrefabsToPrefs);
         DrawPrefabPool("Enemy Units Pool", ref _enemiesProp, enemyPrefabs, ref _selectedEnemyIndex, ref enemyPrefab, ref _enemyScrollPos, SaveEnemyPrefabsToPrefs);
+        DrawPrefabPool("Environment Props Pool", ref _environmentsProp, environmentPrefabs, ref _selectedEnvironmentIndex, ref environmentPrefab, ref _envScrollPos, SaveEnvironmentPrefabsToPrefs);
 
         EditorGUILayout.Space();
 
@@ -235,6 +245,44 @@ public partial class MapEditorWindow : EditorWindow
         // ------------------------------------
 
         EditorGUILayout.Space();
+        // --- NEW: Directional Light Settings Section ---
+        EditorGUILayout.Space();
+        GUILayout.Label("Map Directional Light Settings", EditorStyles.boldLabel);
+        referenceDirectionalLight = (Light)EditorGUILayout.ObjectField("Scene Dir Light Ref", referenceDirectionalLight, typeof(Light), true);
+
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Save Dir Light to Asset"))
+        {
+            if (currentMap == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Current Map Asset first!");
+            }
+            else if (referenceDirectionalLight == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Scene Directional Light Reference to save it!");
+            }
+            else
+            {
+                Undo.RecordObject(currentMap, "Save Directional Light Settings");
+                currentMap.overrideDirectionalLight = true;
+                currentMap.directionalLightRotation = referenceDirectionalLight.transform.eulerAngles;
+                currentMap.directionalLightColor = referenceDirectionalLight.color;
+                currentMap.directionalLightIntensity = referenceDirectionalLight.intensity;
+                
+                EditorUtility.SetDirty(currentMap);
+                AssetDatabase.SaveAssets();
+                Debug.Log("Map Editor: Directional Light settings successfully saved to MapData!");
+            }
+        }
+
+        if (GUILayout.Button("Apply Dir Light to Scene"))
+        {
+            SyncDirectionalLightFromMap();
+        }
+        EditorGUILayout.EndHorizontal();
+        // ------------------------------------
+
+        EditorGUILayout.Space();
         if (GUILayout.Button("Generate/Clear Map")) GenerateMap();
 
         EditorGUILayout.Space();
@@ -273,6 +321,36 @@ public partial class MapEditorWindow : EditorWindow
             GUILayout.Label("Interactables painted now will share this ID.", EditorStyles.helpBox);
             GUI.color = Color.white;
         }
+
+        EditorGUILayout.Space();
+        GUILayout.Label("Freeform Environment Setup", EditorStyles.boldLabel);
+        
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Spawn Prop at Camera Target", GUILayout.Height(30)))
+        {
+            SpawnEnvironmentProp();
+        }
+        
+        // --- NEW: Dedicated Save Button ---
+        if (GUILayout.Button("Save Environments to Map Asset", GUILayout.Height(30)))
+        {
+            SaveEnvironmentsToMap();
+        }
+        EditorGUILayout.EndHorizontal();
+
+        // --- NEW: Spawn Light Buttons ---
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Spawn Point Light at Camera Target", GUILayout.Height(30)))
+        {
+            SpawnEditorLight();
+        }
+
+        if (GUILayout.Button("Save Lights to Map Asset", GUILayout.Height(30)))
+        {
+            SaveLightsToMap();
+        }
+        EditorGUILayout.EndHorizontal();
+        // --------------------------------------------------------------------
 
         EditorGUILayout.EndScrollView();
     }
@@ -373,4 +451,46 @@ public partial class MapEditorWindow : EditorWindow
 
         Debug.Log($"Map Editor: Successfully applied camera settings from '{currentMap.name}' to '{referenceCamera.name}'.");
     }
+
+    // --- NEW: Point Light Spawning Logic ---
+    private void SpawnEditorLight()
+    {
+        Vector3 spawnPosition = referenceCamera != null ? referenceCamera.transform.position + referenceCamera.transform.forward * 5f : Vector3.zero;
+        
+        GameObject lightObj = new GameObject($"MapLight_{System.Guid.NewGuid().ToString().Substring(0,5)}");
+        Light lightComp = lightObj.AddComponent<Light>();
+        lightComp.type = LightType.Point;
+        lightComp.range = 10f;
+        
+        lightObj.transform.position = spawnPosition;
+        
+        Undo.RegisterCreatedObjectUndo(lightObj, "Spawn Light");
+        spawnedLights.Add(lightObj);
+        Selection.activeGameObject = lightObj;
+    }
+    // -------------------------------------------------------------------------
+
+    // --- NEW: Directional Light Sync Logic ---
+    private void SyncDirectionalLightFromMap()
+    {
+        if (currentMap == null) return;
+        if (!currentMap.overrideDirectionalLight) return;
+
+        if (referenceDirectionalLight == null)
+        {
+            // Auto-detect a directional light if the slot is empty
+            referenceDirectionalLight = GameObject.FindObjectsOfType<Light>().FirstOrDefault(l => l.type == LightType.Directional);
+            if (referenceDirectionalLight == null) return;
+        }
+
+        Undo.RecordObject(referenceDirectionalLight.transform, "Sync Light Transform");
+        Undo.RecordObject(referenceDirectionalLight, "Sync Light Properties");
+
+        referenceDirectionalLight.transform.eulerAngles = currentMap.directionalLightRotation;
+        referenceDirectionalLight.color = currentMap.directionalLightColor;
+        referenceDirectionalLight.intensity = currentMap.directionalLightIntensity;
+
+        Debug.Log($"Map Editor: Successfully applied directional light settings from '{currentMap.name}'");
+    }
+    // ----------------------------------------------------------------------------------
 }

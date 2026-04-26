@@ -484,7 +484,96 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
-        
+
+        // --- NEW: Load Freeform Environment Props ---
+        if (currentMapData.environmentPositions != null && currentMapData.environmentPositions.Count > 0)
+        {
+            foreach (var envData in currentMapData.environmentPositions)
+            {
+                if (string.IsNullOrEmpty(envData.prefabName)) continue;
+
+                GameObject runtimeEnvPrefab = Resources.Load<GameObject>(envData.prefabName);
+
+                if (runtimeEnvPrefab == null)
+                {
+                    Debug.LogWarning($"GridManager: Missing Environment Prefab '{envData.prefabName}' in Resources folder!");
+                    continue;
+                }
+
+                // Spawn entirely decoupled from the Grid offsets, using true World Space coordinates
+                GameObject envInstance = Instantiate(runtimeEnvPrefab, envData.position, Quaternion.Euler(envData.rotation));
+                envInstance.transform.localScale = envData.scale;
+                
+                envInstance.transform.SetParent(this.transform); // Keep hierarchy clean
+            }
+        }
+
+        // --- NEW: Load Freeform Environment Props ---
+        if (currentMapData.environmentPositions != null && currentMapData.environmentPositions.Count > 0)
+        {
+            foreach (var envData in currentMapData.environmentPositions)
+            {
+                if (string.IsNullOrEmpty(envData.prefabName)) continue;
+
+                GameObject runtimeEnvPrefab = Resources.Load<GameObject>(envData.prefabName);
+
+                if (runtimeEnvPrefab == null)
+                {
+                    Debug.LogWarning($"GridManager: Missing Environment Prefab '{envData.prefabName}' in Resources folder!");
+                    continue;
+                }
+
+                // Spawn entirely decoupled from the Grid offsets, using true World Space coordinates
+                GameObject envInstance = Instantiate(runtimeEnvPrefab, envData.position, Quaternion.Euler(envData.rotation));
+                envInstance.transform.localScale = envData.scale;
+                
+                envInstance.transform.SetParent(this.transform); // Keep hierarchy clean
+            }
+        }
+
+        // --- NEW: Load Programmatic Lights ---
+        if (currentMapData.lightSettings != null && currentMapData.lightSettings.Count > 0)
+        {
+            foreach (var lightData in currentMapData.lightSettings)
+            {
+                // Create an empty GameObject dynamically
+                GameObject lightInstance = new GameObject("RuntimeMapLight");
+                lightInstance.transform.position = lightData.position;
+                lightInstance.transform.rotation = Quaternion.Euler(lightData.rotation);
+                lightInstance.transform.SetParent(this.transform);
+
+                // Add and configure the Light component programmatically
+                Light runtimeLight = lightInstance.AddComponent<Light>();
+                runtimeLight.type = lightData.type;
+                runtimeLight.color = lightData.color;
+                runtimeLight.intensity = lightData.intensity;
+                runtimeLight.range = lightData.range;
+                
+                if (lightData.type == LightType.Spot)
+                {
+                    runtimeLight.spotAngle = lightData.spotAngle;
+                }
+            }
+        }
+
+        // --- NEW: Apply Directional Light Config ---
+        if (currentMapData.overrideDirectionalLight)
+        {
+            // Find the main directional light in the Battle Scene
+            Light sceneDirectionalLight = FindObjectsOfType<Light>().FirstOrDefault(l => l.type == LightType.Directional);
+            
+            if (sceneDirectionalLight != null)
+            {
+                sceneDirectionalLight.transform.rotation = Quaternion.Euler(currentMapData.directionalLightRotation);
+                sceneDirectionalLight.color = currentMapData.directionalLightColor;
+                sceneDirectionalLight.intensity = currentMapData.directionalLightIntensity;
+            }
+            else
+            {
+                Debug.LogWarning("GridManager: overrideDirectionalLight is true, but no Directional Light exists in the Battle Scene!");
+            }
+        }
+
     } // <--- End of GenerateGridMapFromData()
 
     private void ClearGridMap()

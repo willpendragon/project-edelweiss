@@ -4,21 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewMap", menuName = "Level Design/Map")]
 public class MapData : ScriptableObject
 {
-    public enum LevelType
-    {
-        Regular,
-        Puzzle,
-        Miniboss,
-        Boss
-    }
+    public enum LevelType { Regular, Puzzle, Miniboss, Boss }
 
-    // --- NEW: Difficulty Enum ---
-    public enum Difficulty
-    {
-        Easy,
-        Medium,
-        Hard
-    }
+    public enum Difficulty { Easy, Medium, Hard }
 
     [System.Serializable]
     public struct TileData
@@ -34,13 +22,34 @@ public class MapData : ScriptableObject
         public string prefabName; 
     }
 
-    // --- NEW: Player Spawn Data Storage ---
     [System.Serializable]
     public struct SpawnData
     {
         public Vector3Int position;
         public string prefabName; 
-        public int linkID; // <--- ADD THIS
+        public int linkID; 
+    }
+
+    [System.Serializable]
+    public class EnvironmentData
+    {
+        public string prefabName;
+        public Vector3 position;
+        public Vector3 rotation; 
+        public Vector3 scale = Vector3.one;
+    }
+
+    // --- NEW: Programmatic Light Data ---
+    [System.Serializable]
+    public class LightData
+    {
+        public LightType type;
+        public Vector3 position;
+        public Vector3 rotation;
+        public Color color = Color.white;
+        public float intensity = 1f;
+        public float range = 10f;
+        public float spotAngle = 30f;
     }
 
     public List<TileData> tilePositions = new List<TileData>();
@@ -48,6 +57,8 @@ public class MapData : ScriptableObject
     public List<SpawnData> playerSpawnPositions = new List<SpawnData>();
     public List<SpawnData> interactablePositions = new List<SpawnData>(); 
     public List<SpawnData> enemySpawnPositions = new List<SpawnData>();
+    public List<EnvironmentData> environmentPositions = new List<EnvironmentData>();
+    public List<LightData> lightSettings = new List<LightData>();
 
     public int horizontalSize; // X
     public int verticalSize;   // Z
@@ -55,10 +66,9 @@ public class MapData : ScriptableObject
 
     public GameObject environment;
     public LevelType levelType;
-    public Difficulty difficultyLevel = Difficulty.Easy; // --- NEW: Difficulty Assignment ---
+    public Difficulty difficultyLevel = Difficulty.Easy;
     public Vector3 environmentSpawnpoint;
 
-    // --- NEW: Camera Config ---
     [Header("Camera Configuration")]
     public bool overrideCameraSettings = false;
     public Vector3 cameraPosition;
@@ -66,6 +76,12 @@ public class MapData : ScriptableObject
     public float cameraZoom = 60f;
     public bool isOrthographic = false;
     public float orthographicSize = 5f;
+
+    [Header("Directional Light")]
+    public bool overrideDirectionalLight = false;
+    public Vector3 directionalLightRotation = new Vector3(50f, -30f, 0f);
+    public Color directionalLightColor = Color.white;
+    public float directionalLightIntensity = 1f;
 
     public GameObject fixedDeity; 
 
