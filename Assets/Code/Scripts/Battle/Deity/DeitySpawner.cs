@@ -130,7 +130,27 @@ public class DeitySpawner : MonoBehaviour
     }
     public void SpawnDeity(GameObject spawningDeity)
     {
-        GameObject deityOnBattlefield = Instantiate(spawningDeity, deitySpawnPosition.position, Quaternion.identity);
+        Vector2Int deityCoords = GameManager.Instance.GetDeityStartingCoordinates();
+        Vector3 spawnWorldPos = deitySpawnPosition.position;
+        
+        // Find the tile the user painted as a DeityTile
+        TileController targetDeityTile = GridManager.Instance.GetTileControllerInstance(deityCoords.x, deityCoords.y);
+        
+        if (targetDeityTile != null && targetDeityTile.tileType == TileType.DeityTile)
+        {
+            float finalY = targetDeityTile.transform.position.y;
+            Collider col = targetDeityTile.GetComponent<Collider>();
+            if (col != null) finalY = col.bounds.max.y;
+
+            // Spawn floating directly on top of the painted DeityTile
+            spawnWorldPos = new Vector3(targetDeityTile.transform.position.x, finalY, targetDeityTile.transform.position.z);
+        }
+        else
+        {
+            Debug.LogWarning("DeitySpawner: No DeityTile found on the map. Spawning floating deity in fallback position.");
+        }
+
+        GameObject deityOnBattlefield = Instantiate(spawningDeity, spawnWorldPos, Quaternion.identity);
 
         BattleManager.Instance.deity = deityOnBattlefield.GetComponent<Deity>();
 
@@ -178,28 +198,49 @@ public class DeitySpawner : MonoBehaviour
             return;
         }
 
-        int unlockedDeityStartingTileXCoordinate = 5;
-        int unlockedDeityStartingTileYCoordinate = 5;
+        Vector2Int deityCoords = GameManager.Instance.GetDeityStartingCoordinates();
+
+        int unlockedDeityStartingTileXCoordinate = deityCoords.x;
+        int unlockedDeityStartingTileYCoordinate = deityCoords.y;
 
         unlockedDeity.GetComponent<Unit>().startingXCoordinate = unlockedDeityStartingTileXCoordinate;
         unlockedDeity.GetComponent<Unit>().startingYCoordinate = unlockedDeityStartingTileYCoordinate;
-        GameObject unboundDeity = Instantiate(unlockedDeity, deitySpawnPosition.position, Quaternion.identity);
-        Debug.Log($"Instantiate Unbound Deity GameObject at {deitySpawnPosition}");
+
+        // Optionally, check if a DeityTile dictates the 3D spawn position instead of relying on the static empty GameObject
+        Vector3 spawnWorldPos = deitySpawnPosition.position;
+        TileController firstDeitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityCoords.x, deityCoords.y);
+        
+        if (firstDeitySpawningTile != null && firstDeitySpawningTile.tileType == TileType.DeityTile)
+        {
+            float finalY = firstDeitySpawningTile.transform.position.y;
+            Collider col = firstDeitySpawningTile.GetComponent<Collider>();
+            if (col != null) finalY = col.bounds.max.y;
+
+            spawnWorldPos = new Vector3(firstDeitySpawningTile.transform.position.x, finalY, firstDeitySpawningTile.transform.position.z);
+        }
+
+        GameObject unboundDeity = Instantiate(unlockedDeity, spawnWorldPos, Quaternion.identity);
+        Debug.Log($"Instantiate Unbound Deity GameObject at {spawnWorldPos}");
 
         if (unboundDeity != null)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
-            int deityTilePositionX = 5;
-            int deityTilePositionY = 5;
-            //unboundDeity.GetComponent<Unit>().MoveUnit(deityTilePositionX, deityTilePositionY, false);
-            TileController firstDeitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityTilePositionX, deityTilePositionY);
+            
+            // Adjust position correctly to tile surface
+            if (firstDeitySpawningTile != null)
+            {
+                GridManager.Instance.PlaceUnitOnTileSurface(unboundDeity, firstDeitySpawningTile);
+            }
 
             unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
             _deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
 
             GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
-            firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-            firstDeitySpawningTile.detectedUnit = unboundDeity;
+            if (firstDeitySpawningTile != null)
+            {
+                firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
+                firstDeitySpawningTile.detectedUnit = unboundDeity;
+            }
             currentUnboundDeity = unboundDeity.GetComponent<Deity>();
             _enemyTurnManager.deity = unboundDeity;
             Debug.Log("Deity occupies Tile");

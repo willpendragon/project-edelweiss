@@ -8,6 +8,7 @@ public partial class MapEditorWindow
     private void SaveDecoPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_DecoPrefabs", string.Join(";", decorationPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveUnitPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_UnitPrefabs", string.Join(";", unitPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveInteractablePrefabsToPrefs() => EditorPrefs.SetString("MapEditor_InteractablePrefabs", string.Join(";", interactablePrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
+    private void SaveEnemyPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_EnemyPrefabs", string.Join(";", enemyPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
 
     private void LoadDecoPrefabsFromPrefs()
     {
@@ -34,6 +35,14 @@ public partial class MapEditorWindow
             if (f != null) interactablePrefabs.Add(f);
         }
         if (interactablePrefabs.Count > 0) interactablePrefab = interactablePrefabs[0];
+
+        enemyPrefabs.Clear();
+        foreach (var p in EditorPrefs.GetString("MapEditor_EnemyPrefabs", "").Split(';'))
+        {
+            var f = AssetDatabase.LoadAssetAtPath<GameObject>(p);
+            if (f != null) enemyPrefabs.Add(f);
+        }
+        if (enemyPrefabs.Count > 0) enemyPrefab = enemyPrefabs[0];
     }
 
     private void SaveMap()
@@ -60,6 +69,13 @@ public partial class MapEditorWindow
         {
             var src = PrefabUtility.GetCorrespondingObjectFromSource(kvp.Value);
             currentMap.playerSpawnPositions.Add(new MapData.SpawnData { position = kvp.Key, prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Trim() });
+        }
+
+        currentMap.enemySpawnPositions.Clear();
+        foreach (var kvp in spawnedEnemies)
+        {
+            var src = PrefabUtility.GetCorrespondingObjectFromSource(kvp.Value);
+            currentMap.enemySpawnPositions.Add(new MapData.SpawnData { position = kvp.Key, prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Trim() });
         }
 
         // INTERACTABLES SAVING
@@ -156,6 +172,22 @@ public partial class MapEditorWindow
             }
         }
 
+        // LOAD ENEMIES
+        if (currentMap.enemySpawnPositions != null)
+        {
+            foreach (var data in currentMap.enemySpawnPositions)
+            {
+                GameObject target = enemyPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName) ?? Resources.Load<GameObject>(data.prefabName) ?? enemyPrefab;
+                if (target != null)
+                {
+                    GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
+                    obj.transform.position = GridToWorld(data.position, tileSize);
+                    obj.name = $"SpawnEnemy_{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                    spawnedEnemies[data.position] = obj;
+                }
+            }
+        }
+
         // INTERACTABLES LOADING
         if (currentMap.interactablePositions != null)
         {
@@ -192,6 +224,7 @@ public partial class MapEditorWindow
         decorations.Clear(); 
         spawnedUnits.Clear(); 
         spawnedInteractables.Clear(); 
+        spawnedEnemies.Clear(); 
 
         foreach (var t in GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
         {
@@ -211,6 +244,11 @@ public partial class MapEditorWindow
                 string[] p = t.name.Split('_');
                 if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) spawnedInteractables[new Vector3Int(x, y, z)] = t;
             }
+            else if (t.name.StartsWith("SpawnEnemy_") || spawnedEnemies.ContainsValue(t))
+            {
+                string[] p = t.name.Split('_');
+                if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) spawnedEnemies[new Vector3Int(x, y, z)] = t;
+            }
             // Fallback for standard decorations
             else if (decorations.ContainsValue(t) || decorationPrefabs.Any(p => p != null && t.name.StartsWith(p.name + "_")))
             {
@@ -227,11 +265,13 @@ public partial class MapEditorWindow
         foreach (var obj in decorations.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedUnits.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedInteractables.Values) Undo.DestroyObjectImmediate(obj);
+        foreach (var obj in spawnedEnemies.Values) Undo.DestroyObjectImmediate(obj);
 
         tiles.Clear(); 
         decorations.Clear(); 
         spawnedUnits.Clear();
         spawnedInteractables.Clear(); 
+        spawnedEnemies.Clear();
     }
 
     private Vector3Int GetGridCoordinatesFromWorldPosition(Vector3 worldPos)

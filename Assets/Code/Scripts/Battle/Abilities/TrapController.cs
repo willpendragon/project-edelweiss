@@ -19,7 +19,7 @@ public class TrapController : MonoBehaviour
 
     private void Start()
     {
-        currentTrapActivationStatus = TrapActivationStatus.inactive;
+        //currentTrapActivationStatus = TrapActivationStatus.inactive;
     }
     public void ApplyTrapEffect()
 

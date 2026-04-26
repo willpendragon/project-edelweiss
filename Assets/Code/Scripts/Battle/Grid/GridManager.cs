@@ -360,7 +360,46 @@ public class GridManager : MonoBehaviour
             }
         } // <--- End of if (currentMapData.playerSpawnPositions != null)
 
-        //// --- NEW: Spawn Beacons ---
+        // --- NEW: Load Painted Enemy Spawn Points ---
+        if (currentMapData.enemySpawnPositions != null && currentMapData.enemySpawnPositions.Count > 0)
+        {
+            foreach (var spawnData in currentMapData.enemySpawnPositions)
+            {
+                if (string.IsNullOrEmpty(spawnData.prefabName)) continue;
+
+                TileController targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
+                if (targetTile == null) targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1, spawnData.position.z);
+
+                if (targetTile != null)
+                {
+                    GameObject runtimeEnemyPrefab = Resources.Load<GameObject>(spawnData.prefabName);
+                    if (runtimeEnemyPrefab != null)
+                    {
+                        GameObject enemyInstance = Instantiate(runtimeEnemyPrefab, this.transform);
+                        Unit paintedEnemy = enemyInstance.GetComponent<Unit>();
+
+                        if (paintedEnemy != null)
+                        {
+                            if (paintedEnemy.unitTemplate != null) paintedEnemy.RetrieveTemplateValues();
+
+                            PlaceUnitOnTileSurface(enemyInstance, targetTile);
+                            
+                            // CLASH PREVENTION: This unequivocally locks out procedural gen from picking this tile
+                            targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                            targetTile.detectedUnit = enemyInstance;
+
+                            paintedEnemy.startingXCoordinate = spawnData.position.x;
+                            paintedEnemy.startingYCoordinate = spawnData.position.z;
+                            paintedEnemy.currentXCoordinate = spawnData.position.x;
+                            paintedEnemy.currentYCoordinate = spawnData.position.z;
+                            paintedEnemy.ownedTile = targetTile;
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- NEW: Spawn Beacons ---
         //if (currentMapData.beaconPositions != null && currentMapData.beaconPositions.Count > 0)
         //{
         //    GameObject runtimeBeaconPrefab = Resources.Load<GameObject>("Beacon");
@@ -413,6 +452,28 @@ public class GridManager : MonoBehaviour
 
                 if (targetTile != null)
                 {
+                    // --- MAP PAINTED TRAPS ---
+                    if (intData.prefabName.Contains("Trap"))
+                    {
+                        // 1. Find the native TrapController already living on the TileController prefab
+                        TrapController tileNativeTrapController = targetTile.GetComponentInChildren<TrapController>();
+                        if (tileNativeTrapController != null)
+                        {
+                            // 2. Activate the native trap logic
+                            tileNativeTrapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
+                            
+                            // 3. Spawn the Trap visuals with your desired offset, parented to the tile to keep hierarchy clean
+                            Vector3 offSet = new Vector3(0, 2f, 0);
+                            Vector3 spawnPosition = targetTile.transform.position + offSet;
+                            
+                            Instantiate(runtimeInteractablePrefab, spawnPosition, Quaternion.identity, targetTile.transform);
+                        }
+
+                        // We skip setting the tile to 'occupied' so units can still physically path onto the trap tile!
+                        continue;
+                    }
+
+                    // STANDARD INTERACTABLES
                     GameObject interactableInstance = Instantiate(runtimeInteractablePrefab, this.transform);
                     PlaceUnitOnTileSurface(interactableInstance, targetTile);
 
