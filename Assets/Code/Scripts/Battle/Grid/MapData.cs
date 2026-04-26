@@ -77,6 +77,12 @@ public class MapData : ScriptableObject
     public bool isOrthographic = false;
     public float orthographicSize = 5f;
 
+    [Header("Directional Light")]
+    public bool overrideDirectionalLight = false;
+    public Vector3 directionalLightRotation = new Vector3(50f, -30f, 0f);
+    public Color directionalLightColor = Color.white;
+    public float directionalLightIntensity = 1f;
+
     public GameObject fixedDeity; 
 
     public GameObject RetrieveDeity()

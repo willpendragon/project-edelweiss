@@ -80,6 +80,7 @@ public partial class MapEditorWindow : EditorWindow
     private int currentLinkID = 1;
 
     private Camera referenceCamera; // <--- NEW: Camera Reference
+    private Light referenceDirectionalLight; // <--- NEW: Directional Light Reference
 
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
@@ -239,6 +240,44 @@ public partial class MapEditorWindow : EditorWindow
         if (GUILayout.Button("Apply Map Camera to Scene"))
         {
             SyncCameraFromMap();
+        }
+        EditorGUILayout.EndHorizontal();
+        // ------------------------------------
+
+        EditorGUILayout.Space();
+        // --- NEW: Directional Light Settings Section ---
+        EditorGUILayout.Space();
+        GUILayout.Label("Map Directional Light Settings", EditorStyles.boldLabel);
+        referenceDirectionalLight = (Light)EditorGUILayout.ObjectField("Scene Dir Light Ref", referenceDirectionalLight, typeof(Light), true);
+
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Save Dir Light to Asset"))
+        {
+            if (currentMap == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Current Map Asset first!");
+            }
+            else if (referenceDirectionalLight == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Scene Directional Light Reference to save it!");
+            }
+            else
+            {
+                Undo.RecordObject(currentMap, "Save Directional Light Settings");
+                currentMap.overrideDirectionalLight = true;
+                currentMap.directionalLightRotation = referenceDirectionalLight.transform.eulerAngles;
+                currentMap.directionalLightColor = referenceDirectionalLight.color;
+                currentMap.directionalLightIntensity = referenceDirectionalLight.intensity;
+                
+                EditorUtility.SetDirty(currentMap);
+                AssetDatabase.SaveAssets();
+                Debug.Log("Map Editor: Directional Light settings successfully saved to MapData!");
+            }
+        }
+
+        if (GUILayout.Button("Apply Dir Light to Scene"))
+        {
+            SyncDirectionalLightFromMap();
         }
         EditorGUILayout.EndHorizontal();
         // ------------------------------------
@@ -430,4 +469,28 @@ public partial class MapEditorWindow : EditorWindow
         Selection.activeGameObject = lightObj;
     }
     // -------------------------------------------------------------------------
+
+    // --- NEW: Directional Light Sync Logic ---
+    private void SyncDirectionalLightFromMap()
+    {
+        if (currentMap == null) return;
+        if (!currentMap.overrideDirectionalLight) return;
+
+        if (referenceDirectionalLight == null)
+        {
+            // Auto-detect a directional light if the slot is empty
+            referenceDirectionalLight = GameObject.FindObjectsOfType<Light>().FirstOrDefault(l => l.type == LightType.Directional);
+            if (referenceDirectionalLight == null) return;
+        }
+
+        Undo.RecordObject(referenceDirectionalLight.transform, "Sync Light Transform");
+        Undo.RecordObject(referenceDirectionalLight, "Sync Light Properties");
+
+        referenceDirectionalLight.transform.eulerAngles = currentMap.directionalLightRotation;
+        referenceDirectionalLight.color = currentMap.directionalLightColor;
+        referenceDirectionalLight.intensity = currentMap.directionalLightIntensity;
+
+        Debug.Log($"Map Editor: Successfully applied directional light settings from '{currentMap.name}'");
+    }
+    // ----------------------------------------------------------------------------------
 }

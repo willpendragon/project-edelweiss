@@ -5,6 +5,13 @@ using UnityEngine;
 
 public partial class MapEditorWindow
 {
+    // --- NEW: Directional Light Config ---
+    [Header("Directional Light")]
+    public bool overrideDirectionalLight = false;
+    public Vector3 directionalLightRotation = new Vector3(50f, -30f, 0f);
+    public Color directionalLightColor = Color.white;
+    public float directionalLightIntensity = 1f;
+
     private void SaveDecoPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_DecoPrefabs", string.Join(";", decorationPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveUnitPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_UnitPrefabs", string.Join(";", unitPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveInteractablePrefabsToPrefs() => EditorPrefs.SetString("MapEditor_InteractablePrefabs", string.Join(";", interactablePrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
@@ -109,7 +116,7 @@ public partial class MapEditorWindow
             var src = PrefabUtility.GetCorrespondingObjectFromSource(envObj);
             string pName = src != null ? src.name : envObj.name.Replace("(Clone)", "").Split('_')[1].Trim();
             
-            currentMap.environmentPositions.Add(new MapData.EnvironmentData // <--- UPDATE THIS LINE
+            currentMap.environmentPositions.Add(new MapData.EnvironmentData 
             { 
                 prefabName = pName,
                 position = envObj.transform.position,
@@ -117,6 +124,29 @@ public partial class MapEditorWindow
                 scale = envObj.transform.localScale
             });
         }
+
+        // --- NEW: Add Light Saving into the main Save button ---
+        currentMap.lightSettings.Clear();
+        var allLights = GameObject.FindObjectsOfType<Light>();
+        
+        foreach (var l in allLights)
+        {
+            // Only capture lights explicitly painted by the Editor tool
+            if (l.gameObject.name.StartsWith("MapLight_"))
+            {
+                currentMap.lightSettings.Add(new MapData.LightData
+                {
+                    type = l.type,
+                    position = l.transform.position,
+                    rotation = l.transform.eulerAngles,
+                    color = l.color,
+                    intensity = l.intensity,
+                    range = l.range,
+                    spotAngle = l.spotAngle
+                });
+            }
+        }
+        // -------------------------------------------------------
 
         currentMap.horizontalSize = gridWidth;
         currentMap.depthSize = gridDepth;
@@ -257,8 +287,31 @@ public partial class MapEditorWindow
             }
         }
 
+        // --- NEW: LOAD LIGHTS BACK INTO THE EDITOR ---
+        if (currentMap.lightSettings != null)
+        {
+            foreach (var lightData in currentMap.lightSettings)
+            {
+                GameObject lightObj = new GameObject($"MapLight_{System.Guid.NewGuid().ToString().Substring(0,5)}");
+                lightObj.transform.position = lightData.position;
+                lightObj.transform.eulerAngles = lightData.rotation;
+
+                Light lightComp = lightObj.AddComponent<Light>();
+                lightComp.type = lightData.type;
+                lightComp.color = lightData.color;
+                lightComp.intensity = lightData.intensity;
+                lightComp.range = lightData.range;
+                
+                if (lightData.type == LightType.Spot) lightComp.spotAngle = lightData.spotAngle;
+
+                spawnedLights.Add(lightObj);
+            }
+        }
+        // ---------------------------------------------
+
         // --- NEW: Sync Camera Config after everything is loaded ---
         SyncCameraFromMap();
+        SyncDirectionalLightFromMap();
     }
 
     private void SyncDictionaryFromScene()
@@ -297,6 +350,11 @@ public partial class MapEditorWindow
             {
                 if (!spawnedEnvironments.Contains(t)) spawnedEnvironments.Add(t);
             }
+            // --- NEW: Track manual Light movements ---
+            else if (t.name.StartsWith("MapLight_") || spawnedLights.Contains(t))
+            {
+                if (!spawnedLights.Contains(t)) spawnedLights.Add(t);
+            }
             // Fallback for standard decorations
             else if (decorations.ContainsValue(t) || decorationPrefabs.Any(p => p != null && t.name.StartsWith(p.name + "_")))
             {
@@ -315,6 +373,7 @@ public partial class MapEditorWindow
         foreach (var obj in spawnedInteractables.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedEnemies.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedEnvironments) Undo.DestroyObjectImmediate(obj);
+        foreach (var obj in spawnedLights) Undo.DestroyObjectImmediate(obj); // <--- DESTROY LIGHTS ON CLEAR
 
         tiles.Clear(); 
         decorations.Clear(); 
@@ -322,6 +381,7 @@ public partial class MapEditorWindow
         spawnedInteractables.Clear(); 
         spawnedEnemies.Clear();
         spawnedEnvironments.Clear();
+        spawnedLights.Clear(); // <--- RESET LIGHTS
     }
 
     private Vector3Int GetGridCoordinatesFromWorldPosition(Vector3 worldPos)

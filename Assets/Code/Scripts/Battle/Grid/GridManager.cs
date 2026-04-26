@@ -556,6 +556,24 @@ public class GridManager : MonoBehaviour
             }
         }
 
+        // --- NEW: Apply Directional Light Config ---
+        if (currentMapData.overrideDirectionalLight)
+        {
+            // Find the main directional light in the Battle Scene
+            Light sceneDirectionalLight = FindObjectsOfType<Light>().FirstOrDefault(l => l.type == LightType.Directional);
+            
+            if (sceneDirectionalLight != null)
+            {
+                sceneDirectionalLight.transform.rotation = Quaternion.Euler(currentMapData.directionalLightRotation);
+                sceneDirectionalLight.color = currentMapData.directionalLightColor;
+                sceneDirectionalLight.intensity = currentMapData.directionalLightIntensity;
+            }
+            else
+            {
+                Debug.LogWarning("GridManager: overrideDirectionalLight is true, but no Directional Light exists in the Battle Scene!");
+            }
+        }
+
     } // <--- End of GenerateGridMapFromData()
 
     private void ClearGridMap()
