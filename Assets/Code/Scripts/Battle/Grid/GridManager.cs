@@ -452,6 +452,28 @@ public class GridManager : MonoBehaviour
 
                 if (targetTile != null)
                 {
+                    // --- MAP PAINTED TRAPS ---
+                    if (intData.prefabName.Contains("Trap"))
+                    {
+                        // 1. Find the native TrapController already living on the TileController prefab
+                        TrapController tileNativeTrapController = targetTile.GetComponentInChildren<TrapController>();
+                        if (tileNativeTrapController != null)
+                        {
+                            // 2. Activate the native trap logic
+                            tileNativeTrapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
+                            
+                            // 3. Spawn the Trap visuals with your desired offset, parented to the tile to keep hierarchy clean
+                            Vector3 offSet = new Vector3(0, 2f, 0);
+                            Vector3 spawnPosition = targetTile.transform.position + offSet;
+                            
+                            Instantiate(runtimeInteractablePrefab, spawnPosition, Quaternion.identity, targetTile.transform);
+                        }
+
+                        // We skip setting the tile to 'occupied' so units can still physically path onto the trap tile!
+                        continue;
+                    }
+
+                    // STANDARD INTERACTABLES
                     GameObject interactableInstance = Instantiate(runtimeInteractablePrefab, this.transform);
                     PlaceUnitOnTileSurface(interactableInstance, targetTile);
 
