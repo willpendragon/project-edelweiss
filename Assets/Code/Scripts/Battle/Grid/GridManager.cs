@@ -217,7 +217,9 @@ public class GridManager : MonoBehaviour
                     decoData.position.z * (tileSize.z + inBetweenTilesYOffset)
                 );
 
-                GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition, Quaternion.identity);
+                // Only this single line changes to preserve the prefab's rotation
+                GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition, runtimeDecorationPrefab.transform.rotation);
+
                 decoInstance.transform.SetParent(this.transform); 
 
                 Transform gridBounds = decoInstance.transform.Find("GridBounds");
