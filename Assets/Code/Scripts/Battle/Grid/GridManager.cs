@@ -531,6 +531,31 @@ public class GridManager : MonoBehaviour
             }
         }
 
+        // --- NEW: Load Programmatic Lights ---
+        if (currentMapData.lightSettings != null && currentMapData.lightSettings.Count > 0)
+        {
+            foreach (var lightData in currentMapData.lightSettings)
+            {
+                // Create an empty GameObject dynamically
+                GameObject lightInstance = new GameObject("RuntimeMapLight");
+                lightInstance.transform.position = lightData.position;
+                lightInstance.transform.rotation = Quaternion.Euler(lightData.rotation);
+                lightInstance.transform.SetParent(this.transform);
+
+                // Add and configure the Light component programmatically
+                Light runtimeLight = lightInstance.AddComponent<Light>();
+                runtimeLight.type = lightData.type;
+                runtimeLight.color = lightData.color;
+                runtimeLight.intensity = lightData.intensity;
+                runtimeLight.range = lightData.range;
+                
+                if (lightData.type == LightType.Spot)
+                {
+                    runtimeLight.spotAngle = lightData.spotAngle;
+                }
+            }
+        }
+
     } // <--- End of GenerateGridMapFromData()
 
     private void ClearGridMap()

@@ -39,12 +39,26 @@ public class MapData : ScriptableObject
         public Vector3 scale = Vector3.one;
     }
 
+    // --- NEW: Programmatic Light Data ---
+    [System.Serializable]
+    public class LightData
+    {
+        public LightType type;
+        public Vector3 position;
+        public Vector3 rotation;
+        public Color color = Color.white;
+        public float intensity = 1f;
+        public float range = 10f;
+        public float spotAngle = 30f;
+    }
+
     public List<TileData> tilePositions = new List<TileData>();
     public List<DecorationData> decorationPositions = new List<DecorationData>();
     public List<SpawnData> playerSpawnPositions = new List<SpawnData>();
     public List<SpawnData> interactablePositions = new List<SpawnData>(); 
     public List<SpawnData> enemySpawnPositions = new List<SpawnData>();
     public List<EnvironmentData> environmentPositions = new List<EnvironmentData>();
+    public List<LightData> lightSettings = new List<LightData>();
 
     public int horizontalSize; // X
     public int verticalSize;   // Z

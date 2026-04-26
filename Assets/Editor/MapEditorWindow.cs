@@ -59,6 +59,7 @@ public partial class MapEditorWindow : EditorWindow
     private Dictionary<Vector3Int, GameObject> spawnedInteractables = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> spawnedEnemies = new Dictionary<Vector3Int, GameObject>();
     private List<GameObject> spawnedEnvironments = new List<GameObject>();
+    private List<GameObject> spawnedLights = new List<GameObject>();
 
     private bool isPlacingTile = false;
     private bool isPlacingDecoration = false;
@@ -298,6 +299,20 @@ public partial class MapEditorWindow : EditorWindow
         }
         EditorGUILayout.EndHorizontal();
 
+        // --- NEW: Spawn Light Buttons ---
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Spawn Point Light at Camera Target", GUILayout.Height(30)))
+        {
+            SpawnEditorLight();
+        }
+
+        if (GUILayout.Button("Save Lights to Map Asset", GUILayout.Height(30)))
+        {
+            SaveLightsToMap();
+        }
+        EditorGUILayout.EndHorizontal();
+        // --------------------------------------------------------------------
+
         EditorGUILayout.EndScrollView();
     }
 
@@ -397,4 +412,22 @@ public partial class MapEditorWindow : EditorWindow
 
         Debug.Log($"Map Editor: Successfully applied camera settings from '{currentMap.name}' to '{referenceCamera.name}'.");
     }
+
+    // --- NEW: Point Light Spawning Logic ---
+    private void SpawnEditorLight()
+    {
+        Vector3 spawnPosition = referenceCamera != null ? referenceCamera.transform.position + referenceCamera.transform.forward * 5f : Vector3.zero;
+        
+        GameObject lightObj = new GameObject($"MapLight_{System.Guid.NewGuid().ToString().Substring(0,5)}");
+        Light lightComp = lightObj.AddComponent<Light>();
+        lightComp.type = LightType.Point;
+        lightComp.range = 10f;
+        
+        lightObj.transform.position = spawnPosition;
+        
+        Undo.RegisterCreatedObjectUndo(lightObj, "Spawn Light");
+        spawnedLights.Add(lightObj);
+        Selection.activeGameObject = lightObj;
+    }
+    // -------------------------------------------------------------------------
 }

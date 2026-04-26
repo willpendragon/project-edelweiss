@@ -365,7 +365,7 @@ public partial class MapEditorWindow
         currentMap.environmentPositions.Clear();
         foreach (var envObj in spawnedEnvironments)
         {
-            if (envObj == null) continue;
+            if (envObj == null) continue; // <--- FIXED THIS LINE
             
             // Get original prefab name
             var src = PrefabUtility.GetCorrespondingObjectFromSource(envObj);
@@ -384,5 +384,36 @@ public partial class MapEditorWindow
         EditorUtility.SetDirty(currentMap);
         AssetDatabase.SaveAssets();
         Debug.Log($"Map Editor: Saved {currentMap.environmentPositions.Count} free-form environment props to MapData!");
+    }
+
+    private void SaveLightsToMap()
+    {
+        if (currentMap == null) return;
+
+        // Find all lights created by the editor
+        var allLights = GameObject.FindObjectsOfType<Light>();
+        currentMap.lightSettings.Clear();
+        spawnedLights.Clear();
+
+        foreach (var l in allLights)
+        {
+            if (l.gameObject.name.StartsWith("MapLight_"))
+            {
+                spawnedLights.Add(l.gameObject);
+                currentMap.lightSettings.Add(new MapData.LightData
+                {
+                    type = l.type,
+                    position = l.transform.position,
+                    rotation = l.transform.eulerAngles,
+                    color = l.color,
+                    intensity = l.intensity,
+                    range = l.range,
+                    spotAngle = l.spotAngle
+                });
+            }
+        }
+        EditorUtility.SetDirty(currentMap);
+        AssetDatabase.SaveAssets();
+        Debug.Log($"Map Editor: Saved {currentMap.lightSettings.Count} programmatic lights to MapData!");
     }
 }
