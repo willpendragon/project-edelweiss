@@ -288,4 +288,34 @@ public partial class MapEditorWindow
         Transform effects = tile.transform.Find("TileEffects");
         if (effects != null) SceneVisibilityManager.instance.Hide(effects.gameObject, true);
     }
+
+    // Free-form Environment Spawning
+    private void SpawnEnvironmentProp()
+    {
+        if (environmentPrefab == null)
+        {
+            Debug.LogWarning("Map Editor: Select an Environment Prefab from the pool first!");
+            return;
+        }
+
+        SyncDictionaryFromScene();
+
+        GameObject envObj = (GameObject)PrefabUtility.InstantiatePrefab(environmentPrefab);
+        
+        if (SceneView.lastActiveSceneView != null)
+        {
+            envObj.transform.position = SceneView.lastActiveSceneView.pivot;
+        }
+        else
+        {
+            envObj.transform.position = Vector3.zero;
+        }
+
+        envObj.name = $"EnvProp_{environmentPrefab.name}_{System.Guid.NewGuid().ToString().Substring(0, 5)}";
+        
+        Undo.RegisterCreatedObjectUndo(envObj, "Spawn Environment Prop");
+        spawnedEnvironments.Add(envObj);
+        
+        Selection.activeGameObject = envObj;
+    }
 }

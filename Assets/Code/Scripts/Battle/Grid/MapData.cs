@@ -4,21 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewMap", menuName = "Level Design/Map")]
 public class MapData : ScriptableObject
 {
-    public enum LevelType
-    {
-        Regular,
-        Puzzle,
-        Miniboss,
-        Boss
-    }
+    public enum LevelType { Regular, Puzzle, Miniboss, Boss }
 
-    // --- NEW: Difficulty Enum ---
-    public enum Difficulty
-    {
-        Easy,
-        Medium,
-        Hard
-    }
+    public enum Difficulty { Easy, Medium, Hard }
 
     [System.Serializable]
     public struct TileData
@@ -34,13 +22,21 @@ public class MapData : ScriptableObject
         public string prefabName; 
     }
 
-    // --- NEW: Player Spawn Data Storage ---
     [System.Serializable]
     public struct SpawnData
     {
         public Vector3Int position;
         public string prefabName; 
-        public int linkID; // <--- ADD THIS
+        public int linkID; 
+    }
+
+    [System.Serializable]
+    public class EnvironmentData
+    {
+        public string prefabName;
+        public Vector3 position;
+        public Vector3 rotation; 
+        public Vector3 scale = Vector3.one;
     }
 
     public List<TileData> tilePositions = new List<TileData>();
@@ -48,6 +44,7 @@ public class MapData : ScriptableObject
     public List<SpawnData> playerSpawnPositions = new List<SpawnData>();
     public List<SpawnData> interactablePositions = new List<SpawnData>(); 
     public List<SpawnData> enemySpawnPositions = new List<SpawnData>();
+    public List<EnvironmentData> environmentPositions = new List<EnvironmentData>();
 
     public int horizontalSize; // X
     public int verticalSize;   // Z
@@ -55,10 +52,9 @@ public class MapData : ScriptableObject
 
     public GameObject environment;
     public LevelType levelType;
-    public Difficulty difficultyLevel = Difficulty.Easy; // --- NEW: Difficulty Assignment ---
+    public Difficulty difficultyLevel = Difficulty.Easy;
     public Vector3 environmentSpawnpoint;
 
-    // --- NEW: Camera Config ---
     [Header("Camera Configuration")]
     public bool overrideCameraSettings = false;
     public Vector3 cameraPosition;

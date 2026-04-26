@@ -484,7 +484,53 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
-        
+
+        // --- NEW: Load Freeform Environment Props ---
+        if (currentMapData.environmentPositions != null && currentMapData.environmentPositions.Count > 0)
+        {
+            foreach (var envData in currentMapData.environmentPositions)
+            {
+                if (string.IsNullOrEmpty(envData.prefabName)) continue;
+
+                GameObject runtimeEnvPrefab = Resources.Load<GameObject>(envData.prefabName);
+
+                if (runtimeEnvPrefab == null)
+                {
+                    Debug.LogWarning($"GridManager: Missing Environment Prefab '{envData.prefabName}' in Resources folder!");
+                    continue;
+                }
+
+                // Spawn entirely decoupled from the Grid offsets, using true World Space coordinates
+                GameObject envInstance = Instantiate(runtimeEnvPrefab, envData.position, Quaternion.Euler(envData.rotation));
+                envInstance.transform.localScale = envData.scale;
+                
+                envInstance.transform.SetParent(this.transform); // Keep hierarchy clean
+            }
+        }
+
+        // --- NEW: Load Freeform Environment Props ---
+        if (currentMapData.environmentPositions != null && currentMapData.environmentPositions.Count > 0)
+        {
+            foreach (var envData in currentMapData.environmentPositions)
+            {
+                if (string.IsNullOrEmpty(envData.prefabName)) continue;
+
+                GameObject runtimeEnvPrefab = Resources.Load<GameObject>(envData.prefabName);
+
+                if (runtimeEnvPrefab == null)
+                {
+                    Debug.LogWarning($"GridManager: Missing Environment Prefab '{envData.prefabName}' in Resources folder!");
+                    continue;
+                }
+
+                // Spawn entirely decoupled from the Grid offsets, using true World Space coordinates
+                GameObject envInstance = Instantiate(runtimeEnvPrefab, envData.position, Quaternion.Euler(envData.rotation));
+                envInstance.transform.localScale = envData.scale;
+                
+                envInstance.transform.SetParent(this.transform); // Keep hierarchy clean
+            }
+        }
+
     } // <--- End of GenerateGridMapFromData()
 
     private void ClearGridMap()
