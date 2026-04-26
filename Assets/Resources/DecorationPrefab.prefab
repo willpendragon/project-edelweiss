@@ -52,7 +52,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8509797798291170193
 Transform:
   m_ObjectHideFlags: 0
@@ -197,10 +197,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5273139076148632551}
   - component: {fileID: 5273139076148632548}
-  - component: {fileID: 1295778487736933772}
-  - component: {fileID: 451904470062388949}
-  - component: {fileID: 3440366670407997102}
-  - component: {fileID: 3762646646842752894}
   m_Layer: 0
   m_Name: DecorationPrefab
   m_TagString: DecorationEnvironment
@@ -246,7 +242,7 @@ MonoBehaviour:
   gridPosition: {x: 0, y: 0, z: 0}
   meleeAction: {fileID: 0}
   tileCurrentFieldPrize: {fileID: 0}
-  _prizeCollectionHelper: {fileID: 3762646646842752894}
+  _prizeCollectionHelper: {fileID: 0}
   currentSingleTileStatus: 1
   currentSingleTileCondition: 0
   currentTileCurseStatus: 0
@@ -260,66 +256,6 @@ MonoBehaviour:
   gCost: 0
   hCost: 0
   parent: {fileID: 0}
---- !u!65 &1295778487736933772
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5273139076148632550}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &451904470062388949
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5273139076148632550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49e5ddb6543336f40b00cba29e2c5d3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentTrapActivationStatus: 1
---- !u!114 &3440366670407997102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5273139076148632550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b159f7603b1ba47ac6c4add7e31852, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  conveyorBeltPrefab: {fileID: 6520922131242316414}
-  conveyorBeltMesh: {fileID: 0}
---- !u!114 &3762646646842752894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5273139076148632550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2705f31725358764aa264a358decac3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5273139077293845496
 GameObject:
   m_ObjectHideFlags: 0
@@ -900,6 +836,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 961f2ec00fcbf5545bf7c4dd6d15a93e, type: 3}
       propertyPath: m_Name
       value: tile
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 961f2ec00fcbf5545bf7c4dd6d15a93e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
