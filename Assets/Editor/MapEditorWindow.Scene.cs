@@ -119,7 +119,25 @@ public partial class MapEditorWindow
                     closestDist = dist;
                     targetGridPos = kvp.Key;
                     
-                    if (!isDeletingTile) targetGridPos.y += 1;
+                    if (!isDeletingTile) 
+                    {
+                        // Calculate which face of the bounds was hit (Normal) to allow arches/overhangs
+                        Vector3 hitPoint = ray.GetPoint(dist);
+                        Vector3 localHit = hitPoint - bounds.center;
+                        
+                        // Normalize the local hit point against the bounds extents
+                        float ax = Mathf.Abs(localHit.x / bounds.extents.x);
+                        float ay = Mathf.Abs(localHit.y / bounds.extents.y);
+                        float az = Mathf.Abs(localHit.z / bounds.extents.z);
+                        
+                        // Pick the largest axis factor to determine the hit face direction
+                        Vector3Int offset = Vector3Int.zero;
+                        if (ax >= ay && ax >= az) offset.x = (int)Mathf.Sign(localHit.x);
+                        else if (ay >= ax && ay >= az) offset.y = (int)Mathf.Sign(localHit.y);
+                        else offset.z = (int)Mathf.Sign(localHit.z);
+
+                        targetGridPos += offset;
+                    }
                     
                     hasHit = true;
                 }
