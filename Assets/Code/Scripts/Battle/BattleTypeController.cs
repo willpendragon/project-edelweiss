@@ -24,6 +24,10 @@ public class BattleTypeController : MonoBehaviour
 
     public BattleType currentBattleType;
 
+    // Add these to pass forced roaming deity state into the battle scene
+    public static bool isForcedRoamingDeity = false;
+    public static GameObject forcedRoamingDeityPrefab;
+
     private void Awake()
     {
         Instance = this;

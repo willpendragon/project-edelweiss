@@ -35,6 +35,13 @@ public class AchievementsManager : MonoBehaviour
     }
     public BattleTypeController.BattleType TriggerDeityAchievementLogic()
     {
+        // BLOCK: Do not upgrade to a capture battle if the Roaming Deity is forcing a clash
+        if (BattleTypeController.isForcedRoamingDeity)
+        {
+            Debug.Log("Forced Roaming Deity Encounter. Bypassing Achievement logic.");
+            return BattleTypeController.BattleType.RegularBattle;
+        }
+
         Achievement achievement = SelectAchievementUnlocked();
         double spawnChance = 0.5;
 
