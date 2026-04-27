@@ -90,6 +90,18 @@ public class OverworldMapGenerator : MonoBehaviour
             return;
         }
 
+        // Initialize tracking variables for automatic runtime regeneration
+        lastMapWidth = config.mapWidth;
+        lastMapDepth = config.mapDepth;
+        lastMinDistance = config.minDistanceApart;
+        lastSeed = config.randomSeed;
+        lastRegularWeight = config.regularBattleWeight;
+        lastPuzzleWeight = config.puzzleBattleWeight;
+        lastMinibossWeight = config.minibossBattleWeight;
+        lastBossWeight = config.bossBattleWeight;
+        lastPuzzleThreshold = config.puzzleBattleThreshold;
+        lastMinibossThreshold = config.minibossBattleThreshold;
+
         currentDomain = domainLevelSelection; 
         GameSaveData gameSaveData = SaveStateManager.saveData; // <--- Fetch from global memory instead
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
@@ -433,19 +445,49 @@ public class OverworldMapGenerator : MonoBehaviour
                     MapNodeController currentController = spawnedNodes[current].GetComponentInChildren<MapNodeController>();
                     MapNodeController neighborController = spawnedNodes[neighbor].GetComponentInChildren<MapNodeController>();
 
-                    bool currentIsUnclearedGateway = currentController != null && 
-                        (currentController.type == NodeType.MinibossBattle || currentController.type == NodeType.BossBattle) && 
+                    bool currentIsGateway = currentController != null && 
+                        (currentController.type == NodeType.MinibossBattle || currentController.type == NodeType.BossBattle);
+
+                    bool currentIsUnclearedGateway = currentIsGateway && 
                         currentController.currentLockStatus != MapNodeController.LockStatus.levelCleared;
 
                     bool neighborIsUnclearedGateway = neighborController != null && 
                         (neighborController.type == NodeType.MinibossBattle || neighborController.type == NodeType.BossBattle) && 
                         neighborController.currentLockStatus != MapNodeController.LockStatus.levelCleared;
 
-                    // 1. Strict Barrier: You cannot move FORWARD from an uncleared Gateway to any other node. 
-                    // (But retreating BACKWARD to a lower ID is allowed)
-                    if (currentIsUnclearedGateway && neighbor > current)
+                    // 1. Strict Barrier: You cannot move FORWARD from a Gateway to any other node
+                    // if the Gateway is uncleared OR if the previous node completion requirement isn't met.
+                    if (currentIsGateway && neighbor > current)
                     {
-                        continue;
+                        if (currentIsUnclearedGateway)
+                        {
+                            continue; // Block forward movement if gateway itself isn't beaten yet (Always mandatory)
+                        }
+
+                        if (runtimeConfig != null && runtimeConfig.enforceChokepointProgressionRule)
+                        {
+                            // Calculate how many nodes exist from start up to (and including) this gateway
+                            int totalNodesUpToGateway = current + 1; 
+                            
+                            // Calculate required amount based on the percentage
+                            int requiredClearedCount = Mathf.CeilToInt(totalNodesUpToGateway * (runtimeConfig.chokepointCompletionPercentageRequired / 100f));
+                            
+                            int clearedCount = 0;
+                            // Count how many nodes in this chunk have actually been cleared
+                            for (int i = 0; i <= current; i++)
+                            {
+                                var prevController = spawnedNodes[i].GetComponentInChildren<MapNodeController>();
+                                if (prevController != null && prevController.currentLockStatus == MapNodeController.LockStatus.levelCleared)
+                                {
+                                    clearedCount++;
+                                }
+                            }
+
+                            if (clearedCount < requiredClearedCount)
+                            {
+                                continue; // Block forward movement due to not meeting the completion percentage
+                            }
+                        }
                     }
 
                     // 2. Choke Point check: You cannot path THROUGH an uncleared Gateway to reach something else.
@@ -672,6 +714,28 @@ public class OverworldMapGenerator : MonoBehaviour
     {
         ClearMap();
         GenerateLevel(currentDomain);
+    }
+
+    private void Update()
+    {
+        if (!Application.isPlaying || !autoUpdateInPlayMode || config == null || currentDomain == null) return;
+
+        bool hasChanged = false;
+
+        if (config.mapWidth != lastMapWidth || config.mapDepth != lastMapDepth || config.minDistanceApart != lastMinDistance || config.randomSeed != lastSeed)
+            hasChanged = true;
+
+        if (config.regularBattleWeight != lastRegularWeight || config.puzzleBattleWeight != lastPuzzleWeight || 
+            config.minibossBattleWeight != lastMinibossWeight || config.bossBattleWeight != lastBossWeight)
+            hasChanged = true;
+
+        if (config.puzzleBattleThreshold != lastPuzzleThreshold || config.minibossBattleThreshold != lastMinibossThreshold)
+            hasChanged = true;
+
+        if (hasChanged)
+        {
+            RegenerateMap();
+        }
     }
 
     private void ClearMap()

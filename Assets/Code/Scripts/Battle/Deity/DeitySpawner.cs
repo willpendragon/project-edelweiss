@@ -48,15 +48,28 @@ public class DeitySpawner : MonoBehaviour
         UpdateSpawnableDeities();
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
-            int deityRollMinRange = 0;
-            int deityRollMaxRange = 7;
-            var deityRoll = localRandom.Next(deityRollMinRange, deityRollMaxRange);
-
-            int deityRollFirstThreshold = 3;
-            int deityRollSecondThreshold = 6;
-            if (deityRoll >= deityRollFirstThreshold && deityRoll <= deityRollSecondThreshold)
+            // OVERRIDE: If forced by the Roaming Deity, spawn it directly and skip random chance
+            if (BattleTypeController.isForcedRoamingDeity && BattleTypeController.forcedRoamingDeityPrefab != null)
             {
-                DeitySelector();
+                Debug.Log($"Forcing Roaming Deity: {BattleTypeController.forcedRoamingDeityPrefab.name}");
+                SpawnDeity(BattleTypeController.forcedRoamingDeityPrefab);
+                
+                // Clear state for future battles
+                BattleTypeController.isForcedRoamingDeity = false;
+                BattleTypeController.forcedRoamingDeityPrefab = null;
+            }
+            else
+            {
+                int deityRollMinRange = 0;
+                int deityRollMaxRange = 7;
+                var deityRoll = localRandom.Next(deityRollMinRange, deityRollMaxRange);
+
+                int deityRollFirstThreshold = 3;
+                int deityRollSecondThreshold = 6;
+                if (deityRoll >= deityRollFirstThreshold && deityRoll <= deityRollSecondThreshold)
+                {
+                    DeitySelector();
+                }
             }
 
             // Hides the Deity Health Bar when not necessary.

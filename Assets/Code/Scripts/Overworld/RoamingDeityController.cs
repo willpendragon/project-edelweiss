@@ -8,9 +8,11 @@ public class RoamingDeityController : MonoBehaviour
     [Header("Dependencies")]
     public OverworldMapGenerator mapGenerator;
     public GameObject deityModelPrefab;
-    
+    public GameObject deityBattlePrefab; // ADD THIS: The Unit prefab used in battle
+
     [Header("Settings")]
     public int spawnNodeDistanceMin = 3; // Ensure it doesn't spawn right on top of the player
+    [Tooltip("Be careful to assign a MapData of the Regular Battle type! Other types (like Puzzle) will just ignore the forced Deity spawn. To be fixed 'later'...")]
     public MapData simildeBossMapData; // Assign the specific MapData/EnemyPartyData for Similde
     
     [Header("Visuals")]
@@ -122,22 +124,21 @@ public class RoamingDeityController : MonoBehaviour
     {
         Debug.Log("[Roaming Deity] Encountered the Player! Forcing Battle...");
         
-        // Remove or sink the map model
         _isDeityActive = false;
         Destroy(_spawnedDeityInstance);
 
-        // Fetch the MapNodeController the player is standing on to inject the forced boss data
         MapNodeController currentNode = mapGenerator.spawnedNodes[mapGenerator.currentNodeId].GetComponentInChildren<MapNodeController>();
         EnemySelection currentSelection = currentNode.GetComponentInParent<EnemySelection>();
 
         if (currentSelection != null && simildeBossMapData != null)
         {
-            // Override the node's resident encounter with Similde
             currentSelection.mapData = simildeBossMapData; 
-            // Also override the type so it's treated as a Boss/Miniboss to block escape if your system checks map type
             currentNode.type = NodeType.BossBattle; 
+
+            // FLAG THE BATTLE STATE HERE
+            BattleTypeController.isForcedRoamingDeity = true;
+            BattleTypeController.forcedRoamingDeityPrefab = deityBattlePrefab;
             
-            // Trigger the node logic immediately as if clicked
             currentNode.HandleBattleEntry();
         }
         else
