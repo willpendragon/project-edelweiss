@@ -46,4 +46,12 @@ public class MapGenerationConfig : ScriptableObject
 
     public Vector2Int puzzleThresholdRange = new Vector2Int(1, 4);
     public Vector2Int minibossThresholdRange = new Vector2Int(4, 7);
+
+    [Header("Progression Rules")]
+    [Tooltip("If true, prevents players from progressing past a chokepoint (Miniboss/Boss) unless a certain percentage of previous nodes are cleared.")]
+    public bool enforceChokepointProgressionRule = true;
+
+    [Range(0, 100)]
+    [Tooltip("The percentage of nodes (including the chokepoint) from the start up to the chokepoint that must be cleared to progress. (e.g., 50% of 6 nodes means 3 nodes must be cleared). The chokepoint itself is ALWAYS mandatory.")]
+    public float chokepointCompletionPercentageRequired = 100f;
 }
