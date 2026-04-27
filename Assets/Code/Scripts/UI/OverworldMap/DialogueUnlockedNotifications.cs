@@ -38,6 +38,6 @@ public class DialogueUnlockedNotifications : MonoBehaviour
 
     private void ShowNotification(string title)
     {
-        OverworldUIManager.Instance.EventsUIManager.AddNotification(_dialogueNotificationConfig, title, "test");
+        OverworldUIManager.Instance.EventsUIManager.AddNotification(_dialogueNotificationConfig, title, "test", _dialogueNotificationConfig.categoryName);
     }
 }

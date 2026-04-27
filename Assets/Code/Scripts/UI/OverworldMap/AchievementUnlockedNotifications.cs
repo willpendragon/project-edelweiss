@@ -16,7 +16,7 @@ public class AchievementUnlockedNotifications : DialogueUnlockedNotifications
     private IEnumerator CheckForNewAchievementsCoroutine()
     {
         // Wait 1 frame so UI components fully init
-        yield return null; 
+        yield return null;
 
         GameSaveData saveData = SaveStateManager.saveData;
 
@@ -35,7 +35,7 @@ public class AchievementUnlockedNotifications : DialogueUnlockedNotifications
                     if (!saveData.notifiedAchievements.Contains(achievement.achievementName))
                     {
                         ShowAchievementNotification(achievement);
-                        
+
                         // Mark as notified and save
                         saveData.notifiedAchievements.Add(achievement.achievementName);
                         SaveStateManager.SaveGame(saveData);
@@ -49,8 +49,9 @@ public class AchievementUnlockedNotifications : DialogueUnlockedNotifications
     {
         OverworldUIManager.Instance.EventsUIManager.AddNotification(
             _achievementNotificationConfig,
-            "Quest Completed!", 
-            achievement.achievementName
+            achievement.achievementName,
+            achievement.GetDescription(),
+            _achievementNotificationConfig.categoryName
         );
     }
 }

@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ public class NotificationRequest
     public string title;
     public string description;
 
-    public NotificationRequest(NotificationConfig config, string title, string description)
+    public NotificationRequest(NotificationConfig config, string title, string description, string category)
     {
         this.config = config;
         this.title = title;
@@ -25,14 +26,15 @@ public class EventsUIManager : MonoBehaviour
     [SerializeField] private Image _eventImage;
     [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private TextMeshProUGUI _eventText;
+    [SerializeField] private TextMeshProUGUI _categoryText;
 
     // The queue processes the notifications in an orderly manner.
     private Queue<NotificationRequest> _queue = new Queue<NotificationRequest>();
     private bool _isShowing = false;
 
-    public void AddNotification(NotificationConfig config, string title, string description)
+    public void AddNotification(NotificationConfig config, string title, string description, string category)
     {
-        _queue.Enqueue(new NotificationRequest(config, title, description));
+        _queue.Enqueue(new NotificationRequest(config, title, description, category));
 
         if (!_isShowing)
         {
@@ -53,6 +55,7 @@ public class EventsUIManager : MonoBehaviour
 
         _eventImage.sprite = current.config.icon;
         _eventText.text = current.title;
+        _categoryText.text = current.config.categoryName;
 
         Sequence s = DOTween.Sequence();
 

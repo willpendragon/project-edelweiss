@@ -33,14 +33,14 @@ public class NodesUnlockManager : MonoBehaviour
         UpdateKeyNumberOnUI();
     }
 
-    private void DisplayNodeUnlockedMessage()
-    {
-        // This prevents the UI message from showing if the player already unlocked the secret level.
-        if (_gameStatsManager.SecretLevelUnlocked == true) // Should instead retrieve a list of unlocked levels.
-            return;
-        OverworldUIManager.Instance.EventsUIManager.AddNotification(_secretNodeUnlockNotificationConfig, "Secret Level Unlocked: Similde's Glacial Lair", "Secret Level, encounter with Deity Similde");
-        _gameStatsManager.SaveGameFlowData(true);
-    }
+    //private void DisplayNodeUnlockedMessage()
+    //{
+    //    // This prevents the UI message from showing if the player already unlocked the secret level.
+    //    if (_gameStatsManager.SecretLevelUnlocked == true) // Should instead retrieve a list of unlocked levels.
+    //        return;
+    //    OverworldUIManager.Instance.EventsUIManager.AddNotification(_secretNodeUnlockNotificationConfig, "Secret Level Unlocked: Similde's Glacial Lair", "Secret Level, encounter with Deity Similde");
+    //    _gameStatsManager.SaveGameFlowData(true);
+    //}
 
     private void UpdateKeyNumberOnUI()
     {
