@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyPartyManager : MonoBehaviour
@@ -10,59 +11,63 @@ public class EnemyPartyManager : MonoBehaviour
 
     private void Start()
     {
-        // Initialize the random number generator with a seed for consistency
-        random = new System.Random(); // Use a specific seed or get it from game data
-
+        random = new System.Random(); 
     }
-    // This is a level enemy generator and should have its own dedicated class.
-    // Beware: the Enemy start positions generate programmatically BEFORE the battle.
-    // Forcibly hooking the Deity logic here.
+
     public void GenerateEnemyPartyData(EnemyPartyData enemyParty)
     {
-        if (GridManager.Instance == null)
+        MapData mapData = GameManager.Instance.CurrentMap;
+
+        if (mapData == null || mapData.tilePositions == null)
             return;
-        {
-            // Generate a random number of enemies within the specified range
-            int enemyPoolSize = RandomRange(enemyParty.minEnemyPoolSize, enemyParty.maxEnemyPoolSize + 1);
 
-            // Generate the enemy pool based on the weights
-            List<EnemyType> generatedEnemies = GenerateEnemyPool(enemyParty.enemyWeights, enemyPoolSize);
+        int enemyPoolSize = RandomRange(enemyParty.minEnemyPoolSize, enemyParty.maxEnemyPoolSize + 1);
+        List<EnemyType> generatedEnemies = GenerateEnemyPool(enemyParty.enemyWeights, enemyPoolSize);
 
-            // Get player starting coordinates from the GameManager
-            List<Vector2Int> playerStartingCoordinates = GameManager.Instance.GetPlayerStartingCoordinates();
+        // 1. Gather all mathematically painted basic floor tiles available from MapData
+        var legallyEmptyTiles = mapData.tilePositions
+            .Where(tile => tile.tileType == TileType.Basic)
+            .Select(tile => new Vector2Int(tile.position.x, tile.position.z))
+            .Distinct()
+            .ToList();
 
-            // Get existing tile coordinates from GridManager
-            List<Vector2Int> existingTiles = GridManager.Instance.GetExistingTileCoordinates();
+        // 2. Identify every single coordinate that has something physically occupying it globally
+        List<Vector2Int> excludedPositions = new List<Vector2Int>();
+        
+        // Add MapData Painted entities
+        if (mapData.enemySpawnPositions != null)
+            excludedPositions.AddRange(mapData.enemySpawnPositions.Select(e => new Vector2Int(e.position.x, e.position.z)));
+        
+        if (mapData.decorationPositions != null)
+            excludedPositions.AddRange(mapData.decorationPositions.Select(d => new Vector2Int(d.position.x, d.position.z)));
+            
+        if (mapData.interactablePositions != null)
+            excludedPositions.AddRange(mapData.interactablePositions.Select(i => new Vector2Int(i.position.x, i.position.z)));
 
-            // Exclude tiles occupied by Obstacles/Hazards.
-            List<Vector2Int> specialTiles = GridManager.Instance.GetSpecialTiles();
+        // Add Systemic starting coordinates (Player + Deity)
+        excludedPositions.AddRange(GameManager.Instance.GetPlayerStartingCoordinates());
+        excludedPositions.Add(GameManager.Instance.GetDeityStartingCoordinates());
 
-            // Retrieve Deity starting position, add it to the ExcludedCoordinatesList.
-            List<Vector2Int> occupiedCoordinates = new List<Vector2Int>(playerStartingCoordinates);
-            occupiedCoordinates.Add(GameManager.Instance.GetDeityStartingCoordinates());
-            occupiedCoordinates.AddRange(specialTiles);
+        // 3. Remove the excluded tiles from the legally empty tiles 
+        List<Vector2Int> finalValidTiles = legallyEmptyTiles
+            .Where(t => !excludedPositions.Contains(t))
+            .ToList();
 
-            // Generate random positions for the enemies on the grid without overlapping player/Deity starting positions and only on existing tiles
-            List<Vector2> enemyPositions = GenerateEnemyPositions(enemyPoolSize, existingTiles, occupiedCoordinates);
+        // 4. Generate random positions strictly from the perfectly safe whitelist
+        List<Vector2> enemyPositions = GenerateEnemyPositions(enemyPoolSize, finalValidTiles);
 
-            // Update current enemy selection data
-            currentEnemySelectionIds.Clear();
-            currentEnemySelectionCoords.Clear();
-            currentEnemySelectionIds.AddRange(generatedEnemies);
-            currentEnemySelectionCoords.AddRange(enemyPositions);
-        }
+        currentEnemySelectionIds.Clear();
+        currentEnemySelectionCoords.Clear();
+        currentEnemySelectionIds.AddRange(generatedEnemies);
+        currentEnemySelectionCoords.AddRange(enemyPositions);
     }
 
-    // This could be moved in its own class
     private List<EnemyType> GenerateEnemyPool(List<EnemyWeight> weights, int poolSize)
     {
         List<EnemyType> pool = new List<EnemyType>();
         int totalWeight = 0;
 
-        foreach (var weight in weights)
-        {
-            totalWeight += weight.weight;
-        }
+        foreach (var weight in weights) totalWeight += weight.weight;
 
         for (int i = 0; i < poolSize; i++)
         {
@@ -79,20 +84,14 @@ public class EnemyPartyManager : MonoBehaviour
                 }
             }
         }
-
         return pool;
     }
-    // This method randomly assigns Enemies to a tile.
-    private List<Vector2> GenerateEnemyPositions(int count, List<Vector2Int> existingTiles, List<Vector2Int> excludedPositions)
+
+    private List<Vector2> GenerateEnemyPositions(int count, List<Vector2Int> validTiles)
     {
         List<Vector2> finalPositions = new List<Vector2>();
 
-        // 1. Create a list of ONLY valid tiles by removing any that are in the excluded list
-        // This turns the excludedPositions (Obstacles/Players) into a "No-Spawn Zone"
-        List<Vector2Int> validTiles = existingTiles.FindAll(tile => !excludedPositions.Contains(tile));
-
-        // 2. Shuffle the valid tiles list (Fisher-Yates Shuffle)
-        // This makes the selection random without needing a 'do-while' loop
+        // Fisher-Yates Shuffle
         for (int i = 0; i < validTiles.Count; i++)
         {
             Vector2Int temp = validTiles[i];
@@ -101,7 +100,6 @@ public class EnemyPartyManager : MonoBehaviour
             validTiles[randomIndex] = temp;
         }
 
-        // 3. Take the first 'count' tiles from our shuffled valid list
         int spawnCount = Mathf.Min(count, validTiles.Count);
         for (int i = 0; i < spawnCount; i++)
         {
@@ -110,47 +108,15 @@ public class EnemyPartyManager : MonoBehaviour
 
         if (finalPositions.Count < count)
         {
-            Debug.LogWarning("Not enough valid tiles to spawn the full enemy party!");
+            Debug.LogWarning($"EnemyPartyManager: Map is too crowded! Only found {finalPositions.Count} safe spots for {count} enemies.");
         }
 
         return finalPositions;
     }
 
-    //private List<Vector2> GenerateEnemyPositions(int count, List<Vector2Int> existingTiles, List<Vector2Int> excludedPositions)
-    //{
-    //    List<Vector2> positions = new List<Vector2>();
-    //    HashSet<Vector2> usedPositions = new HashSet<Vector2>(excludedPositions.ConvertAll(p => (Vector2)p));
-
-    //    for (int i = 0; i < count; i++)
-    //    {
-    //        Vector2 position;
-    //        int attempt = 0;
-
-    //        do
-    //        {
-    //            Vector2Int randomTile = existingTiles[RandomRange(0, existingTiles.Count)];
-    //            position = new Vector2(randomTile.x, randomTile.y);
-    //            attempt++;
-    //            if (attempt > 100) // Prevent an infinite loop
-    //            {
-    //                Debug.LogError("Could not find a suitable position for the enemy.");
-    //                break;
-    //            }
-    //        }
-    //        while (usedPositions.Contains(position));
-
-    //        if (!usedPositions.Contains(position))
-    //        {
-    //            positions.Add(position);
-    //            usedPositions.Add(position);
-    //        }
-    //    }
-
-    //    return positions;
-    //}
-
     private int RandomRange(int min, int max)
     {
+        if (random == null) random = new System.Random();
         return random.Next(min, max);
     }
 }
