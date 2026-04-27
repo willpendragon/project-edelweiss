@@ -90,6 +90,18 @@ public class OverworldMapGenerator : MonoBehaviour
             return;
         }
 
+        // Initialize tracking variables for automatic runtime regeneration
+        lastMapWidth = config.mapWidth;
+        lastMapDepth = config.mapDepth;
+        lastMinDistance = config.minDistanceApart;
+        lastSeed = config.randomSeed;
+        lastRegularWeight = config.regularBattleWeight;
+        lastPuzzleWeight = config.puzzleBattleWeight;
+        lastMinibossWeight = config.minibossBattleWeight;
+        lastBossWeight = config.bossBattleWeight;
+        lastPuzzleThreshold = config.puzzleBattleThreshold;
+        lastMinibossThreshold = config.minibossBattleThreshold;
+
         currentDomain = domainLevelSelection; 
         GameSaveData gameSaveData = SaveStateManager.saveData; // <--- Fetch from global memory instead
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
@@ -702,6 +714,28 @@ public class OverworldMapGenerator : MonoBehaviour
     {
         ClearMap();
         GenerateLevel(currentDomain);
+    }
+
+    private void Update()
+    {
+        if (!Application.isPlaying || !autoUpdateInPlayMode || config == null || currentDomain == null) return;
+
+        bool hasChanged = false;
+
+        if (config.mapWidth != lastMapWidth || config.mapDepth != lastMapDepth || config.minDistanceApart != lastMinDistance || config.randomSeed != lastSeed)
+            hasChanged = true;
+
+        if (config.regularBattleWeight != lastRegularWeight || config.puzzleBattleWeight != lastPuzzleWeight || 
+            config.minibossBattleWeight != lastMinibossWeight || config.bossBattleWeight != lastBossWeight)
+            hasChanged = true;
+
+        if (config.puzzleBattleThreshold != lastPuzzleThreshold || config.minibossBattleThreshold != lastMinibossThreshold)
+            hasChanged = true;
+
+        if (hasChanged)
+        {
+            RegenerateMap();
+        }
     }
 
     private void ClearMap()
