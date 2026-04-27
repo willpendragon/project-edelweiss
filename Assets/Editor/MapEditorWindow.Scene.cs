@@ -113,7 +113,25 @@ public partial class MapEditorWindow
         {
             foreach (var kvp in dict)
             {
-                Bounds bounds = new Bounds(GridToWorld(kvp.Key, tileSize) + tileSize / 2f, tileSize);
+                if (kvp.Value == null) continue;
+
+                // Attempt to grab the actual visual bounds of the model to allow clicking tall markers
+                Bounds bounds;
+                Renderer[] renderers = kvp.Value.GetComponentsInChildren<Renderer>();
+                if (renderers.Length > 0)
+                {
+                    bounds = renderers[0].bounds;
+                    for (int i = 1; i < renderers.Length; i++) 
+                    {
+                        bounds.Encapsulate(renderers[i].bounds);
+                    }
+                }
+                else
+                {
+                    // Fallback to strict tile boundaries if the object is purely empty
+                    bounds = new Bounds(GridToWorld(kvp.Key, tileSize) + tileSize / 2f, tileSize);
+                }
+
                 if (bounds.IntersectRay(ray, out float dist) && dist < closestDist)
                 {
                     closestDist = dist;

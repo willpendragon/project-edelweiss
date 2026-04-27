@@ -13,222 +13,229 @@ MonoBehaviour:
   m_Name: Base_Map
   m_EditorClassIdentifier: 
   tilePositions:
-  - position: {x: 5, y: 0, z: 0}
+  - position: {x: 3, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 0}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 0}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 0}
+    tileType: 0
+  - position: {x: 6, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 0}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 9}
     tileType: 0
   - position: {x: 2, y: 0, z: 1}
     tileType: 0
-  - position: {x: 1, y: 0, z: 1}
+  - position: {x: 7, y: 0, z: 0}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 2}
     tileType: 0
   - position: {x: 6, y: 0, z: 9}
     tileType: 0
   - position: {x: 6, y: 0, z: 2}
     tileType: 0
-  - position: {x: 9, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 0}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 0}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 0}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 4}
+  - position: {x: 6, y: 0, z: 6}
     tileType: 0
   - position: {x: 0, y: 0, z: 2}
     tileType: 0
-  - position: {x: 5, y: 0, z: 7}
+  - position: {x: 7, y: 0, z: 1}
     tileType: 0
-  - position: {x: 8, y: 0, z: 0}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 0}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 0}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 4}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 9}
-    tileType: 0
-  - position: {x: 1, y: 0, z: 0}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 6, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 4}
+  - position: {x: 7, y: 0, z: 4}
     tileType: 0
   - position: {x: 8, y: 0, z: 9}
     tileType: 0
   - position: {x: 9, y: 0, z: 4}
     tileType: 0
-  - position: {x: 6, y: 0, z: 1}
+  - position: {x: 6, y: 0, z: 4}
     tileType: 0
-  - position: {x: 0, y: 0, z: 4}
+  - position: {x: 6, y: 0, z: 5}
     tileType: 0
-  - position: {x: 2, y: 0, z: 8}
+  - position: {x: 9, y: 0, z: 8}
     tileType: 0
-  - position: {x: 0, y: 0, z: 8}
+  - position: {x: 7, y: 0, z: 8}
     tileType: 0
-  - position: {x: 2, y: 0, z: 4}
+  - position: {x: 1, y: 0, z: 1}
     tileType: 0
-  - position: {x: 4, y: 0, z: 5}
+  - position: {x: 4, y: 0, z: 8}
     tileType: 0
-  - position: {x: 6, y: 0, z: 3}
+  - position: {x: 4, y: 0, z: 7}
     tileType: 0
-  - position: {x: 8, y: 0, z: 2}
+  - position: {x: 6, y: 0, z: 7}
     tileType: 0
-  - position: {x: 2, y: 0, z: 0}
+  - position: {x: 1, y: 0, z: 0}
     tileType: 0
-  - position: {x: 7, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 0, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 7, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 8, y: 0, z: 5}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 6}
-    tileType: 0
-  - position: {x: 4, y: 0, z: 2}
+  - position: {x: 5, y: 0, z: 8}
     tileType: 0
   - position: {x: 1, y: 0, z: 5}
     tileType: 0
-  - position: {x: 6, y: 0, z: 4}
+  - position: {x: 2, y: 0, z: 3}
     tileType: 0
-  - position: {x: 3, y: 0, z: 1}
-    tileType: 0
-  - position: {x: 9, y: 0, z: 3}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 7}
-    tileType: 0
-  - position: {x: 2, y: 0, z: 2}
-    tileType: 0
-  - position: {x: 3, y: 0, z: 8}
-    tileType: 0
-  - position: {x: 5, y: 0, z: 3}
+  - position: {x: 3, y: 0, z: 4}
     tileType: 0
   - position: {x: 0, y: 0, z: 6}
     tileType: 0
-  - position: {x: 1, y: 0, z: 7}
+  - position: {x: 9, y: 0, z: 7}
     tileType: 0
-  - position: {x: 1, y: 0, z: 9}
+  - position: {x: 5, y: 0, z: 0}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 9, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 8}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 6}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 5, y: 0, z: 9}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 7, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 0}
+    tileType: 0
+  - position: {x: 2, y: 0, z: 0}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 3}
+    tileType: 0
+  - position: {x: 1, y: 0, z: 2}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 8, y: 0, z: 7}
+    tileType: 0
+  - position: {x: 0, y: 0, z: 1}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 4}
+    tileType: 0
+  - position: {x: 3, y: 0, z: 5}
+    tileType: 0
+  - position: {x: 4, y: 0, z: 2}
     tileType: 0
   decorationPositions:
-  - position: {x: 0, y: 1, z: 3}
-    prefabName: DecorationPrefab
   - position: {x: 0, y: 1, z: 0}
     prefabName: DecorationPrefab
-  - position: {x: 0, y: 2, z: 0}
+  - position: {x: 0, y: 0, z: 0}
     prefabName: DecorationPrefab
   - position: {x: 0, y: 2, z: 3}
     prefabName: DecorationChick
-  - position: {x: 0, y: 0, z: 0}
+  - position: {x: 0, y: 2, z: 0}
+    prefabName: DecorationPrefab
+  - position: {x: 0, y: 1, z: 3}
     prefabName: DecorationPrefab
   playerSpawnPositions:
-  - position: {x: 2, y: 1, z: 6}
+  - position: {x: 2, y: 1, z: 3}
     prefabName: PlayerCharacterSelectorIcon
     linkID: 0
-  - position: {x: 6, y: 1, z: 7}
+  - position: {x: 1, y: 1, z: 3}
     prefabName: PlayerCharacterSelectorIcon
     linkID: 0
-  - position: {x: 4, y: 1, z: 3}
+  - position: {x: 3, y: 1, z: 3}
     prefabName: PlayerCharacterSelectorIcon
     linkID: 0
   interactablePositions: []
+  enemySpawnPositions: []
+  environmentPositions: []
+  lightSettings: []
   horizontalSize: 10
   verticalSize: 10
   depthSize: 10
@@ -242,4 +249,8 @@ MonoBehaviour:
   cameraZoom: 60
   isOrthographic: 0
   orthographicSize: 5
+  overrideDirectionalLight: 0
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
+  directionalLightIntensity: 1
   fixedDeity: {fileID: 0}
