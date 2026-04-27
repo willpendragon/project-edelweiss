@@ -27,8 +27,9 @@ public class CharacterUnlockedNotifications : MonoBehaviour
             
             OverworldUIManager.Instance.EventsUIManager.AddNotification(
                 _characterUnlockConfig,
-                "New Ally Unlocked!",
-                characterName
+                $"{characterName}",
+                characterName,
+                _characterUnlockConfig.categoryName
             );
         }
     }
