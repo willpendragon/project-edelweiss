@@ -37,6 +37,11 @@ public class CursorController : MonoBehaviour
     private int _spellRange = 3; // Fallback value
     [SerializeField] private TurnController _turnController;
     [SerializeField] private Unit _targetedUnit;
+    [SerializeField] private EscapeSettings _escapeSettings;
+    [SerializeField] private Canvas _mainUICanvas;
+
+    private Coroutine _escapeCoroutine;
+    private GameObject _escapeUIRoot;
 
     public Unit TargetedUnit => _targetedUnit;
 
@@ -56,10 +61,10 @@ public class CursorController : MonoBehaviour
     private List<Button> _actionButtons = new List<Button>();
 
     private GameObject CreateActionButton(
-    RadialMenuEntry.ActionType actionType,
-    Sprite icon,
-    string label,
-    int priority = 0) // Priority determines the position of the Action Button in the Radial Menu (clock-style).
+        RadialMenuEntry.ActionType actionType,
+        Sprite icon,
+        string label,
+        int priority = 0) // Priority determines the position of the Action Button in the Radial Menu (clock-style).
     {
         var button = Instantiate(actionButtonPrefab, radialMenu.transform);
         var entry = button.GetComponent<RadialMenuEntry>();
@@ -74,6 +79,7 @@ public class CursorController : MonoBehaviour
         {
             entry.DisplayAlignmentIcon();
         }
+
         // Display Deity Tributes count on place Tributes buttons.
         if (entry.actionType == RadialMenuEntry.ActionType.Crystal)
         {
@@ -106,6 +112,13 @@ public class CursorController : MonoBehaviour
     {
         if (GridManager.IsUnitMoving)
             return;
+
+        if (_escapeCoroutine != null && Input.GetKeyDown(KeyCode.Escape))
+        {
+            CancelEscape();
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             // Shoot Raycasts
@@ -116,6 +129,7 @@ public class CursorController : MonoBehaviour
             SortInteractedItemExit();
         }
     }
+
     private void SortInteractedItemExit()
     {
         // Check UI interactions
@@ -152,7 +166,7 @@ public class CursorController : MonoBehaviour
     {
         Vector3 mousePosition = Input.mousePosition;
         Ray rayOrigin = Camera.main.ScreenPointToRay(mousePosition);
-        
+
         // Shoot through everything to find all potential targets under the cursor
         RaycastHit[] hits = Physics.RaycastAll(rayOrigin).OrderBy(h => h.distance).ToArray();
 
@@ -176,10 +190,11 @@ public class CursorController : MonoBehaviour
             // Assuming your decorations have a "Decorations" or "Environment" tag. 
             // If they are untagged, we check if they are attached to a Tile that is Environment.
             TileController hitTc = firstPhysicalHit.collider.GetComponentInParent<TileController>();
-            
+
             // If we clearly hit an Environment tile mesh or a purely visual decoration prefab 
             // (You can also check for CompareTag("Obstacle") or whatever your prefab is tagged)
-            if ((hitTc != null && hitTc.tileType == TileType.Environment) || firstPhysicalHit.collider.gameObject.CompareTag("DecorationEnvironment"))
+            if ((hitTc != null && hitTc.tileType == TileType.Environment) ||
+                firstPhysicalHit.collider.gameObject.CompareTag("DecorationEnvironment"))
             {
                 Debug.Log("Clicked directly on non-interactable Environment. Ignoring Raycast.");
                 CloseRadialMenu();
@@ -190,7 +205,8 @@ public class CursorController : MonoBehaviour
         // PASS 2: Prioritize Enemies & Players
         foreach (var hitInfo in hits)
         {
-            if (hitInfo.collider.gameObject.CompareTag("Enemy") || hitInfo.collider.gameObject.CompareTag("Player") || hitInfo.collider.gameObject.CompareTag("ActivePlayerUnit"))
+            if (hitInfo.collider.gameObject.CompareTag("Enemy") || hitInfo.collider.gameObject.CompareTag("Player") ||
+                hitInfo.collider.gameObject.CompareTag("ActivePlayerUnit"))
             {
                 Unit hitUnit = hitInfo.collider.gameObject.GetComponentInParent<Unit>();
                 if (hitUnit != null && hitUnit.ownedTile != null)
@@ -207,7 +223,7 @@ public class CursorController : MonoBehaviour
             if (hitInfo.collider.gameObject.CompareTag("Tile"))
             {
                 TileController tc = hitInfo.collider.gameObject.GetComponent<TileController>();
-                
+
                 if (tc != null)
                 {
                     // Prevent clicking on purely visual decorations that act as fake tiles
@@ -262,7 +278,8 @@ public class CursorController : MonoBehaviour
             RadialMenuEntry.ActionType.Run, _runIcon, "Escape", 3);
 
         // Move button
-        if (activePlayerUnit != null && CheckDistance(activePlayerUnit.unitMovementLimit) && _tileController.detectedUnit == null)
+        if (activePlayerUnit != null && CheckDistance(activePlayerUnit.unitMovementLimit) &&
+            _tileController.detectedUnit == null)
             _moveButtonPrefabInstance = CreateActionButton(
                 RadialMenuEntry.ActionType.Move, _moveIcon, "Move", 1);
 
@@ -274,7 +291,9 @@ public class CursorController : MonoBehaviour
             var trapController = _tileController.GetComponentInChildren<TrapController>();
             bool isTileFree = _tileController.currentSingleTileCondition == SingleTileCondition.free;
 
-            if (isTileFree && trapController != null && trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active && activePlayerUnit.unitTemplate.unitName == "Aliza")
+            if (isTileFree && trapController != null &&
+                trapController.currentTrapActivationStatus != TrapController.TrapActivationStatus.active &&
+                activePlayerUnit.unitTemplate.unitName == "Aliza")
                 _trapButtonPrefabInstance = CreateActionButton(
                     RadialMenuEntry.ActionType.Trap, _trapIcon, "Trap", 2);
 
@@ -298,6 +317,7 @@ public class CursorController : MonoBehaviour
                 DisplayHelp();
             }
         }
+
         // Spell
         bool canSpell = CheckDistance(_spellRange) && _tileController.detectedUnit != null;
         if (canSpell)
@@ -333,6 +353,7 @@ public class CursorController : MonoBehaviour
             Destroy(button.gameObject);
         }
     }
+
     private Sprite GetButtonIcon(Unit activePlayerUnit)
     {
         if (activePlayerUnit.hasHookshot == true)
@@ -397,7 +418,11 @@ public class CursorController : MonoBehaviour
                 _tileController.currentPlayerAction.Execute(_tileController);
                 break;
             case RadialMenuEntry.ActionType.Run:
-                TurnController.Instance.RunFromBattle();
+                if (_escapeCoroutine == null)
+                {
+                    _escapeCoroutine = StartCoroutine(EscapeSequence());
+                }
+
                 DestroyEnemyInfoPanels();
                 break;
         }
@@ -452,13 +477,13 @@ public class CursorController : MonoBehaviour
         Vector3Int pPos = activePlayerUnit.ownedTile.gridPosition;
         Vector3Int targetPos = _tileController.gridPosition;
 
-        // Quanti "passi" di griglia in X e Z (profondità) abbiamo?
+        // Quanti "passi" di griglia in X e Z (profonditï¿½) abbiamo?
         int dstX = Mathf.Abs(pPos.x - targetPos.x);
         int dstZ = Mathf.Abs(pPos.z - targetPos.z);
         // Opzionale: int dstY = Mathf.Abs(pPos.y - targetPos.y); 
-        // Aggiungi + dstY se vuoi che bersagliare uno più in alto costi range extra.
-        
-        int blockDistance = dstX + dstZ; 
+        // Aggiungi + dstY se vuoi che bersagliare uno piï¿½ in alto costi range extra.
+
+        int blockDistance = dstX + dstZ;
 
         return blockDistance <= limit;
     }
@@ -481,5 +506,76 @@ public class CursorController : MonoBehaviour
         {
             enemyPanel.GetComponent<UnitProfileController>().UpdateTargetedUnitProfile(_targetedUnit);
         }
+    }
+
+    private System.Collections.IEnumerator EscapeSequence()
+    {
+        float timer = _escapeSettings != null ? _escapeSettings.gracePeriod : 1.5f;
+        CreateEscapeUI();
+
+        var timerText = _escapeUIRoot.GetComponentInChildren<TextMeshProUGUI>();
+
+        while (timer > 0)
+        {
+            if (timerText != null)
+                timerText.text = $"Escaping in {timer:F1}s...\n[ESC] TO CANCEL";
+
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+
+        Destroy(_escapeUIRoot);
+        _escapeCoroutine = null;
+
+        // Execute the actual roll
+        float roll = UnityEngine.Random.Range(0f, 100f);
+        float chance = _escapeSettings != null ? _escapeSettings.escapeProbability : 100f;
+
+        if (roll <= chance)
+        {
+            TurnController.Instance.RunFromBattle();
+        }
+        else
+        {
+            BattleInterface.Instance.SetDeityNotification("Escape failed!");
+        }
+    }
+
+    private void CreateEscapeUI()
+    {
+        Canvas mainCanvas = _mainUICanvas;
+        if (mainCanvas == null) return;
+
+        _escapeUIRoot = new GameObject("EscapeCountdownUI");
+        _escapeUIRoot.transform.SetParent(mainCanvas.transform, false);
+
+        RectTransform rect = _escapeUIRoot.AddComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.8f);
+        rect.anchorMax = new Vector2(0.5f, 0.8f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.sizeDelta = new Vector2(400, 100);
+
+        var text = _escapeUIRoot.AddComponent<TextMeshProUGUI>();
+        text.alignment = TextAlignmentOptions.Center;
+        text.fontSize = 24;
+        text.color = Color.white;
+        text.outlineWidth = 0.2f;
+        text.outlineColor = Color.black;
+    }
+
+    private void CancelEscape()
+    {
+        if (_escapeCoroutine != null)
+        {
+            StopCoroutine(_escapeCoroutine);
+            _escapeCoroutine = null;
+        }
+
+        if (_escapeUIRoot != null)
+        {
+            Destroy(_escapeUIRoot);
+        }
+
+        BattleInterface.Instance.SetDeityNotification("Escape Cancelled");
     }
 }
