@@ -221,7 +221,8 @@ public partial class MapEditorWindow
                 {
                     GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
                     obj.transform.position = GridToWorld(data.position, tileSize);
-                    obj.name = $"{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                    // Add Required Prefix
+                    obj.name = $"SpawnUnit_{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
                     spawnedUnits[data.position] = obj;
                 }
             }
@@ -237,6 +238,7 @@ public partial class MapEditorWindow
                 {
                     GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
                     obj.transform.position = GridToWorld(data.position, tileSize);
+                    // Add Required Prefix
                     obj.name = $"SpawnEnemy_{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
                     spawnedEnemies[data.position] = obj;
                 }

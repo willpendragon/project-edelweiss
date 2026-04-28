@@ -37,6 +37,11 @@ public class EnemyPartyManager : MonoBehaviour
         // Add MapData Painted entities
         if (mapData.enemySpawnPositions != null)
             excludedPositions.AddRange(mapData.enemySpawnPositions.Select(e => new Vector2Int(e.position.x, e.position.z)));
+
+        // --- NEW: Exclude explicitly painted Player Units ---
+        if (mapData.playerSpawnPositions != null)
+            excludedPositions.AddRange(mapData.playerSpawnPositions.Select(e => new Vector2Int(e.position.x, e.position.z)));
+        // ---------------------------------------------------
         
         if (mapData.decorationPositions != null)
             excludedPositions.AddRange(mapData.decorationPositions.Select(d => new Vector2Int(d.position.x, d.position.z)));
