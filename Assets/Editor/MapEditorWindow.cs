@@ -187,7 +187,7 @@ public partial class MapEditorWindow : EditorWindow
             TileType.Chest,
             TileType.MinibossChest,
             TileType.BossChest,
-            TileType.DeityTile // <-- Add this here
+            TileType.DeityTile // <--- Added DeityTile
         };
 
         // 2. Convert them to string arrays for the Editor UI
@@ -197,10 +197,17 @@ public partial class MapEditorWindow : EditorWindow
         int currentIndex = System.Array.IndexOf(allowedTileTypes, selectedTileType);
         if (currentIndex < 0) currentIndex = 0; // Default to 'Basic' if currently selected an invalid type
 
-        // 4. Draw the customized popup menu
-        int newIndex = EditorGUILayout.Popup("Tile Type", currentIndex, displayOptions);
+        // 4. Draw the customized popup menu with a tooltip
+        int newIndex = EditorGUILayout.Popup(new GUIContent("Tile Type", "Paint structure tiles or specialized spawn tiles. Hover for docs."), currentIndex, displayOptions);
         selectedTileType = allowedTileTypes[newIndex];
         
+        // --- NEW: Documentation Notification ---
+        if (selectedTileType == TileType.MinibossChest || selectedTileType == TileType.BossChest)
+        {
+            string reqName = selectedTileType == TileType.MinibossChest ? "MiniBossChest" : "BossChest";
+            EditorGUILayout.HelpBox($"The '{selectedTileType}' strictly requires a prefab named '{reqName}' inside any 'Resources' folder to load properly at runtime.", MessageType.Info);
+        }
+
         EditorGUILayout.Space();
         clearOnClose = EditorGUILayout.Toggle("Clear Tiles when Closing Editor", clearOnClose);
         if (GUI.changed) EditorPrefs.SetBool("MapEditor_ClearOnClose", clearOnClose);

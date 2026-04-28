@@ -149,22 +149,40 @@ public class GridManager : MonoBehaviour
 
             if (tileData.tileType == TileType.Chest || tileData.tileType == TileType.MinibossChest || tileData.tileType == TileType.BossChest)
             {
-                GameObject chestPrototype = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                chestPrototype.name = "Chest_Prototype";
+                string targetPrefabName = "";
+                if (tileData.tileType == TileType.MinibossChest) targetPrefabName = "MiniBossChest";
+                else if (tileData.tileType == TileType.BossChest) targetPrefabName = "BossChest";
+                else targetPrefabName = "Chest";
 
-                BoxCollider prototypeCollider = chestPrototype.GetComponent<BoxCollider>();
-                if (prototypeCollider != null) Destroy(prototypeCollider);
+                GameObject loadedPrefab = Resources.Load<GameObject>(targetPrefabName);
+                GameObject chestPrototype;
 
-                Renderer renderer = chestPrototype.GetComponent<Renderer>();
-                if (renderer != null)
+                if (loadedPrefab != null)
                 {
-                    if (tileData.tileType == TileType.MinibossChest) renderer.material.color = Color.yellow;
-                    else if (tileData.tileType == TileType.BossChest) renderer.material.color = Color.red;
-                    else renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f);
+                    chestPrototype = Instantiate(loadedPrefab);
+                    chestPrototype.name = targetPrefabName;
+                }
+                else
+                {
+                    // Fallback generating primitive cubes if prefabs are missing
+                    chestPrototype = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    chestPrototype.name = "Chest_Prototype";
+
+                    BoxCollider prototypeCollider = chestPrototype.GetComponent<BoxCollider>();
+                    if (prototypeCollider != null) Destroy(prototypeCollider);
+
+                    Renderer renderer = chestPrototype.GetComponent<Renderer>();
+                    if (renderer != null)
+                    {
+                        if (tileData.tileType == TileType.MinibossChest) renderer.material.color = Color.yellow;
+                        else if (tileData.tileType == TileType.BossChest) renderer.material.color = Color.red;
+                        else renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f);
+                    }
+                    
+                    chestPrototype.transform.localScale = Vector3.one * 0.5f; 
                 }
 
                 chestPrototype.transform.SetParent(tilePrefabInstance.transform);
-                chestPrototype.transform.localScale = Vector3.one * 0.5f; 
                 PlaceUnitOnTileSurface(chestPrototype, tileController);
 
                 tileController.detectedUnit = chestPrototype;
@@ -172,6 +190,7 @@ public class GridManager : MonoBehaviour
 
                 chestPrototype.tag = "Chest";
 
+                // It safely assigns missing setup requirements if the prefab doesn't have them baked in yet
                 if (!chestPrototype.GetComponent<ChestUnit>())
                 {
                     var chestUnit = chestPrototype.AddComponent<ChestUnit>();
