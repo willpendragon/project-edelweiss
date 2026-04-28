@@ -220,6 +220,27 @@ public partial class MapEditorWindow
             }
         }
 
+        // --- NEW: Load Custom Resources Prefab for Editor Visualization ---
+        string customPrefabName = null;
+        if (type == TileType.MinibossChest) customPrefabName = "MiniBossChest";
+        else if (type == TileType.BossChest) customPrefabName = "BossChest";
+        else if (type == TileType.Chest) customPrefabName = "Chest";
+        else if (type == TileType.DeityTile) customPrefabName = "DeityTile";
+        else if (type == TileType.Beacon) customPrefabName = "Beacon";
+
+        if (!string.IsNullOrEmpty(customPrefabName))
+        {
+            GameObject loadedPrefab = Resources.Load<GameObject>(customPrefabName);
+            if (loadedPrefab != null)
+            {
+                GameObject preview = (GameObject)PrefabUtility.InstantiatePrefab(loadedPrefab);
+                preview.name = "EditorPreview";
+                preview.transform.SetParent(tile.transform);
+                preview.transform.localPosition = new Vector3(0, 0f, 0); 
+            }
+        }
+        // ------------------------------------------------------------------
+
         if (r == null) return;
 
         MaterialPropertyBlock block = new MaterialPropertyBlock();
@@ -227,25 +248,12 @@ public partial class MapEditorWindow
 
         Color c = Color.white;
         
+        // Base coloring fallbacks if the prefabs don't exist yet
         if (type == TileType.Obstacle) c = new Color(0.15f, 0.15f, 0.15f, 1f);
         else if (type == TileType.Chest) c = new Color(0.5f, 0.0f, 0.8f, 1f);
         else if (type == TileType.MinibossChest) c = Color.yellow;
         else if (type == TileType.BossChest) c = Color.red;
-        else if (type == TileType.DeityTile) c = Color.magenta; // <-- NEW
-        else if (type == TileType.Beacon)
-        {
-            // Load and spawn the actual Beacon prefab for editor visualization
-            GameObject beaconPrefab = Resources.Load<GameObject>("Beacon");
-            if (beaconPrefab != null)
-            {
-                GameObject preview = (GameObject)PrefabUtility.InstantiatePrefab(beaconPrefab);
-                preview.name = "EditorPreview";
-                preview.transform.SetParent(tile.transform);
-                
-                // You may need to change 0.56f to 0f if the beacon appears floating without the giant block
-                preview.transform.localPosition = new Vector3(0, 0f, 0); 
-            }
-        }
+        else if (type == TileType.DeityTile) c = Color.cyan;
 
         if (c != Color.white)
         {
