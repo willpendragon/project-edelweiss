@@ -27,8 +27,18 @@ public class DeitySimildeBehavior : DeityBehavior
             return false;
         }
             
-        // 1. Filter out nulls, occupied tiles, ALREADY frozen tiles, and explicitly tagged Decorations
         var allTiles = GridManager.Instance.gridTileControllers;
+
+        // Check if all tiles are already iced
+        bool allIced = allTiles.All(t => t.tileElement == TileElement.Ice);
+
+        if (allIced)
+        {
+            BattleInterface.Instance.SetDeityNotification($"Deity {deityName}'s ice covers the entire field.");
+            return;
+        }
+
+        // 1. Filter out nulls, occupied tiles, ALREADY frozen tiles, and explicitly tagged Decorations
         var validTiles = allTiles.Where(t => 
             t != null && 
             t.tileType == TileType.Basic && // Strictly only normal floor tiles
@@ -38,48 +48,45 @@ public class DeitySimildeBehavior : DeityBehavior
             !IsDecoration(t) // Ignore explicit DecorationEnvironment tags
         ).ToList();
 
-        if (validTiles.Count == 0)
+        // 2. Define the amount of tiles to enchant (using Laurinus' range of 20-30)
+        int minEnchantedRange = 5;
+        int maxEnchantedRange = 10;
+        int enchantCountGoal = UnityEngine.Random.Range(minEnchantedRange, maxEnchantedRange);
+
+        if (validTiles.Count < enchantCountGoal)
+        {
+            enchantCountGoal = validTiles.Count; // Adjust to max available
+        }
+
+        if (enchantCountGoal == 0)
         {
             Debug.LogWarning("Similde couldn't find any valid free/unfrozen tiles to enchant.");
             return;
         }
 
-        // 2. Pick a random valid center tile
-        int randomTileIndex = localRandom.Next(validTiles.Count);
-        TileController randomTile = validTiles[randomTileIndex];
-        
-        // 3. Get neighbors and safely handle nulls/grid holes
-        List<TileController> rawNeighbors = GridManager.Instance.gridMovementController.GetNeighbours(randomTile);
-        List<TileController> finalList = new List<TileController>();
-        
-        if (rawNeighbors != null)
-        {
-            finalList.AddRange(rawNeighbors);
-        }
-        finalList.Add(randomTile);
+        // 3. Randomize and extract the selection (same logic as Laurinus)
+        var selectedTiles = validTiles
+            .OrderBy(t => System.Guid.NewGuid()) // Randomize
+            .Take(enchantCountGoal)
+            .ToArray();
 
-        // 4. Sanitize the blast radius using the exact same aggressive filtering
-        var sanitizedList = finalList.Where(t => 
-            t != null && 
-            t.tileType == TileType.Basic && 
-            t.currentSingleTileCondition == SingleTileCondition.free && 
-            t.detectedUnit == null &&
-            t.tileElement != TileElement.Ice &&
-            !IsDecoration(t)
-        ).ToList();
-
-        // 5. Apply the VFX
+        // 4. Apply the VFX
         GameObject effectPrefab = Resources.Load<GameObject>("SimildePossessedTile");
         int enchantedCount = 0;
 
-        foreach (var tile in sanitizedList)
+        foreach (var tile in selectedTiles)
         {
             if (effectPrefab != null)
             {
                 GameObject effectInstance = Instantiate(effectPrefab, tile.transform);
-                
+            
+                // Keep it anchored to the tile center with a 0.52 Y offset
                 effectInstance.transform.localPosition = new Vector3(0f, 0.52f, 0f); 
+                
+                // Rotate 90 degrees on the X-axis to lie flat on the 3D ground
                 effectInstance.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                
+                // Scale uniform to 2.5 fitting the new 3D tile size
                 effectInstance.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             }
 
