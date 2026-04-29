@@ -9,35 +9,37 @@ public class BattleManager : MonoBehaviour
 
     // Distribute responsibilities.
 
-    [Header("Gameplay Flow")]
-    [SerializeField] DeityAchievementsController deityAchievementsController;
+    [Header("Gameplay Flow")] [SerializeField]
+    DeityAchievementsController deityAchievementsController;
+
     public EnemyTurnManager enemyTurnManager;
 
-    [Header("Actors on Battlefield")]
-    public GameObject[] enemiesOnBattlefield;
+    [Header("Actors on Battlefield")] public GameObject[] enemiesOnBattlefield;
     public Deity deity;
     public EnemySelection enemySelection;
 
-    [Header("Prizes Logic")]
-    public BattleRewardsController battleRewardsController;
+    [Header("Prizes Logic")] public BattleRewardsController battleRewardsController;
     public int captureCrystalsRewardPool;
 
-    [Header("UI")]
-    [SerializeField] PlayableDirector mainCameraPlayableDirector;
+    [Header("UI")] [SerializeField] PlayableDirector mainCameraPlayableDirector;
     [SerializeField] float battleMomentsScreenDeactivationTime;
-
     private string battleStartMessage = "Battle Begins!";
+    [Header("Camera")] [SerializeField] private CameraController _cameraController;
 
     public delegate void SavePlayerHealth(float finalPlayerHealth);
+
     public static event SavePlayerHealth OnSavePlayerHealth;
 
     public delegate void SavePlayerCoinsReward(float coinsReward);
+
     public static event SavePlayerCoinsReward OnSavePlayerCoinsReward;
 
     public delegate void SavePlayerExperienceReward(float experienceReward);
+
     public static event SavePlayerExperienceReward OnSavePlayerExperienceReward;
 
     public delegate void BattleEndResultsScreen(string battleEndMessage);
+
     public static event BattleEndResultsScreen OnBattleEndResultsScreen;
 
     public GridManager gridManager;
@@ -53,17 +55,18 @@ public class BattleManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     void Start()
     {
         // Don't wait! Grab the enemies instantly on frame 1 so UI sliders can bind to them properly!
         TrackEnemiesOnBattlefield();
-        
+
         StartCoroutine(BeginBattleCoroutine());
     }
 
     private System.Collections.IEnumerator BeginBattleCoroutine()
     {
-        yield return null; 
+        yield return null;
 
         if (PixelCrushers.DialogueSystem.DialogueManager.isConversationActive)
         {
@@ -74,19 +77,24 @@ public class BattleManager : MonoBehaviour
         BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen(battleStartMessage);
         BattleSFXManager.PlaySound(SoundType.BATTLEBEGINS, 1);
     }
+
     private void TrackEnemiesOnBattlefield()
     {
         enemiesOnBattlefield = GameObject.FindGameObjectsWithTag("Enemy");
     }
+
     private int frameCounter = 0;
+
     void Update()
     {
         if (frameCounter % 10 == 0)
         {
             ClearTilesWithMissingUnits();
         }
+
         frameCounter++;
     }
+
     void ClearTilesWithMissingUnits()
     {
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
@@ -100,6 +108,7 @@ public class BattleManager : MonoBehaviour
             }
         }
     }
+
     public void UnlockNextLevel()
     {
         GameSaveData saveData = SaveStateManager.saveData;
@@ -115,16 +124,17 @@ public class BattleManager : MonoBehaviour
             saveData.clearedNodesId.Add(currentId);
             saveData.highestUnlockedLevel++; // We retain this metric for legacy scripts relying on total progression counting
         }
-        
+
         SaveStateManager.SaveGame(saveData);
         Debug.Log($"Cleared Node {currentId}!");
     }
 
     public void PlayCameraBattleEndAnimation()
     {
-        if (mainCameraPlayableDirector != null)
-        {
-            mainCameraPlayableDirector.Play();
-        }
+        // if (mainCameraPlayableDirector != null)
+        // {
+        //     mainCameraPlayableDirector.Play();
+        // }
+        _cameraController.ApplyBattleEndCameraSettings();
     }
 }
