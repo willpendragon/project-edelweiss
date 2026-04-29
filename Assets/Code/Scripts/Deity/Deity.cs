@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using ProjectEdelweiss.Utils;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class Deity : MonoBehaviour
@@ -12,8 +14,7 @@ public class Deity : MonoBehaviour
         Summoned
     }
 
-    [Header("Gameplay Logic")]
-    public string Id = System.Guid.NewGuid().ToString();
+    [Header("Gameplay Logic")] public string Id = System.Guid.NewGuid().ToString();
     public float enmity;
     public List<SpellAlignment> hatedSpellAlignments;
     public float enmityThreshold;
@@ -25,15 +26,13 @@ public class Deity : MonoBehaviour
 
     public BattleManager battleManager;
 
-    [Header("Deity Stats")]
-    public float deitySpecialAttackPower;
+    [Header("Deity Stats")] public float deitySpecialAttackPower;
     public float summoningPrice = 50;
     public float deityPrayerPower;
     public float _maxEnmity;
     //public float deityPrayerPowerThreshold;
 
-    [Header("Visuals")]
-    public TextMeshProUGUI deityAttackNotification;
+    [Header("Visuals")] public TextMeshProUGUI deityAttackNotification;
     public BattleInterface battleInterface;
     public GameObject deityAttackVFX;
     public GameObject deityEnmityTracker;
@@ -47,15 +46,19 @@ public class Deity : MonoBehaviour
 
 
     public delegate void DeityNotificationUpdate(string deityNotificationText);
+
     public static event DeityNotificationUpdate OnDeityNotificationUpdate;
 
     public delegate void PlayerTurnSwap();
+
     public static event PlayerTurnSwap OnPlayerTurnSwap;
 
     public delegate void PlayerTurn(string playerTurn);
+
     public static event PlayerTurn OnPlayerTurn;
 
     public delegate void DeitySpawn(GameObject deity);
+
     public static event DeitySpawn OnDeitySpawn;
 
     [SerializeField] private Slider _enmityBar;
@@ -64,6 +67,7 @@ public class Deity : MonoBehaviour
     {
         EnemyTurnManager.OnDeityTurn += DeityBehaviour;
     }
+
     private void OnDisable()
     {
         EnemyTurnManager.OnDeityTurn -= DeityBehaviour;
@@ -71,6 +75,9 @@ public class Deity : MonoBehaviour
 
     public void Start()
     {
+        if (SceneManager.GetActiveScene().name == GameTags.OVERWORLD_MAP)
+            return;
+
         battleManager = GameObject.FindGameObjectWithTag("BattleManager").GetComponent<BattleManager>();
 
         var enemyTurnManager = FindAnyObjectByType<EnemyTurnManager>();
@@ -136,4 +143,3 @@ public class Deity : MonoBehaviour
         }
     }
 }
-

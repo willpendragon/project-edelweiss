@@ -8,21 +8,24 @@ public class CameraController : MonoBehaviour
     private Vector3 _originalCameraPosition;
     private float _originalZoomAmount;
 
-    [Header("Settings")]
-    [SerializeField] private BattleCameraSettings _battleCameraSettings;
+    [Header("Settings")] [SerializeField] private BattleCameraSettings _battleCameraSettings;
+
     [SerializeField] private GeneralCameraSettings _generalCameraSettings;
-    
-    [Header("Cameras")]
-    public List<Camera> _cameras;
+
+    // These settings change how the camera looks at the end of a battle.
+    [SerializeField] private EndBattleCameraSettings _endBattleCameraSettings;
+
+    [Header("Cameras")] public List<Camera> _cameras;
 
     private void Start()
     {
         // Check if GridManager has an active map with an override
         var mapData = GridManager.Instance != null ? GridManager.Instance.currentMapData : null;
-        
+
         if (mapData != null && mapData.overrideCameraSettings)
         {
-            ApplyMapCameraSettings(mapData.cameraPosition, mapData.cameraRotation, mapData.cameraZoom, mapData.isOrthographic, mapData.orthographicSize);
+            ApplyMapCameraSettings(mapData.cameraPosition, mapData.cameraRotation, mapData.cameraZoom,
+                mapData.isOrthographic, mapData.orthographicSize);
         }
         else
         {
@@ -41,22 +44,32 @@ public class CameraController : MonoBehaviour
     private void OnEnable()
     {
         PhysicalAttackBehavior.OnKnockbackFired += CameraCloseUp;
-        
+
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
         {
             _generalCameraSettings.OnSettingsChanged += ApplyGeneralCameraSettings;
+        }
+
+        if (_endBattleCameraSettings != null)
+        {
+            _endBattleCameraSettings.OnSettingsChanged += ApplyBattleEndCameraSettings;
         }
     }
 
     private void OnDisable()
     {
         PhysicalAttackBehavior.OnKnockbackFired -= CameraCloseUp;
-        
+
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
         {
             _generalCameraSettings.OnSettingsChanged -= ApplyGeneralCameraSettings;
+        }
+
+        if (_endBattleCameraSettings != null)
+        {
+            _endBattleCameraSettings.OnSettingsChanged -= ApplyBattleEndCameraSettings;
         }
     }
 
@@ -86,10 +99,13 @@ public class CameraController : MonoBehaviour
             cam.transform.position = position;
             cam.transform.eulerAngles = rotation;
             cam.orthographic = isOrtho;
-            
-            if (isOrtho) {
+
+            if (isOrtho)
+            {
                 cam.orthographicSize = orthoSize;
-            } else {
+            }
+            else
+            {
                 cam.fieldOfView = zoom;
             }
         }
@@ -107,7 +123,7 @@ public class CameraController : MonoBehaviour
         _generalCameraSettings.CameraPosition = _cameras[0].transform.position;
         _generalCameraSettings.CameraRotation = _cameras[0].transform.eulerAngles;
         _generalCameraSettings.ZoomAmount = _cameras[0].fieldOfView;
-        
+
         Debug.Log("Saved current camera transforms to GeneralCameraSettings SO.");
     }
 
@@ -128,23 +144,36 @@ public class CameraController : MonoBehaviour
         {
             Vector3 finalTransform = tileTransform.position + _battleCameraSettings.CameraOffset;
             cam.transform.position = finalTransform;
-            cam.fieldOfView = _battleCameraSettings.ZoomAmount; 
+            cam.fieldOfView = _battleCameraSettings.ZoomAmount;
         }
+
         Invoke(nameof(ResetCameraPosition), _battleCameraSettings.CameraResetDelay);
     }
-    
+
     private void ResetCameraPosition()
     {
         foreach (var cam in _cameras)
         {
             cam.transform.position = _originalCameraPosition;
             cam.fieldOfView = _originalZoomAmount;
-            
+
             // Re-apply original rotation if needed
             if (_generalCameraSettings != null)
             {
                 cam.transform.eulerAngles = _generalCameraSettings.CameraRotation;
             }
+        }
+    }
+
+    public void ApplyBattleEndCameraSettings()
+    {
+        if (_endBattleCameraSettings == null || _cameras == null || _cameras.Count == 0) return;
+
+        foreach (var cam in _cameras)
+        {
+            cam.transform.position = _endBattleCameraSettings.CameraPosition;
+            cam.transform.eulerAngles = _endBattleCameraSettings.CameraRotation;
+            cam.fieldOfView = _endBattleCameraSettings.ZoomAmount;
         }
     }
 }
