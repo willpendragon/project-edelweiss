@@ -1,6 +1,7 @@
 using Edelweiss.Core;
 using System.Collections.Generic;
 using System.Linq;
+using ProjectEdelweiss.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -510,8 +511,14 @@ public class CursorController : MonoBehaviour
 
     private System.Collections.IEnumerator EscapeSequence()
     {
+        var activePlayerUnitObj = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
+        Unit activePlayerUnit = activePlayerUnitObj.GetComponent<Unit>();
+
         float timer = _escapeSettings != null ? _escapeSettings.gracePeriod : 1.5f;
         CreateEscapeUI();
+
+        activePlayerUnit.unitOpportunityPoints--;
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate.unitName);
 
         var timerText = _escapeUIRoot.GetComponentInChildren<TextMeshProUGUI>();
 
