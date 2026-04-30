@@ -173,7 +173,7 @@ public class Unit : MonoBehaviour
 
         effectiveDamage = Mathf.Floor(effectiveDamage);
 
-        // Optional: Ensure there’s always at least 1 damage, to avoid zero-damage cases
+        // Optional: Ensure thereï¿½s always at least 1 damage, to avoid zero-damage cases
         return Mathf.Max(effectiveDamage, 1f);
     }
 
@@ -279,6 +279,9 @@ public class Unit : MonoBehaviour
                 {
                     battleFeedbackController.PlayUnitDeathAnimationVFX();
                 }
+                
+                // Play Enemy Death SFX
+                BattleSFXManager.PlaySound(SoundType.ENEMYDEATH);
             }
             else if (meshRenderer != null)
             {
@@ -396,7 +399,7 @@ public class Unit : MonoBehaviour
         if (unitType != UnitType.Deity)
         {
             // Troviamo il tile...
-            // NOTA: Usa GetTileControllerInstance Voxel o quello di compatibilità
+            // NOTA: Usa GetTileControllerInstance Voxel o quello di compatibilitï¿½
             TileController targetTile = GridManager.Instance.GetTileControllerInstance(x, z);
             if (targetTile != null)
             {

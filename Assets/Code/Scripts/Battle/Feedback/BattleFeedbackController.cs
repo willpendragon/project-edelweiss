@@ -4,10 +4,7 @@ using UnityEngine.Events;
 
 public class BattleFeedbackController : MonoBehaviour
 {
-
-    [Header("Player Actions SFX")]
-
-    public UnityEvent PlayMeleeAttackSFX;
+    [Header("Player Actions SFX")] public UnityEvent PlayMeleeAttackSFX;
     public UnityEvent PlaySpellSFX;
     public UnityEvent PlayMovementSelectedSFX;
     public UnityEvent PlayMovementConfirmedSFX;
@@ -15,16 +12,12 @@ public class BattleFeedbackController : MonoBehaviour
     public UnityEvent PlayPlaceCrystalSFX;
     public UnityEvent PlayPrayerSFX;
 
-    [Header("Unit Management SFX")]
-
-    public UnityEvent PlaySelectionSFX;
+    [Header("Unit Management SFX")] public UnityEvent PlaySelectionSFX;
     public UnityEvent PlaySelectionWaitingConfirmationSFX;
     public UnityEvent PlayDeselectionSFX;
 
 
-    [Header("Visuals")]
-
-    public UnityEvent PlayDeathVFX;
+    [Header("Visuals")] public UnityEvent PlayDeathVFX;
     public GameObject deathDisappearAnimationVFX;
     public Animator comboIncreaseVFXAnimator;
     public Animator unitAnimator;
@@ -39,10 +32,10 @@ public class BattleFeedbackController : MonoBehaviour
         Debug.Log("Playing Attack Animation");
         Animator activePlayerUnitAnimator = activePlayerUnit.gameObject.GetComponentInChildren<Animator>();
         activePlayerUnitAnimator.SetTrigger("Attack");
-        if (PlayMeleeAttackSFX != null)
-        {
-            PlayMeleeAttackSFX.Invoke();
-        }
+        // if (PlayMeleeAttackSFX != null)
+        // {
+        //     PlayMeleeAttackSFX.Invoke();
+        // }
 
         Vector3 originalPosition = activePlayerUnit.transform.position;
         Vector3 destination;
@@ -68,6 +61,7 @@ public class BattleFeedbackController : MonoBehaviour
             destination = currentTarget.transform.position;
             activePlayerUnit.transform.position = destination;
         }
+
         StartCoroutine(RestorePlayerUnitPosition(activePlayerUnit, originalPosition));
     }
 
@@ -89,10 +83,12 @@ public class BattleFeedbackController : MonoBehaviour
         Debug.Log("Playing Hurt Animation");
         Animator activePlayerUnitAnimator = GetComponentInChildren<Animator>();
         activePlayerUnitAnimator.SetTrigger("Hurt");
-        if (PlayDamageSFX != null)
-        {
-            PlayDamageSFX.Invoke();
-        }
+        // if (PlayDamageSFX != null)
+        // {
+        //     PlayDamageSFX.Invoke();
+        // }
+        // Play Enemy Hit SFX
+        BattleSFXManager.PlaySound(SoundType.ENEMYHIT);
     }
 
     public void PlayHitAnimation()

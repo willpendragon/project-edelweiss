@@ -11,18 +11,27 @@ public enum SoundType
     RADIALHOVERSWITCH,
     POPUPMESSAGE,
     UIDIALOGUEOPEN,
-    UIDIALOGUECLOSE
-
-
+    UIDIALOGUECLOSE,
+    CRITICALHIT,
+    ENEMYDEATH,
+    ENEMYHIT,
+    SWORDATTACKKNOCKBACK,
+    MAGNET,
+    PICKUPKEY,
+    PICKUPUPGRADE,
+    PICKUPMINIBOSSKEY,
+    PICKUPBOSSKEY,
+    SWORDATTACK
 }
-[RequireComponent(typeof(AudioSource))]
 
+[RequireComponent(typeof(AudioSource))]
 public class BattleSFXManager : MonoBehaviour
 {
     public void Start()
     {
         _audioSource = GetComponent<AudioSource>();
     }
+
     public static BattleSFXManager Instance { get; private set; }
 
     [SerializeField] private AudioClip[] soundList;
@@ -35,6 +44,7 @@ public class BattleSFXManager : MonoBehaviour
         else
             Destroy(gameObject);
     }
+
     public static void PlaySound(SoundType sound, float volume = 1)
     {
         Instance._audioSource.PlayOneShot(Instance.soundList[(int)sound], volume);
