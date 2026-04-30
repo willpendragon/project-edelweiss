@@ -29,6 +29,8 @@ public class MagnetBehavior : PhysicalAttackBehavior
             return;
         }
 
+        // Play Magnet SFX
+        BattleSFXManager.PlaySound(SoundType.MAGNET);
         Vector2Int pullDirection = Vector2Int.zero;
         int deltaX = defenderPos.x - attackerPos.x;
         int deltaY = defenderPos.y - attackerPos.y;

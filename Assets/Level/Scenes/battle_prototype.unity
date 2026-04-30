@@ -11248,6 +11248,16 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9c7dc8e828b398f45ab72086dd557c17, type: 3}
   - {fileID: 8300000, guid: aa6f8009a520cff41903e6b0e4fb399e, type: 3}
   - {fileID: 8300000, guid: c9bc5741fd70427408ff2d4bd38a7d03, type: 3}
+  - {fileID: 8300000, guid: 45f957365ee926a499d0cfc75383637b, type: 3}
+  - {fileID: 8300000, guid: 162c3383874f5934dab8d19279f01f94, type: 3}
+  - {fileID: 8300000, guid: f7f09e1f0f6ad1f468474a0514c4b0e7, type: 3}
+  - {fileID: 8300000, guid: 157138a9cbd7c8645ae8413a5961e735, type: 3}
+  - {fileID: 8300000, guid: 43a679d1ada392049a90ae606da5c1ea, type: 3}
+  - {fileID: 8300000, guid: 98f3e5c09a9ab9240b1a9de20ee1ca62, type: 3}
+  - {fileID: 8300000, guid: 3c468c588ba097f45b33402345c05493, type: 3}
+  - {fileID: 8300000, guid: ae1a4110dd8510b468f802d304cf58d8, type: 3}
+  - {fileID: 8300000, guid: 5badb2a53b52172438726d36efb4e6c5, type: 3}
+  - {fileID: 8300000, guid: 169f9b7bdd749ed4da3003d70776f1fa, type: 3}
 --- !u!82 &1669585089
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11536,6 +11546,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1705338440
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &1720886330
 GameObject:
   m_ObjectHideFlags: 0
@@ -12922,37 +12963,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1963352761
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1970831077
 GameObject:
   m_ObjectHideFlags: 0
@@ -15068,7 +15078,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1963352761}
+  - {fileID: 1705338440}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

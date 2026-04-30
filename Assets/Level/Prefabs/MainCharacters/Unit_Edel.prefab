@@ -502,6 +502,8 @@ MonoBehaviour:
   experienceRewardPool: 0
   multiKillCounter: 0
   ingredients: []
+  acquiredMinibossKey: 0
+  acquiredBossKey: 0
 --- !u!114 &8281543060498671791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -532,19 +534,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayMeleeAttackSFX:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5820384140495594974}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   PlaySpellSFX:
     m_PersistentCalls:
       m_Calls:
@@ -1295,11 +1285,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70a2d048d5866384198640da5698d96c, type: 3}
---- !u!82 &5820384140495594974 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 1742741557000685095, guid: 70a2d048d5866384198640da5698d96c, type: 3}
-  m_PrefabInstance: {fileID: 5253834618206479353}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9144756505895723262 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3891652311721935623, guid: 70a2d048d5866384198640da5698d96c, type: 3}

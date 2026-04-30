@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 public class BattleCalloutsController : MonoBehaviour
 {
     [SerializeField] private GameObject _angeredDeityCallout;
+
     public void OnEnable()
     {
         AOESpellPlayerAction.OnSpellCriticalHit += ShowCriticalHitCallout;
@@ -31,12 +32,15 @@ public class BattleCalloutsController : MonoBehaviour
         if (activePlayerUnit.unitTemplate.unitCalloutPortrait == null)
             return;
 
-        GameObject battleCalloutInstance = Instantiate(activePlayerUnit.unitTemplate.unitCalloutPortrait, _calloutCanvas.transform);
+        GameObject battleCalloutInstance =
+            Instantiate(activePlayerUnit.unitTemplate.unitCalloutPortrait, _calloutCanvas.transform);
         battleCalloutInstance.GetComponentInChildren<Animator>().SetTrigger(GameTags.SHOW_UNIT_CALLOUT);
         float battleCalloutDuration = 1f;
         Destroy(battleCalloutInstance, battleCalloutDuration);
         DarkenScreen();
         SFXHelper(activePlayerUnit);
+        // Play Critical Hit SFX
+        BattleSFXManager.PlaySound(SoundType.CRITICALHIT);
     }
 
     public void ShowDeityAttackCallout(Unit deityUnit)
@@ -46,7 +50,8 @@ public class BattleCalloutsController : MonoBehaviour
         if (deityUnit.unitTemplate.unitCalloutPortrait == null)
             return;
 
-        GameObject battleCalloutInstance = Instantiate(deityUnit.unitTemplate.unitCalloutPortrait, _calloutCanvas.transform);
+        GameObject battleCalloutInstance =
+            Instantiate(deityUnit.unitTemplate.unitCalloutPortrait, _calloutCanvas.transform);
         battleCalloutInstance.GetComponentInChildren<Animator>().SetTrigger(GameTags.SHOW_UNIT_CALLOUT);
         float battleCalloutDuration = 1f;
         Destroy(battleCalloutInstance, battleCalloutDuration);

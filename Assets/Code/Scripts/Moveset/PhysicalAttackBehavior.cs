@@ -4,13 +4,14 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Physic Attack Behavior", menuName = "Moveset/PhysicAttackBehavior")]
-
 public class PhysicalAttackBehavior : ScriptableObject
 {
     public delegate void UsedPhysicalAttack(string notification);
+
     public static event UsedPhysicalAttack OnUsedPhysicalAttack;
 
     public int baseDamage;
+
     // Usiamo Vector3Int
     private Vector3Int knockbackDirection;
     public int knockbackStrength = 2;
@@ -18,6 +19,7 @@ public class PhysicalAttackBehavior : ScriptableObject
     public int meleeRange = 2;
 
     public delegate void KnockbackFired();
+
     public static event KnockbackFired OnKnockbackFired;
 
     public virtual void AttackSequence(Unit targetUnit, TileController targetTile, Unit activePlayerUnit)
@@ -32,14 +34,15 @@ public class PhysicalAttackBehavior : ScriptableObject
             beacon.OnHitByUnit();
 
             // Trigger Character Animation
-            activePlayerUnit.battleFeedbackController.PlayMeleeAttackAnimation(activePlayerUnit, targetTile.detectedUnit.GetComponent<Unit>());
+            activePlayerUnit.battleFeedbackController.PlayMeleeAttackAnimation(activePlayerUnit,
+                targetTile.detectedUnit.GetComponent<Unit>());
             return;
         }
 
         // Safely disallow knockbacking static grid items like Chests or towering Deity monoliths
-        bool canKnockback = IsKnockbackPossible(activePlayerUnit, targetUnit.ownedTile) 
-            && targetUnit.unitType != Unit.UnitType.Deity 
-            && !targetUnit.gameObject.CompareTag("Chest");
+        bool canKnockback = IsKnockbackPossible(activePlayerUnit, targetUnit.ownedTile)
+                            && targetUnit.unitType != Unit.UnitType.Deity
+                            && !targetUnit.gameObject.CompareTag("Chest");
 
         if (canKnockback)
         {
@@ -49,10 +52,13 @@ public class PhysicalAttackBehavior : ScriptableObject
             {
                 activePlayerUnitAnimator.SetTrigger("Attack");
             }
-            if (activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX != null)
-            {
-                activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX.Invoke();
-            }
+            // if (activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX != null)
+            // {
+            //     activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX.Invoke();
+            // }
+
+            // Play Sword SFX
+            BattleSFXManager.PlaySound(SoundType.SWORDATTACKKNOCKBACK);
 
             AttemptKnockback(activePlayerUnit, targetUnit);
         }
@@ -61,6 +67,8 @@ public class PhysicalAttackBehavior : ScriptableObject
             // Attacco normale: teletrasporto e HitTarget standard
             activePlayerUnit.battleFeedbackController.PlayMeleeAttackAnimation(activePlayerUnit, targetUnit);
             HitTarget(activePlayerUnit, targetUnit, false);
+            BattleSFXManager.PlaySound(SoundType.SWORDATTACK);
+
         }
     }
 
@@ -102,6 +110,7 @@ public class PhysicalAttackBehavior : ScriptableObject
                 {
                     isWallKnockback = true;
                 }
+
                 break;
             }
 
@@ -112,7 +121,7 @@ public class PhysicalAttackBehavior : ScriptableObject
 
         // --- Apply Damage and Modifiers ---
         bool modifierIsActive = true;
-        
+
         HitTarget(attacker, defender, modifierIsActive, isWallKnockback);
 
         if (OnKnockbackFired != null)
@@ -139,7 +148,7 @@ public class PhysicalAttackBehavior : ScriptableObject
                 defender.ownedTile.tileShaderController.ResetEnemyTileFeedback();
 
                 MoveUnitToTile(defender, finalDestinationTile);
-                
+
                 finalDestinationTile.tileShaderController.EnemyTileFeedback();
             }
         }
@@ -210,7 +219,8 @@ public class PhysicalAttackBehavior : ScriptableObject
 
         // Update unit's reference
         unit.ownedTile = destinationTile;
-        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+        GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>()
+            .SortUnits();
     }
 
     public virtual void BroadcastAttackNotification(string message)
@@ -227,7 +237,7 @@ public class PhysicalAttackBehavior : ScriptableObject
     {
         float damage = CalculateDamage(attacker, defender, modifierIsActive, isWallKnockback);
         defender.TakeDamage(damage);
-        
+
         string wallMessage = isWallKnockback ? " (Wall Slam!)" : "";
         BroadcastAttackNotification($"{attacker.unitTemplate.unitName} used Melee Attack" + wallMessage);
     }
@@ -237,11 +247,11 @@ public class PhysicalAttackBehavior : ScriptableObject
         float damageOutput = attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage;
         if (modifierIsActive)
             damageOutput += 2;
-            
+
         // Extra punitive damage for hitting the wall!
         if (isWallKnockback)
             damageOutput += 3;
-            
+
         return damageOutput;
     }
 }
