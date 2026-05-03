@@ -17,6 +17,7 @@ public class KillBasedAchievement : Achievement
         
         if (targetEnemy != null && SaveStateManager.saveData.killsByEnemyName != null)
         {
+            // Use the specific enemy's kill count from SaveStateManager
             SaveStateManager.saveData.killsByEnemyName.TryGetValue(targetEnemy.unitName, out kills);
         }
         else

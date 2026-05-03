@@ -52,8 +52,18 @@ public class DeityHuntingMenuController : MonoBehaviour
     {
         if (achievement is KillBasedAchievement killBasedAchievement)
         {
-            string achievementProgress = gameStatsManager.enemiesKilled.ToString();
-            return achievementProgress;
+            // Fetch the specific enemy's kill count from the save data.
+            int progress = 0;
+            if (killBasedAchievement.targetEnemy != null && SaveStateManager.saveData.killsByEnemyName != null)
+            {
+                SaveStateManager.saveData.killsByEnemyName.TryGetValue(killBasedAchievement.targetEnemy.unitName, out progress);
+            }
+            else
+            {
+                // Fallback to total kills if no specific target is set (optional backwards compatibility)
+                progress = SaveStateManager.saveData.enemiesKilled;
+            }
+            return progress.ToString();
         }
         else if (achievement is MoveBasedAchievement moveBasedAchievement)
         {

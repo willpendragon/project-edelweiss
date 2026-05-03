@@ -9,7 +9,7 @@ public class CafeUnitHelper : MonoBehaviour
     [SerializeField] private Animator _animator;
     void Start()
     {
-        unit = GameManager.Instance.playerPartyMembers[linkedUnitIndex];
+        unit = GameManager.Instance.playerPartyMembersInstances[linkedUnitIndex];
         _animator = unit.gameObject.GetComponentInChildren<Animator>();
         GetComponent<Animator>().runtimeAnimatorController = _animator.runtimeAnimatorController;
     }
