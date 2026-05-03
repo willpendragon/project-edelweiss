@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement; 
-using System.Linq; 
+using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class RecruitManager : MonoBehaviour
 {
@@ -10,16 +10,15 @@ public class RecruitManager : MonoBehaviour
 
     public const int MaxActivePartySize = 3;
 
-    [Header("Recruit Status Lists")]
-    public List<Unit> lockedUnits = new List<Unit>();
+    [Header("Recruit Status Lists")] public List<Unit> lockedUnits = new List<Unit>();
 
     // This array acts as the exact 3 slots. Null means the slot is empty.
     public Unit[] selectedActiveParty = new Unit[MaxActivePartySize];
 
-    public List<Unit> AvailablePartyMembers => GameManager.Instance != null ? GameManager.Instance.playerPartyMembers : new List<Unit>();
+    public List<Unit> AvailablePartyMembers =>
+        GameManager.Instance != null ? GameManager.Instance.playerPartyMembers : new List<Unit>();
 
-    [Header("UI References")]
-    public Transform activePartyGrid;
+    [Header("UI References")] public Transform activePartyGrid;
     public Transform availableUnitsGrid;
     public GameObject unitPortraitPrefab;
 
@@ -73,7 +72,7 @@ public class RecruitManager : MonoBehaviour
         {
             if (!System.Array.Exists(selectedActiveParty, u => u != null && u.unitTemplate == available.unitTemplate))
             {
-                 currentSave.availablePartyUnitIds.Add(available.Id);
+                currentSave.availablePartyUnitIds.Add(available.Id);
             }
         }
 
@@ -93,12 +92,14 @@ public class RecruitManager : MonoBehaviour
         for (int i = 0; i < MaxActivePartySize; i++)
         {
             GameObject slotInstance = Instantiate(unitPortraitPrefab, activePartyGrid);
-            RecruitSlotUI slotUI = slotInstance.GetComponent<RecruitSlotUI>() ?? slotInstance.AddComponent<RecruitSlotUI>();
+            RecruitSlotUI slotUI = slotInstance.GetComponent<RecruitSlotUI>() ??
+                                   slotInstance.AddComponent<RecruitSlotUI>();
             slotUI.isActiveSlot = true;
             slotUI.slotIndex = i;
             slotUI.assignedUnit = selectedActiveParty[i];
 
-            Image portraitImage = slotInstance.GetComponentInChildren<Image>();
+            // Image portraitImage = slotInstance.GetComponentInChildren<Image>();
+            Image portraitImage = slotUI.portrait;
             if (portraitImage != null && selectedActiveParty[i] != null && selectedActiveParty[i].unitTemplate != null)
             {
                 portraitImage.sprite = selectedActiveParty[i].unitTemplate.unitPortrait;
@@ -106,8 +107,8 @@ public class RecruitManager : MonoBehaviour
             }
             else if (portraitImage != null)
             {
-                portraitImage.sprite = null; 
-                portraitImage.color = new Color(0.2f, 0.2f, 0.2f, 0.5f); 
+                portraitImage.sprite = null;
+                portraitImage.color = new Color(0.2f, 0.2f, 0.2f, 0.5f);
             }
         }
     }
@@ -121,15 +122,17 @@ public class RecruitManager : MonoBehaviour
             if (unit == null) continue;
 
             GameObject slotInstance = Instantiate(unitPortraitPrefab, availableUnitsGrid);
-            RecruitSlotUI slotUI = slotInstance.GetComponent<RecruitSlotUI>() ?? slotInstance.AddComponent<RecruitSlotUI>();
+            RecruitSlotUI slotUI = slotInstance.GetComponent<RecruitSlotUI>() ??
+                                   slotInstance.AddComponent<RecruitSlotUI>();
             slotUI.isActiveSlot = false;
             slotUI.assignedUnit = unit;
 
-            Image portraitImage = slotInstance.GetComponentInChildren<Image>();
+            // Image portraitImage = slotInstance.GetComponentInChildren<Image>();
+            Image portraitImage = portraitImage = slotUI.portrait;
             if (portraitImage != null && unit.unitTemplate != null)
             {
                 portraitImage.sprite = unit.unitTemplate.unitPortrait;
-                bool isCurrentlyActive = System.Array.Exists(selectedActiveParty, 
+                bool isCurrentlyActive = System.Array.Exists(selectedActiveParty,
                     activeUnit => activeUnit != null && activeUnit.unitTemplate == unit.unitTemplate);
 
                 portraitImage.color = isCurrentlyActive ? Color.red : Color.white;
@@ -156,12 +159,12 @@ public class RecruitManager : MonoBehaviour
             {
                 selectedActiveParty[i] = unitToAdd;
                 SyncWithGameManager();
-                SavePartyToSaveFile(); 
+                SavePartyToSaveFile();
                 RefreshUI();
                 return;
             }
         }
-        
+
         Debug.Log("Active party is full!");
     }
 
@@ -188,7 +191,7 @@ public class RecruitManager : MonoBehaviour
 
         GameManager.Instance.playerPartyMembers.Clear();
         GameManager.Instance.playerPartyMembers.AddRange(newOrder);
-        
+
         // Refresh the living instances so they are available immediately out of the menu
         GameManager.Instance.InstantiateUnits();
     }

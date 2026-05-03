@@ -17,8 +17,13 @@ public class GarrisonDebug : MonoBehaviour
         // Jump from Cafe into the Garrison/Recruit scene
         if (Input.GetKeyDown(KeyCode.F12))
         {
-            Debug.Log("Loading 'garrison' scene...");
-            SceneManager.LoadScene("garrison");
+            LoadGarrison();
         }
+    }
+
+    public void LoadGarrison()
+    {
+        Debug.Log("Loading 'garrison' scene...");
+        SceneManager.LoadScene("garrison");
     }
 }
