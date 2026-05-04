@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d39be9a5dbf9d804b836283cec625acc, type: 3}
+  m_Name: MoonPrincessBehavior
+  m_EditorClassIdentifier: 
+  vfxDurationDelay: 1
+  deityName: MoonPrincess
+  zapAttackName: Lunar Zap
+  windGustAttackName: Wind Gust
+  zapAttackVFX: {fileID: 0}
+  windGustVFX: {fileID: 0}
