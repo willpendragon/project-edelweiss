@@ -71,7 +71,8 @@ public class DeityMoonPrincessBehavior : DeityBehavior
         // Check for crossing below one-third HP
         else if (currentHpPercentage < ONE_THIRD_HP_THRESHOLD && _lastHpPercentage >= ONE_THIRD_HP_THRESHOLD)
         {
-            BattleInterface.Instance.SetDeityNotification($"{deityName} is now below one-third HP! Her power intensifies!");
+            BattleInterface.Instance.SetDeityNotification(
+                $"{deityName} is now below one-third HP! Her power intensifies!");
         }
 
         _lastHpPercentage = currentHpPercentage; // Update last known HP percentage
@@ -103,7 +104,8 @@ public class DeityMoonPrincessBehavior : DeityBehavior
                 // Instantiate VFX
                 if (zapAttackVFX != null)
                 {
-                    GameObject newDeityAttackVFX = Instantiate(zapAttackVFX, playerUnit.ownedTile.transform.position, Quaternion.identity);
+                    GameObject newDeityAttackVFX = Instantiate(zapAttackVFX, playerUnit.ownedTile.transform.position,
+                        Quaternion.identity);
                     Vector3 attackVFXOffset = new Vector3(0, 1, 0);
                     newDeityAttackVFX.transform.localPosition += attackVFXOffset;
                     Destroy(newDeityAttackVFX, vfxDurationDelay);
@@ -112,6 +114,7 @@ public class DeityMoonPrincessBehavior : DeityBehavior
                 playerUnit.TakeDamage(totalDamage);
             }
         }
+
         ResetDeityEnmity(deity); // Assuming enmity reset after attack
     }
 
@@ -187,8 +190,6 @@ public class DeityMoonPrincessBehavior : DeityBehavior
             Vector2Int pushDirection = -direction;
 
             // Normalize the direction to get a single step
-            // This simplification assumes movement along cardinal or diagonal axes
-            // For a more robust solution, might need to consider GridMovementController.FindPath
             int dx = 0;
             if (pushDirection.x > 0) dx = 1;
             else if (pushDirection.x < 0) dx = -1;
@@ -199,32 +200,89 @@ public class DeityMoonPrincessBehavior : DeityBehavior
 
             Vector2Int normalizedPushDirection = new Vector2Int(dx, dy);
 
-            // Calculate new target position
-            Vector2Int newTargetPos = targetUnitGridPos + (normalizedPushDirection * WIND_GUST_PUSH_DISTANCE);
+            Vector2Int currentPos = targetUnitGridPos;
+            bool fellIntoVoid = false;
 
-            // Attempt to move the unit
-            // Ignore movement limit for forced push
-            bool moved = targetUnit.MoveUnit(newTargetPos.x, newTargetPos.y, true); 
+            // 1. Raycast-like step loop to find the actual destination
+            for (int i = 0; i < WIND_GUST_PUSH_DISTANCE; i++)
+            {
+                Vector2Int nextPos = currentPos + normalizedPushDirection;
+                TileController nextTile = GridManager.Instance.GetTileControllerInstance(nextPos.x, nextPos.y);
 
-            if (moved)
-            {
-                Debug.Log($"{targetUnit.gameObject.name} was pushed by Wind Gust to ({newTargetPos.x}, {newTargetPos.y})");
+                if (nextTile == null)
+                {
+                    // It's a hole! The unit falls into the void.
+                    currentPos = nextPos;
+                    fellIntoVoid = true;
+                    break;
+                }
+
+                // Stop pushing if we hit a solid wall, obstacle, or an occupied tile
+                if (nextTile.currentSingleTileCondition == SingleTileCondition.occupied ||
+                    nextTile.tileType == TileType.Obstacle ||
+                    nextTile.tileType == TileType.Environment)
+                {
+                    break;
+                }
+
+                currentPos = nextPos;
             }
-            else
-            {
-                Debug.LogWarning($"Could not push {targetUnit.gameObject.name} with Wind Gust to ({newTargetPos.x}, {newTargetPos.y}). It might be blocked.");
-                // Even if not moved, play VFX at its current position or original target position if it's the closest valid.
-            }
-            
-            // Play VFX at unit's current position (or desired position if it moved)
+
+            // Play VFX at unit's current position before it moves/dies
             if (windGustVFX != null)
             {
-                GameObject newWindGustVFX = Instantiate(windGustVFX, targetUnit.ownedTile.transform.position, Quaternion.identity);
+                GameObject newWindGustVFX = Instantiate(windGustVFX, targetUnit.transform.position, Quaternion.identity);
                 Vector3 vfxOffset = new Vector3(0, 1, 0);
                 newWindGustVFX.transform.localPosition += vfxOffset;
                 Destroy(newWindGustVFX, vfxDurationDelay);
             }
+
+            // 2. Apply the push result
+            if (fellIntoVoid)
+            {
+                // Free its previous tile
+                if (targetUnit.ownedTile != null)
+                {
+                    targetUnit.ownedTile.detectedUnit = null;
+                    targetUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                    targetUnit.ownedTile = null;
+                }
+
+                targetUnit.currentXCoordinate = currentPos.x;
+                targetUnit.currentYCoordinate = currentPos.y;
+
+                Debug.Log($"{targetUnit.gameObject.name} was pushed into the void by Wind Gust and died.");
+                
+                // Visually throw them down the hole, then kill them
+                Vector3 dropTarget = targetUnit.transform.position + (new Vector3(normalizedPushDirection.x, 0, normalizedPushDirection.y) * GridManager.Instance.GetTileWorldSize3D().x) + Vector3.down * 10f;
+                
+                targetUnit.transform.DOMove(dropTarget, 0.75f).SetEase(Ease.InQuad).OnComplete(() =>
+                {
+                    targetUnit.HealthPoints = 0;
+                });
+            }
+            else if (currentPos != targetUnitGridPos)
+            {
+                // Attempt to move the unit normally to the valid safe tile we found
+                bool moved = targetUnit.MoveUnit(currentPos.x, currentPos.y, true);
+
+                if (moved)
+                {
+                    // Take possess of the target Tile destination.
+                    targetUnit.ownedTile = GridManager.Instance.GetTileControllerInstance(currentPos.x, currentPos.y);
+                    targetUnit.ownedTile.detectedUnit = targetUnit.gameObject;
+                    targetUnit.currentXCoordinate = currentPos.x;
+                    targetUnit.currentYCoordinate = currentPos.y;
+                    targetUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                    Debug.Log($"{targetUnit.gameObject.name} was pushed by Wind Gust to ({currentPos.x}, {currentPos.y})");
+                }
+                else
+                {
+                    Debug.LogWarning($"Could not push {targetUnit.gameObject.name} with Wind Gust to ({currentPos.x}, {currentPos.y}). It might be blocked.");
+                }
+            }
         }
+
         ResetDeityEnmity(deity); // Assuming enmity reset after attack
     }
 
