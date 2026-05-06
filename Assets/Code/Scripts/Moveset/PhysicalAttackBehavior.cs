@@ -67,11 +67,10 @@ public class PhysicalAttackBehavior : ScriptableObject
             activePlayerUnit.battleFeedbackController.PlayMeleeAttackAnimation(activePlayerUnit, targetUnit);
             HitTarget(activePlayerUnit, targetUnit, false);
             BattleSFXManager.PlaySound(SoundType.SWORDATTACK);
-
         }
     }
 
-    public void AttemptKnockback(Unit attacker, Unit defender)
+   public void AttemptKnockback(Unit attacker, Unit defender)
     {
         if (!IsKnockbackPossible(attacker, defender.ownedTile))
             return;
@@ -87,43 +86,61 @@ public class PhysicalAttackBehavior : ScriptableObject
         bool fellIntoVoid = false;
         int distanceToVoid = 0;
 
-        // Step-by-step path check to find true walls and prevent jumping through solid terrain columns
         for (int i = 1; i <= knockbackStrength; i++)
         {
             Vector3Int stepPos = defenderPos + (knockbackDirection * i);
 
-            // Always get the highest visible surface block at this X/Z column, ignoring underground blocks!
+            // Always get the highest visible surface block at this X/Z column
             TileController stepTile = GridManager.Instance.GetTileControllerInstance(stepPos.x, stepPos.z);
 
+            // 1. VOID CHECK: Tile is missing entirely (off-grid or a hole in the grid)
             if (stepTile == null)
             {
                 fellIntoVoid = true;
                 distanceToVoid = i;
                 break; // Stop pushing, we fall
             }
-            else if (stepTile.gridPosition.y > defenderPos.y)
+
+            // 2. HEIGHT CHECK: Stepping up (Wall) or Stepping down (Pitfall)
+            if (stepTile.gridPosition.y > defenderPos.y)
             {
                 isWallKnockback = true;
-                break; // Stop pushing
+                break; // Stop pushing, smashed into a higher walkable tile
+            }
+            else if (stepTile.gridPosition.y < defenderPos.y)
+            {
+                fellIntoVoid = true;
+                distanceToVoid = i;
+                break; // Stop pushing, we fall down a lower level
             }
 
-            // If another unit/object is standing on this step tile, we stop pushing.
-            if (stepTile.detectedUnit != null)
+            // 3. DECORATION CHECK: Treat decorations at the same level as walls
+            if (stepTile.CompareTag("DecorationEnvironment"))
             {
-                // If the object standing here is an Environment piece (like our decorations), it counts as a Wall Slam!
-                if (stepTile.tileType == TileType.Environment)
-                {
-                    isWallKnockback = true;
-                }
-
+                // CHANGED: This now correctly triggers a wall slam instead of falling into the void.
+                isWallKnockback = true; 
                 break;
             }
 
-            // It's a valid empty tile (either same height or a cliff drop-down). Store it as our max push distance so far.
+            // 4. UNIT/OBSTACLE CHECK: Slamming into another object on the grid
+            if (stepTile.detectedUnit != null)
+            {
+                // If the object standing here is an Environment piece, it counts as a Wall Slam!
+                if (stepTile.tileType == TileType.Environment || stepTile.tileType == TileType.Obstacle)
+                {
+                    isWallKnockback = true;
+                }
+                
+                // If it's another unit, it stops the push but currently doesn't trigger "Wall Slam" bonus damage.
+                // (You can add isWallKnockback = true here too if units should act as walls).
+                break;
+            }
+
+            // If we pass all checks, it's a valid empty tile. Store it as our max push distance so far.
             validGridPos = stepPos;
             finalDestinationTile = stepTile;
         }
-
+        
         // --- Apply Damage and Modifiers ---
         bool modifierIsActive = true;
 
@@ -142,20 +159,19 @@ public class PhysicalAttackBehavior : ScriptableObject
             {
                 defender.FallIntoVoid(new Vector2Int(knockbackDirection.x, knockbackDirection.z), distanceToVoid);
             }
-            
+
             var defenderAgent2 = defender.gameObject.GetComponent<EnemyAgent>();
             if (defenderAgent2 != null)
                 defenderAgent2.RemoveElementalBuff(defenderAgent2);
 
             RemoveInvulnerableMask(defender);
-            return;
+            return; // Early return prevents standard movement logic below
         }
 
         // --- Execute valid movement ---
         // If we found a valid empty tile before hitting the wall (ex: knocked 1 tile, then hit a wall on the 2nd)
         if (finalDestinationTile != null && validGridPos != defenderPos)
         {
-            // If the unit died from the hit, clean up the destination tile's visual feedback
             if (defender.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
             {
                 finalDestinationTile.tileShaderController.ResetEnemyTileFeedback();

@@ -457,10 +457,15 @@ public class Unit : MonoBehaviour
             {
                 // We reached the void gap! Calculate the exact empty XZ coordinates.
                 Vector3 voidXZ = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
-                Vector3 plungeTarget = new Vector3(voidXZ.x, lastValidPos.y - 10f, voidXZ.z);
+                
+                // Calculate the position ONE step further to fall completely OFF the decorative edge block
+                Vector3 furtherVoidXZ = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x + normalizedPushDirection.x, tracePos.y + normalizedPushDirection.y);
+                
+                Vector3 plungeTarget = new Vector3(furtherVoidXZ.x, lastValidPos.y - 10f, furtherVoidXZ.z);
 
-                // Add a slide to the hole, then a plunge
+                // Add a slide ONTO the edge block, then OFF the edge block, then plunge
                 fallSequence.Append(transform.DOMove(new Vector3(voidXZ.x, lastValidPos.y, voidXZ.z), stepDuration).SetEase(Ease.Linear));
+                fallSequence.Append(transform.DOMove(new Vector3(furtherVoidXZ.x, lastValidPos.y, furtherVoidXZ.z), stepDuration).SetEase(Ease.Linear));
                 fallSequence.Append(transform.DOMove(plungeTarget, 0.75f).SetEase(Ease.InQuad));
                 break;
             }

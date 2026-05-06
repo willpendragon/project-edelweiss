@@ -37,6 +37,9 @@ public partial class MapEditorWindow
         deco.transform.position = worldPos;
         deco.name = $"{decorationPrefab.name}_{position.x}_{position.y}_{position.z}";
 
+        var ctrl = deco.GetComponent<TileController>();
+        if (ctrl) { ctrl.gridPosition = position; }
+
         Undo.RegisterCreatedObjectUndo(deco, "Place Decoration");
         decorations[position] = deco;
     }
