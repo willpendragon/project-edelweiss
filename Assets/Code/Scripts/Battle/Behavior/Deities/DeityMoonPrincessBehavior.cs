@@ -6,6 +6,15 @@ using DG.Tweening; // Required for delayed calls
 [CreateAssetMenu(fileName = "MoonPrincessBehavior", menuName = "DeityBehavior/MoonPrincess")]
 public class DeityMoonPrincessBehavior : DeityBehavior
 {
+    public enum WindDirection
+    {
+        North,
+        South,
+        East,
+        West,
+        AwayFromDeity
+    }
+
     public float vfxDurationDelay = 1f;
     public string deityName = "MoonPrincess";
     public string zapAttackName = "Lunar Zap";
@@ -13,8 +22,13 @@ public class DeityMoonPrincessBehavior : DeityBehavior
     public GameObject zapAttackVFX; // Assign in Inspector
     public GameObject windGustVFX; // Assign in Inspector
 
+    [Range(0, 100)]
+    public int zapAttackChance = 50; // Tweak the chance for Zap Attack vs Wind Gust
+
+    public WindDirection defaultWindDirection = WindDirection.AwayFromDeity;
+    public bool randomizeWindDirection = false;
+
     private System.Random localRandom;
-    private bool _useZapAttackNext = true; // Flag to alternate behaviors
     private float _lastHpPercentage = 1f; // To track HP thresholds for notifications
 
     private const float HALF_HP_THRESHOLD = 0.5f;
@@ -38,7 +52,9 @@ public class DeityMoonPrincessBehavior : DeityBehavior
 
         CheckHPThresholds(deityUnit);
 
-        if (_useZapAttackNext)
+        int roll = localRandom.Next(1, 101);
+
+        if (roll <= zapAttackChance)
         {
             AttemptZapAttack(deity, deityUnit);
         }
@@ -46,8 +62,6 @@ public class DeityMoonPrincessBehavior : DeityBehavior
         {
             AttemptWindGustAttack(deity, deityUnit);
         }
-
-        _useZapAttackNext = !_useZapAttackNext; // Toggle for the next turn
     }
 
     public override void ExecuteBuffBehaviour(Deity deity, Unit unit)
@@ -142,11 +156,21 @@ public class DeityMoonPrincessBehavior : DeityBehavior
 
     private void AttemptWindGustAttack(Deity deity, Unit deityUnit)
     {
-        BattleInterface.Instance.SetDeityNotification($"{deityName} conjures a {windGustAttackName}!");
-        DOVirtual.DelayedCall(1.5f, () => WindGustAttack(deity, deityUnit));
+        WindDirection currentWindDirection = defaultWindDirection;
+        
+        if (randomizeWindDirection)
+        {
+            // Pick a random direction (0 to 3) corresponding to North, South, East, West
+            currentWindDirection = (WindDirection)localRandom.Next(0, 4);
+        }
+
+        string dirText = currentWindDirection == WindDirection.AwayFromDeity ? "away from her" : $"towards {currentWindDirection}";
+        BattleInterface.Instance.SetDeityNotification($"{deityName} conjures a {windGustAttackName} blowing {dirText}!");
+        
+        DOVirtual.DelayedCall(1.5f, () => WindGustAttack(deity, deityUnit, currentWindDirection));
     }
 
-    private void WindGustAttack(Deity deity, Unit deityUnit)
+    private void WindGustAttack(Deity deity, Unit deityUnit, WindDirection windDirection)
     {
         BattleInterface.Instance.SetDeityNotification($"{deityName} used {windGustAttackName}!");
         deity.deityCry.Play();
@@ -182,23 +206,45 @@ public class DeityMoonPrincessBehavior : DeityBehavior
         foreach (Unit targetUnit in allUnitsToAffect)
         {
             Vector2Int targetUnitGridPos = targetUnit.GetGridPosition();
+            Vector2Int normalizedPushDirection = Vector2Int.zero;
 
-            // Calculate direction from deity to unit
-            Vector2Int direction = targetUnitGridPos - deityGridPos;
+            if (windDirection == WindDirection.AwayFromDeity)
+            {
+                // Calculate direction from deity to unit
+                Vector2Int direction = targetUnitGridPos - deityGridPos;
 
-            // Invert direction for pushing away
-            Vector2Int pushDirection = -direction;
+                // Invert direction for pushing away
+                Vector2Int pushDirection = -direction;
 
-            // Normalize the direction to get a single step
-            int dx = 0;
-            if (pushDirection.x > 0) dx = 1;
-            else if (pushDirection.x < 0) dx = -1;
+                // Normalize the direction to get a single step
+                int dx = 0;
+                if (pushDirection.x > 0) dx = 1;
+                else if (pushDirection.x < 0) dx = -1;
 
-            int dy = 0;
-            if (pushDirection.y > 0) dy = 1;
-            else if (pushDirection.y < 0) dy = -1;
+                int dy = 0;
+                if (pushDirection.y > 0) dy = 1;
+                else if (pushDirection.y < 0) dy = -1;
 
-            Vector2Int normalizedPushDirection = new Vector2Int(dx, dy);
+                normalizedPushDirection = new Vector2Int(dx, dy);
+            }
+            else
+            {
+                switch (windDirection)
+                {
+                    case WindDirection.North:
+                        normalizedPushDirection = new Vector2Int(0, 1);
+                        break;
+                    case WindDirection.South:
+                        normalizedPushDirection = new Vector2Int(0, -1);
+                        break;
+                    case WindDirection.East:
+                        normalizedPushDirection = new Vector2Int(1, 0);
+                        break;
+                    case WindDirection.West:
+                        normalizedPushDirection = new Vector2Int(-1, 0);
+                        break;
+                }
+            }
 
             Vector2Int currentPos = targetUnitGridPos;
             bool fellIntoVoid = false;
@@ -252,11 +298,39 @@ public class DeityMoonPrincessBehavior : DeityBehavior
                 targetUnit.currentYCoordinate = currentPos.y;
 
                 Debug.Log($"{targetUnit.gameObject.name} was pushed into the void by Wind Gust and died.");
-                
-                // Visually throw them down the hole, then kill them
-                Vector3 dropTarget = targetUnit.transform.position + (new Vector3(normalizedPushDirection.x, 0, normalizedPushDirection.y) * GridManager.Instance.GetTileWorldSize3D().x) + Vector3.down * 10f;
-                
-                targetUnit.transform.DOMove(dropTarget, 0.75f).SetEase(Ease.InQuad).OnComplete(() =>
+
+                // Build a tile-by-tile traversal sequence ending in a fall
+                Sequence fallSequence = DOTween.Sequence();
+                Vector3 lastValidPos = targetUnit.transform.position;
+                Vector2Int tracePos = targetUnitGridPos;
+                float stepDuration = 0.15f; // Fast push over tiles
+
+                for (int i = 0; i < WIND_GUST_PUSH_DISTANCE; i++)
+                {
+                    tracePos += normalizedPushDirection;
+                    TileController traceTile = GridManager.Instance.GetTileControllerInstance(tracePos.x, tracePos.y);
+
+                    if (traceTile == null)
+                    {
+                        // We reached the void gap! Calculate the exact empty XZ coordinates.
+                        Vector3 voidXZ = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
+                        Vector3 plungeTarget = new Vector3(voidXZ.x, lastValidPos.y - 10f, voidXZ.z);
+
+                        // Add a slide to the hole, then a plunge
+                        fallSequence.Append(targetUnit.transform.DOMove(new Vector3(voidXZ.x, lastValidPos.y, voidXZ.z), stepDuration).SetEase(Ease.Linear));
+                        fallSequence.Append(targetUnit.transform.DOMove(plungeTarget, 0.75f).SetEase(Ease.InQuad));
+                        break;
+                    }
+                    else
+                    {
+                        // Move to this valid tile
+                        Vector3 tileWorldPos = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
+                        fallSequence.Append(targetUnit.transform.DOMove(tileWorldPos, stepDuration).SetEase(Ease.Linear));
+                        lastValidPos = tileWorldPos;
+                    }
+                }
+
+                fallSequence.OnComplete(() =>
                 {
                     targetUnit.HealthPoints = 0;
                 });
