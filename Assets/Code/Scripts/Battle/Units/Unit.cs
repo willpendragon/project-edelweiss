@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
 
 [System.Serializable]
 public class HealthChangeEvent : UnityEvent<float> { }
@@ -428,5 +429,53 @@ public class Unit : MonoBehaviour
         currentUnitLifeCondition = UnitLifeCondition.unitAlive;
 
         experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
+    }
+
+    public void FallIntoVoid(Vector2Int normalizedPushDirection, int distanceToVoid, float stepDuration = 0.15f)
+    {
+        // Free its previous tile
+        if (ownedTile != null)
+        {
+            ownedTile.detectedUnit = null;
+            ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+            ownedTile = null;
+        }
+
+        Debug.Log($"{gameObject.name} was pushed into the void and died.");
+
+        // Build a tile-by-tile traversal sequence ending in a fall
+        Sequence fallSequence = DOTween.Sequence();
+        Vector3 lastValidPos = transform.position;
+        Vector2Int tracePos = GetGridPosition();
+
+        for (int i = 0; i < distanceToVoid; i++)
+        {
+            tracePos += normalizedPushDirection;
+            TileController traceTile = GridManager.Instance.GetTileControllerInstance(tracePos.x, tracePos.y);
+
+            if (traceTile == null)
+            {
+                // We reached the void gap! Calculate the exact empty XZ coordinates.
+                Vector3 voidXZ = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
+                Vector3 plungeTarget = new Vector3(voidXZ.x, lastValidPos.y - 10f, voidXZ.z);
+
+                // Add a slide to the hole, then a plunge
+                fallSequence.Append(transform.DOMove(new Vector3(voidXZ.x, lastValidPos.y, voidXZ.z), stepDuration).SetEase(Ease.Linear));
+                fallSequence.Append(transform.DOMove(plungeTarget, 0.75f).SetEase(Ease.InQuad));
+                break;
+            }
+            else
+            {
+                // Move to this valid tile
+                Vector3 tileWorldPos = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
+                fallSequence.Append(transform.DOMove(tileWorldPos, stepDuration).SetEase(Ease.Linear));
+                lastValidPos = tileWorldPos;
+            }
+        }
+
+        fallSequence.OnComplete(() =>
+        {
+            HealthPoints = 0;
+        });
     }
 }

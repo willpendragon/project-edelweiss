@@ -84,18 +84,24 @@ public class PhysicalAttackBehavior : ScriptableObject
         Vector3Int validGridPos = defenderPos;
         TileController finalDestinationTile = null;
         bool isWallKnockback = false;
+        bool fellIntoVoid = false;
+        int distanceToVoid = 0;
 
         // Step-by-step path check to find true walls and prevent jumping through solid terrain columns
         for (int i = 1; i <= knockbackStrength; i++)
         {
             Vector3Int stepPos = defenderPos + (knockbackDirection * i);
-            stepPos = ClampGridPosition(stepPos);
 
             // Always get the highest visible surface block at this X/Z column, ignoring underground blocks!
             TileController stepTile = GridManager.Instance.GetTileControllerInstance(stepPos.x, stepPos.z);
 
-            // If there's no map tile here, or the surface is strictly higher than our current height, we hit a wall/barrier!
-            if (stepTile == null || stepTile.gridPosition.y > defenderPos.y)
+            if (stepTile == null)
+            {
+                fellIntoVoid = true;
+                distanceToVoid = i;
+                break; // Stop pushing, we fall
+            }
+            else if (stepTile.gridPosition.y > defenderPos.y)
             {
                 isWallKnockback = true;
                 break; // Stop pushing
@@ -130,6 +136,20 @@ public class PhysicalAttackBehavior : ScriptableObject
         {
             Debug.Log($"{defender.unitTemplate.unitName} was slammed into a wall or environment object!");
         }
+        else if (fellIntoVoid)
+        {
+            if (defender.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+            {
+                defender.FallIntoVoid(new Vector2Int(knockbackDirection.x, knockbackDirection.z), distanceToVoid);
+            }
+            
+            var defenderAgent2 = defender.gameObject.GetComponent<EnemyAgent>();
+            if (defenderAgent2 != null)
+                defenderAgent2.RemoveElementalBuff(defenderAgent2);
+
+            RemoveInvulnerableMask(defender);
+            return;
+        }
 
         // --- Execute valid movement ---
         // If we found a valid empty tile before hitting the wall (ex: knocked 1 tile, then hit a wall on the 2nd)
@@ -151,12 +171,6 @@ public class PhysicalAttackBehavior : ScriptableObject
                 finalDestinationTile.tileShaderController.EnemyTileFeedback();
             }
         }
-
-        var defenderAgent = defender.gameObject.GetComponent<EnemyAgent>();
-        if (defenderAgent != null)
-            defenderAgent.RemoveElementalBuff(defenderAgent);
-
-        RemoveInvulnerableMask(defender);
     }
 
     private void ExecuteKnockback(Unit attacker, Unit defender)
