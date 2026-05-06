@@ -89,54 +89,50 @@ public class PhysicalAttackBehavior : ScriptableObject
         for (int i = 1; i <= knockbackStrength; i++)
         {
             Vector3Int stepPos = defenderPos + (knockbackDirection * i);
-
-            // Always get the highest visible surface block at this X/Z column
             TileController stepTile = GridManager.Instance.GetTileControllerInstance(stepPos.x, stepPos.z);
 
-            // 1. VOID CHECK: Tile is missing entirely (off-grid or a hole in the grid)
+            // 1. NULL CHECK: Tile is missing entirely (off-grid or a hole in the map) -> YEET
             if (stepTile == null)
             {
                 fellIntoVoid = true;
                 distanceToVoid = i;
-                break; // Stop pushing, we fall
+                break;
             }
 
-            // 2. HEIGHT CHECK: Stepping up (Wall) or Stepping down (Pitfall)
+            // 2. HIGHER ELEVATION CHECK: Stepping up -> WALL SLAM
+            // (This automatically catches decorations built as walls/pillars, since their Y is > baseline)
             if (stepTile.gridPosition.y > defenderPos.y)
             {
                 isWallKnockback = true;
-                break; // Stop pushing, smashed into a higher walkable tile
+                break;
             }
-            else if (stepTile.gridPosition.y < defenderPos.y)
+
+            // 3. LOWER ELEVATION CHECK: Stepping down a cliff -> YEET
+            if (stepTile.gridPosition.y < defenderPos.y)
             {
                 fellIntoVoid = true;
                 distanceToVoid = i;
-                break; // Stop pushing, we fall down a lower level
+                break;
             }
 
-            // 3. DECORATION CHECK: Treat decorations at the same level as walls
+            // --- At this point, the step is at the EXACT SAME elevation as the defender ---
+
+            // 4. SAME-ELEVATION DECORATION CHECK: A decoration at floor level -> YEET
             if (stepTile.CompareTag("DecorationEnvironment"))
             {
-                // CHANGED: This now correctly triggers a wall slam instead of falling into the void.
-                isWallKnockback = true; 
+                fellIntoVoid = true;
+                distanceToVoid = i;
                 break;
             }
 
-            // 4. UNIT/OBSTACLE CHECK: Slamming into another object on the grid
-            if (stepTile.detectedUnit != null)
+            // 5. OBSTACLE/UNIT CHECK: Slamming into a hard structural object or unit -> WALL SLAM
+            if (stepTile.tileType == TileType.Obstacle || stepTile.tileType == TileType.Environment || stepTile.detectedUnit != null)
             {
-                // If the object standing here is an Environment piece, it counts as a Wall Slam!
-                if (stepTile.tileType == TileType.Environment || stepTile.tileType == TileType.Obstacle)
-                {
-                    isWallKnockback = true;
-                }
-                
-                // If it's another unit, it stops the push but currently doesn't trigger "Wall Slam" bonus damage.
-                // (You can add isWallKnockback = true here too if units should act as walls).
+                isWallKnockback = true;
                 break;
             }
 
-            // If we pass all checks, it's a valid empty tile. Store it as our max push distance so far.
+            // 6. VALID FLOOR: It's a standard empty, walkable tile.
             validGridPos = stepPos;
             finalDestinationTile = stepTile;
         }
@@ -169,7 +165,6 @@ public class PhysicalAttackBehavior : ScriptableObject
         }
 
         // --- Execute valid movement ---
-        // If we found a valid empty tile before hitting the wall (ex: knocked 1 tile, then hit a wall on the 2nd)
         if (finalDestinationTile != null && validGridPos != defenderPos)
         {
             if (defender.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
