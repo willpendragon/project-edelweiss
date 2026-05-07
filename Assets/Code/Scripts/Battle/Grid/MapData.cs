@@ -82,6 +82,10 @@ public class MapData : ScriptableObject
     public Vector3 directionalLightRotation = new Vector3(50f, -30f, 0f);
     public Color directionalLightColor = Color.white;
     public float directionalLightIntensity = 1f;
+    
+    [Header("Global Volume")]
+    public bool overrideGlobalVolume = false;
+    public UnityEngine.Rendering.VolumeProfile globalVolumeProfile;
 
     public GameObject fixedDeity; 
 

@@ -81,6 +81,8 @@ public partial class MapEditorWindow : EditorWindow
 
     private Camera referenceCamera; // <--- NEW: Camera Reference
     private Light referenceDirectionalLight; // <--- NEW: Directional Light Reference
+    private UnityEngine.Rendering.Volume referenceGlobalVolume; // <--- NEW: Global Volume Reference
+
 
     [MenuItem("Window/Map Editor")]
     public static void ShowWindow() => GetWindow<MapEditorWindow>("Map Editor");
@@ -285,6 +287,53 @@ public partial class MapEditorWindow : EditorWindow
         if (GUILayout.Button("Apply Dir Light to Scene"))
         {
             SyncDirectionalLightFromMap();
+        }
+        EditorGUILayout.EndHorizontal();
+        // ------------------------------------
+
+        // --- NEW: Global Volume Settings Section ---
+        EditorGUILayout.Space();
+        GUILayout.Label("Map Global Volume Settings", EditorStyles.boldLabel);
+        referenceGlobalVolume = (UnityEngine.Rendering.Volume)EditorGUILayout.ObjectField("Scene Global Volume Ref", referenceGlobalVolume, typeof(UnityEngine.Rendering.Volume), true);
+
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Save Global Volume to Asset"))
+        {
+            if (currentMap == null)
+            {
+                Debug.LogWarning("Map Editor: Assign a Current Map Asset first!");
+            }
+            else
+            {
+                UnityEngine.Rendering.VolumeProfile profileToSave = null;
+
+                if (referenceGlobalVolume != null)
+                {
+                    profileToSave = referenceGlobalVolume.sharedProfile;
+                }
+                else
+                {
+                    Debug.LogWarning("Map Editor: No Scene Global Volume reference provided. If you want to assign a profile directly from the project folder, you can do it on the MapData asset directly.");
+                }
+
+                if (profileToSave != null || currentMap.globalVolumeProfile != null)
+                {
+                    Undo.RecordObject(currentMap, "Save Global Volume Settings");
+                    currentMap.overrideGlobalVolume = true;
+                    
+                    if (profileToSave != null)
+                        currentMap.globalVolumeProfile = profileToSave;
+
+                    EditorUtility.SetDirty(currentMap);
+                    AssetDatabase.SaveAssets();
+                    Debug.Log("Map Editor: Global Volume profile successfully saved to MapData!");
+                }
+            }
+        }
+
+        if (GUILayout.Button("Apply Volume to Scene"))
+        {
+            SyncGlobalVolumeFromMap();
         }
         EditorGUILayout.EndHorizontal();
         // ------------------------------------
@@ -498,6 +547,25 @@ public partial class MapEditorWindow : EditorWindow
         referenceDirectionalLight.intensity = currentMap.directionalLightIntensity;
 
         Debug.Log($"Map Editor: Successfully applied directional light settings from '{currentMap.name}'");
+    }
+    // ----------------------------------------------------------------------------------
+
+    // --- NEW: Global Volume Sync Logic ---
+    private void SyncGlobalVolumeFromMap()
+    {
+        if (currentMap == null) return;
+        if (!currentMap.overrideGlobalVolume || currentMap.globalVolumeProfile == null) return;
+
+        if (referenceGlobalVolume == null)
+        {
+            referenceGlobalVolume = GameObject.FindObjectsOfType<UnityEngine.Rendering.Volume>().FirstOrDefault(v => v.isGlobal);
+            if (referenceGlobalVolume == null) return;
+        }
+
+        Undo.RecordObject(referenceGlobalVolume, "Sync Global Volume");
+        referenceGlobalVolume.sharedProfile = currentMap.globalVolumeProfile;
+
+        Debug.Log($"Map Editor: Successfully applied global volume profile from '{currentMap.name}'");
     }
     // ----------------------------------------------------------------------------------
 }

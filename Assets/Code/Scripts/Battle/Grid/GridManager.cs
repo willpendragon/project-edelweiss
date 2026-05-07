@@ -37,6 +37,7 @@ public class GridManager : MonoBehaviour
 
     public Dictionary<PositionKey, TileController> gridMapDictionary = new Dictionary<PositionKey, TileController>();
     public GridMovementController gridMovementController;
+    [SerializeField] private AtmosphereController _atmosphereController;
 
     public delegate void GridMovementModeActivated();
 
@@ -223,7 +224,6 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        // ... existing code ...
         if (currentMapData.decorationPositions != null)
         {
             foreach (var decoData in currentMapData.decorationPositions)
@@ -368,7 +368,6 @@ public class GridManager : MonoBehaviour
                 }
             }
 
-            // --- OVERRIDE HARDCODED LOGIC ---
             if (dynamicPlayerUnits.Count > 0)
             {
                 // Instantly deactivate any old legacy hardcoded scene units so they don't interfere
@@ -444,39 +443,6 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
-
-        // --- NEW: Spawn Beacons ---
-        //if (currentMapData.beaconPositions != null && currentMapData.beaconPositions.Count > 0)
-        //{
-        //    GameObject runtimeBeaconPrefab = Resources.Load<GameObject>("Beacon");
-
-        //    if (runtimeBeaconPrefab == null)
-        //    {
-        //        Debug.LogWarning("GridManager: Missing 'Beacon' Prefab in Resources folder! Beacons could not be spawned.");
-        //    }
-        //    else
-        //    {
-        //        foreach (var beaconPos in currentMapData.beaconPositions)
-        //        {
-        //            TileController targetTile = GetTileControllerInstance(beaconPos.x, beaconPos.y, beaconPos.z);
-        //            if (targetTile == null) targetTile = GetTileControllerInstance(beaconPos.x, beaconPos.y - 1, beaconPos.z);
-
-        //            if (targetTile != null)
-        //            {
-        //                GameObject beaconInstance = Instantiate(runtimeBeaconPrefab, this.transform);
-        //                PlaceUnitOnTileSurface(beaconInstance, targetTile);
-
-        //                targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
-        //                targetTile.detectedUnit = beaconInstance;
-
-        //                // Se hai uno script agganciato al Beacon che necessita info, puoi inizializzarlo qui.
-        //                // Esempio:
-        //                // BeaconController beaconScript = beaconInstance.GetComponent<BeaconController>();
-        //                // if (beaconScript != null) { beaconScript.InitializeOnTile(targetTile); }
-        //            }
-        //        }
-        //    }
-        //}
 
         // --- NEW: Spawn Interactables ---
         if (currentMapData.interactablePositions != null && currentMapData.interactablePositions.Count > 0)
@@ -629,6 +595,14 @@ public class GridManager : MonoBehaviour
                     "GridManager: overrideDirectionalLight is true, but no Directional Light exists in the Battle Scene!");
             }
         }
+
+        // --- NEW: Apply Global Volume Config ---
+        if (currentMapData.overrideGlobalVolume && currentMapData.globalVolumeProfile != null)
+        {
+            if (_atmosphereController == null)
+                return;
+            _atmosphereController.UpdateGlobalVolume(currentMapData);
+        }
     } // <--- End of GenerateGridMapFromData()
 
     private void ClearGridMap()
@@ -665,9 +639,9 @@ public class GridManager : MonoBehaviour
         return null;
     }
 
-    // VERSIONE "SOVRACCARICATA" EXTRA 2D PER NON ROMPERE TUTTO SUBITO
-    // Molti tuoi script passano ancora (X, Y) credendo sia la vista dall'alto (dove la loro vecchia Y � ora la nostra Z)
-    // Usiamo questa per cercare i tile al "Piano Terra" (Elevazione 0).
+// VERSIONE "SOVRACCARICATA" EXTRA 2D PER NON ROMPERE TUTTO SUBITO
+// Molti tuoi script passano ancora (X, Y) credendo sia la vista dall'alto (dove la loro vecchia Y � ora la nostra Z)
+// Usiamo questa per cercare i tile al "Piano Terra" (Elevazione 0).
     public TileController GetTileControllerInstance(int xCoordinate, int zOrOldYCoordinate)
     {
         // Partiamo da un'elevazione massima (es. 20 blocchi di altezza) e scendiamo
