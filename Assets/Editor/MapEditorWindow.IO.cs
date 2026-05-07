@@ -314,6 +314,7 @@ public partial class MapEditorWindow
         // --- NEW: Sync Camera Config after everything is loaded ---
         SyncCameraFromMap();
         SyncDirectionalLightFromMap();
+        SyncGlobalVolumeFromMap();
     }
 
     private void SyncDictionaryFromScene()
