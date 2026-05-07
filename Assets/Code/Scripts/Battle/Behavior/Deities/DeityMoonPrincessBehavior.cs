@@ -286,54 +286,7 @@ public class DeityMoonPrincessBehavior : DeityBehavior
             // 2. Apply the push result
             if (fellIntoVoid)
             {
-                // Free its previous tile
-                if (targetUnit.ownedTile != null)
-                {
-                    targetUnit.ownedTile.detectedUnit = null;
-                    targetUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-                    targetUnit.ownedTile = null;
-                }
-
-                targetUnit.currentXCoordinate = currentPos.x;
-                targetUnit.currentYCoordinate = currentPos.y;
-
-                Debug.Log($"{targetUnit.gameObject.name} was pushed into the void by Wind Gust and died.");
-
-                // Build a tile-by-tile traversal sequence ending in a fall
-                Sequence fallSequence = DOTween.Sequence();
-                Vector3 lastValidPos = targetUnit.transform.position;
-                Vector2Int tracePos = targetUnitGridPos;
-                float stepDuration = 0.15f; // Fast push over tiles
-
-                for (int i = 0; i < WIND_GUST_PUSH_DISTANCE; i++)
-                {
-                    tracePos += normalizedPushDirection;
-                    TileController traceTile = GridManager.Instance.GetTileControllerInstance(tracePos.x, tracePos.y);
-
-                    if (traceTile == null)
-                    {
-                        // We reached the void gap! Calculate the exact empty XZ coordinates.
-                        Vector3 voidXZ = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
-                        Vector3 plungeTarget = new Vector3(voidXZ.x, lastValidPos.y - 10f, voidXZ.z);
-
-                        // Add a slide to the hole, then a plunge
-                        fallSequence.Append(targetUnit.transform.DOMove(new Vector3(voidXZ.x, lastValidPos.y, voidXZ.z), stepDuration).SetEase(Ease.Linear));
-                        fallSequence.Append(targetUnit.transform.DOMove(plungeTarget, 0.75f).SetEase(Ease.InQuad));
-                        break;
-                    }
-                    else
-                    {
-                        // Move to this valid tile
-                        Vector3 tileWorldPos = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
-                        fallSequence.Append(targetUnit.transform.DOMove(tileWorldPos, stepDuration).SetEase(Ease.Linear));
-                        lastValidPos = tileWorldPos;
-                    }
-                }
-
-                fallSequence.OnComplete(() =>
-                {
-                    targetUnit.HealthPoints = 0;
-                });
+                targetUnit.FallIntoVoid(normalizedPushDirection, WIND_GUST_PUSH_DISTANCE);
             }
             else if (currentPos != targetUnitGridPos)
             {
