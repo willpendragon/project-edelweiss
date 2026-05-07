@@ -50,6 +50,9 @@ public class OverworldMapGenerator : MonoBehaviour
     [Tooltip("Se attivo, le modifiche all'inspector rigenereranno la mappa in tempo reale")]
     public bool autoUpdateInPlayMode = true;
 
+    [Tooltip("Assign a MapData here to teleport directly to the boss battle with it by pressing B.")]
+    public MapData debugBossMapData;
+
     [HideInInspector] public Transform currentMapNodeTransform;
     [HideInInspector] public int currentNodeId; 
 
@@ -736,6 +739,11 @@ public class OverworldMapGenerator : MonoBehaviour
         {
             RegenerateMap();
         }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            DebugTeleportToBossBattle();
+        }
     }
 
     private void ClearMap()
@@ -760,6 +768,58 @@ public class OverworldMapGenerator : MonoBehaviour
 
         nodePositions.Clear();
         adjacencyList.Clear();
+    }
+
+    public void DebugTeleportToBossBattle()
+    {
+        if (currentDomain == null)
+        {
+            Debug.LogError("Current Domain is not set. Please generate a map first or ensure a domain is active.");
+            return;
+        }
+
+        if (debugBossMapData == null)
+        {
+            Debug.LogError("Debug Boss Map Data is not assigned. Please assign it in the Inspector.");
+            return;
+        }
+
+        // --- Main Teleport Logic ---
+        // Temporarily override the save data to force the player's spawn on the last node.
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        int bossNodeId = currentDomain.levelList.Length - 1;
+
+        if (bossNodeId < 0)
+        {
+            Debug.LogError("Cannot teleport: The selected domain has no levels.");
+            return;
+        }
+        
+        gameSaveData.currentNodeId = bossNodeId;
+
+        // Regenerate the map. It will now use the overridden start position.
+        ClearMap();
+        GenerateLevel(currentDomain);
+        
+        // The generator has now placed the player at the boss node.
+        // Now, we inject the specific debug map data into that node.
+        if (spawnedNodes.Count > bossNodeId && spawnedNodes[bossNodeId] != null)
+        {
+            EnemySelection bossEnemySelection = spawnedNodes[bossNodeId].GetComponent<EnemySelection>();
+            if (bossEnemySelection != null)
+            {
+                bossEnemySelection.mapData = debugBossMapData;
+            }
+        }
+        
+        // Optional: Persist this change to the save file.
+        GameStatsManager statsManager = FindObjectOfType<GameStatsManager>();
+        if (statsManager != null)
+        {
+            statsManager.SaveCurrentNodeId(bossNodeId);
+        }
+
+        Debug.Log($"Successfully teleported to Boss Battle (Node {bossNodeId}).");
     }
 
     private void OnDrawGizmosSelected()

@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
 
 [System.Serializable]
-public class HealthChangeEvent : UnityEvent<float> { }
+public class HealthChangeEvent : UnityEvent<float>
+{
+}
 
 public class Unit : MonoBehaviour
 {
@@ -35,14 +38,10 @@ public class Unit : MonoBehaviour
         Deity
     }
 
-    [Header("Unit Basics")]
-
-    public string Id;
+    [Header("Unit Basics")] public string Id;
     public UnitTemplate unitTemplate;
 
-    [Header("Grid Map Element")]
-
-    public int unitMovementLimit;
+    [Header("Grid Map Element")] public int unitMovementLimit;
     public int currentXCoordinate;
     public int currentYCoordinate;
     public int startingXCoordinate;
@@ -51,9 +50,7 @@ public class Unit : MonoBehaviour
     public UnitSelectionController unitSelectionController;
     public TileController ownedTile;
 
-    [Header("Unit Instance Stats")]
-
-    public float unitHealthPoints;
+    [Header("Unit Instance Stats")] public float unitHealthPoints;
     public float unitMaxHealthPoints;
     public int unitOpportunityPoints;
     public int unitFaithPoints;
@@ -62,9 +59,7 @@ public class Unit : MonoBehaviour
     public float unitShieldPoints;
     public int unitOccupiedFoodSlots;
 
-    [Header("Progression System Stats")]
-
-    public float unitCoins;
+    [Header("Progression System Stats")] public float unitCoins;
     public float unitExperiencePoints;
     public Vector2 coinsRewardRange;
     public float experiencePointsReward;
@@ -73,9 +68,7 @@ public class Unit : MonoBehaviour
 
     public float unitMeleeAttackBaseDamage;
 
-    [Header("Gameplay Elements")]
-
-    public UnitLifeCondition currentUnitLifeCondition;
+    [Header("Gameplay Elements")] public UnitLifeCondition currentUnitLifeCondition;
     public UnitBuff currentUnitBuff;
     public UnitPhase currentUnitPhase;
     public UnitStatusController unitStatusController;
@@ -85,20 +78,17 @@ public class Unit : MonoBehaviour
     public bool hasHookshot;
     public bool bossFlag = false;
 
-    [Header("Deity Related")]
-
-    public Deity linkedDeity;
+    [Header("Deity Related")] public Deity linkedDeity;
     public Deity summonedLinkedDeity;
     public string LinkedDeityId; // This will store the ID of the linked Deity.
 
-    [Header("Visuals")]
-
-    public BattleFeedbackController battleFeedbackController;
+    [Header("Visuals")] public BattleFeedbackController battleFeedbackController;
     public GameObject unitProfilePanel;
     public SpriteRenderer unitSprite;
     public Animator characterAnimator;
 
     public delegate void CheckGameOver();
+
     public static event CheckGameOver OnCheckGameOver;
 
 
@@ -129,6 +119,7 @@ public class Unit : MonoBehaviour
         {
             RetrieveTemplateValues();
         }
+
         SetPhase(UnitPhase.Active);
     }
 
@@ -166,9 +157,11 @@ public class Unit : MonoBehaviour
             BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateHPWrapper(this.unitTemplate.unitName);
         }
     }
+
     private float CalculateEffectiveDamage(float receivedDamage, float shieldPoints)
     {
-        float damageMitigationPercentage = shieldPoints / (shieldPoints + 100); // Arbitrary scaling factor for shield effectiveness.
+        float damageMitigationPercentage =
+            shieldPoints / (shieldPoints + 100); // Arbitrary scaling factor for shield effectiveness.
         float effectiveDamage = receivedDamage * (1 - damageMitigationPercentage);
 
         effectiveDamage = Mathf.Floor(effectiveDamage);
@@ -255,6 +248,7 @@ public class Unit : MonoBehaviour
             return false;
         }
     }
+
     public virtual void CheckUnitHealthStatus()
     {
         // This logic works for both Player Units and Enemies.
@@ -279,7 +273,7 @@ public class Unit : MonoBehaviour
                 {
                     battleFeedbackController.PlayUnitDeathAnimationVFX();
                 }
-                
+
                 // Play Enemy Death SFX
                 BattleSFXManager.PlaySound(SoundType.ENEMYDEATH);
             }
@@ -287,8 +281,9 @@ public class Unit : MonoBehaviour
             {
                 meshRenderer.material.color = Color.black;
             }
+
             currentUnitLifeCondition = UnitLifeCondition.unitDead;
-            
+
             if (unitProfilePanel != null)
                 Destroy(unitProfilePanel);
 
@@ -313,7 +308,7 @@ public class Unit : MonoBehaviour
                 ownedTile.tileShaderController.SetTileToMoveRangeColor();
                 ownedTile.tileShaderController.SetTileGlowIntensity(1f);
             }
-            
+
             OnCheckGameOver?.Invoke();
 
             // Deactivates Player Unit Profile when applicable.
@@ -326,6 +321,7 @@ public class Unit : MonoBehaviour
             }
         }
     }
+
     protected virtual void CheckEnemyDefeat()
     {
         if (this.gameObject.tag != "Enemy")
@@ -336,6 +332,7 @@ public class Unit : MonoBehaviour
             // After an Enemy dies, retrieve the Rewards from it.
             CheckBattleRewards(activePlayerUnit);
         }
+
         if (ownedTile != null)
         {
             ownedTile.currentSingleTileCondition = SingleTileCondition.free;
@@ -428,5 +425,68 @@ public class Unit : MonoBehaviour
         currentUnitLifeCondition = UnitLifeCondition.unitAlive;
 
         experiencePointsReward = GetComponent<Unit>().unitTemplate.unitExperiencePointsReward;
+    }
+
+    public void FallIntoVoid(Vector2Int normalizedPushDirection, int distanceToVoid, float stepDuration = 0.15f)
+    {
+        // Free its previous tile
+        if (ownedTile != null)
+        {
+            ownedTile.detectedUnit = null;
+            ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+            ownedTile = null;
+        }
+
+        Debug.Log($"{gameObject.name} was pushed into the void and died.");
+
+        // Build a tile-by-tile traversal sequence ending in a fall
+        Sequence fallSequence = DOTween.Sequence();
+        Vector3 lastValidPos = transform.position;
+        Vector2Int tracePos = GetGridPosition();
+
+        for (int i = 0; i < distanceToVoid; i++)
+        {
+            tracePos += normalizedPushDirection;
+            TileController traceTile = GridManager.Instance.GetTileControllerInstance(tracePos.x, tracePos.y);
+
+            bool isLastStep = (i == distanceToVoid - 1);
+
+            if (traceTile == null)
+            {
+                // We reached the void gap! Calculate the exact empty XZ coordinates.
+                Vector3 voidXZ = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
+                Vector3 plungeTarget = new Vector3(voidXZ.x, lastValidPos.y - 10f, voidXZ.z);
+
+                // Add a slide to the hole, then a plunge directly into it
+                fallSequence.Append(transform.DOMove(new Vector3(voidXZ.x, lastValidPos.y, voidXZ.z), stepDuration)
+                    .SetEase(Ease.Linear));
+                fallSequence.Append(transform.DOMove(plungeTarget, 0.75f).SetEase(Ease.InQuad));
+                break;
+            }
+            else
+            {
+                // Move to this valid tile
+                Vector3 tileWorldPos = GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x, tracePos.y);
+                fallSequence.Append(transform.DOMove(tileWorldPos, stepDuration).SetEase(Ease.Linear));
+                lastValidPos = tileWorldPos;
+
+                // If it's a decorative edge block and we are at the end of our push, fall off it!
+                if (isLastStep)
+                {
+                    Vector3 furtherVoidXZ =
+                        GridManager.Instance.GetWorldPositionFromGridCoordinates(tracePos.x + normalizedPushDirection.x,
+                            tracePos.y + normalizedPushDirection.y);
+                    Vector3 plungeTarget = new Vector3(furtherVoidXZ.x, lastValidPos.y - 10f, furtherVoidXZ.z);
+
+                    // Add a slide OFF the edge block, then plunge
+                    fallSequence.Append(transform
+                        .DOMove(new Vector3(furtherVoidXZ.x, lastValidPos.y, furtherVoidXZ.z), stepDuration)
+                        .SetEase(Ease.Linear));
+                    fallSequence.Append(transform.DOMove(plungeTarget, 0.75f).SetEase(Ease.InQuad));
+                }
+            }
+        }
+
+        fallSequence.OnComplete(() => { HealthPoints = 0; });
     }
 }

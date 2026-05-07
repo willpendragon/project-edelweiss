@@ -17,6 +17,7 @@ public class GridManager : MonoBehaviour
     public List<GameObject> statusIcons = new List<GameObject>();
 
     public delegate void MoveUnitDelegate(int targetX, int targetY);
+
     public event MoveUnitDelegate OnMoveUnit;
 
     public GameObject tilePrefab;
@@ -38,24 +39,28 @@ public class GridManager : MonoBehaviour
     public GridMovementController gridMovementController;
 
     public delegate void GridMovementModeActivated();
+
     public static event GridMovementModeActivated OnGridMovementModeActivated;
 
     public delegate void GridTargetSelectionModeActivated();
+
     public static event GridTargetSelectionModeActivated OnGridTargetSelectionModeActivated;
 
     public delegate void SetUnitInitialPositionOnGrid();
+
     public static event SetUnitInitialPositionOnGrid OnSetUnitInitialPositionOnGrid;
 
     public delegate void SpawnActivationPlatforms();
+
     public static event SpawnActivationPlatforms OnSpawnActivationPlatforms;
 
     public static bool IsUnitMoving = false;
 
-    [Header("Map Layouts")]
-    public MapData currentMapData;
+    [Header("Map Layouts")] public MapData currentMapData;
     public MapData puzzleMapData;
 
     [SerializeField] UnitSetupController unitSetupController;
+
     private void Awake()
     {
         if (Instance == null)
@@ -88,6 +93,7 @@ public class GridManager : MonoBehaviour
         {
             OnSpawnActivationPlatforms.Invoke();
         }
+
         // Cache Tile Shaders controllers
         SetTileShaderControllers();
     }
@@ -147,7 +153,8 @@ public class GridManager : MonoBehaviour
                 }
             }
 
-            if (tileData.tileType == TileType.Chest || tileData.tileType == TileType.MinibossChest || tileData.tileType == TileType.BossChest)
+            if (tileData.tileType == TileType.Chest || tileData.tileType == TileType.MinibossChest ||
+                tileData.tileType == TileType.BossChest)
             {
                 string targetPrefabName = "";
                 if (tileData.tileType == TileType.MinibossChest) targetPrefabName = "MiniBossChest";
@@ -178,8 +185,8 @@ public class GridManager : MonoBehaviour
                         else if (tileData.tileType == TileType.BossChest) renderer.material.color = Color.red;
                         else renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f);
                     }
-                    
-                    chestPrototype.transform.localScale = Vector3.one * 0.5f; 
+
+                    chestPrototype.transform.localScale = Vector3.one * 0.5f;
                 }
 
                 chestPrototype.transform.SetParent(tilePrefabInstance.transform);
@@ -198,13 +205,13 @@ public class GridManager : MonoBehaviour
                     chestUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive;
                     chestUnit.ownedTile = tileController;
                     chestUnit.bossFlag = false;
-                    
+
                     if (!chestPrototype.GetComponent<PrizeReleaseController>())
                     {
                         var releaseController = chestPrototype.AddComponent<PrizeReleaseController>();
                         chestUnit.fieldPrizeController = releaseController;
                     }
-                    
+
                     chestUnit.currentXCoordinate = tileData.position.x;
                     chestUnit.currentYCoordinate = tileData.position.z;
 
@@ -216,18 +223,21 @@ public class GridManager : MonoBehaviour
             }
         }
 
+        // ... existing code ...
         if (currentMapData.decorationPositions != null)
         {
             foreach (var decoData in currentMapData.decorationPositions)
             {
-                string targetPrefabName = string.IsNullOrEmpty(decoData.prefabName) ? "DecorationPrefab" : decoData.prefabName;
+                string targetPrefabName =
+                    string.IsNullOrEmpty(decoData.prefabName) ? "DecorationPrefab" : decoData.prefabName;
 
-                GameObject runtimeDecorationPrefab = Resources.Load<GameObject>(targetPrefabName); 
-                
+                GameObject runtimeDecorationPrefab = Resources.Load<GameObject>(targetPrefabName);
+
                 if (runtimeDecorationPrefab == null)
                 {
-                    Debug.LogWarning($"GridManager: Missing Decoration Prefab '{targetPrefabName}' in Resources folder!");
-                    continue; 
+                    Debug.LogWarning(
+                        $"GridManager: Missing Decoration Prefab '{targetPrefabName}' in Resources folder!");
+                    continue;
                 }
 
                 Vector3 decoPosition = new Vector3(
@@ -237,9 +247,10 @@ public class GridManager : MonoBehaviour
                 );
 
                 // Only this single line changes to preserve the prefab's rotation
-                GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition, runtimeDecorationPrefab.transform.rotation);
+                GameObject decoInstance = Instantiate(runtimeDecorationPrefab, decoPosition,
+                    runtimeDecorationPrefab.transform.rotation);
 
-                decoInstance.transform.SetParent(this.transform); 
+                decoInstance.transform.SetParent(this.transform);
 
                 Transform gridBounds = decoInstance.transform.Find("GridBounds");
                 if (gridBounds != null)
@@ -248,20 +259,26 @@ public class GridManager : MonoBehaviour
                     if (boundsRenderer != null) boundsRenderer.enabled = false;
                 }
 
-                TileController occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y - 1, decoData.position.z);
-                if (occupiedTile == null) occupiedTile = GetTileControllerInstance(decoData.position.x, decoData.position.y, decoData.position.z);
+                TileController occupiedTile = decoInstance.GetComponent<TileController>();
 
                 if (occupiedTile != null)
                 {
+                    occupiedTile.gridPosition = decoData.position;
                     occupiedTile.currentSingleTileCondition = SingleTileCondition.occupied;
-                    occupiedTile.tileType = TileType.Environment; 
-                    occupiedTile.detectedUnit = decoInstance; 
+                    occupiedTile.tileType = TileType.Environment;
+
+                    PositionKey positionKey = new PositionKey(decoData.position, runtimeDecorationPrefab);
+                    if (!gridMapDictionary.ContainsKey(positionKey))
+                    {
+                        gridMapDictionary.Add(positionKey, occupiedTile);
+                    }
                 }
             }
         }
         else if (currentMapData.decorationPositions != null && currentMapData.decorationPositions.Count > 0)
         {
-            Debug.LogWarning("GridManager: Ti manca un prefab per le decorazioni! Assicurati di posizionare 'DecorationPrefab' nella cartella Resources.");
+            Debug.LogWarning(
+                "GridManager: Ti manca un prefab per le decorazioni! Assicurati di posizionare 'DecorationPrefab' nella cartella Resources.");
         }
 
         // --- NEW: Load Player Spawn Points ---
@@ -273,8 +290,11 @@ public class GridManager : MonoBehaviour
             {
                 if (string.IsNullOrEmpty(spawnData.prefabName)) continue;
 
-                TileController targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
-                if (targetTile == null) targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1, spawnData.position.z);
+                TileController targetTile =
+                    GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
+                if (targetTile == null)
+                    targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1,
+                        spawnData.position.z);
 
                 if (targetTile != null)
                 {
@@ -283,21 +303,23 @@ public class GridManager : MonoBehaviour
 
                     if (runtimeUnitPrefab == null)
                     {
-                        Debug.LogWarning($"GridManager: Missing Painted Unit Prefab '{spawnData.prefabName}' in Resources folder!");
+                        Debug.LogWarning(
+                            $"GridManager: Missing Painted Unit Prefab '{spawnData.prefabName}' in Resources folder!");
                         continue;
                     }
 
                     // Extract the core UnitName from the Prefab's template
                     Unit prefabUnitComponent = runtimeUnitPrefab.GetComponent<Unit>();
-                    string paintedUnitName = (prefabUnitComponent != null && prefabUnitComponent.unitTemplate != null) 
-                        ? prefabUnitComponent.unitTemplate.unitName 
+                    string paintedUnitName = (prefabUnitComponent != null && prefabUnitComponent.unitTemplate != null)
+                        ? prefabUnitComponent.unitTemplate.unitName
                         : string.Empty;
 
                     // 2. Try to find a match in the persistent Global Player Party using ONLY the unitTemplate.unitName
                     Unit persistentPlayerMatch = null;
-                    if (!string.IsNullOrEmpty(paintedUnitName) && GameManager.Instance != null && GameManager.Instance.playerPartyMembersInstances != null)
+                    if (!string.IsNullOrEmpty(paintedUnitName) && GameManager.Instance != null &&
+                        GameManager.Instance.playerPartyMembersInstances != null)
                     {
-                        persistentPlayerMatch = GameManager.Instance.playerPartyMembersInstances.FirstOrDefault(u => 
+                        persistentPlayerMatch = GameManager.Instance.playerPartyMembersInstances.FirstOrDefault(u =>
                             u != null && u.unitTemplate != null && u.unitTemplate.unitName == paintedUnitName
                         );
                     }
@@ -306,8 +328,8 @@ public class GridManager : MonoBehaviour
                     {
                         // Match Found! Teleport the persistent player unit to the painted map coordinates
                         GameObject unitInstance = persistentPlayerMatch.gameObject;
-                        unitInstance.SetActive(true); 
-                        
+                        unitInstance.SetActive(true);
+
                         PlaceUnitOnTileSurface(unitInstance, targetTile);
 
                         targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
@@ -326,7 +348,7 @@ public class GridManager : MonoBehaviour
                         // No player match found. It's an Enemy or a Deity painted on the map! Instantiating it.
                         GameObject unitInstance = Instantiate(runtimeUnitPrefab, this.transform);
                         Unit paintedEnemy = unitInstance.GetComponent<Unit>();
-                        
+
                         if (paintedEnemy != null)
                         {
                             // Force template load before Enum evaluation to prevent fake Game-Over
@@ -355,7 +377,7 @@ public class GridManager : MonoBehaviour
                 {
                     if (legacyPlayer != null && !dynamicPlayerUnits.Contains(legacyPlayer))
                     {
-                        legacyPlayer.SetActive(false); 
+                        legacyPlayer.SetActive(false);
                     }
                 }
 
@@ -388,8 +410,11 @@ public class GridManager : MonoBehaviour
             {
                 if (string.IsNullOrEmpty(spawnData.prefabName)) continue;
 
-                TileController targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
-                if (targetTile == null) targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1, spawnData.position.z);
+                TileController targetTile =
+                    GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
+                if (targetTile == null)
+                    targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1,
+                        spawnData.position.z);
 
                 if (targetTile != null)
                 {
@@ -404,7 +429,7 @@ public class GridManager : MonoBehaviour
                             if (paintedEnemy.unitTemplate != null) paintedEnemy.RetrieveTemplateValues();
 
                             PlaceUnitOnTileSurface(enemyInstance, targetTile);
-                            
+
                             // CLASH PREVENTION: This unequivocally locks out procedural gen from picking this tile
                             targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
                             targetTile.detectedUnit = enemyInstance;
@@ -464,12 +489,16 @@ public class GridManager : MonoBehaviour
 
                 if (runtimeInteractablePrefab == null)
                 {
-                    Debug.LogWarning($"GridManager: Missing '{intData.prefabName}' Prefab in Resources folder! Could not be spawned.");
+                    Debug.LogWarning(
+                        $"GridManager: Missing '{intData.prefabName}' Prefab in Resources folder! Could not be spawned.");
                     continue;
                 }
 
-                TileController targetTile = GetTileControllerInstance(intData.position.x, intData.position.y, intData.position.z);
-                if (targetTile == null) targetTile = GetTileControllerInstance(intData.position.x, intData.position.y - 1, intData.position.z);
+                TileController targetTile =
+                    GetTileControllerInstance(intData.position.x, intData.position.y, intData.position.z);
+                if (targetTile == null)
+                    targetTile =
+                        GetTileControllerInstance(intData.position.x, intData.position.y - 1, intData.position.z);
 
                 if (targetTile != null)
                 {
@@ -481,13 +510,15 @@ public class GridManager : MonoBehaviour
                         if (tileNativeTrapController != null)
                         {
                             // 2. Activate the native trap logic
-                            tileNativeTrapController.currentTrapActivationStatus = TrapController.TrapActivationStatus.active;
-                            
+                            tileNativeTrapController.currentTrapActivationStatus =
+                                TrapController.TrapActivationStatus.active;
+
                             // 3. Spawn the Trap visuals with your desired offset, parented to the tile to keep hierarchy clean
                             Vector3 offSet = new Vector3(0, 2f, 0);
                             Vector3 spawnPosition = targetTile.transform.position + offSet;
-                            
-                            Instantiate(runtimeInteractablePrefab, spawnPosition, Quaternion.identity, targetTile.transform);
+
+                            Instantiate(runtimeInteractablePrefab, spawnPosition, Quaternion.identity,
+                                targetTile.transform);
                         }
 
                         // We skip setting the tile to 'occupied' so units can still physically path onto the trap tile!
@@ -515,14 +546,16 @@ public class GridManager : MonoBehaviour
 
                 if (runtimeEnvPrefab == null)
                 {
-                    Debug.LogWarning($"GridManager: Missing Environment Prefab '{envData.prefabName}' in Resources folder!");
+                    Debug.LogWarning(
+                        $"GridManager: Missing Environment Prefab '{envData.prefabName}' in Resources folder!");
                     continue;
                 }
 
                 // Spawn entirely decoupled from the Grid offsets, using true World Space coordinates
-                GameObject envInstance = Instantiate(runtimeEnvPrefab, envData.position, Quaternion.Euler(envData.rotation));
+                GameObject envInstance =
+                    Instantiate(runtimeEnvPrefab, envData.position, Quaternion.Euler(envData.rotation));
                 envInstance.transform.localScale = envData.scale;
-                
+
                 envInstance.transform.SetParent(this.transform); // Keep hierarchy clean
             }
         }
@@ -538,14 +571,16 @@ public class GridManager : MonoBehaviour
 
                 if (runtimeEnvPrefab == null)
                 {
-                    Debug.LogWarning($"GridManager: Missing Environment Prefab '{envData.prefabName}' in Resources folder!");
+                    Debug.LogWarning(
+                        $"GridManager: Missing Environment Prefab '{envData.prefabName}' in Resources folder!");
                     continue;
                 }
 
                 // Spawn entirely decoupled from the Grid offsets, using true World Space coordinates
-                GameObject envInstance = Instantiate(runtimeEnvPrefab, envData.position, Quaternion.Euler(envData.rotation));
+                GameObject envInstance =
+                    Instantiate(runtimeEnvPrefab, envData.position, Quaternion.Euler(envData.rotation));
                 envInstance.transform.localScale = envData.scale;
-                
+
                 envInstance.transform.SetParent(this.transform); // Keep hierarchy clean
             }
         }
@@ -567,7 +602,7 @@ public class GridManager : MonoBehaviour
                 runtimeLight.color = lightData.color;
                 runtimeLight.intensity = lightData.intensity;
                 runtimeLight.range = lightData.range;
-                
+
                 if (lightData.type == LightType.Spot)
                 {
                     runtimeLight.spotAngle = lightData.spotAngle;
@@ -579,8 +614,9 @@ public class GridManager : MonoBehaviour
         if (currentMapData.overrideDirectionalLight)
         {
             // Find the main directional light in the Battle Scene
-            Light sceneDirectionalLight = FindObjectsOfType<Light>().FirstOrDefault(l => l.type == LightType.Directional);
-            
+            Light sceneDirectionalLight =
+                FindObjectsOfType<Light>().FirstOrDefault(l => l.type == LightType.Directional);
+
             if (sceneDirectionalLight != null)
             {
                 sceneDirectionalLight.transform.rotation = Quaternion.Euler(currentMapData.directionalLightRotation);
@@ -589,10 +625,10 @@ public class GridManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("GridManager: overrideDirectionalLight is true, but no Directional Light exists in the Battle Scene!");
+                Debug.LogWarning(
+                    "GridManager: overrideDirectionalLight is true, but no Directional Light exists in the Battle Scene!");
             }
         }
-
     } // <--- End of GenerateGridMapFromData()
 
     private void ClearGridMap()
@@ -601,6 +637,7 @@ public class GridManager : MonoBehaviour
         {
             Destroy(tile.gameObject);
         }
+
         gridMapDictionary.Clear();
     }
 
@@ -612,6 +649,7 @@ public class GridManager : MonoBehaviour
             lineRendererInstance = lineRendererObj.GetComponentInChildren<LineRenderer>();
             lineRendererObj.transform.SetParent(transform);
         }
+
         return lineRendererInstance;
     }
 
@@ -623,16 +661,17 @@ public class GridManager : MonoBehaviour
         {
             return result;
         }
+
         return null;
     }
 
     // VERSIONE "SOVRACCARICATA" EXTRA 2D PER NON ROMPERE TUTTO SUBITO
-    // Molti tuoi script passano ancora (X, Y) credendo sia la vista dall'alto (dove la loro vecchia Y è ora la nostra Z)
+    // Molti tuoi script passano ancora (X, Y) credendo sia la vista dall'alto (dove la loro vecchia Y ï¿½ ora la nostra Z)
     // Usiamo questa per cercare i tile al "Piano Terra" (Elevazione 0).
     public TileController GetTileControllerInstance(int xCoordinate, int zOrOldYCoordinate)
     {
         // Partiamo da un'elevazione massima (es. 20 blocchi di altezza) e scendiamo
-        // finché non troviamo il primo blocco fisico esistente.
+        // finchï¿½ non troviamo il primo blocco fisico esistente.
         for (int y = 20; y >= 0; y--)
         {
             TileController tile = GetTileControllerInstance(xCoordinate, y, zOrOldYCoordinate);
@@ -644,6 +683,7 @@ public class GridManager : MonoBehaviour
 
         return null; // Nessun tile in questa colonna
     }
+
     public List<Vector2Int> GetExistingTileCoordinates()
     {
         List<Vector2Int> existingTiles = new List<Vector2Int>();
@@ -668,24 +708,31 @@ public class GridManager : MonoBehaviour
                 if (finalDestinationTile.detectedUnit == null)
                 {
                     currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = null;
-                    currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+                    currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition =
+                        SingleTileCondition.free;
                     currentPlayerUnit.GetComponent<Unit>().ownedTile = finalDestinationTile;
                     currentPlayerUnit.GetComponent<Unit>().ownedTile.detectedUnit = currentPlayerUnit;
-                    currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                    currentPlayerUnit.GetComponent<Unit>().ownedTile.currentSingleTileCondition =
+                        SingleTileCondition.occupied;
                     currentPlayerUnit.GetComponent<Unit>().unitOpportunityPoints--;
                     GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
 
                     foreach (var tile in tiles)
                     {
-                        tile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.characterSelectionModeActive;
+                        tile.GetComponent<TileController>().currentSingleTileStatus =
+                            SingleTileStatus.characterSelectionModeActive;
                     }
-                    currentPlayerUnit.GetComponent<Unit>().ownedTile.GetComponent<TileController>().currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
-                    currentPlayerUnit.GetComponent<Unit>().ownedTile.GetComponent<TileController>().detectedUnit = currentPlayerUnit;
+
+                    currentPlayerUnit.GetComponent<Unit>().ownedTile.GetComponent<TileController>()
+                        .currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
+                    currentPlayerUnit.GetComponent<Unit>().ownedTile.GetComponent<TileController>().detectedUnit =
+                        currentPlayerUnit;
                 }
             }
             Debug.Log("Moving Player Unit to (" + targetX + ", " + targetY + ")");
         }
     }
+
     public Vector3 GetWorldPositionFromGridCoordinates(int x, int z)
     {
         for (int y = 20; y >= 0; y--)
@@ -710,6 +757,7 @@ public class GridManager : MonoBehaviour
         float worldZ = z * (tileSize.z + inBetweenTilesYOffset);
         return new Vector3(worldX, 0, worldZ);
     }
+
     public Vector2Int GetGridCoordinatesFromWorldPosition(Vector3 worldPosition)
     {
         // CORREZIONE DELLA VETTORIZZZAZIONE INVERSA
@@ -719,6 +767,7 @@ public class GridManager : MonoBehaviour
 
         return new Vector2Int(x, y);
     }
+
     public void RemoveTrapSelection()
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -728,6 +777,7 @@ public class GridManager : MonoBehaviour
             tile.currentSingleTileStatus = SingleTileStatus.selectionMode;
         }
     }
+
     public void RefreshGridTileControllers()
     {
         gridTileControllers = gridMapDictionary
@@ -755,6 +805,7 @@ public class GridManager : MonoBehaviour
                 specialTiles.Add(coords);
             }
         }
+
         return specialTiles;
     }
 
@@ -768,20 +819,20 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Posiziona un GameObject (es. Unità) esattamente sopra la superficie calpestabile di un Tile,
+    /// Posiziona un GameObject (es. Unitï¿½) esattamente sopra la superficie calpestabile di un Tile,
     /// compensando in automatico qualsiasi offset errato o pivot strano dei figli (SpriteRenderer).
     /// </summary>
     public void PlaceUnitOnTileSurface(GameObject unitToPlace, TileController targetTile)
     {
         if (unitToPlace == null || targetTile == null) return;
 
-        // Anziché usare posizioni relative o bounds, usiamo la cima esatta del Renderer o del Collider!
+        // Anzichï¿½ usare posizioni relative o bounds, usiamo la cima esatta del Renderer o del Collider!
         float finalY = targetTile.transform.position.y;
 
         Collider col = targetTile.GetComponent<Collider>();
         if (col != null)
         {
-            // bounds.max.y ti dà il punto ASSOLUTO in altezza top nello spazio mondo di QUEL cubo!
+            // bounds.max.y ti dï¿½ il punto ASSOLUTO in altezza top nello spazio mondo di QUEL cubo!
             finalY = col.bounds.max.y;
         }
 
@@ -803,6 +854,7 @@ public class GridManager : MonoBehaviour
             // Moltiplica la grandezza pura per la scala del Prefab! (Es: 1 * 1.5 = 1.5)
             return Vector3.Scale(col.size, tilePrefab.transform.localScale);
         }
+
         return tilePrefab.transform.localScale;
     }
 }
