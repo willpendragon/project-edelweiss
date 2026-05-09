@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!21 &21818559
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &35542994
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,37 +694,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &117648267
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &129754951
 GameObject:
   m_ObjectHideFlags: 0
@@ -3537,6 +3537,7 @@ MonoBehaviour:
   battleEndUIHandler: {fileID: 1886200376}
   achievementsManager: {fileID: 499339821}
   _deitySpawner: {fileID: 1790485009}
+  _unitSelectionController: {fileID: 209913982}
   warFunds: 0
   enemiesKilledInCurrentBattle: 0
   timesSingleTargetSpellWasUsed: 0
@@ -3898,6 +3899,7 @@ MonoBehaviour:
   _targetedUnit: {fileID: 0}
   _escapeSettings: {fileID: 11400000, guid: e5466c086a822764899e172741cbe435, type: 2}
   _mainUICanvas: {fileID: 767884332}
+  _unitSelectionController: {fileID: 209913982}
   _moveIcon: {fileID: 21300000, guid: 3c5c715bee9958044969af3fb789345b, type: 3}
   _meleeIcon: {fileID: 21300000, guid: b86df38f098093e40bc71c8c53d02882, type: 3}
   _spellIcon: {fileID: 21300000, guid: 8f9cb3ef97d34fa40b913628472fc313, type: 3}
@@ -15031,7 +15033,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 117648267}
+  - {fileID: 21818559}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

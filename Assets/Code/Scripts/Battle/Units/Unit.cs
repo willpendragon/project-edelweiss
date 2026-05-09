@@ -369,9 +369,13 @@ public class Unit : MonoBehaviour
 
     private void SpawnPrize()
     {
-        if (fieldPrizeController != null)
+        if (fieldPrizeController != null && ownedTile != null)
         {
             fieldPrizeController.UnlockFieldPrize(ownedTile);
+        }
+        else if (ownedTile == null)
+        {
+            Debug.Log("Handle cases where enemy fell into void or in general went out of grid due to Player action");
         }
     }
 

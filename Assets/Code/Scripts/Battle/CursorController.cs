@@ -40,6 +40,7 @@ public class CursorController : MonoBehaviour
     [SerializeField] private Unit _targetedUnit;
     [SerializeField] private EscapeSettings _escapeSettings;
     [SerializeField] private Canvas _mainUICanvas;
+    [SerializeField] private UnitSelectionController _unitSelectionController;
 
     private Coroutine _escapeCoroutine;
     private GameObject _escapeUIRoot;
@@ -268,10 +269,10 @@ public class CursorController : MonoBehaviour
             _targetedUnit = _tileController.detectedUnit.GetComponent<Unit>();
 
         // Display Enemy Unit Info (where applicable).
-        var unitSelection = FindAnyObjectByType<UnitSelectionController>();
+
         if (_targetedUnit != null)
         {
-            unitSelection.SelectEnemy(_targetedUnit);
+            _unitSelectionController.SelectEnemy(_targetedUnit);
         }
 
         // Run button
@@ -518,7 +519,8 @@ public class CursorController : MonoBehaviour
         CreateEscapeUI();
 
         activePlayerUnit.unitOpportunityPoints--;
-        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate.unitName);
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate
+            .unitName);
 
         var timerText = _escapeUIRoot.GetComponentInChildren<TextMeshProUGUI>();
 
