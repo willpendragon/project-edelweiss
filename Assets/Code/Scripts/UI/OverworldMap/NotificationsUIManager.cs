@@ -2,13 +2,31 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using TMPro;
+using DG.Tweening;
 
 public class NotificationsUIManager : MonoBehaviour
 {
+    public static NotificationsUIManager Instance;
     private float _notificationDelay = 1.5f;
     private GameObject _messageBox;
     [SerializeField] private Canvas _canvas;
+    [SerializeField] private TextMeshProUGUI _footerNotifications;
     private List<string> _eventNotifications = new List<string>();
+    private float _marqueeResetDelay = 1.5f;
+
+
+    public void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
 
     public void AddMessageToQueue(string message)
     {
@@ -24,6 +42,7 @@ public class NotificationsUIManager : MonoBehaviour
     {
         StartCoroutine(ProcessNotifications());
     }
+
     private IEnumerator ProcessNotifications()
     {
         foreach (var stringMessage in _eventNotifications)
@@ -40,8 +59,16 @@ public class NotificationsUIManager : MonoBehaviour
         AssignImage(newMessageBox);
         Destroy(newMessageBox, _notificationDelay);
     }
+
     private void AssignImage(GameObject newMessageBox)
     {
         throw new NotImplementedException();
+    }
+
+    public void DisplayFooterNotification(string message)
+    {
+        string previousMessage = _footerNotifications.text;
+        _footerNotifications.text = message;
+        DOVirtual.DelayedCall(_marqueeResetDelay, () => _footerNotifications.text = previousMessage);
     }
 }

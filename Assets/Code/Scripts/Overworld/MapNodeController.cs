@@ -88,6 +88,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             }
             else
             {
+                NotificationsUIManager.Instance.DisplayFooterNotification("This battle can't be repeated!");
                 Debug.Log($"Can't re-enter. {type} is not repeatable.");
                 if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
@@ -100,6 +101,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             GameStatsManager gameStatsManager = FindAnyObjectByType<GameStatsManager>();
             if (gameStatsManager == null || gameStatsManager.unlockedPuzzleKeys <= 0)
             {
+                NotificationsUIManager.Instance.DisplayFooterNotification("Can't enter! Find a Key first!");
                 Debug.Log("Can't enter: Not enough Puzzle Keys.");
                 if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
@@ -111,6 +113,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             
             if (type == NodeType.MinibossBattle && (gameStatsManager == null || !gameStatsManager.hasMinibossKey))
             {
+                NotificationsUIManager.Instance.DisplayFooterNotification("Can't enter! Find a Miniboss Key first!");
                 Debug.Log($"Can't enter: {type} is locked. Miniboss Key required.");
                 if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
@@ -118,6 +121,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
             
             if (type == NodeType.BossBattle && (gameStatsManager == null || !gameStatsManager.hasBossKey))
             {
+                NotificationsUIManager.Instance.DisplayFooterNotification("Can't enter! Find a Boss Key first!");
                 Debug.Log($"Can't enter: {type} is locked. Boss Key required.");
                 if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
