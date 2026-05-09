@@ -4,10 +4,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using static Unit;
+
 public class TurnController : MonoBehaviour
 {
     private static TurnController instance;
     [SerializeField] SummonResetHelper summonResetHelper;
+
     public static TurnController Instance
     {
         get
@@ -17,11 +19,13 @@ public class TurnController : MonoBehaviour
             return instance;
         }
     }
+
     public enum Turn
     {
         PlayerTurn,
         EnemyTurn
     }
+
     public static class Tags
     {
         public const string PLAYER = "Player";
@@ -36,15 +40,19 @@ public class TurnController : MonoBehaviour
     }
 
     public delegate void PlayerTurn(string enemyTurn);
+
     public static event PlayerTurn OnPlayerTurn;
 
     public delegate void EnemyTurn(string enemyTurn);
+
     public static event EnemyTurn OnEnemyTurn;
 
     public delegate void EnemyTurnSwap();
+
     public static event EnemyTurnSwap OnEnemyTurnSwap;
 
     public delegate void BattleEnd(string battleEndMessage);
+
     public static event BattleEnd OnBattleEnd;
 
     public int turnCounter;
@@ -54,25 +62,23 @@ public class TurnController : MonoBehaviour
     public GameObject[] enemyUnitsOnBattlefield;
 
     public delegate void ResetSummonBuffs();
+
     public static event ResetSummonBuffs OnResetSummonBuffs;
 
-    [Header("Core Gameplay Logic")]
-    public GameStatsManager gameStatsManager;
+    [Header("Core Gameplay Logic")] public GameStatsManager gameStatsManager;
 
-    [Header("Battle System Elements")]
-
-    public BattleManager battleManager;
+    [Header("Battle System Elements")] public BattleManager battleManager;
     public BattleEndUIHandler battleEndUIHandler;
     public AchievementsManager achievementsManager;
     [SerializeField] private DeitySpawner _deitySpawner;
+    [SerializeField] private UnitSelectionController _unitSelectionController;
 
-    [Header("Gameplay Stats")]
-
-    public float warFunds;
+    [Header("Gameplay Stats")] public float warFunds;
     public int enemiesKilledInCurrentBattle;
     public int timesSingleTargetSpellWasUsed;
 
     public delegate void DeityKilled(Deity deity);
+
     public static event DeityKilled OnDeityKilled;
 
     public void OnEnable() => SubscribeToEvents();
@@ -89,6 +95,7 @@ public class TurnController : MonoBehaviour
         Deity.OnPlayerTurnSwap += RestorePlayerUnits;
         Unit.OnCheckGameOver += GameOverCheck;
     }
+
     private void UnsubscribeFromEvents()
     {
         UnitSelectionController.OnUnitTurnEnded -= DecideTurn;
@@ -100,12 +107,13 @@ public class TurnController : MonoBehaviour
         Deity.OnPlayerTurnSwap -= RestorePlayerUnits;
         Unit.OnCheckGameOver -= GameOverCheck;
     }
+
     private void Start()
     {
         // Execute immediately so UI logic (like HP bars) can bind!
         RetrieveUnits();
         RestorePlayerUnits();
-        
+
         // Start the check in a sequestered coroutine
         StartCoroutine(StartTurnationCheckCoroutine());
     }
@@ -126,10 +134,12 @@ public class TurnController : MonoBehaviour
 
     private void RetrieveUnits()
     {
-        playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag(Tags.PLAYER_PARTY_CONTROLLER).GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+        playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag(Tags.PLAYER_PARTY_CONTROLLER)
+            .GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
         enemyUnitsOnBattlefield = GameObject.FindGameObjectsWithTag(Tags.ENEMY);
         gameStatsManager = GameObject.FindGameObjectWithTag(Tags.GAME_STATS_MANAGER).GetComponent<GameStatsManager>();
     }
+
     private void SetTurn(Turn turn)
     {
         currentTurn = turn;
@@ -146,8 +156,10 @@ public class TurnController : MonoBehaviour
         {
             SetTurn(Turn.EnemyTurn);
         }
+
         AssignTurn();
     }
+
     private void AssignTurn()
     {
         switch (currentTurn)
@@ -168,6 +180,7 @@ public class TurnController : MonoBehaviour
         // Allow the Player to select characters.
         SetPlayerUnitsToActive();
     }
+
     private void SetPlayerUnitsToActive()
     {
         foreach (var unitGO in playerUnitsOnBattlefield)
@@ -182,12 +195,13 @@ public class TurnController : MonoBehaviour
         BattleSFXManager.PlaySound(SoundType.NEXTTURN);
         DOVirtual.DelayedCall(1.5f, () => OnEnemyTurnSwap?.Invoke());
     }
+
     public bool PlayerPartyAvailable()
     {
         if (playerUnitsOnBattlefield.All(unitGO =>
-            unitGO.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead
-            || unitGO.GetComponent<Unit>().currentUnitPhase == UnitPhase.Waiting
-            || unitGO.GetComponent<UnitStatusController>().unitCurrentStatus == UnitStatus.Faithless))
+                unitGO.GetComponent<Unit>().currentUnitLifeCondition == UnitLifeCondition.unitDead
+                || unitGO.GetComponent<Unit>().currentUnitPhase == UnitPhase.Waiting
+                || unitGO.GetComponent<UnitStatusController>().unitCurrentStatus == UnitStatus.Faithless))
             return false;
         else
             return true;
@@ -196,7 +210,8 @@ public class TurnController : MonoBehaviour
     public void PlayerUnitsLifeCheck()
     {
         // Check if there are any units that are NOT dead, indicating the Player Party is still active.
-        bool isAnyPlayerUnitAlive = playerUnitsOnBattlefield.Any(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead);
+        bool isAnyPlayerUnitAlive = playerUnitsOnBattlefield.Any(player =>
+            player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead);
 
         if (!isAnyPlayerUnitAlive) // If no units are alive, then the player party has been defeated.
         {
@@ -207,6 +222,7 @@ public class TurnController : MonoBehaviour
             Debug.Log("Player Party is still active");
         }
     }
+
     public void GameOverCheck()
     {
         // Fires different handling of the Game Over sequence, depending on the Battle Type.
@@ -236,7 +252,8 @@ public class TurnController : MonoBehaviour
 
     public void FaithlessGameOverCheck()
     {
-        if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.Faithless))
+        if (playerUnitsOnBattlefield.All(player =>
+                player.GetComponent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.Faithless))
         {
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
@@ -244,23 +261,28 @@ public class TurnController : MonoBehaviour
 
     private void HandleRegularBattle(GameStatsManager gameStatsManager)
     {
-        if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        if (enemyUnitsOnBattlefield.All(enemy =>
+                enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
         }
-        else if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+        else if (enemyUnitsOnBattlefield.All(enemy =>
+                     enemy.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Enemy Party is still in game");
         }
-        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        else if (playerUnitsOnBattlefield.All(player =>
+                     player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
-        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
+        else if (playerUnitsOnBattlefield.All(player =>
+                     player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Player Party is still in game");
         }
     }
+
     private void HandleBattleWithDeity(GameStatsManager gameStatsManager)
     {
         if (GameObject.FindGameObjectWithTag(Tags.ENEMY).GetComponent<Unit>().unitHealthPoints <= 0)
@@ -270,12 +292,14 @@ public class TurnController : MonoBehaviour
             OnDeityKilled(_deitySpawner.currentUnboundDeity);
             Debug.Log("Deity's HP is over and Player won the battle. The Deity fled");
         }
-        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        else if (playerUnitsOnBattlefield.All(player =>
+                     player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             Debug.Log("Player Party was defeated by the Deity");
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
     }
+
     private void HandleBossBattle()
     {
         //BossController currentBossController = GameObject.FindGameObjectWithTag(Tags.BOSS_CONTROLLER).GetComponent<BossController>();
@@ -285,19 +309,23 @@ public class TurnController : MonoBehaviour
         //    BattleFlowController.Instance.PlayerPartyVictorySequence("Boss Defeated", warFunds);
         //}
     }
+
     private void HandlePuzzleBattle(GameStatsManager gameStatsManager)
     {
         // Default sequence: Win once all enemies are defeated, lose when all player units are defeated.
         // Feel free to modify this win/loss criteria if your puzzle ends based on different conditions.
-        if (enemyUnitsOnBattlefield.All(enemy => enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        if (enemyUnitsOnBattlefield.All(enemy =>
+                enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
         }
-        else if (playerUnitsOnBattlefield.All(player => player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        else if (playerUnitsOnBattlefield.All(player =>
+                     player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
     }
+
     public void RestorePlayerUnits()
     {
         currentTurn = Turn.PlayerTurn;
@@ -308,11 +336,10 @@ public class TurnController : MonoBehaviour
             playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
             playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
         }
+
         // Refresh the remaining Moves on the UI.
-        DOVirtual.DelayedCall(0.1f, () =>
-            {
-                BattleInterface.Instance.PlayerPartyProfilesUIManager.RefreshPartyMovesCounter();
-            });
+        DOVirtual.DelayedCall(0.1f,
+            () => { BattleInterface.Instance.PlayerPartyProfilesUIManager.RefreshPartyMovesCounter(); });
         RestoreActivePlayerUnit();
         SetPlayerUnitsToActive();
 
@@ -335,16 +362,15 @@ public class TurnController : MonoBehaviour
     private void RestoreActivePlayerUnit()
     {
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag(Tags.ACTIVE_PLAYER_UNIT);
-        var unitSelection = FindAnyObjectByType<UnitSelectionController>();
 
         if (activePlayerUnit == null)
             return;
 
-        unitSelection.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
+        _unitSelectionController.SpawnUnitInfoPanel(activePlayerUnit.GetComponent<Unit>());
         // Display the Attackable Enemies outline.
-        unitSelection.OutlineAttackableEnemies(activePlayerUnit.GetComponent<Unit>());
+        _unitSelectionController.OutlineAttackableEnemies(activePlayerUnit.GetComponent<Unit>());
         // Display the tiles reachable by the Active Player Unit.
-        unitSelection.tileVisualizer.ShowReachableTiles();
+        _unitSelectionController.tileVisualizer.ShowReachableTiles();
     }
 
     public void RunFromBattle()
