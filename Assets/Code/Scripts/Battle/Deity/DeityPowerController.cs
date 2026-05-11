@@ -27,9 +27,13 @@ public class DeityPowerController : MonoBehaviour
 
     public void UseDeityMove()
     {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit).GetComponent<Unit>();
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit)?.GetComponent<Unit>();
         if (activePlayerUnit == null)
+        {
+            BattleInterface.Instance.SetBattleNotification("No Unit Selected!");
             return;
+        }
+
         Deity deity = activePlayerUnit.linkedDeity;
         if (deity == null)
             return;

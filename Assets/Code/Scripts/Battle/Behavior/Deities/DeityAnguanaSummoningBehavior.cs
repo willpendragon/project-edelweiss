@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening; // Added for the delay/cycle management
+using DG.Tweening;
 
 [CreateAssetMenu(fileName = "AnguanaSummonBehavior", menuName = "DeityBehavior/AnguanaSummonBehavior")]
 public class DeityAnguanaSummoningBehavior : DeityBehavior
@@ -24,25 +22,45 @@ public class DeityAnguanaSummoningBehavior : DeityBehavior
     {
     }
 
-    private void StartFreezeCycle(GameObject[] enemies, int duration, Deity deity)
+    private void StartFreezeCycle(GameObject[] enemies, int roll, Deity deity)
     {
-        // Apply Frozen status
-        foreach (GameObject enemy in enemies)
+        if (enemies == null || enemies.Length == 0)
+            return;
+        int actualHitCount = Mathf.Min(roll, enemies.Length);
+
+        Sequence summonSequence = DOTween.Sequence();
+
+        for (int i = 0; i < actualHitCount; i++)
         {
-            if (enemy != null)
+            GameObject enemyTarget = enemies[i];
+
+            summonSequence.AppendCallback(() =>
             {
-                Unit unit = enemy.GetComponent<Unit>();
-                if (unit != null && unit.unitStatusController != null)
+                if (enemyTarget != null)
                 {
-                    // Freeze the unit
-                    unit.unitStatusController.unitCurrentStatus = UnitStatus.stun;
-                    unit.TakeDamage(baseDamage);
-                    // Add Freeze feedback
-                    Debug.Log($"{unit.unitTemplate.unitName} was frozen");
+                    ApplyHit(enemyTarget);
                 }
-            }
+            });
+            summonSequence.AppendInterval(0.15f);
         }
+
         BattleInterface.Instance.SetDeityNotification(
             $"{deity.gameObject.GetComponent<Unit>().unitTemplate.unitName} used Frozen Punishment");
+    }
+
+    private void ApplyHit(GameObject enemyTarget)
+    {
+        Unit unit = enemyTarget.GetComponent<Unit>();
+        if (unit != null)
+        {
+            if (unit.unitStatusController != null)
+            {
+                unit.unitStatusController.unitCurrentStatus = UnitStatus.stun;
+            }
+
+            unit.TakeDamage(baseDamage); //remember to add "* affinity multiplier"
+            // Add freeze feedback, as this is actually a character being frozen.
+            Debug.Log($"{unit.unitTemplate.unitName} hit by Frozen Punishment");
+        }
     }
 }

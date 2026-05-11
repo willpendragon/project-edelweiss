@@ -7,6 +7,8 @@ using ProjectEdelweiss.Utils;
 public abstract class DeityBehavior : ScriptableObject
 {
     private System.Random localRandom;
+
+    public string description;
     public abstract void ExecuteBehavior(Deity deity);
 
     public abstract void ExecuteBuffBehaviour(Deity deity, Unit unit);
