@@ -7,7 +7,7 @@ using static Unit;
 
 public class TurnController : MonoBehaviour
 {
-    private static TurnController instance;
+    public static TurnController instance;
     [SerializeField] SummonResetHelper summonResetHelper;
 
     public static TurnController Instance
