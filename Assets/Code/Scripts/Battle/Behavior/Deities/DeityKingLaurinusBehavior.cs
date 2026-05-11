@@ -1,6 +1,5 @@
 using DG.Tweening;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -215,54 +214,4 @@ public class DeityKingLaurinusBehavior : DeityBehavior
         deitySpawner.MoveObeliskOnGridMap();
         DOVirtual.DelayedCall(1f, () => BattleInterface.Instance.SetDeityNotification($"Deity {deityName} moved its Altar."));
     }
-
-    private void MoveDeityToRandomTile(Deity deity)
-    {
-        if (localRandom == null)
-        {
-            localRandom = new System.Random(); // No seed to guarantee fresh randomness at each run.
-        }
-
-        List<Vector2Int> tileCoordinates = GridManager.Instance.GetExistingTileCoordinates();
-
-        // Filter out occupied tiles
-        List<TileController> validTiles = tileCoordinates
-            .Select(coord => GridManager.Instance.GetTileControllerInstance(coord.x, coord.y))
-            .Where(tile => tile != null &&
-                           tile.currentSingleTileCondition == SingleTileCondition.free &&
-                           tile.detectedUnit == null)
-            .ToList();
-
-        if (validTiles.Count == 0)
-        {
-            Debug.Log("Anguana couldn't find any valid tile to move.");
-            return;
-        }
-
-        int randomIndex = localRandom.Next(validTiles.Count);
-        TileController randomTile = validTiles[randomIndex];
-
-        MoveDeityToTile(deity, randomTile);
-
-        Debug.Log($"Laurinus moved to: ({randomTile.tileXCoordinate}, {randomTile.tileYCoordinate})");
-    }
-
-    private void MoveDeityToTile(Deity deity, TileController destinationTile)
-    {
-        TileController startTile = deity.gameObject.GetComponent<Unit>().ownedTile;
-
-        if (startTile != null)
-        {
-            startTile.detectedUnit = null;
-            startTile.currentSingleTileCondition = SingleTileCondition.free;
-        }
-
-        deity.gameObject.GetComponent<Unit>().ownedTile = destinationTile;
-        destinationTile.detectedUnit = deity.gameObject;
-        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
-
-        deity.gameObject.GetComponent<Unit>().currentXCoordinate = destinationTile.tileXCoordinate;
-        deity.gameObject.GetComponent<Unit>().currentYCoordinate = destinationTile.tileYCoordinate;
-    }
-
 }

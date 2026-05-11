@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using ProjectEdelweiss.Utils;
 
 [CreateAssetMenu(fileName = "AnguanaBehavior", menuName = "DeityBehavior/Anguana")]
 public class DeityAnguanaBehavior : DeityBehavior
@@ -46,7 +47,8 @@ public class DeityAnguanaBehavior : DeityBehavior
         DeitySpawner deitySpawner = deitySpawnerGameObject.GetComponent<DeitySpawner>();
         // Physically move the Obelisk.        
         deitySpawner.MoveObeliskOnGridMap();
-        DOVirtual.DelayedCall(1f, () => BattleInterface.Instance.SetDeityNotification($"Deity {deityName} moved its Altar."));
+        DOVirtual.DelayedCall(1f,
+            () => BattleInterface.Instance.SetDeityNotification($"Deity {deityName} moved its Altar."));
     }
 
     private void AttemptAttack(Deity deity)
@@ -57,7 +59,8 @@ public class DeityAnguanaBehavior : DeityBehavior
         }
         else
         {
-            DOVirtual.DelayedCall(1f, () => BattleInterface.Instance.SetDeityNotification($"Deity {deityName} placidly looks around"));
+            DOVirtual.DelayedCall(1f,
+                () => BattleInterface.Instance.SetDeityNotification($"Deity {deityName} placidly looks around"));
         }
     }
 
@@ -66,16 +69,19 @@ public class DeityAnguanaBehavior : DeityBehavior
         BattleInterface.Instance.SetDeityNotification($"Deity {deityName} used {attackName}");
         deity.deityCry.Play();
 
-        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
+            .GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
 
         foreach (var playerUnit in playerUnitsOnBattlefield)
         {
-            GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX, playerUnit.GetComponent<Unit>().ownedTile.transform.position, Quaternion.identity);
+            GameObject newDeityAttackVFX = Instantiate(deity.deityAttackVFX,
+                playerUnit.GetComponent<Unit>().ownedTile.transform.position, Quaternion.identity);
             Vector3 attackVFXOffset = new Vector3(0, 1, 0);
             newDeityAttackVFX.transform.localPosition += attackVFXOffset;
             Destroy(newDeityAttackVFX, vfxDurationDelay);
             playerUnit.GetComponent<Unit>().TakeDamage(deity.deitySpecialAttackPower);
         }
+
         // Reset Anguana's enmity.
         ResetEnmityWrapper();
     }
@@ -84,54 +90,5 @@ public class DeityAnguanaBehavior : DeityBehavior
     {
         var deityReference = BattleManager.Instance.enemyTurnManager.deity.GetComponent<Deity>();
         deityReference.ResetDeityEnmity();
-    }
-
-    private void MoveDeityToRandomTile(Deity deity)
-    {
-        if (localRandom == null)
-        {
-            localRandom = new System.Random(); // No seed to guarantee fresh randomness at each run.
-        }
-
-        List<Vector2Int> tileCoordinates = GridManager.Instance.GetExistingTileCoordinates();
-
-        // Filter out occupied tiles
-        List<TileController> validTiles = tileCoordinates
-            .Select(coord => GridManager.Instance.GetTileControllerInstance(coord.x, coord.y))
-            .Where(tile => tile != null &&
-                           tile.currentSingleTileCondition == SingleTileCondition.free &&
-                           tile.detectedUnit == null)
-            .ToList();
-
-        if (validTiles.Count == 0)
-        {
-            Debug.Log("Anguana couldn't find any valid tile to move.");
-            return;
-        }
-
-        int randomIndex = localRandom.Next(validTiles.Count);
-        TileController randomTile = validTiles[randomIndex];
-
-        MoveDeityToTile(deity, randomTile);
-
-        Debug.Log($"Anguana moved to: ({randomTile.tileXCoordinate}, {randomTile.tileYCoordinate})");
-    }
-
-    private void MoveDeityToTile(Deity deity, TileController destinationTile)
-    {
-        TileController startTile = deity.gameObject.GetComponent<Unit>().ownedTile;
-
-        if (startTile != null)
-        {
-            startTile.detectedUnit = null;
-            startTile.currentSingleTileCondition = SingleTileCondition.free;
-        }
-
-        deity.gameObject.GetComponent<Unit>().ownedTile = destinationTile;
-        destinationTile.detectedUnit = deity.gameObject;
-        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
-
-        deity.gameObject.GetComponent<Unit>().currentXCoordinate = destinationTile.tileXCoordinate;
-        deity.gameObject.GetComponent<Unit>().currentYCoordinate = destinationTile.tileYCoordinate;
     }
 }
