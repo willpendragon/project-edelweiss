@@ -8,12 +8,15 @@ public class PlayerPartyProfileHelper : MonoBehaviour
 {
     [SerializeField] private Image unitPortrait;
     [SerializeField] private Slider hpSlider;
+
     [SerializeField] private Slider mpSlider;
+
     //[SerializeField] private Slider SPSlider;
     [SerializeField] private TextMeshProUGUI hpText;
     [SerializeField] private TextMeshProUGUI mpText;
     [SerializeField] private TextMeshProUGUI availableMovesText;
     [SerializeField] private CanvasGroup _partyProfileGroup;
+    [SerializeField] private GameObject _deityMoveObj;
 
     public void FillPlayerDetails(Unit unit) // Avoid refreshing portrait and max values every single time.
     {
@@ -26,6 +29,19 @@ public class PlayerPartyProfileHelper : MonoBehaviour
         mpText.text = ($"{unit.unitManaPoints}/{unit.unitMaxManaPoints}");
         Debug.Log("Filling Player Details");
         UpdateSliders(unit);
+        AddDeityIcon(unit);
+    }
+
+    private void AddDeityIcon(Unit unit)
+    {
+        _deityMoveObj.SetActive(false);
+        if (unit.linkedDeity == null)
+            return;
+        _deityMoveObj.SetActive(true);
+        DeityPowerController _deityPowerController = BattleManager.Instance.DeityPowerController;
+        _deityMoveObj.GetComponentInChildren<Button>().onClick.AddListener(() => _deityPowerController.UseDeityMove());
+        _partyProfileGroup.interactable = true;
+        _partyProfileGroup.blocksRaycasts = true;
     }
 
     private void UpdateSliders(Unit unit)
@@ -47,9 +63,9 @@ public class PlayerPartyProfileHelper : MonoBehaviour
         // Pulse and shake.
         Sequence seq = DOTween.Sequence();
 
-        seq.Append(rt.DOScale(1.25f, 0.12f).SetEase(Ease.OutQuad))   // pulse up
-           .Append(rt.DOScale(1f, 0.15f).SetEase(Ease.InQuad))       // return
-           .Join(rt.DOShakePosition(0.20f, strength: 5f, vibrato: 15, randomness: 50, snapping: false));
+        seq.Append(rt.DOScale(1.25f, 0.12f).SetEase(Ease.OutQuad)) // pulse up
+            .Append(rt.DOScale(1f, 0.15f).SetEase(Ease.InQuad)) // return
+            .Join(rt.DOShakePosition(0.20f, strength: 5f, vibrato: 15, randomness: 50, snapping: false));
         // Small shake.
 
 
@@ -63,6 +79,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour
             availableMovesText.text = $"{unit.unitOpportunityPoints}/{unit.unitTemplate.unitOpportunityPoints}";
             SetProfileAlpha(1f);
         }
+
         Debug.Log("Update remaining moves details");
     }
 
