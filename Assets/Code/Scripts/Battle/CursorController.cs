@@ -1,6 +1,7 @@
 using Edelweiss.Core;
 using System.Collections.Generic;
 using System.Linq;
+using Language.Lua;
 using ProjectEdelweiss.Utils;
 using TMPro;
 using UnityEngine;
@@ -422,10 +423,18 @@ public class CursorController : MonoBehaviour
             case RadialMenuEntry.ActionType.Run:
                 if (_escapeCoroutine == null)
                 {
-                    _escapeCoroutine = StartCoroutine(EscapeSequence());
+                    if (PartyUtility.RetrieveActivePlayerUnit() == null)
+                    {
+                        BattleInterface.Instance.SetDeityNotification("Select a Player Unit first!");
+                        CloseRadialMenu();
+                    }
+                    else
+                    {
+                        _escapeCoroutine = StartCoroutine(EscapeSequence());
+                        DestroyEnemyInfoPanels();
+                    }
                 }
 
-                DestroyEnemyInfoPanels();
                 break;
         }
 
