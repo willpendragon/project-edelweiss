@@ -18,6 +18,9 @@ MonoBehaviour:
   randomSeed: 12345
   randomizeSeedOnGeneration: 0
   allowRepeatableRegularBattles: 1
+  allowRepeatablePuzzleBattles: 1
+  allowRepeatableMinibossBattles: 0
+  allowRepeatableBossBattles: 0
   regularBattleWeight: 28.6
   puzzleBattleWeight: 45.7
   minibossBattleWeight: 36.6

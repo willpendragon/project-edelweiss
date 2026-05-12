@@ -16,8 +16,11 @@ public class MapGenerationConfig : ScriptableObject
     public bool randomizeSeedOnGeneration = false;
 
     [Header("Game Rules")]
-    [Tooltip("If true, players can replay Regular Battles that they have already cleared to prevent softlocks.")]
+    [Tooltip("If true, players can replay Battles that they have already cleared to prevent softlocks.")]
     public bool allowRepeatableRegularBattles = true;
+    public bool allowRepeatablePuzzleBattles = true;
+    public bool allowRepeatableMinibossBattles = true;
+    public bool allowRepeatableBossBattles = true;
 
     [Header("Node Distribution Weights")]
     [Range(0, 100)] public float regularBattleWeight = 70f;
