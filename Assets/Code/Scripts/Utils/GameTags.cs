@@ -24,6 +24,10 @@ namespace ProjectEdelweiss.Utils
         public const string ENEMY_TURN_MANAGER = "EnemyTurnManager";
         public const string CAMERA_DISTANCE_CONTROLLER = "CameraDistanceController";
 
+        // GRID MAP
+        public const string TILE = "Tile";
+        public const string DECORATION_ENVIRONMENT = "DecorationEnvironment";
+
         // UI
         public const string ENEMY_PROFILE = "CurrentlySelectedEnemyProfile";
 

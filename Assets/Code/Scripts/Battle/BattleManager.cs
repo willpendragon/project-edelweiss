@@ -1,7 +1,16 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Playables;
 using System.Collections.Generic;
+using ProjectEdelweiss.Utils;
+
+public static class PartyUtility
+{
+    public static Unit RetrieveActivePlayerUnit()
+    {
+        GameObject unitObject = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
+        return unitObject?.GetComponent<Unit>();
+    }
+}
 
 public class BattleManager : MonoBehaviour
 {
@@ -11,6 +20,8 @@ public class BattleManager : MonoBehaviour
 
     [Header("Gameplay Flow")] [SerializeField]
     DeityAchievementsController deityAchievementsController;
+
+    [SerializeField] private DeityPowerController _deityPowerController;
 
     public EnemyTurnManager enemyTurnManager;
 
@@ -44,6 +55,8 @@ public class BattleManager : MonoBehaviour
 
     public GridManager gridManager;
 
+    public DeityPowerController DeityPowerController => _deityPowerController;
+
     private void Awake()
     {
         if (Instance == null)
@@ -60,7 +73,6 @@ public class BattleManager : MonoBehaviour
     {
         // Don't wait! Grab the enemies instantly on frame 1 so UI sliders can bind to them properly!
         TrackEnemiesOnBattlefield();
-
         StartCoroutine(BeginBattleCoroutine());
     }
 
@@ -131,10 +143,6 @@ public class BattleManager : MonoBehaviour
 
     public void PlayCameraBattleEndAnimation()
     {
-        // if (mainCameraPlayableDirector != null)
-        // {
-        //     mainCameraPlayableDirector.Play();
-        // }
         _cameraController.ApplyBattleEndCameraSettings();
     }
 }

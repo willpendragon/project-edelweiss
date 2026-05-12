@@ -4,14 +4,15 @@ using UnityEngine.UI;
 
 public class AltarDeityUnitProfileController : MonoBehaviour
 {
+    [Header("Deity Character Details")] [SerializeField]
+    TextMeshProUGUI deityName;
 
-    [Header("Deity Character Details")]
-    [SerializeField] TextMeshProUGUI deityName;
     [SerializeField] Image deityUnitPortrait;
     [SerializeField] Image linkedUnitPortrait;
 
-    [Header("Deity Character UI")]
-    [SerializeField] TextMeshProUGUI buffType;
+    [Header("Deity Character UI")] [SerializeField]
+    TextMeshProUGUI buffType;
+
     [SerializeField] TextMeshProUGUI buffAmountCounter;
     [SerializeField] Slider buffAmountSlider;
     [SerializeField] Button selectDeityButton;
@@ -20,20 +21,22 @@ public class AltarDeityUnitProfileController : MonoBehaviour
 
     public void PopulateDeityUnitProfile(Unit deityUnit, Deity deity)
     {
-        AnguanaHealingBehavior healingBehavior = deity.summoningBehaviour as AnguanaHealingBehavior;
+        DeityAnguanaSummoningBehavior summoningBehavior = deity.summoningBehaviour as DeityAnguanaSummoningBehavior;
 
 
         deityName.text = deityUnit.unitTemplate.unitName;
 
         // Sets the parameter of the Deity Prayer Buff on the menu
 
-        buffAmountSlider.maxValue = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
-        buffAmountSlider.value = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
-        buffType.text = healingBehavior.deityBuffName;
+
+        // buffAmountSlider.maxValue = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
+        // buffAmountSlider.value = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
+        buffType.text = summoningBehavior.moveName;
 
         //buffAmountCounter.text = healingBehavior.bubbleBuffShieldPointsIncreaseAmount.ToString();
         // Using the buff's description as a temporary solution.
-        buffAmountCounter.text = healingBehavior.deityBuffDescription;
+        // buffAmountCounter.text = healingBehavior.deityBuffDescription;
+        buffAmountCounter.text = summoningBehavior.description;
 
         deityUnitPortrait.sprite = deityUnit.unitTemplate.unitPortrait;
         linkedUnitPortrait.sprite = RetrieveLinkedUnitSmallPortrait(deity);
@@ -44,7 +47,8 @@ public class AltarDeityUnitProfileController : MonoBehaviour
     public void SelectDeityUnit()
     {
         Debug.Log("SelectedDeityUnit");
-        DeityAltarController deityAltarController = GameObject.FindGameObjectWithTag("DeityAltarController").GetComponent<DeityAltarController>();
+        DeityAltarController deityAltarController = GameObject.FindGameObjectWithTag("DeityAltarController")
+            .GetComponent<DeityAltarController>();
         deityAltarController.AssignDeityToUnit(selectedDeity);
         linkedUnitPortrait.sprite = RetrieveLinkedUnitSmallPortrait(selectedDeity);
     }
@@ -59,6 +63,7 @@ public class AltarDeityUnitProfileController : MonoBehaviour
                 return playerUnit.GetComponent<Unit>().unitTemplate.unitMiniPortrait;
             }
         }
+
         Debug.Log("No Linked Unit Found");
 
         return null;

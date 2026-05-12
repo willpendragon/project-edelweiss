@@ -1,32 +1,42 @@
+using ProjectEdelweiss.Utils;
 using UnityEngine;
 
 public class DeityPowerController : MonoBehaviour
 {
     public delegate void PlayerUnitPraying();
+
     public static event PlayerUnitPraying OnPlayerUnitPraying;
+
     private void OnEnable()
     {
-        SummonedUnitInfoPanelHelper.OnPlayerPrayer += IncreaseDeityPower;
+        // SummonedUnitInfoPanelHelper.OnPlayerPrayer += IncreaseDeityPower;
     }
+
     private void OnDisable()
     {
-        SummonedUnitInfoPanelHelper.OnPlayerPrayer -= IncreaseDeityPower;
+        // SummonedUnitInfoPanelHelper.OnPlayerPrayer -= IncreaseDeityPower;
     }
-    private void IncreaseDeityPower()
+
+    void Update()
     {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        if (activePlayerUnit != null && activePlayerUnit.summonedLinkedDeity != null)
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            if (activePlayerUnit.summonedLinkedDeity.deityPrayerPower < activePlayerUnit.summonedLinkedDeity.deityPrayerBuff.deityPrayerBuffThreshold)
-            {
-                activePlayerUnit.summonedLinkedDeity.deityPrayerPower++;
-                OnPlayerUnitPraying();
-                Debug.Log("Deity Power Increases");
-            }
-            else
-            {
-                Debug.Log("Deity Prayer Power is already at Max Capacity");
-            }
+            UseDeityMove();
         }
+    }
+
+    public void UseDeityMove()
+    {
+        Unit activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit)?.GetComponent<Unit>();
+        if (activePlayerUnit == null)
+        {
+            BattleInterface.Instance.SetBattleNotification("No Unit Selected!");
+            return;
+        }
+
+        Deity deity = activePlayerUnit.linkedDeity;
+        if (deity == null)
+            return;
+        deity.summoningBehaviour.ExecuteBehavior(deity);
     }
 }
