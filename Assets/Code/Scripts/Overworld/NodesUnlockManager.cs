@@ -68,6 +68,7 @@ public class NodesUnlockManager : MonoBehaviour
             return false;
         }
     }
+
     private void GenerateNode()
     {
         //MeshRenderer existingMesh = _nodeSpawnPoint.GetComponentInChildren<MeshRenderer>();
@@ -86,12 +87,15 @@ public class NodesUnlockManager : MonoBehaviour
         //enemySelection.enemyParty = _enemies;
         //enemySelection.mapData = _mapData;
     }
+
     public void SpendKeyResource()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
-        
+
         // Removed the legacy secretLevelUnlocked check that was preventing the deduction
-        if (gameSaveData != null)
+        if (gameSaveData == null)
+            return;
+        if (gameSaveData.resourceData.puzzleLevelKeys > 0)
         {
             gameSaveData.resourceData.puzzleLevelKeys--;
             SaveStateManager.SaveGame(gameSaveData);
