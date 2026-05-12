@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class CloseMenuBehind : MonoBehaviour
 {
     [SerializeField] private CafeMenuUIWindowsController _cafeMenuWindowsController;
@@ -16,13 +17,17 @@ public class CloseMenuBehind : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
     public void ShowCanvas()
     {
+        if (_cafeMenus == null)
+            return;
         if (_cafeMenus.Length == 0)
             return;
         // Shows only the Dialogue tab.
         _cafeMenus[1].alpha = 1;
     }
+
     public void HideCanvas()
     {
         if (_cafeMenus.Length == 0)
@@ -32,6 +37,7 @@ public class CloseMenuBehind : MonoBehaviour
             menu.alpha = 0;
         }
     }
+
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == CAFE_SCENE_NAME)

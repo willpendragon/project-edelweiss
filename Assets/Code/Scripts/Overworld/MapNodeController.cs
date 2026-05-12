@@ -20,7 +20,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     public NodeType type;
     public LockStatus currentLockStatus;
     [SerializeField] List<Vector2> playerUnitsBossBattleStartingCoords;
-    
+
     // Identifier for tracking the map progression graph
     [HideInInspector] public int nodeId;
     [HideInInspector] public OverworldMapGenerator mapGenerator;
@@ -36,6 +36,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         {
             _iconCanvas.alpha = 0f;
         }
+
         _mapMenuController = FindAnyObjectByType<OverworldMapUIController>();
     }
 
@@ -78,13 +79,25 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     {
         if (currentLockStatus == LockStatus.levelLocked)
             return;
+        if (mapGenerator == null)
+            return;
+        if (mapGenerator.config == null)
+            return;
 
         // Cleared Nodes repeatability check pointing to the Config SO
         if (currentLockStatus == LockStatus.levelCleared)
         {
-            if (type == NodeType.RegularBattle && mapGenerator != null && mapGenerator.config != null && mapGenerator.config.allowRepeatableRegularBattles)
+            if (type == NodeType.RegularBattle && mapGenerator.config.allowRepeatableRegularBattles)
             {
                 Debug.Log("Re-entering a cleared Regular Battle.");
+            }
+            else if (type == NodeType.PuzzleBattle && mapGenerator.config.allowRepeatablePuzzleBattles)
+            {
+                Debug.Log("Re-entering a cleared Puzzle Battle.");
+            }
+            else if (type == NodeType.BossBattle && mapGenerator.config.allowRepeatableMinibossBattles)
+            {
+                Debug.Log("Re-entering a cleared Miniboss Battle.");
             }
             else
             {
@@ -110,7 +123,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         else if (type == NodeType.MinibossBattle || type == NodeType.BossBattle)
         {
             GameStatsManager gameStatsManager = FindAnyObjectByType<GameStatsManager>();
-            
+
             if (type == NodeType.MinibossBattle && (gameStatsManager == null || !gameStatsManager.hasMinibossKey))
             {
                 NotificationsUIManager.Instance.DisplayFooterNotification("Can't enter! Find a Miniboss Key first!");
@@ -118,7 +131,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
                 if (mapGenerator != null) mapGenerator.TriggerShakePartyRoutine();
                 return;
             }
-            
+
             if (type == NodeType.BossBattle && (gameStatsManager == null || !gameStatsManager.hasBossKey))
             {
                 NotificationsUIManager.Instance.DisplayFooterNotification("Can't enter! Find a Boss Key first!");
@@ -162,11 +175,11 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
                 break;
         }
     }
-    
+
     private void HandleRegularBattle()
     {
         NodesUnlockManager nodesUnlockManager = GameManager.Instance.NodesUnlockManager;
-        
+
         // Use the controller's own node type to determine if it's a puzzle
         if (type == NodeType.PuzzleBattle)
         {
@@ -177,7 +190,8 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         Time.timeScale = 1f;
         enemySelection.SelectMapNode();
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
-        OverworldMapManager.Instance.CalendarController.IncreaseDaysCounter(_dayCost); // We increment it additionally here inside interaction optionally.
+        OverworldMapManager.Instance.CalendarController
+            .IncreaseDaysCounter(_dayCost); // We increment it additionally here inside interaction optionally.
     }
 
     private void SetOverworldUIVisibility(float alpha)

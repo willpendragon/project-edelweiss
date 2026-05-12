@@ -65,6 +65,8 @@ public class TurnController : MonoBehaviour
 
     public static event ResetSummonBuffs OnResetSummonBuffs;
 
+    public bool battleStarted;
+
     [Header("Core Gameplay Logic")] public GameStatsManager gameStatsManager;
 
     [Header("Battle System Elements")] public BattleManager battleManager;
@@ -113,6 +115,7 @@ public class TurnController : MonoBehaviour
         // Execute immediately so UI logic (like HP bars) can bind!
         RetrieveUnits();
         RestorePlayerUnits();
+        battleStarted = true;
 
         // Start the check in a sequestered coroutine
         StartCoroutine(StartTurnationCheckCoroutine());
@@ -331,10 +334,13 @@ public class TurnController : MonoBehaviour
         currentTurn = Turn.PlayerTurn;
         foreach (var playerUnit in TurnController.Instance.playerUnitsOnBattlefield)
         {
-            TurnController.Instance.turnCounter++;
+            // TurnController.Instance.turnCounter++;
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
-            playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
-            playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
+            if (playerUnitComponent.currentUnitLifeCondition != UnitLifeCondition.unitDead)
+            {
+                playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
+                playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
+            }
         }
 
         // Refresh the remaining Moves on the UI.

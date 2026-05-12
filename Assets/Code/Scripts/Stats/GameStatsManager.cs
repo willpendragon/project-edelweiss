@@ -36,11 +36,13 @@ public class GameStatsManager : MonoBehaviour
         LoadUnlockedKeys();
         LoadBossKeys();
         LoadCurrentNodeId(); // Bind the retrieval sequence
+        LoadCharacterData();
     }
+
     void Start()
     {
         LoadDeityTributesFromBakedItems();
-        LoadCharacterData();
+
         // Load ingredients AFTER PersistentInventoryManager has been initialized.
         StartCoroutine(DelayedLoadIngredients());
 
@@ -68,7 +70,8 @@ public class GameStatsManager : MonoBehaviour
         {
             if (playerUnit == null || playerUnit.gameObject == null) continue;
 
-            CharacterData existingCharacterData = characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
+            CharacterData existingCharacterData =
+                characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
 
             if (existingCharacterData != null)
             {
@@ -104,6 +107,7 @@ public class GameStatsManager : MonoBehaviour
                 characterSaveData.characterData.Add(newCharacterData);
             }
         }
+
         SaveStateManager.SaveGame(characterSaveData);
     }
 
@@ -111,10 +115,10 @@ public class GameStatsManager : MonoBehaviour
     {
         if (GameManager.Instance == null)
             return;
-            
+
         List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
         GameSaveData characterSaveData = SaveStateManager.saveData;
-        
+
         foreach (var playerUnit in playerUnits)
         {
             if (playerUnit == null || playerUnit.gameObject == null) continue;
@@ -125,7 +129,8 @@ public class GameStatsManager : MonoBehaviour
                 playerUnit.RetrieveTemplateValues();
             }
 
-            CharacterData loadedCharacterData = characterSaveData?.characterData?.Find(character => character.unitId == playerUnit.Id);
+            CharacterData loadedCharacterData =
+                characterSaveData?.characterData?.Find(character => character.unitId == playerUnit.Id);
             if (loadedCharacterData != null)
             {
                 // Correctly apply the saved, potentially depleted stats to the unit
@@ -136,17 +141,21 @@ public class GameStatsManager : MonoBehaviour
                 playerUnit.unitAttackPower = loadedCharacterData.unitAttackPower;
                 playerUnit.unitMagicPower = loadedCharacterData.unitMagicPower;
                 playerUnit.unitFaithPoints = loadedCharacterData.unitFaithPoints;
-                
+
                 Debug.Log($"Restoring Player Units HP, Mana, and Faith for {playerUnit.gameObject.name}");
-                
+
                 playerUnit.unitOccupiedFoodSlots = loadedCharacterData.unitOccupiedFoodSlots;
                 LoadBuffsFromData(playerUnit.gameObject, loadedCharacterData);
             }
-            
+
             // Will trigger death sequence accurately if HP is loaded as 0
-            playerUnit.CheckUnitHealthStatus();
+            if (TurnController.Instance != null && TurnController.Instance.battleStarted)
+            {
+                playerUnit.CheckUnitHealthStatus();
+            }
         }
     }
+
     public void LoadWarFunds()
     {
         GameSaveData resourceSaveData = SaveStateManager.saveData;
@@ -200,7 +209,8 @@ public class GameStatsManager : MonoBehaviour
         foreach (var savedBuff in data.activeBuffs)
         {
             // Pass 'true' for isLoading to prevent stats from being added twice
-            buffController.CreateAppliedBuffEntry(savedBuff.appliedValue, savedBuff.remainingDuration, savedBuff.type, true);
+            buffController.CreateAppliedBuffEntry(savedBuff.appliedValue, savedBuff.remainingDuration, savedBuff.type,
+                true);
         }
     }
 
@@ -214,6 +224,7 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Saved Days Passed: {daysPassed}");
         }
     }
+
     public void SaveWarFunds(float newWarFunds)
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -235,6 +246,7 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Spent War Funds: {spentWarFunds}");
         }
     }
+
     public void LoadUnlockedKeys()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -244,6 +256,7 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Loaded Keys: {unlockedPuzzleKeys}");
         }
     }
+
     public void SaveUnlockedKeys(int unlockedKeys)
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -288,6 +301,7 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Saved Boss Key Status: {hasKey}");
         }
     }
+
     public void LoadEnemiesKilled()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -333,11 +347,11 @@ public class GameStatsManager : MonoBehaviour
             {
                 if (item.quantity > 1)
                 {
-                    item.quantity--;    // reduce this entry
+                    item.quantity--; // reduce this entry
                 }
                 else
                 {
-                    save.bakedItems.RemoveAt(i);  // remove entry entirely
+                    save.bakedItems.RemoveAt(i); // remove entry entirely
                 }
 
                 SaveStateManager.SaveGame(save);
@@ -361,6 +375,7 @@ public class GameStatsManager : MonoBehaviour
             Debug.Log($"Saved Capture Crystals: {captureCrystalsCount}");
         }
     }
+
     public void SaveEnemiesKilled()
     {
         Debug.Log("Increasing Enemies Killed");
@@ -371,6 +386,7 @@ public class GameStatsManager : MonoBehaviour
 
         SaveStateManager.SaveGame(saveData);
     }
+
     public void LoadUsedSingleTargetSpells()
     {
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -379,6 +395,7 @@ public class GameStatsManager : MonoBehaviour
             timesSingleTargetSpellWasUsed = gameSaveData.timesSingleTargetSpellWasUsed;
         }
     }
+
     public void SaveUsedSingleTargetSpells()
     {
         Debug.Log("Increasing Used Single Target Spells statistics");
@@ -389,6 +406,7 @@ public class GameStatsManager : MonoBehaviour
 
         SaveStateManager.SaveGame(saveData);
     }
+
     public void SaveIngredients()
     {
         var currentInventoryData = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
