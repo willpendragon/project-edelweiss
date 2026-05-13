@@ -97,7 +97,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1800178194165730438}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -502,6 +502,8 @@ MonoBehaviour:
   experienceRewardPool: 0
   multiKillCounter: 0
   ingredients: []
+  acquiredMinibossKey: 0
+  acquiredBossKey: 0
 --- !u!114 &8281543060498671791
 MonoBehaviour:
   m_ObjectHideFlags: 0
