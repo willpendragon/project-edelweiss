@@ -17,12 +17,14 @@ public partial class MapEditorWindow : EditorWindow
     private GameObject tilePrefab;
     private GameObject decorationPrefab;
     private GameObject unitPrefab;
+    private GameObject deityShardPrefab; // NEW
     private GameObject interactablePrefab;
     private GameObject enemyPrefab;
     private GameObject environmentPrefab;
 
     public List<GameObject> decorationPrefabs = new List<GameObject>();
     public List<GameObject> unitPrefabs = new List<GameObject>();
+    public List<GameObject> deityShardPrefabs = new List<GameObject>(); // NEW
     public List<GameObject> interactablePrefabs = new List<GameObject>();
     public List<GameObject> enemyPrefabs = new List<GameObject>();
     public List<GameObject> environmentPrefabs = new List<GameObject>();
@@ -30,12 +32,14 @@ public partial class MapEditorWindow : EditorWindow
     private SerializedObject _so;
     private SerializedProperty _decorationsProp;
     private SerializedProperty _unitsProp;
+    private SerializedProperty _deityShardProp; // NEW
     private SerializedProperty _interactablesProp;
     private SerializedProperty _enemiesProp;
     private SerializedProperty _environmentsProp;
 
     private int _selectedDecorationIndex = 0;
     private int _selectedUnitIndex = 0;
+    private int _selectedDeityShardIndex = 0; // NEW
     private int _selectedInteractableIndex = 0;
     private int _selectedEnemyIndex = 0;
     private int _selectedEnvironmentIndex = 0;
@@ -43,6 +47,7 @@ public partial class MapEditorWindow : EditorWindow
     // --- UI SCROLLS ---
     private Vector2 _decorScrollPos;
     private Vector2 _unitScrollPos;
+    private Vector2 _deityShardScrollPos; // NEW
     private Vector2 _interactableScrollPos;
     private Vector2 _beaconScrollPos;
     private Vector2 _mainScrollPos; 
@@ -56,6 +61,7 @@ public partial class MapEditorWindow : EditorWindow
     private Dictionary<Vector3Int, GameObject> tiles = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> decorations = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> spawnedUnits = new Dictionary<Vector3Int, GameObject>();
+    private Dictionary<Vector3Int, GameObject> spawnedDeityShards = new Dictionary<Vector3Int, GameObject>(); // Add this
     private Dictionary<Vector3Int, GameObject> spawnedInteractables = new Dictionary<Vector3Int, GameObject>();
     private Dictionary<Vector3Int, GameObject> spawnedEnemies = new Dictionary<Vector3Int, GameObject>();
     private List<GameObject> spawnedEnvironments = new List<GameObject>();
@@ -64,6 +70,7 @@ public partial class MapEditorWindow : EditorWindow
     private bool isPlacingTile = false;
     private bool isPlacingDecoration = false;
     private bool isPlacingUnit = false;
+    private bool isPlacingDeityShard = false; // NEW
     private bool isPlacingInteractable = false;
     private bool isPlacingEnemy = false;
     private bool isDeletingTile = false;
@@ -101,6 +108,7 @@ public partial class MapEditorWindow : EditorWindow
         _so = new SerializedObject(this);
         _decorationsProp = _so.FindProperty("decorationPrefabs");
         _unitsProp = _so.FindProperty("unitPrefabs");
+        _deityShardProp = _so.FindProperty("deityShardPrefabs"); // NEW
         _interactablesProp = _so.FindProperty("interactablePrefabs");
         _enemiesProp = _so.FindProperty("enemyPrefabs");
         _environmentsProp = _so.FindProperty("environmentPrefabs");
@@ -162,6 +170,7 @@ public partial class MapEditorWindow : EditorWindow
 
         DrawPrefabPool("Decoration Pool", ref _decorationsProp, decorationPrefabs, ref _selectedDecorationIndex, ref decorationPrefab, ref _decorScrollPos, SaveDecoPrefabsToPrefs);
         DrawPrefabPool("Player Units Pool", ref _unitsProp, unitPrefabs, ref _selectedUnitIndex, ref unitPrefab, ref _unitScrollPos, SaveUnitPrefabsToPrefs);
+        DrawPrefabPool("Deity Shards Pool", ref _deityShardProp, deityShardPrefabs, ref _selectedDeityShardIndex, ref deityShardPrefab, ref _deityShardScrollPos, SaveDeityShardPrefabsToPrefs); // NEW
         DrawPrefabPool("Interactables Pool", ref _interactablesProp, interactablePrefabs, ref _selectedInteractableIndex, ref interactablePrefab, ref _interactableScrollPos, SaveInteractablePrefabsToPrefs);
         DrawPrefabPool("Enemy Units Pool", ref _enemiesProp, enemyPrefabs, ref _selectedEnemyIndex, ref enemyPrefab, ref _enemyScrollPos, SaveEnemyPrefabsToPrefs);
         DrawPrefabPool("Environment Props Pool", ref _environmentsProp, environmentPrefabs, ref _selectedEnvironmentIndex, ref environmentPrefab, ref _envScrollPos, SaveEnvironmentPrefabsToPrefs);
@@ -343,8 +352,9 @@ public partial class MapEditorWindow : EditorWindow
 
         EditorGUILayout.Space();
         
-        // Update Select check to include enemy mode
-        bool isSelectMode = !isPlacingTile && !isPlacingInteractable && !isPlacingDecoration && !isPlacingUnit && !isPlacingEnemy && !isDeletingTile;
+        // Update Select check to include deity shard mode
+        // Add !isPlacingDeityShard to the negation list
+        bool isSelectMode = !isPlacingTile && !isPlacingInteractable && !isPlacingDecoration && !isPlacingUnit && !isPlacingEnemy && !isPlacingDeityShard && !isDeletingTile;
         
         // --- BUTTON ROW 1 ---
         EditorGUILayout.BeginHorizontal();
@@ -357,7 +367,8 @@ public partial class MapEditorWindow : EditorWindow
         // --- BUTTON ROW 2 ---
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Toggle(isPlacingUnit, "Paint Player", "Button")) { SetMode(unit: true); }
-        if (GUILayout.Toggle(isPlacingEnemy, "Paint Enemy", "Button")) { SetMode(enemy: true); } // Correctly positioned
+        if (GUILayout.Toggle(isPlacingDeityShard, "Paint DeityShard", "Button")) { SetMode(deityShard: true); } // NEW
+        if (GUILayout.Toggle(isPlacingEnemy, "Paint Enemy", "Button")) { SetMode(enemy: true); }
         if (GUILayout.Toggle(isDeletingTile, "Delete Mode", "Button")) { SetMode(delete: true); }
         isBucketMode = GUILayout.Toggle(isBucketMode, "Bucket Fill (B)", "Button");
         EditorGUILayout.EndHorizontal();
@@ -412,12 +423,13 @@ public partial class MapEditorWindow : EditorWindow
     }
 
     // The bucket toggle is passed so it correctly enables/disables without affecting other tools
-    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool enemy = false, bool interactable = false, bool delete = false, bool bucket = false)
+    public void SetMode(bool tile = false, bool deco = false, bool unit = false, bool deityShard = false, bool enemy = false, bool interactable = false, bool delete = false, bool bucket = false)
     {
         isPlacingTile = tile;
         isPlacingDecoration = deco;
         isPlacingUnit = unit;
-        isPlacingEnemy = enemy; // <-- NEW
+        isPlacingDeityShard = deityShard; // NEW
+        isPlacingEnemy = enemy;
         isPlacingInteractable = interactable;
         isDeletingTile = delete;
 

@@ -14,6 +14,7 @@ public partial class MapEditorWindow
 
     private void SaveDecoPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_DecoPrefabs", string.Join(";", decorationPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveUnitPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_UnitPrefabs", string.Join(";", unitPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
+private void SaveDeityShardPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_DeityShardPrefabs", string.Join(";", deityShardPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveInteractablePrefabsToPrefs() => EditorPrefs.SetString("MapEditor_InteractablePrefabs", string.Join(";", interactablePrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveEnemyPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_EnemyPrefabs", string.Join(";", enemyPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
     private void SaveEnvironmentPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_EnvPrefabs", string.Join(";", environmentPrefabs.Where(p => p != null).Select(AssetDatabase.GetAssetPath)));
@@ -148,6 +149,13 @@ public partial class MapEditorWindow
         }
         // -------------------------------------------------------
 
+        currentMap.deityShardPositions.Clear();
+        foreach (var kvp in spawnedDeityShards)
+        {
+            var src = PrefabUtility.GetCorrespondingObjectFromSource(kvp.Value);
+            currentMap.deityShardPositions.Add(new MapData.SpawnData { position = kvp.Key, prefabName = src != null ? src.name : kvp.Value.name.Replace("(Clone)", "").Trim() });
+        }
+
         currentMap.horizontalSize = gridWidth;
         currentMap.depthSize = gridDepth;
         currentMap.verticalSize = gridHeight;
@@ -245,6 +253,22 @@ public partial class MapEditorWindow
             }
         }
 
+        // LOAD DEITY SHARDS
+        if (currentMap.deityShardPositions != null)
+        {
+            foreach (var data in currentMap.deityShardPositions)
+            {
+                GameObject target = deityShardPrefabs.FirstOrDefault(p => p != null && p.name == data.prefabName) ?? Resources.Load<GameObject>(data.prefabName) ?? deityShardPrefab;
+                if (target != null)
+                {
+                    GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(target);
+                    obj.transform.position = GridToWorld(data.position, tileSize);
+                    obj.name = $"SpawnDeityShard_{target.name}_{data.position.x}_{data.position.y}_{data.position.z}";
+                    spawnedDeityShards[data.position] = obj;
+                }
+            }
+        }
+
         // INTERACTABLES LOADING
         if (currentMap.interactablePositions != null)
         {
@@ -325,6 +349,7 @@ public partial class MapEditorWindow
         spawnedInteractables.Clear(); 
         spawnedEnemies.Clear(); 
         spawnedEnvironments.Clear(); 
+        spawnedDeityShards.Clear(); 
 
         foreach (var t in GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
         {
@@ -348,6 +373,11 @@ public partial class MapEditorWindow
             {
                 string[] p = t.name.Split('_');
                 if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) spawnedEnemies[new Vector3Int(x, y, z)] = t;
+            }
+            else if (t.name.StartsWith("SpawnDeityShard_") || spawnedDeityShards.ContainsValue(t))
+            {
+                string[] p = t.name.Split('_');
+                if (p.Length >= 4 && int.TryParse(p[p.Length - 3], out int x) && int.TryParse(p[p.Length - 2], out int y) && int.TryParse(p[p.Length - 1], out int z)) spawnedDeityShards[new Vector3Int(x, y, z)] = t;
             }
             else if (t.name.StartsWith("EnvProp_") || spawnedEnvironments.Contains(t))
             {
@@ -376,6 +406,7 @@ public partial class MapEditorWindow
         foreach (var obj in spawnedInteractables.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedEnemies.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedEnvironments) Undo.DestroyObjectImmediate(obj);
+        foreach (var obj in spawnedDeityShards.Values) Undo.DestroyObjectImmediate(obj);
         foreach (var obj in spawnedLights) Undo.DestroyObjectImmediate(obj); // <--- DESTROY LIGHTS ON CLEAR
 
         tiles.Clear(); 
@@ -384,6 +415,7 @@ public partial class MapEditorWindow
         spawnedInteractables.Clear(); 
         spawnedEnemies.Clear();
         spawnedEnvironments.Clear();
+        spawnedDeityShards.Clear();
         spawnedLights.Clear(); // <--- RESET LIGHTS
     }
 

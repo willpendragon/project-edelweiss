@@ -501,6 +501,52 @@ public class GridManager : MonoBehaviour
             }
         }
 
+        // --- NEW: Load Deity Shards ---
+        if (currentMapData.deityShardPositions != null && currentMapData.deityShardPositions.Count > 0)
+        {
+            foreach (var spawnData in currentMapData.deityShardPositions)
+            {
+                if (string.IsNullOrEmpty(spawnData.prefabName)) continue;
+
+                TileController targetTile =
+                    GetTileControllerInstance(spawnData.position.x, spawnData.position.y, spawnData.position.z);
+                if (targetTile == null)
+                    targetTile = GetTileControllerInstance(spawnData.position.x, spawnData.position.y - 1,
+                        spawnData.position.z);
+
+                if (targetTile != null)
+                {
+                    GameObject runtimeShardPrefab = Resources.Load<GameObject>(spawnData.prefabName);
+                    if (runtimeShardPrefab != null)
+                    {
+                        GameObject shardInstance = Instantiate(runtimeShardPrefab, this.transform);
+                        Unit shardUnit = shardInstance.GetComponent<Unit>();
+
+                        if (shardUnit != null)
+                        {
+                            // Initialize unit values
+                            if (shardUnit.unitTemplate != null) shardUnit.RetrieveTemplateValues();
+                            
+                            // Explicitly set the type
+                            shardUnit.unitType = Unit.UnitType.DeityShard;
+
+                            PlaceUnitOnTileSurface(shardInstance, targetTile);
+
+                            // Mark tile as occupied so no other unit spawns here
+                            targetTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                            targetTile.detectedUnit = shardInstance;
+
+                            shardUnit.startingXCoordinate = spawnData.position.x;
+                            shardUnit.startingYCoordinate = spawnData.position.z;
+                            shardUnit.currentXCoordinate = spawnData.position.x;
+                            shardUnit.currentYCoordinate = spawnData.position.z;
+                            shardUnit.ownedTile = targetTile;
+                        }
+                    }
+                }
+            }
+        }
+
         // --- NEW: Load Freeform Environment Props ---
         if (currentMapData.environmentPositions != null && currentMapData.environmentPositions.Count > 0)
         {

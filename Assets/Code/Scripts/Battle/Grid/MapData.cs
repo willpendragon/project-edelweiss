@@ -72,6 +72,7 @@ public class MapData : ScriptableObject
     public List<SpawnData> playerSpawnPositions = new List<SpawnData>();
     public List<SpawnData> interactablePositions = new List<SpawnData>();
     public List<SpawnData> enemySpawnPositions = new List<SpawnData>();
+    public List<SpawnData> deityShardPositions = new List<SpawnData>();
     public List<EnvironmentData> environmentPositions = new List<EnvironmentData>();
     public List<LightData> lightSettings = new List<LightData>();
 
