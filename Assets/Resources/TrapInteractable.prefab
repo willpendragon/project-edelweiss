@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9173261220362152791}
   - component: {fileID: 4854308751638392556}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: TrapInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8700617353114198275, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_RootOrder
@@ -104,7 +104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7139261109480557378, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -6210141383899247147, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_LocalScale.x
@@ -132,7 +132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 65702495048144492, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_Name
@@ -140,11 +140,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7953606483559150473, guid: 132f6414c93b6e542823112ad9024e3b, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
