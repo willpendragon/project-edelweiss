@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
+using ProjectEdelweiss.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,9 @@ public class DeitySpawner : MonoBehaviour
     [SerializeField] GameObject deityObeliskSpawningPoint;
     [SerializeField] private EnemyTurnManager _enemyTurnManager;
     private GameObject _deityObeliskInstance;
+
     private GameObject deityHealthBarInstance;
+
     // Killed Deity Dictionary
     public Dictionary<string, bool> _killedDeityDictionary = new Dictionary<string, bool>();
 
@@ -33,6 +36,7 @@ public class DeitySpawner : MonoBehaviour
     {
         TurnController.OnDeityKilled += AddDeityToKilledDictionary;
     }
+
     public void OnDisable()
     {
         TurnController.OnDeityKilled -= AddDeityToKilledDictionary;
@@ -42,6 +46,7 @@ public class DeitySpawner : MonoBehaviour
     {
         LoadKilledDeities();
     }
+
     private void Start()
     {
         // Deity Status Check
@@ -53,7 +58,7 @@ public class DeitySpawner : MonoBehaviour
             {
                 Debug.Log($"Forcing Roaming Deity: {BattleTypeController.forcedRoamingDeityPrefab.name}");
                 SpawnDeity(BattleTypeController.forcedRoamingDeityPrefab);
-                
+
                 // Clear state for future battles
                 BattleTypeController.isForcedRoamingDeity = false;
                 BattleTypeController.forcedRoamingDeityPrefab = null;
@@ -85,6 +90,21 @@ public class DeitySpawner : MonoBehaviour
                 PopulateDeityHealthBar();
             }
         }
+        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.PuzzleBattle) // Also Boss Battles are currently marked as Puzzle Battles
+        {
+            // Quick fix (since deities in boss fight are created via map generation, avoid expensive gameobject finding in the future.
+            currentUnboundDeity = GameObject.FindGameObjectWithTag(GameTags.Deity).GetComponent<Deity>();
+            Slider deityHPSlider =
+                currentUnboundDeity.deityHealthBar.GetComponentInChildren<HPSliderController>().slider;
+
+            Unit currentUnboundDeityUnit = currentUnboundDeity.gameObject.GetComponent<Unit>();
+
+            deityHPSlider.maxValue = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints;
+            deityHPSlider.value = currentUnboundDeityUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints;
+            Debug.Log($"Attempt to populate {currentUnboundDeity.gameObject.name} HP Slider");
+            // deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text =
+            //     currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints.ToString();
+        }
     }
 
     private void LoadKilledDeities()
@@ -101,6 +121,7 @@ public class DeitySpawner : MonoBehaviour
             _killedDeityDictionary[deityName] = isKilled;
         }
     }
+
     private void UpdateSpawnableDeities()
     {
         // Load the Killed Deity Dictionary
@@ -132,6 +153,7 @@ public class DeitySpawner : MonoBehaviour
         saveData.killedDeities.Add(deityName, true);
         SaveStateManager.SaveGame(saveData);
     }
+
     public void DeitySelector()
     {
         Debug.Log("Rolling which Deity will appear");
@@ -141,14 +163,15 @@ public class DeitySpawner : MonoBehaviour
         GameObject spawningDeity = spawnableDeities[deityIndex].gameObject;
         SpawnDeity(spawningDeity);
     }
+
     public void SpawnDeity(GameObject spawningDeity)
     {
         Vector2Int deityCoords = GameManager.Instance.GetDeityStartingCoordinates();
         Vector3 spawnWorldPos = deitySpawnPosition.position;
-        
+
         // Find the tile the user painted as a DeityTile
         TileController targetDeityTile = GridManager.Instance.GetTileControllerInstance(deityCoords.x, deityCoords.y);
-        
+
         if (targetDeityTile != null && targetDeityTile.tileType == TileType.DeityTile)
         {
             float finalY = targetDeityTile.transform.position.y;
@@ -156,11 +179,13 @@ public class DeitySpawner : MonoBehaviour
             if (col != null) finalY = col.bounds.max.y;
 
             // Spawn floating directly on top of the painted DeityTile
-            spawnWorldPos = new Vector3(targetDeityTile.transform.position.x, finalY, targetDeityTile.transform.position.z);
+            spawnWorldPos = new Vector3(targetDeityTile.transform.position.x, finalY,
+                targetDeityTile.transform.position.z);
         }
         else
         {
-            Debug.LogWarning("DeitySpawner: No DeityTile found on the map. Spawning floating deity in fallback position.");
+            Debug.LogWarning(
+                "DeitySpawner: No DeityTile found on the map. Spawning floating deity in fallback position.");
         }
 
         GameObject deityOnBattlefield = Instantiate(spawningDeity, spawnWorldPos, Quaternion.identity);
@@ -191,14 +216,18 @@ public class DeitySpawner : MonoBehaviour
                 deitySequence.Join(material.DOFade(1f, 1f).SetEase(Ease.InQuad));
             }
         }
-        deitySequence.Join(deityOnBattlefield.transform.DOScale(new Vector3(7.5f, 7.5f, 7.5f), 1f).SetEase(Ease.OutQuad));
+
+        deitySequence.Join(
+            deityOnBattlefield.transform.DOScale(new Vector3(7.5f, 7.5f, 7.5f), 1f).SetEase(Ease.OutQuad));
 
         // Step 2: Scale down to the final size
-        deitySequence.Append(deityOnBattlefield.transform.DOScale(new Vector3(6.667861f, 6.667861f, 6.667861f), 0.5f).SetEase(Ease.InOutQuad));
+        deitySequence.Append(deityOnBattlefield.transform.DOScale(new Vector3(6.667861f, 6.667861f, 6.667861f), 0.5f)
+            .SetEase(Ease.InOutQuad));
 
         // Play the sequence
         deitySequence.Play();
     }
+
     public void InitiateBattleWithDeity(GameObject unlockedDeity)
     {
         //Unlocks Deity as an Unbound Entity
@@ -221,15 +250,17 @@ public class DeitySpawner : MonoBehaviour
 
         // Optionally, check if a DeityTile dictates the 3D spawn position instead of relying on the static empty GameObject
         Vector3 spawnWorldPos = deitySpawnPosition.position;
-        TileController firstDeitySpawningTile = GridManager.Instance.GetTileControllerInstance(deityCoords.x, deityCoords.y);
-        
+        TileController firstDeitySpawningTile =
+            GridManager.Instance.GetTileControllerInstance(deityCoords.x, deityCoords.y);
+
         if (firstDeitySpawningTile != null && firstDeitySpawningTile.tileType == TileType.DeityTile)
         {
             float finalY = firstDeitySpawningTile.transform.position.y;
             Collider col = firstDeitySpawningTile.GetComponent<Collider>();
             if (col != null) finalY = col.bounds.max.y;
 
-            spawnWorldPos = new Vector3(firstDeitySpawningTile.transform.position.x, finalY, firstDeitySpawningTile.transform.position.z);
+            spawnWorldPos = new Vector3(firstDeitySpawningTile.transform.position.x, finalY,
+                firstDeitySpawningTile.transform.position.z);
         }
 
         GameObject unboundDeity = Instantiate(unlockedDeity, spawnWorldPos, Quaternion.identity);
@@ -238,7 +269,7 @@ public class DeitySpawner : MonoBehaviour
         if (unboundDeity != null)
         {
             Debug.Log("Start of Summon Deity on Battlefield");
-            
+
             // Adjust position correctly to tile surface
             if (firstDeitySpawningTile != null)
             {
@@ -248,12 +279,14 @@ public class DeitySpawner : MonoBehaviour
             unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
             _deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
 
-            GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
+            GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController")
+                .GetComponent<GridMovementController>();
             if (firstDeitySpawningTile != null)
             {
                 firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
                 firstDeitySpawningTile.detectedUnit = unboundDeity;
             }
+
             currentUnboundDeity = unboundDeity.GetComponent<Deity>();
             _enemyTurnManager.deity = unboundDeity;
             Debug.Log("Deity occupies Tile");
@@ -263,8 +296,10 @@ public class DeitySpawner : MonoBehaviour
         {
             Destroy(enemy);
         }
+
         unboundDeity.gameObject.tag = "Enemy";
     }
+
     public bool DeityIsKilled(string deityName)
     {
         if (_killedDeityDictionary.TryGetValue(deityName, out bool isKilled) && isKilled)
@@ -277,6 +312,7 @@ public class DeitySpawner : MonoBehaviour
             return false;
         }
     }
+
     void PopulateDeityHealthBar()
     {
         Slider deityHPSlider = deityHealthBarInstance.GetComponentInChildren<Slider>();
@@ -284,13 +320,18 @@ public class DeitySpawner : MonoBehaviour
         Unit currentUnboundDeityUnit = currentUnboundDeity.gameObject.GetComponent<Unit>();
 
         deityHPSlider.maxValue = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints;
-        deityHPSlider.value = currentUnboundDeityUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints; ;
-        deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints.ToString();
+        deityHPSlider.value = currentUnboundDeityUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints;
+        ;
+        deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text =
+            currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints.ToString();
     }
+
     public void MoveObeliskOnGridMap()
     {
-        deityObeliskSpawningPoint.transform.position = currentUnboundDeity.gameObject.GetComponent<Unit>().ownedTile.gameObject.transform.position;
+        deityObeliskSpawningPoint.transform.position = currentUnboundDeity.gameObject.GetComponent<Unit>().ownedTile
+            .gameObject.transform.position;
     }
+
     public void ShowObeliskDamageFeedback()
     {
         if (_deityObeliskInstance == null) return;
@@ -319,6 +360,7 @@ public class DeitySpawner : MonoBehaviour
 
         PlayDamageFlash(target);
     }
+
     private void PlayDamageFlash(Transform target)
     {
         var renderer = target.GetComponentInChildren<Renderer>();
@@ -341,7 +383,7 @@ public class DeitySpawner : MonoBehaviour
             .OnComplete(() =>
             {
                 mat.DOColor(originalColor, "_BaseColor", flashDuration * 0.5f)
-                   .SetEase(Ease.InQuad);
+                    .SetEase(Ease.InQuad);
             });
     }
 }
