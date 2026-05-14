@@ -277,6 +277,7 @@ MonoBehaviour:
     linkID: 0
   interactablePositions: []
   enemySpawnPositions: []
+  deityShardPositions: []
   environmentPositions:
   - prefabName: EnvironmentCliff
     position: {x: -52, y: -4.142607, z: 1.6882008}
@@ -299,8 +300,8 @@ MonoBehaviour:
   difficultyLevel: 0
   environmentSpawnpoint: {x: 8.22, y: -0.46, z: 8.27}
   overrideCameraSettings: 1
-  cameraPosition: {x: 21.5, y: 15.6, z: -12.7}
-  cameraRotation: {x: 30.000015, y: 330, z: -0.0000009858529}
+  cameraPosition: {x: 21.5, y: 20.43, z: -12.7}
+  cameraRotation: {x: 30.000015, y: 330, z: -0.000001971706}
   cameraZoom: 60
   isOrthographic: 0
   orthographicSize: 5
