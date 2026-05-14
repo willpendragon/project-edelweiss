@@ -41,7 +41,8 @@ public class PhysicalAttackBehavior : ScriptableObject
         // Safely disallow knockbacking static grid items like Chests or towering Deity monoliths
         bool canKnockback = IsKnockbackPossible(activePlayerUnit, targetUnit.ownedTile)
                             && targetUnit.unitType != Unit.UnitType.Deity
-                            && !targetUnit.gameObject.CompareTag("Chest");
+                            && !targetUnit.gameObject.CompareTag("Chest")
+                            && targetUnit.unitType != Unit.UnitType.DeityShard;
 
         if (canKnockback)
         {
@@ -70,7 +71,7 @@ public class PhysicalAttackBehavior : ScriptableObject
         }
     }
 
-   public void AttemptKnockback(Unit attacker, Unit defender)
+    public void AttemptKnockback(Unit attacker, Unit defender)
     {
         if (!IsKnockbackPossible(attacker, defender.ownedTile))
             return;
@@ -126,7 +127,8 @@ public class PhysicalAttackBehavior : ScriptableObject
             }
 
             // 5. OBSTACLE/UNIT CHECK: Slamming into a hard structural object or unit -> WALL SLAM
-            if (stepTile.tileType == TileType.Obstacle || stepTile.tileType == TileType.Environment || stepTile.detectedUnit != null)
+            if (stepTile.tileType == TileType.Obstacle || stepTile.tileType == TileType.Environment ||
+                stepTile.detectedUnit != null)
             {
                 isWallKnockback = true;
                 break;
@@ -136,7 +138,7 @@ public class PhysicalAttackBehavior : ScriptableObject
             validGridPos = stepPos;
             finalDestinationTile = stepTile;
         }
-        
+
         // --- Apply Damage and Modifiers ---
         bool modifierIsActive = true;
 
