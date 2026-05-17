@@ -3,7 +3,8 @@ using UnityEngine.UI;
 
 public class HPSliderController : MonoBehaviour
 {
-    [SerializeField] Slider slider;
+    public Slider slider;
+
     public void DestroySlider()
     {
         if (slider.value <= 0)
