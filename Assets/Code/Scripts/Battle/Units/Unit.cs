@@ -36,7 +36,8 @@ public class Unit : MonoBehaviour
         PlayerUnit,
         Godling,
         Deity,
-        DeityShard
+        DeityShard,
+        DeityBoss
     }
 
     [Header("Unit Basics")] public string Id;

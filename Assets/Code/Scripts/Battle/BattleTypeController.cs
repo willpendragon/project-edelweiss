@@ -58,20 +58,16 @@ public class BattleTypeController : MonoBehaviour
 
         currentBattleType = RetrieveBattleType();
 
-        if (currentBattleType == BattleType.PuzzleBattle)
+        if (currentBattleType == BattleType.PuzzleBattle || currentBattleType == BattleType.BossBattle)
         {
-            // Add specific logic for Puzzle Battles, to be further developed
-            // Spawn Puzzle Deity (demo logic).
-            currentBattleType = BattleType.PuzzleBattle;
-            
-            GameObject puzzleDeity = GridManager.Instance.currentMapData.RetrieveDeity();
-            if (puzzleDeity == null)
+            GameObject fixedDeity = GridManager.Instance.currentMapData.RetrieveDeity();
+            if (fixedDeity == null)
             {
-                Debug.LogWarning("Puzzle map data is missing a Deity!");
+                Debug.LogWarning($"{currentBattleType} map data is missing a Deity!");
             }
             else
             {
-                _deitySpawner.SpawnDeity(puzzleDeity);
+                _deitySpawner.SpawnDeity(fixedDeity);
             }
         }
         else if (currentBattleType == BattleType.RegularBattle && achievementsManager != null)
@@ -91,6 +87,9 @@ public class BattleTypeController : MonoBehaviour
                 return BattleType.RegularBattle;
             case (MapData.LevelType.Puzzle):
                 return BattleType.PuzzleBattle;
+            case (MapData.LevelType.Boss):
+            case (MapData.LevelType.Miniboss):
+                return BattleType.BossBattle;
             default:
                 return BattleType.RegularBattle;
         }
