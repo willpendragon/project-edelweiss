@@ -36,7 +36,7 @@ public partial class MapEditorWindow
         }
 
         // --- NEW: Bypass tool logic if we are in Select/View mode ---
-        bool isAnyToolActive = isPlacingTile || isPlacingDecoration || isPlacingInteractable || isPlacingUnit || isPlacingEnemy || isDeletingTile || isBucketMode;
+        bool isAnyToolActive = isPlacingTile || isPlacingDecoration || isPlacingInteractable || isPlacingUnit || isPlacingEnemy || isPlacingDeityShard || isDeletingTile || isBucketMode;
         if (!isAnyToolActive)
         {
             // Keep drawing the visual grid, but skip eating the mouse events, 
@@ -165,7 +165,8 @@ public partial class MapEditorWindow
         CheckHits(decorations);
         CheckHits(spawnedUnits);
         CheckHits(spawnedInteractables);
-        CheckHits(spawnedEnemies); // <--- NEW: check hits for enemies
+        CheckHits(spawnedEnemies);
+        CheckHits(spawnedDeityShards); // 1. Add this to track DeityShards for clicking/selecting
 
         // 3. Fallback back to the empty Ground Plane if absolutely nothing was hit natively
         if (!hasHit)
@@ -214,8 +215,9 @@ public partial class MapEditorWindow
                             else if (isPlacingInteractable) PlaceInteractable(p, false);
                             else if (isPlacingDecoration) PlaceDecoration(p, false);
                             else if (isPlacingUnit) PlaceUnit(p, false);
-                            else if (isPlacingEnemy) PlaceEnemy(p, false); // <--- NEW: place enemy
-                            else if (isDeletingTile) DeleteTile(p, false); // <--- This effortlessly handles the right click now
+                            else if (isPlacingEnemy) PlaceEnemy(p, false);
+                            else if (isPlacingDeityShard) PlaceDeityShard(p, false); // 2. Add this to place the object
+                            else if (isDeletingTile) DeleteTile(p, false);
                         }
                         SyncDictionaryFromScene();
                     }

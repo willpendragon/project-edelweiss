@@ -416,10 +416,10 @@ public class CursorController : MonoBehaviour
                 _tileController.currentPlayerAction = new PlaceCrystalPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 break;
-            case RadialMenuEntry.ActionType.Summon:
-                _tileController.currentPlayerAction = new SummonPlayerAction();
-                _tileController.currentPlayerAction.Execute(_tileController);
-                break;
+            // case RadialMenuEntry.ActionType.Summon:
+            //     _tileController.currentPlayerAction = new SummonPlayerAction();
+            //     _tileController.currentPlayerAction.Execute(_tileController);
+            //     break;
             case RadialMenuEntry.ActionType.Run:
                 if (_escapeCoroutine == null)
                 {

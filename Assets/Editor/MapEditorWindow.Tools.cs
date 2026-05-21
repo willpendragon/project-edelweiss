@@ -94,6 +94,22 @@ public partial class MapEditorWindow
         spawnedEnemies[position] = enemy;
     }
 
+    // --- NEW: Add PlaceDeityShard method ---
+    private void PlaceDeityShard(Vector3Int position, bool sync = true)
+    {
+        if (deityShardPrefab == null) return;
+        if (sync) SyncDictionaryFromScene();
+        if (spawnedDeityShards.ContainsKey(position)) return;
+
+        Vector3 worldPos = GridToWorld(position, GetTileWorldSize3D());
+        GameObject shard = (GameObject)PrefabUtility.InstantiatePrefab(deityShardPrefab);
+        shard.transform.position = worldPos;
+        shard.name = $"SpawnDeityShard_{deityShardPrefab.name}_{position.x}_{position.y}_{position.z}";
+
+        Undo.RegisterCreatedObjectUndo(shard, "Place DeityShard");
+        spawnedDeityShards[position] = shard;
+    }
+
     private void DeleteTile(Vector3Int position, bool sync = true)
     {
         if (sync) SyncDictionaryFromScene();
@@ -104,6 +120,7 @@ public partial class MapEditorWindow
         if (decorations.TryGetValue(position, out GameObject d) && d != null) { decorations.Remove(position); Undo.DestroyObjectImmediate(d); }
         if (tiles.TryGetValue(position, out GameObject t) && t != null) { tiles.Remove(position); Undo.DestroyObjectImmediate(t); }
         if (spawnedEnemies.TryGetValue(position, out GameObject e) && e != null) { spawnedEnemies.Remove(position); Undo.DestroyObjectImmediate(e); }
+        if (spawnedDeityShards.TryGetValue(position, out GameObject ds) && ds != null) { spawnedDeityShards.Remove(position); Undo.DestroyObjectImmediate(ds); } // NEW
     }
 
     // HELPER: Universally checks if ANY block (Tile, Deco, Unit) exists at this specific coordinate
@@ -113,7 +130,8 @@ public partial class MapEditorWindow
                (spawnedInteractables.TryGetValue(pos, out GameObject i) && i != null) ||
                (decorations.TryGetValue(pos, out GameObject d) && d != null) ||
                (spawnedUnits.TryGetValue(pos, out GameObject u) && u != null) ||
-               (spawnedEnemies.TryGetValue(pos, out GameObject e) && e != null);
+               (spawnedEnemies.TryGetValue(pos, out GameObject e) && e != null) ||
+               (spawnedDeityShards.TryGetValue(pos, out GameObject ds) && ds != null); // NEW
     }
 
     private void ApplyBucketFill(Vector3Int startPos)
