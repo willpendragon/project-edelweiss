@@ -7,11 +7,13 @@ using UnityEngine;
 
 public class PlayerPartyProfilesUIManager : MonoBehaviour
 {
-
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameObject _playerProfilePrefab;
     [SerializeField] private RectTransform _playerProfileContainer;
-    [SerializeField] private Dictionary<Unit, PlayerPartyProfileHelper> unitsDictionary = new Dictionary<Unit, PlayerPartyProfileHelper>();
+
+    [SerializeField]
+    private Dictionary<Unit, PlayerPartyProfileHelper> unitsDictionary =
+        new Dictionary<Unit, PlayerPartyProfileHelper>();
 
     void Start()
     {
@@ -20,10 +22,11 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         DOVirtual.DelayedCall(0.1f, () => UpdateValuesAtStart());
         //UpdateValuesAtStart();
     }
+
     private void UpdateValuesAtStart()
     {
         if (_gameManager.playerPartyMembersInstances == null) return;
-        
+
         foreach (var unit in _gameManager.playerPartyMembersInstances)
         {
             if (unit != null && unit.unitTemplate != null)
@@ -42,11 +45,13 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
             // Instantiate the Player Profile Object.
             GameObject newPlayerProfilePrefab = Instantiate(_playerProfilePrefab, _playerProfileContainer);
             // Retrieve the Helper.
-            PlayerPartyProfileHelper playerPartyProfileHelper = newPlayerProfilePrefab.GetComponent<PlayerPartyProfileHelper>();
+            PlayerPartyProfileHelper playerPartyProfileHelper =
+                newPlayerProfilePrefab.GetComponent<PlayerPartyProfileHelper>();
             // Fill the Player Profile Object Details
             playerPartyProfileHelper.FillPlayerDetails(unit.GetComponent<Unit>());
             unitsDictionary.Add(unit, playerPartyProfileHelper);
         }
+
         PrintDictionary();
     }
 
@@ -59,6 +64,7 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         {
             return;
         }
+
         // Retrieve the corresponding Profile.
         PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
         // Refresh Profile UI with updated gameplay stats.
@@ -83,6 +89,7 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
             Debug.Log($"The Unit {unitName} wasn't found in the dictionary.");
             return null;
         }
+
         return matchingUnit;
     }
 
@@ -106,7 +113,6 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
         // Refresh Profile UI with new remaining Moves Count.
         profileHelper.UpdateHP(matchingUnit);
-
     }
 
     private void PrintDictionary() // Debug
@@ -123,6 +129,15 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         {
             if (unit != null)
                 UpdateRemainingMoves(unit.unitTemplate.unitName);
+        }
+    }
+
+    public void TickDeityCooldowns()
+    {
+        // Loop through all saved profiles and call FillCountdown to subtract 1 turn from their cooldown
+        foreach (var kvp in unitsDictionary)
+        {
+            kvp.Value.FillCountdown();
         }
     }
 

@@ -10,6 +10,9 @@ public class PlayerPartyProfileHelper : MonoBehaviour
     [SerializeField] private Slider hpSlider;
 
     [SerializeField] private Slider mpSlider;
+    [SerializeField] private Slider _deityMoveSlider;
+    private int _deityMoveCooldown;
+    private int _currentCooldownTimer = 0;
 
     //[SerializeField] private Slider SPSlider;
     [SerializeField] private TextMeshProUGUI hpText;
@@ -39,9 +42,43 @@ public class PlayerPartyProfileHelper : MonoBehaviour
             return;
         _deityMoveObj.SetActive(true);
         DeityPowerController _deityPowerController = BattleManager.Instance.DeityPowerController;
+        _deityMoveObj.GetComponentInChildren<Image>().sprite = unit.linkedDeity.deityPortrait;
         _deityMoveObj.GetComponentInChildren<Button>().onClick.AddListener(() => _deityPowerController.UseDeityMove());
+        if (unit.linkedDeity.summoningBehaviour is DeityAnguanaSummoningBehavior anguanaBehavior)
+        {
+            _deityMoveSlider.maxValue = anguanaBehavior.moveCooldown;
+            _deityMoveSlider.value = anguanaBehavior.moveCooldown;
+            _deityMoveCooldown = anguanaBehavior.moveCooldown;
+        }
+
         _partyProfileGroup.interactable = true;
         _partyProfileGroup.blocksRaycasts = true;
+    }
+
+    public bool IsDeityMoveReady()
+    {
+        return _currentCooldownTimer <= 0;
+    }
+
+    public void StartCooldown()
+    {
+        _currentCooldownTimer = _deityMoveCooldown;
+        UpdateDeityMoveSlider();
+    }
+
+    public void UpdateDeityMoveSlider()
+    {
+        if (_deityMoveSlider != null)
+            _deityMoveSlider.value = _deityMoveCooldown - _currentCooldownTimer;
+    }
+
+    public void FillCountdown()
+    {
+        if (_currentCooldownTimer > 0)
+        {
+            _currentCooldownTimer--;
+            UpdateDeityMoveSlider();
+        }
     }
 
     private void UpdateSliders(Unit unit)
@@ -51,6 +88,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour
         hpSlider.value = unit.unitHealthPoints;
         mpSlider.value = unit.unitManaPoints;
     }
+
 
     public void UpdateRemainingMovesDisplay(Unit unit)
     {
