@@ -6,6 +6,7 @@ public class DeityAnguanaSummoningBehavior : DeityBehavior
 {
     public float baseDamage = 20f;
     public string moveName = "Deity Summon Move";
+    public int moveCooldown = 3;
 
     public override void ExecuteBehavior(Deity deity)
     {
@@ -62,5 +63,10 @@ public class DeityAnguanaSummoningBehavior : DeityBehavior
             // Add freeze feedback, as this is actually a character being frozen.
             Debug.Log($"{unit.unitTemplate.unitName} hit by Frozen Punishment");
         }
+    }
+
+    public int GetMoveCooldown()
+    {
+        return moveCooldown;
     }
 }

@@ -7,16 +7,6 @@ public class DeityPowerController : MonoBehaviour
 
     public static event PlayerUnitPraying OnPlayerUnitPraying;
 
-    private void OnEnable()
-    {
-        // SummonedUnitInfoPanelHelper.OnPlayerPrayer += IncreaseDeityPower;
-    }
-
-    private void OnDisable()
-    {
-        // SummonedUnitInfoPanelHelper.OnPlayerPrayer -= IncreaseDeityPower;
-    }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -37,6 +27,26 @@ public class DeityPowerController : MonoBehaviour
         Deity deity = activePlayerUnit.linkedDeity;
         if (deity == null)
             return;
+
+        // Retrieve the active unit's profile
+        PlayerPartyProfileHelper profile = BattleInterface.Instance.PlayerPartyProfilesUIManager.RetrieveProfile(activePlayerUnit.unitTemplate.unitName);
+
+        if (profile != null)
+        {
+            // Check if the cooldown is active
+            if (!profile.IsDeityMoveReady())
+            {
+                BattleInterface.Instance.SetBattleNotification("Deity Move is still on cooldown!");
+                return;
+            }
+        }
+
         deity.summoningBehaviour.ExecuteBehavior(deity);
+
+        // Start the cooldown
+        if (profile != null)
+        {
+            profile.StartCooldown();
+        }
     }
 }

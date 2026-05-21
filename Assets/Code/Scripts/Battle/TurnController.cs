@@ -346,6 +346,10 @@ public class TurnController : MonoBehaviour
         // Refresh the remaining Moves on the UI.
         DOVirtual.DelayedCall(0.1f,
             () => { BattleInterface.Instance.PlayerPartyProfilesUIManager.RefreshPartyMovesCounter(); });
+        
+        // Decrease the Deity Move Cooldowns.
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.TickDeityCooldowns();
+        
         RestoreActivePlayerUnit();
         SetPlayerUnitsToActive();
 
