@@ -43,7 +43,11 @@ public class PlayerPartyProfileHelper : MonoBehaviour
         _deityMoveObj.SetActive(true);
         DeityPowerController _deityPowerController = BattleManager.Instance.DeityPowerController;
         _deityMoveObj.GetComponentInChildren<Image>().sprite = unit.linkedDeity.deityPortrait;
-        _deityMoveObj.GetComponentInChildren<Button>().onClick.AddListener(() => _deityPowerController.UseDeityMove());
+        
+        // Clear old listeners before adding the new one
+        Button deityButton = _deityMoveObj.GetComponentInChildren<Button>();
+        deityButton.onClick.RemoveAllListeners();
+        deityButton.onClick.AddListener(() => _deityPowerController.UseDeityMove());
         if (unit.linkedDeity.summoningBehaviour is DeityAnguanaSummoningBehavior anguanaBehavior)
         {
             _deityMoveSlider.maxValue = anguanaBehavior.moveCooldown;
