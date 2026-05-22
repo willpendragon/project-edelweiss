@@ -42,7 +42,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 93903a91d5d15404498378dd4f52a56e, type: 3}
+  m_audioClip: {fileID: 8300000, guid: fe51022d22e31e846a462bb9ebee92a9, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -295,7 +295,7 @@ MonoBehaviour:
   currentUnitPhase: 0
   unitStatusController: {fileID: 0}
   fieldPrizeController: {fileID: 0}
-  unitType: 0
+  unitType: 4
   hasHookshot: 0
   bossFlag: 0
   linkedDeity: {fileID: 0}

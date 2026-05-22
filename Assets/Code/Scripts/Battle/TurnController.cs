@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Linq;
+using ProjectEdelweiss.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using static Unit;
@@ -313,21 +314,69 @@ public class TurnController : MonoBehaviour
         //}
     }
 
-    private void HandlePuzzleBattle(GameStatsManager gameStatsManager)
-    {
-        // Default sequence: Win once all enemies are defeated, lose when all player units are defeated.
-        // Feel free to modify this win/loss criteria if your puzzle ends based on different conditions.
-        if (enemyUnitsOnBattlefield.All(enemy =>
-                enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
+        private void HandlePuzzleBattle(GameStatsManager gameStatsManager)
         {
-            BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
+            // Try to find the Puzzle Deity / Resident Deity in the scene dynamically
+            GameObject deityObject = GameObject.FindGameObjectWithTag(GameTags.Deity);
+            Unit residentDeityUnit = deityObject != null ? deityObject.GetComponent<Unit>() : null;
+
+            bool isResidentDeityPresent = residentDeityUnit != null;
+            bool isDeityBoss = isResidentDeityPresent && residentDeityUnit.unitType == Unit.UnitType.DeityBoss;
+            bool residentDeityDefeated = false;
+
+            if (isResidentDeityPresent)
+            {
+                if (residentDeityUnit.currentUnitLifeCondition == UnitLifeCondition.unitDead || residentDeityUnit.HealthPoints <= 0)
+                {
+                    residentDeityDefeated = true;
+                }
+            }
+
+            // Check if all standard enemies are dead
+            bool allEnemiesDefeated = enemyUnitsOnBattlefield.All(enemy =>
+                enemy != null && enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead);
+
+            bool playerPartyDefeated = playerUnitsOnBattlefield.All(player =>
+                player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead);
+
+            if (playerPartyDefeated)
+            {
+                BattleFlowController.Instance.PlayerPartyDefeatSequence();
+                return;
+            }
+
+            // Victory conditions
+            if (isResidentDeityPresent)
+            {
+                if (isDeityBoss)
+                {
+                    // Scenario 1 & 3: Resident deity is a killable DeityBoss.
+                    // Victory triggers ONLY when it is defeated. Regular enemies' status doesn't matter.
+                    if (residentDeityDefeated)
+                    {
+                        BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
+                    }
+                }
+                else
+                {
+                    // Scenario: Resident deity is an untouchable normal Deity. 
+                    // Victory triggers when all standard enemies are dead.
+                    if (allEnemiesDefeated)
+                    {
+                        BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
+                    }
+                }
+            }
+            else
+            {
+                // Scenario 2: Resident deity is NOT present at all. 
+                // Victory triggers when all standard enemies are dead.
+                if (allEnemiesDefeated)
+                {
+                    BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
+                }
+            }
         }
-        else if (playerUnitsOnBattlefield.All(player =>
-                     player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
-        {
-            BattleFlowController.Instance.PlayerPartyDefeatSequence();
-        }
-    }
 
     public void RestorePlayerUnits()
     {
@@ -346,10 +395,10 @@ public class TurnController : MonoBehaviour
         // Refresh the remaining Moves on the UI.
         DOVirtual.DelayedCall(0.1f,
             () => { BattleInterface.Instance.PlayerPartyProfilesUIManager.RefreshPartyMovesCounter(); });
-        
+
         // Decrease the Deity Move Cooldowns.
         BattleInterface.Instance.PlayerPartyProfilesUIManager.TickDeityCooldowns();
-        
+
         RestoreActivePlayerUnit();
         SetPlayerUnitsToActive();
 
@@ -372,6 +421,12 @@ public class TurnController : MonoBehaviour
     private void RestoreActivePlayerUnit()
     {
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag(Tags.ACTIVE_PLAYER_UNIT);
+
+        if (activePlayerUnit != null && activePlayerUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+        {
+            activePlayerUnit.tag = Tags.PLAYER;
+            activePlayerUnit = null;
+        }
 
         if (activePlayerUnit == null)
             return;
