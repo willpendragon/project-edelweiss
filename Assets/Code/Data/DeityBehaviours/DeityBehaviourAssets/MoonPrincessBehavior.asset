@@ -19,8 +19,8 @@ MonoBehaviour:
   windGustAttackName: Wind Gust
   zapAttackVFX: {fileID: 0}
   windGustVFX: {fileID: 0}
-  zapAttackChance: 100
-  defaultWindDirection: 0
-  randomizeWindDirection: 1
+  zapAttackChance: 0
+  defaultWindDirection: 2
+  randomizeWindDirection: 0
   angryHpThreshold: 0.666
   veryAngryHpThreshold: 0.333

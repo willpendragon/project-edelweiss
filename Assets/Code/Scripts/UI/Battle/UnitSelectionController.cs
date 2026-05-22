@@ -179,13 +179,9 @@ public class UnitSelectionController : MonoBehaviour
 
     private void ClearPreviousSelection()
     {
-        if (_selectedUnitPanel == null)
-            return;
-        if (_activePlayerUnit == null)
-            return;
-
         // Reset tile color
-        GridManager.Instance.ClearTileColors();
+        if (GridManager.Instance != null)
+            GridManager.Instance.ClearTileColors();
 
         foreach (var playerUnit in _playerUnits)
         {
@@ -201,7 +197,12 @@ public class UnitSelectionController : MonoBehaviour
             Destroy(selectedTileInstance);
         }
 
-        Destroy(_selectedUnitPanel);
+        if (_selectedUnitPanel != null)
+        {
+            Destroy(_selectedUnitPanel);
+        }
+
+        _activePlayerUnit = null;
     }
 
     private void SetAsActivePlayer(Unit playerUnit)

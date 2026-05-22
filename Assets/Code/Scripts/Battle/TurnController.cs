@@ -422,6 +422,12 @@ public class TurnController : MonoBehaviour
     {
         GameObject activePlayerUnit = GameObject.FindGameObjectWithTag(Tags.ACTIVE_PLAYER_UNIT);
 
+        if (activePlayerUnit != null && activePlayerUnit.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
+        {
+            activePlayerUnit.tag = Tags.PLAYER;
+            activePlayerUnit = null;
+        }
+
         if (activePlayerUnit == null)
             return;
 
