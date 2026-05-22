@@ -1,4 +1,6 @@
+
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -39,6 +41,8 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
     public PlayerPartyProfilesUIManager PlayerPartyProfilesUIManager => _playerPartyProfilesUIManager;
 
     private Tween activeNotificationTween;
+    private Queue<string> _notificationQueue = new Queue<string>();
+    private bool _isDisplayingNotification = false;
 
     private void Awake()
     {
@@ -143,6 +147,36 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
 
     private void ShowNotification(string message)
     {
+        // Add the new message to the queue
+        _notificationQueue.Enqueue(message);
+
+        // If we aren't currently showing a message, start the display loop
+        if (!_isDisplayingNotification)
+        {
+            DisplayNextNotification();
+        }
+    }
+
+    private void DisplayNextNotification()
+    {
+        // If the queue is empty, hide the panel and stop
+        if (_notificationQueue.Count == 0)
+        {
+            _isDisplayingNotification = false;
+            if (activeNotificationTween != null && activeNotificationTween.IsActive())
+            {
+                activeNotificationTween.Kill();
+            }
+            battlefieldNotificationsPanel.transform.localScale = Vector3.zero;
+            return;
+        }
+
+        // We are currently showing a message
+        _isDisplayingNotification = true;
+
+        // Get the next message
+        string message = _notificationQueue.Dequeue();
+
         if (activeNotificationTween != null && activeNotificationTween.IsActive())
         {
             activeNotificationTween.Kill();
@@ -150,12 +184,15 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
 
         battlefieldNotificationsPanel.transform.localScale = Vector3.one;
         battlefieldTextNotifications.text = message;
+        
         // Add a tiny, quick "pop" animation so the player notices the text changed instantly
         battlefieldNotificationsPanel.DOPunchScale(new Vector3(0.1f, 0.1f, 0.0f), 0.15f, 0, 0);
         BattleSFXManager.PlaySound(SoundType.POPUPMESSAGE, 1);
+        
+        // Wait for the duration, then automatically trigger the next notification in the queue
         activeNotificationTween = DOVirtual.DelayedCall(battlefieldNotificationsPanelDurationTime, () =>
         {
-            battlefieldNotificationsPanel.transform.localScale = Vector3.zero;
+            DisplayNextNotification();
         });
     }
 }

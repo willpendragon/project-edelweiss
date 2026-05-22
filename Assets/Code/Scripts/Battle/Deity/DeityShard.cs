@@ -37,27 +37,42 @@ public class DeityShard : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Handles the damage event and redirects the damage to the linked Deity.
-    /// </summary>
-    /// <param name="damageAmount">The amount of damage received, before mitigation.</param>
-    private void HandleDamageTaken(float damageAmount)
-    {
-        if (_residentDeity != null)
+        private void HandleDamageTaken(float damageAmount)
         {
-            // Find the Unit component on the Deity's root GameObject.
-            Unit deityUnit = _residentDeity.GetComponent<Unit>();
-            if (deityUnit != null)
+            if (_residentDeity != null)
             {
-                deityUnit.TakeDamage(damageAmount);
-                _residentDeity.UpdateDeityHealthBar();
-                BattleInterface.Instance.SetDeityNotification($"Shard attacked, {damageAmount} damage on {deityUnit.unitTemplate.unitName}.");
-                Debug.Log($"Shard attacked, {damageAmount} damage on {deityUnit.unitTemplate.unitName}.");
-            }
-            else
-            {
-                Debug.LogWarning("Linked Deity does not have a Unit component on its root object to take damage.", _residentDeity);
+                // Find the Unit component on the Deity's root GameObject.
+                Unit deityUnit = _residentDeity.GetComponent<Unit>();
+                if (deityUnit != null)
+                {
+                    float maxHp = deityUnit.unitMaxHealthPoints;
+                    float previousHpPercentage = maxHp > 0 ? deityUnit.unitHealthPoints / maxHp : 0;
+
+                    deityUnit.TakeDamage(damageAmount);
+                    _residentDeity.UpdateDeityHealthBar();
+
+                    float currentHpPercentage = maxHp > 0 ? deityUnit.unitHealthPoints / maxHp : 0;
+
+                    BattleInterface.Instance.SetDeityNotification($"Shard attacked, {damageAmount} damage on {deityUnit.unitTemplate.unitName}.");
+                    Debug.Log($"Shard attacked, {damageAmount} damage on {deityUnit.unitTemplate.unitName}.");
+
+                    // If the Boss is Moon Princess, use her public thresholds to trigger phase shift notifications
+                    if (_residentDeity.summoningBehaviour is DeityMoonPrincessBehavior moonPrincessBehavior)
+                    {
+                        if (previousHpPercentage > moonPrincessBehavior.angryHpThreshold && currentHpPercentage <= moonPrincessBehavior.angryHpThreshold)
+                        {
+                            BattleInterface.Instance.SetDeityNotification($"{deityUnit.unitTemplate.unitName}'s rage makes it stronger!");
+                        }
+                        else if (previousHpPercentage > moonPrincessBehavior.veryAngryHpThreshold && currentHpPercentage <= moonPrincessBehavior.veryAngryHpThreshold)
+                        {
+                            BattleInterface.Instance.SetDeityNotification($"{deityUnit.unitTemplate.unitName} is furious! Its power intensifies!");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Linked Deity does not have a Unit component on its root object to take damage.", _residentDeity);
+                }
             }
         }
     }
-}

@@ -28,11 +28,10 @@ public class DeityMoonPrincessBehavior : DeityBehavior
     public WindDirection defaultWindDirection = WindDirection.AwayFromDeity;
     public bool randomizeWindDirection = false;
 
-    private System.Random localRandom;
-    private float _lastHpPercentage = 1f; // To track HP thresholds for notifications
+    public float angryHpThreshold = 0.666f; // 2/3 HP left
+    public float veryAngryHpThreshold = 0.333f; // 1/3 HP left
 
-    private const float HALF_HP_THRESHOLD = 0.5f;
-    private const float ONE_THIRD_HP_THRESHOLD = 0.333f;
+    private System.Random localRandom;
     private const int WIND_GUST_PUSH_DISTANCE = 3;
 
     public override void ExecuteBehavior(Deity deity)
@@ -50,8 +49,6 @@ public class DeityMoonPrincessBehavior : DeityBehavior
             return;
         }
 
-        CheckHPThresholds(deityUnit);
-
         int roll = localRandom.Next(1, 101);
 
         if (roll <= zapAttackChance)
@@ -67,29 +64,6 @@ public class DeityMoonPrincessBehavior : DeityBehavior
     public override void ExecuteBuffBehaviour(Deity deity, Unit unit)
     {
         // MoonPrincess does not have a buff behavior for units.
-    }
-
-    private void CheckHPThresholds(Unit deityUnit)
-    {
-        float currentHp = deityUnit.unitHealthPoints;
-        float maxHp = deityUnit.unitMaxHealthPoints;
-        if (maxHp <= 0) return; // Avoid division by zero
-
-        float currentHpPercentage = currentHp / maxHp;
-
-        // Check for crossing below half HP
-        if (currentHpPercentage < HALF_HP_THRESHOLD && _lastHpPercentage >= HALF_HP_THRESHOLD)
-        {
-            BattleInterface.Instance.SetDeityNotification($"{deityName} is now below half HP! Her power grows.");
-        }
-        // Check for crossing below one-third HP
-        else if (currentHpPercentage < ONE_THIRD_HP_THRESHOLD && _lastHpPercentage >= ONE_THIRD_HP_THRESHOLD)
-        {
-            BattleInterface.Instance.SetDeityNotification(
-                $"{deityName} is now below one-third HP! Her power intensifies!");
-        }
-
-        _lastHpPercentage = currentHpPercentage; // Update last known HP percentage
     }
 
     private void AttemptZapAttack(Deity deity, Unit deityUnit)
@@ -140,17 +114,17 @@ public class DeityMoonPrincessBehavior : DeityBehavior
 
         float hpPercentage = currentHp / maxHp;
 
-        if (hpPercentage < ONE_THIRD_HP_THRESHOLD)
+        if (hpPercentage <= veryAngryHpThreshold)
         {
-            return 3f;
+            return 3f; // Very Angry State multiplier
         }
-        else if (hpPercentage < HALF_HP_THRESHOLD)
+        else if (hpPercentage <= angryHpThreshold)
         {
-            return 2f;
+            return 2f; // Angry State multiplier
         }
         else
         {
-            return 1f;
+            return 1f; // Base State multiplier
         }
     }
 

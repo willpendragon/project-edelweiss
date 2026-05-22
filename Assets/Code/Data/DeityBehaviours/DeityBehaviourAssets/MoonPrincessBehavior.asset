@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d39be9a5dbf9d804b836283cec625acc, type: 3}
   m_Name: MoonPrincessBehavior
   m_EditorClassIdentifier: 
+  description: 
   vfxDurationDelay: 1
   deityName: MoonPrincess
   zapAttackName: Lunar Zap
   windGustAttackName: Wind Gust
   zapAttackVFX: {fileID: 0}
   windGustVFX: {fileID: 0}
-  zapAttackChance: 15
+  zapAttackChance: 100
   defaultWindDirection: 0
   randomizeWindDirection: 1
+  angryHpThreshold: 0.666
+  veryAngryHpThreshold: 0.333
