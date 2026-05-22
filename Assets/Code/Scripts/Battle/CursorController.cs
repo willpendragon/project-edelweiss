@@ -209,7 +209,7 @@ public class CursorController : MonoBehaviour
         foreach (var hitInfo in hits)
         {
             if (hitInfo.collider.gameObject.CompareTag("Enemy") || hitInfo.collider.gameObject.CompareTag("Player") ||
-                hitInfo.collider.gameObject.CompareTag("ActivePlayerUnit"))
+                hitInfo.collider.gameObject.CompareTag("ActivePlayerUnit") || hitInfo.collider.gameObject.CompareTag("Deity") || hitInfo.collider.gameObject.CompareTag("DeityShard"))
             {
                 Unit hitUnit = hitInfo.collider.gameObject.GetComponentInParent<Unit>();
                 if (hitUnit != null && hitUnit.ownedTile != null)
@@ -266,7 +266,7 @@ public class CursorController : MonoBehaviour
         // Set menu position
         radialMenu.position = Camera.main.WorldToScreenPoint(_tileController.transform.position);
 
-        if (_tileController.detectedUnit != null && _tileController.detectedUnit.CompareTag("Enemy"))
+        if (_tileController.detectedUnit != null && (_tileController.detectedUnit.CompareTag("Enemy") || _tileController.detectedUnit.CompareTag("Deity") || _tileController.detectedUnit.CompareTag("DeityShard")))
             _targetedUnit = _tileController.detectedUnit.GetComponent<Unit>();
 
         // Display Enemy Unit Info (where applicable).

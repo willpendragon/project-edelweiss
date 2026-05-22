@@ -23,28 +23,36 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     private bool _criticalHit;
 
     public delegate void SelectedSpell();
+
     public static event SelectedSpell OnSelectedSpell;
 
     public delegate void DeselectedSpell();
+
     public static event DeselectedSpell OnDeselectedSpell;
 
     public delegate void UsedSpell(string notification);
+
     public static event UsedSpell OnUsedSpell;
 
     public delegate void NotEnoughMana(string notification);
+
     public static event NotEnoughMana OnNotEnoughMana;
 
     public delegate void UsedSingleTargetSpell();
+
     public static event UsedSingleTargetSpell OnUsedSingleTargetSpell;
 
     public delegate void SpellCriticalHit();
+
     public static event SpellCriticalHit OnSpellCriticalHit;
 
     public delegate void DeityAngered();
+
     public static event DeityAngered OnDeityAngered;
 
 
     public UnityEvent playSpellVFX;
+
     public void Execute(TileController targetTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -98,7 +106,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         // Play feedback on Deity Obelisk when applicable.
         if (targetTile.detectedUnit.GetComponent<Unit>().unitType == Unit.UnitType.Deity)
         {
-            activePlayerUnit.GetComponent<BattleFeedbackController>().DisplaySpellObeliskDamageFeedback(activePlayerUnit);
+            activePlayerUnit.GetComponent<BattleFeedbackController>()
+                .DisplaySpellObeliskDamageFeedback(activePlayerUnit);
         }
 
         int damageToApply = CalculateSpellDamage(spell);
@@ -122,13 +131,15 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         if (!manaPointsAvailable(activePlayerUnit.unitManaPoints, spell.manaPointsCost))
             return;
 
-        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController").GetComponent<GridMovementController>();
+        GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController")
+            .GetComponent<GridMovementController>();
         List<TileController> affectedTiles = gridMovementController.GetMultipleTiles(targetTile, aoeRange);
 
         // Play feedback on Deity Obelisk when applicable.
         if (targetTile.detectedUnit.GetComponent<Unit>().unitType == Unit.UnitType.Deity)
         {
-            activePlayerUnit.GetComponent<BattleFeedbackController>().DisplaySpellObeliskDamageFeedback(activePlayerUnit);
+            activePlayerUnit.GetComponent<BattleFeedbackController>()
+                .DisplaySpellObeliskDamageFeedback(activePlayerUnit);
         }
 
         SpendResources(activePlayerUnit, spell);
@@ -137,7 +148,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
         foreach (var tile in affectedTiles)
         {
-            if (tile.detectedUnit == null || (tile.detectedUnit.tag != "Enemy" && tile.detectedUnit.tag != "Chest"))
+            if (tile.detectedUnit == null || (tile.detectedUnit.tag != "Enemy" && tile.detectedUnit.tag != "Chest" &&
+                                              tile.detectedUnit.tag != "DeityShard"))
                 continue;
 
             Unit targetUnit = tile.detectedUnit.GetComponent<Unit>();
@@ -164,7 +176,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         activePlayerUnit.unitOpportunityPoints--;
         // Update on the UI.
         UpdateActivePlayerUnitProfile(activePlayerUnit);
-
     }
 
     private void TriggerSecondaryEffect(Unit spellTarget)
@@ -201,7 +212,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         // Base damage calculation retrieves the Attack Power from the Attacker's statistics.
         int baseDamage = spell.damage + (int)(activePlayerUnit.unitMagicPower * 0.5);
         // Critical hit damage calculation.
-        int damageToApply = baseDamage * (IsCritical(spell) ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100) : 1);
+        int damageToApply = baseDamage *
+                            (IsCritical(spell) ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100) : 1);
         return damageToApply;
     }
 
@@ -227,7 +239,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         Unit targetUnit = targetTile.detectedUnit.GetComponent<Unit>();
         if (targetUnit == null)
             return false;
-            
+
         if (IsAttackable(targetTile.detectedUnit) && EnemyIsAlive(targetUnit))
             return true;
         else
@@ -237,7 +249,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     public bool IsAttackable(GameObject detectedUnit)
     {
         // Treat both proper enemies and breakable chests as attackable elements
-        if (detectedUnit.gameObject.CompareTag("Enemy") || detectedUnit.gameObject.CompareTag("Chest"))
+        if (detectedUnit.gameObject.CompareTag("Enemy") || detectedUnit.gameObject.CompareTag("Chest") ||
+            detectedUnit.gameObject.CompareTag("DeityShard"))
             return true;
         else
             return false;
@@ -254,9 +267,11 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     public void Deselect()
     {
     }
+
     public void DeityEnmityCheck(SpellAlignment spellAlignment)
     {
-        var enemyTurnManager = GameObject.FindGameObjectWithTag(GameTags.ENEMY_TURN_MANAGER).GetComponent<EnemyTurnManager>();
+        var enemyTurnManager = GameObject.FindGameObjectWithTag(GameTags.ENEMY_TURN_MANAGER)
+            .GetComponent<EnemyTurnManager>();
         if (enemyTurnManager.deity == null)
             return;
 
@@ -288,7 +303,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         //activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
         // Use the centralized logic.
         BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateProfile(activePlayerUnit.unitTemplate.unitName);
-        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate.unitName);
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate
+            .unitName);
     }
 
     public void PlayVFX(GameObject spellVFX, TileController enemyOccupiedTile, Vector3 spellVFXOffset)
@@ -299,6 +315,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         Debug.Log("Instantiating VFX");
         Destroy(spellVFXInstance, 0.5f);
     }
+
     public bool manaPointsAvailable(float unitManaPoints, float spellPrice)
     {
         if (unitManaPoints - spellPrice >= 0)
@@ -311,6 +328,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             return false;
         }
     }
+
     private void PlayFrozenFeedback(Unit targetUnit)
     {
         // Define the Y offset for the VFX spawn position
@@ -320,7 +338,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         Vector3 stunVFXSpawnPosition = targetUnit.transform.position + new Vector3(0, yOffset, 0);
 
         // Instantiate the VFX at the new position
-        GameObject stunVFX = Instantiate(Resources.Load<GameObject>("StunAttackVFX"), stunVFXSpawnPosition, Quaternion.identity);
+        GameObject stunVFX = Instantiate(Resources.Load<GameObject>("StunAttackVFX"), stunVFXSpawnPosition,
+            Quaternion.identity);
         float stunVFXDestroyCountdown = 1.5f;
         Destroy(stunVFX, stunVFXDestroyCountdown);
 
