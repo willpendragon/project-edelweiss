@@ -4377,8 +4377,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Move the Mouse LEFT and RIGHT to explore the Map. Click on a BUILDING to
-    access it.
+  m_text: Use Left Mouse Button on 3D icons to access Battles and Locations.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 830a637238c14d143a77de86a08a9374, type: 2}
   m_sharedMaterial: {fileID: -2533100021414680547, guid: 830a637238c14d143a77de86a08a9374, type: 2}
@@ -4611,37 +4610,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828804352}
   m_CullTransparentMesh: 1
---- !u!21 &830465502
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &851569080
 GameObject:
   m_ObjectHideFlags: 0
@@ -4770,6 +4738,8 @@ MonoBehaviour:
   footerMarqueeText: {fileID: 780487460}
   buildingDescription: Here, you can replenish your health and have a nice chat with
     your comrades.
+  footerMarqueeTutorialText: Move the Mouse LEFT and RIGHT to explore the Map. Click
+    on a BUILDING to access it.
 --- !u!1 &896501879
 GameObject:
   m_ObjectHideFlags: 0
@@ -4827,6 +4797,8 @@ MonoBehaviour:
   footerMarqueeText: {fileID: 780487460}
   buildingDescription: In this holy place, you can forge bonds with the Deities you've
     defeated.
+  footerMarqueeTutorialText: Move the Mouse LEFT and RIGHT to explore the Map. Click
+    on a BUILDING to access it.
 --- !u!65 &896501882
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5635,7 +5607,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 830465502}
+  - {fileID: 1880336950}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11807,6 +11779,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8846347044957032884, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
   m_PrefabInstance: {fileID: 8846347043584359116}
   m_PrefabAsset: {fileID: 0}
+--- !u!21 &1880336950
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1001 &1887404934
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11993,7 +11996,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -12001,7 +12004,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
@@ -12010,7 +12013,7 @@ PrefabInstance:
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1887404936}
+      objectReference: {fileID: 896501881}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -12033,11 +12036,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: ToggleCameraPan
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: DeselectItem
+      value: ToggleCameraPan
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
@@ -12045,7 +12048,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: MapItemSelector, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -12057,7 +12060,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
@@ -12131,7 +12134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -12143,7 +12146,7 @@ PrefabInstance:
       objectReference: {fileID: 1887404936}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ToggleCameraPan
+      value: DeselectItem
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
@@ -13603,7 +13606,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -13611,7 +13614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
@@ -13647,7 +13650,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: DeselectItem
+      value: ToggleCameraPan
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
@@ -13667,7 +13670,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4712318898718449973, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
@@ -13727,7 +13730,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 4
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
@@ -13736,7 +13747,7 @@ PrefabInstance:
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 780487460}
+      objectReference: {fileID: 879331073}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
@@ -13746,20 +13757,56 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 879331073}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: DeselectItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: ToggleCameraPan
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
       value: ToggleCameraPan
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: MapItemSelector, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
       value: MapItemSelector, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_BoolArgument
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5533294075238151300, guid: 869d555e138e4b04e919d1390f360faf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
