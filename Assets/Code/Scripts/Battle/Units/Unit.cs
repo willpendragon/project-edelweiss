@@ -494,5 +494,7 @@ public class Unit : MonoBehaviour
         }
 
         fallSequence.OnComplete(() => { HealthPoints = 0; });
+        // Handle Slider destruction in cases where the Unit falls off the grid.
+        Destroy(transform.GetComponentInChildren<Slider>().gameObject);
     }
 }
