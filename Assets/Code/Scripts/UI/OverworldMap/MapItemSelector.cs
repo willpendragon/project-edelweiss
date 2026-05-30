@@ -22,7 +22,8 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     public TextMeshProUGUI footerMarqueeText;
     [SerializeField] string buildingDescription;
 
-    string footerMarqueeTutorialText = $"Move the Mouse LEFT and RIGHT to explore the Map. Click on a BUILDING to access it.";
+    private string footerMarqueeTutorialText =
+        $"Use Left Mouse Button on 3D icons to access Battles and Locations.";
 
     private SelectionStatus currentStatus = SelectionStatus.Deselected;
 
@@ -53,17 +54,18 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
                     SelectItem();
                 }
             }
+
             if (eventData.button == PointerEventData.InputButton.Left && currentStatus == SelectionStatus.Selected)
             {
                 ActivateEnterMenu();
             }
-            else if (eventData.button == PointerEventData.InputButton.Right) // Right click
-            {
-                if (currentStatus != SelectionStatus.Deselected)
-                {
-                    DeselectItem();
-                }
-            }
+            // else if (eventData.button == PointerEventData.InputButton.Right) // Right click
+            // {
+            //     if (currentStatus != SelectionStatus.Deselected)
+            //     {
+            //         DeselectItem();
+            //     }
+            // }
         }
     }
 
@@ -71,7 +73,8 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
     {
         activateEnterMenuPanelGO.SetActive(true);
         overworldMapCanvas.GetComponent<GraphicRaycaster>().enabled = true;
-        ToggleCameraPan(false);
+        // ToggleCameraPan(false);
+        // Could be interesting to add a zoom in.
     }
 
     public void ToggleCameraPan(bool cameraPanIsActive)
@@ -91,6 +94,7 @@ public class MapItemSelector : MonoBehaviour, IPointerClickHandler
         // Implement logic for when the item is selected
         Debug.Log($"{gameObject.name} selected");
     }
+
     public void DeselectItem()
     {
         currentStatus = SelectionStatus.Deselected;

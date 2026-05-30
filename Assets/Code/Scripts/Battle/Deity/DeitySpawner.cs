@@ -248,6 +248,7 @@ public class DeitySpawner : MonoBehaviour
         unlockedDeity.GetComponent<Unit>().startingXCoordinate = unlockedDeityStartingTileXCoordinate;
         unlockedDeity.GetComponent<Unit>().startingYCoordinate = unlockedDeityStartingTileYCoordinate;
 
+        
         // Optionally, check if a DeityTile dictates the 3D spawn position instead of relying on the static empty GameObject
         Vector3 spawnWorldPos = deitySpawnPosition.position;
         TileController firstDeitySpawningTile =
@@ -289,6 +290,8 @@ public class DeitySpawner : MonoBehaviour
 
             currentUnboundDeity = unboundDeity.GetComponent<Deity>();
             _enemyTurnManager.deity = unboundDeity;
+            MoveObeliskOnGridMap();
+
             Debug.Log("Deity occupies Tile");
         }
 
