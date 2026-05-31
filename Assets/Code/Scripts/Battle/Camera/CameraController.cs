@@ -26,6 +26,7 @@ public class CameraController : MonoBehaviour
         {
             ApplyMapCameraSettings(mapData.cameraPosition, mapData.cameraRotation, mapData.cameraZoom,
                 mapData.isOrthographic, mapData.orthographicSize);
+            ResetCameraPosition();
         }
         else
         {
