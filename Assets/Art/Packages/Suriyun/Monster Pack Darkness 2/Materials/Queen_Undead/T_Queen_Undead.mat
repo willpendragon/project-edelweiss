@@ -32,6 +32,7 @@ Material:
   - N_F_RELGI_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
+  - N_F_TRANS_ON
   - _NORMALMAP
   - _UVSET_UV0
   m_InvalidKeywords:
@@ -62,9 +63,10 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap:
     IgnoreProjection: False
+    RenderType: Transparent
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
@@ -368,8 +370,8 @@ Material:
     - _BaseColor_Step: 0.4
     - _BaseShade_Feather: 0.2
     - _Base_Speed: 0
-    - _BleModDest: 0
-    - _BleModSour: 1
+    - _BleModDest: 10
+    - _BleModSour: 5
     - _Blend: 0
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 1
@@ -705,7 +707,7 @@ Material:
     - _Surface: 0
     - _SurfaceType: 0
     - _TEXMCOLINT: 1
-    - _TRANSMODE: 0
+    - _TRANSMODE: 1
     - _TessellationFar: 1
     - _TessellationNear: 1
     - _TessellationSmoothness: 0.5
