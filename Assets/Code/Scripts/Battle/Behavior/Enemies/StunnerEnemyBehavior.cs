@@ -5,9 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "StunnerEnemyBehavior", menuName = "EnemyBehavior/StunnerEnemy")]
 public class StunnerEnemyBehavior : EnemyBehavior
 {
-    [SerializeField] private int minEnemyMoveRollRange;
-    [SerializeField] private int maxEnemyMoveRollRange;
-    public int opportunity;
+    [SerializeField, Range(0f, 100f)] private float stunSuccessChancePercentage = 75f; // Set this in the Inspector
+    // public int opportunity;
 
     public delegate void CheckPlayer();
     public static event CheckPlayer OnCheckPlayer;
@@ -22,7 +21,7 @@ public class StunnerEnemyBehavior : EnemyBehavior
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
         Unit enemyUnit = enemyAgent.gameObject.GetComponentInParent<Unit>();
-        Unit targetUnit = SelectTargetUnit();
+        Unit targetUnit = SelectTargetUnit(enemyUnit);
 
         if (enemyAgent.gameObject.CompareTag("DeadEnemy") && enemyUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
@@ -36,48 +35,66 @@ public class StunnerEnemyBehavior : EnemyBehavior
         }
 
         // Stun Ability triggering formula.
-        if (CheckDistanceFromTarget(targetUnit, enemyUnit) && EnemyMoveRoll() >= maxEnemyMoveRollRange / 2)
+        if (CheckDistanceFromTarget(targetUnit, enemyUnit))
         {
-            StunAbility(targetUnit, enemyUnit);
+            // The target IS in range (<= 3 tiles). Now we roll for success.
+            float randomRoll = (float)localRandom.NextDouble() * 100f; 
+            
+            if (randomRoll <= stunSuccessChancePercentage)
+            {
+                StunAbility(targetUnit, enemyUnit);
+            }
+            else
+            {
+                // In range, but the percentage chance failed.
+                OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} missed the attack!");
+            }
         }
         else
         {
-            OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} failed the attack");
+            // The closest target is further than 3 tiles away.
+            OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} is too far from the target!");
         }
-        opportunity -= 1;
+        
+        // opportunity -= 1;
     }
 
     bool CheckDistanceFromTarget(Unit targetUnit, Unit enemyUnit)
     {
-        int distance = (GridManager.Instance.gridMovementController.GetDistance(targetUnit.ownedTile, enemyUnit.ownedTile));
+        if (targetUnit.ownedTile == null || enemyUnit.ownedTile == null) return false;
+
+        int distance = GetTileDistance(targetUnit.ownedTile, enemyUnit.ownedTile);
         int range = 3;
-        if (distance <= range)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        
+        return distance <= range;
     }
 
-    public int EnemyMoveRoll()
+    private int GetTileDistance(TileController tileA, TileController tileB)
     {
-        int enemyMoveRoll = localRandom.Next(minEnemyMoveRollRange, maxEnemyMoveRollRange);
-        return enemyMoveRoll;
+        // Calculate raw mathematical distance, completely ignoring pathfinding blockages
+        return Mathf.Abs(tileA.gridPosition.x - tileB.gridPosition.x) +
+               Mathf.Abs(tileA.gridPosition.y - tileB.gridPosition.y) +
+               Mathf.Abs(tileA.gridPosition.z - tileB.gridPosition.z);
     }
 
-    public Unit SelectTargetUnit()
+    public Unit SelectTargetUnit(Unit enemyUnit)
     {
         GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController").GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
 
-        Unit unitWithHighestHP = playerUnitsOnBattlefield
+        Unit selectedUnit = playerUnitsOnBattlefield
+            .Where(go => go != null)
             .Select(go => go.GetComponent<Unit>())
-            .Where(unit => unit != null && unit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus != UnitStatus.stun)
-            .OrderByDescending(unit => unit.unitHealthPoints)
+            .Where(unit => unit != null && unit.ownedTile != null) // Ensure they have an owned tile
+            .Where(unit => 
+            {
+                var statusController = unit.GetComponentInChildren<UnitStatusController>();
+                return statusController != null && statusController.unitCurrentStatus != UnitStatus.stun;
+            })
+            .OrderBy(unit => GetTileDistance(unit.ownedTile, enemyUnit.ownedTile)) // Use raw coordinate distance
+            .ThenByDescending(unit => unit.unitHealthPoints)
             .FirstOrDefault();
 
-        return unitWithHighestHP;
+        return selectedUnit;
     }
 
     public void StunAbility(Unit targetUnit, Unit enemyUnit)
