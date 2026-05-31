@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad8258388c8b3654e96b1bff53259a8b, type: 3}
+  m_Name: RecruitTutorial
+  m_EditorClassIdentifier: 
+  tutorialName: Recruit Menu
+  pages:
+  - text: Click the Recruit Menu to see all of the available Units and change the
+      party formation.
+    image: {fileID: 0}
+  - text: You can simply click on a Unit to arrange it in the party. Click left to
+      add it to the party.
+    image: {fileID: 0}
+  - text: These mountains can seem lonely, however, some brave adventures wander
+      across them, for various reasons. Try different things to make them interested
+      in your company!
+    image: {fileID: 0}
