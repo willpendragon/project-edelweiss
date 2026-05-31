@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour
     private float _originalZoomAmount;
 
     [Header("Settings")] [SerializeField] private BattleCameraSettings _battleCameraSettings;
+    [SerializeField] private Vector3 _deityFocusOffset = new Vector3(0f, 3f, 0f);
 
     [SerializeField] private GeneralCameraSettings _generalCameraSettings;
 
@@ -40,11 +41,17 @@ public class CameraController : MonoBehaviour
         {
             CameraCloseUp();
         }
+
+        // if (Input.GetKeyDown(KeyCode.E))
+        // {
+        //     DeityCameraCloseUp();
+        // }
     }
 
     private void OnEnable()
     {
         PhysicalAttackBehavior.OnKnockbackFired += CameraCloseUp;
+        AOESpellPlayerAction.OnDeityAngered += DeityCameraCloseUp;
 
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
@@ -61,6 +68,7 @@ public class CameraController : MonoBehaviour
     private void OnDisable()
     {
         PhysicalAttackBehavior.OnKnockbackFired -= CameraCloseUp;
+        AOESpellPlayerAction.OnDeityAngered -= DeityCameraCloseUp;
 
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
@@ -135,15 +143,32 @@ public class CameraController : MonoBehaviour
         if (activeUnit != null)
         {
             var tile = activeUnit.GetComponent<Unit>().ownedTile;
-            UpdateCameraPosition(tile.gameObject.transform);
+            UpdateCameraPosition(tile.gameObject.transform.position);
         }
     }
 
-    private void UpdateCameraPosition(Transform tileTransform)
+    public void DeityCameraCloseUp()
+    {
+        var deity = FindObjectOfType<Deity>();
+        if (deity != null)
+        {
+            Vector3 targetPos = deity.transform.position;
+            var unit = deity.GetComponent<Unit>();
+            if (unit != null && unit.ownedTile != null)
+            {
+                targetPos = unit.ownedTile.gameObject.transform.position;
+            }
+            
+            // Add the inspector offset to adjust the focus (e.g., higher up to see the face)
+            UpdateCameraPosition(targetPos + _deityFocusOffset);
+        }
+    }
+
+    private void UpdateCameraPosition(Vector3 targetPosition)
     {
         foreach (var cam in _cameras)
         {
-            Vector3 finalTransform = tileTransform.position + _battleCameraSettings.CameraOffset;
+            Vector3 finalTransform = targetPosition + _battleCameraSettings.CameraOffset;
             cam.transform.position = finalTransform;
             cam.fieldOfView = _battleCameraSettings.ZoomAmount;
         }
