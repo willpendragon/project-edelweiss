@@ -6,6 +6,7 @@ using UnityEngine;
 public class StunnerEnemyBehavior : EnemyBehavior
 {
     [SerializeField, Range(0f, 100f)] private float stunSuccessChancePercentage = 75f; // Set this in the Inspector
+    [SerializeField] private float spellVfxYOffset = 4.0f;
     // public int opportunity;
 
     public delegate void CheckPlayer();
@@ -99,10 +100,15 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
     public void StunAbility(Unit targetUnit, Unit enemyUnit)
     {
-        OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} used Stun attack");
-        targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
-        targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
-        PlayStunFeedback(targetUnit);
+            OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} used Stun attack");
+            
+            Vector3 vfxPosition = targetUnit.transform.position + new Vector3(0, spellVfxYOffset, 0);
+            GameObject spellVFX = Instantiate(Resources.Load<GameObject>("VFX/StunningSpellVFX"), vfxPosition, Quaternion.identity);
+            Destroy(spellVFX, 1f);
+
+            targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
+            targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
+            PlayStunFeedback(targetUnit);
     }
 
     private void PlayStunFeedback(Unit targetUnit)
