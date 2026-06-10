@@ -11,8 +11,7 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
     [SerializeField] private GameObject _playerProfilePrefab;
     [SerializeField] private RectTransform _playerProfileContainer;
 
-    [SerializeField]
-    private Dictionary<Unit, PlayerPartyProfileHelper> unitsDictionary =
+    [SerializeField] private Dictionary<Unit, PlayerPartyProfileHelper> unitsDictionary =
         new Dictionary<Unit, PlayerPartyProfileHelper>();
 
     void Start()
@@ -113,6 +112,26 @@ public class PlayerPartyProfilesUIManager : MonoBehaviour
         PlayerPartyProfileHelper profileHelper = unitsDictionary[matchingUnit];
         // Refresh Profile UI with new remaining Moves Count.
         profileHelper.UpdateHP(matchingUnit);
+    }
+    
+    public void HighlightSelectedUnitProfile(string unitName)
+    {
+        Unit matchingUnit = LookForUnit(unitName);
+        if (matchingUnit == null) return;
+
+        // Turn the outline on for the selected unit, off for everyone else.
+        foreach (var kvp in unitsDictionary)
+        {
+            kvp.Value.SetOutlineHighlight(kvp.Key == matchingUnit);
+        }
+    }
+    
+    public void ClearProfileHighlights()
+    {
+        foreach (var kvp in unitsDictionary)
+        {
+            kvp.Value.SetOutlineHighlight(false);
+        }
     }
 
     private void PrintDictionary() // Debug

@@ -2164,6 +2164,7 @@ GameObject:
   - component: {fileID: 1609752702143962194}
   - component: {fileID: 7187037478047694106}
   - component: {fileID: 3763222423325221038}
+  - component: {fileID: 7010897931889571713}
   m_Layer: 5
   m_Name: PlayerPartyProfile
   m_TagString: Untagged
@@ -2213,6 +2214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitPortrait: {fileID: 6254837135130302004}
   hpSlider: {fileID: 6254837135591373701}
+  _outline: {fileID: 7010897931889571713}
   mpSlider: {fileID: 6254837136158420259}
   _deityMoveSlider: {fileID: 6699123658328133321}
   hpText: {fileID: 6254837135413843151}
@@ -2248,7 +2250,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cd1b005f07cdcb2439b0964a6f3625c6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 79c728963682e40458f40d847b541898, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2270,6 +2272,21 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &7010897931889571713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6254837134984574998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 0.990098, b: 0, a: 0.5}
+  m_EffectDistance: {x: 3, y: -3}
+  m_UseGraphicAlpha: 1
 --- !u!1 &6254837135008041359
 GameObject:
   m_ObjectHideFlags: 0

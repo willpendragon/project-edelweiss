@@ -8,6 +8,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour
 {
     [SerializeField] private Image unitPortrait;
     [SerializeField] private Slider hpSlider;
+    [SerializeField] private Outline _outline;
 
     [SerializeField] private Slider mpSlider;
     [SerializeField] private Slider _deityMoveSlider;
@@ -20,6 +21,16 @@ public class PlayerPartyProfileHelper : MonoBehaviour
     [SerializeField] private TextMeshProUGUI availableMovesText;
     [SerializeField] private CanvasGroup _partyProfileGroup;
     [SerializeField] private GameObject _deityMoveObj;
+
+    void Start()
+    {
+        _outline.enabled = false;
+    }
+    
+    public void SetOutlineHighlight(bool isHighlighted)
+    {
+        _outline.enabled = isHighlighted;
+    }
 
     public void FillPlayerDetails(Unit unit) // Avoid refreshing portrait and max values every single time.
     {
@@ -43,7 +54,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour
         _deityMoveObj.SetActive(true);
         DeityPowerController _deityPowerController = BattleManager.Instance.DeityPowerController;
         _deityMoveObj.GetComponentInChildren<Image>().sprite = unit.linkedDeity.deityPortrait;
-        
+
         // Clear old listeners before adding the new one
         Button deityButton = _deityMoveObj.GetComponentInChildren<Button>();
         deityButton.onClick.RemoveAllListeners();
