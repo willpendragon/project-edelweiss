@@ -3,8 +3,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
-public class PlayerPartyProfileHelper : MonoBehaviour
+
+public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image unitPortrait;
     [SerializeField] private Slider hpSlider;
@@ -21,6 +23,9 @@ public class PlayerPartyProfileHelper : MonoBehaviour
     [SerializeField] private TextMeshProUGUI availableMovesText;
     [SerializeField] private CanvasGroup _partyProfileGroup;
     [SerializeField] private GameObject _deityMoveObj;
+    
+    public event Action<Unit> OnProfileClicked;
+    private Unit _linkedUnit;
 
     void Start()
     {
@@ -30,6 +35,19 @@ public class PlayerPartyProfileHelper : MonoBehaviour
     public void SetOutlineHighlight(bool isHighlighted)
     {
         _outline.enabled = isHighlighted;
+    }
+    
+    public void Initialize(Unit unit)
+    {
+        _linkedUnit = unit;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (_linkedUnit == null)
+            return;
+
+        OnProfileClicked?.Invoke(_linkedUnit);
     }
 
     public void FillPlayerDetails(Unit unit) // Avoid refreshing portrait and max values every single time.
