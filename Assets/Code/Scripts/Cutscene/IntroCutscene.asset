@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b377847e4edd5e34098289a9f2e5d4aa, type: 3}
+  m_Name: IntroCutscene
+  m_EditorClassIdentifier: 
+  slides:
+  - image: {fileID: 21300000, guid: 8b210562a966c304da8f7f1578ed9f59, type: 3}
+    text: AAAAA
+    duration: 5
+    fadeDuration: 1
+  - image: {fileID: 21300000, guid: 13d45d1dd5d37ad438c9820e052b2670, type: 3}
+    text: AAAAA
+    duration: 5
+    fadeDuration: 1
+  - image: {fileID: 21300000, guid: f67b5224c05a03640a47fa5db93b311f, type: 3}
+    text: AAAA
+    duration: 5
+    fadeDuration: 1
+  - image: {fileID: 21300000, guid: 291cdb5bdbc8c164eb4cb0708321e66b, type: 3}
+    text: AAAAA
+    duration: 5
+    fadeDuration: 1
