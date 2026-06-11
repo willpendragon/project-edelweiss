@@ -9,6 +9,7 @@ public class BloodMoonManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _bloodMoonUIText;
     private bool _isBloodMoonActive;
     private int _bloodMoonStartDay;
+    private int _currentDay;
 
     public bool IsBloodMoonActive => _isBloodMoonActive;
     public float EnemyAttackMultiplier => _isBloodMoonActive ? _bloodMoonConfig.EnemyAttackPowerMultiplier : 1f;
@@ -41,17 +42,17 @@ public class BloodMoonManager : MonoBehaviour
         }
 
         GameSaveData saveData = SaveStateManager.saveData;
-        int currentDay = saveData.calendarData.currentDay;
+        _currentDay = saveData.calendarData.currentDay;
 
         // Check if blood moon should be active based on cycle
-        CheckBloodMoonCycle(currentDay);
+        CheckBloodMoonCycle(_currentDay);
     }
 
     public void UpdateBloodMoonState(int currentDay)
     {
         if (_bloodMoonConfig == null) return;
 
-        // Recalculate based on current day
+        _currentDay = currentDay;
         CheckBloodMoonCycle(currentDay);
         UpdateBloodMoonUI();
     }
@@ -83,15 +84,55 @@ public class BloodMoonManager : MonoBehaviour
         Debug.Log($"[Blood Moon] Day {currentDay} (cycle day {dayInCycle + 1}) - Blood Moon Active: {_isBloodMoonActive}");
     }
 
+    public string GetBloodMoonStatusMessage()
+    {
+        if (_bloodMoonConfig == null) return "";
+
+        int cycleDays = _bloodMoonConfig.DaysBeforeBloodMoon + _bloodMoonConfig.BloodMoonDuration;
+        int dayInCycle = (_currentDay - 1) % cycleDays;
+        int bloodMoonStartInCycle = _bloodMoonConfig.DaysBeforeBloodMoon;
+        int bloodMoonEndInCycle = _bloodMoonConfig.DaysBeforeBloodMoon + _bloodMoonConfig.BloodMoonDuration - 1;
+
+        if (_isBloodMoonActive)
+        {
+            // Blood moon is active - show days remaining
+            int daysRemainingInBloodMoon = bloodMoonEndInCycle - dayInCycle;
+            if (daysRemainingInBloodMoon == 0)
+            {
+                return "Alert: No Blood Moon in next battle";
+            }
+            else
+            {
+                return $"Alert: Blood Moon in next battle. -{daysRemainingInBloodMoon} day(s) to Blood Moon end";
+            }
+        }
+        else
+        {
+            // Blood moon is NOT active - show days until it starts
+            int daysUntilBloodMoon = bloodMoonStartInCycle - dayInCycle;
+            
+            if (daysUntilBloodMoon == 1)
+            {
+                return "Alert: Blood Moon will start in next battle";
+            }
+            else
+            {
+                return $"{daysUntilBloodMoon} day(s) to Blood Moon";
+            }
+        }
+    }
+
     private void UpdateBloodMoonUI()
     {
         if (_bloodMoonUIText == null)
             return;
 
-        if (_isBloodMoonActive)
+        string statusMessage = GetBloodMoonStatusMessage();
+        
+        if (!string.IsNullOrEmpty(statusMessage))
         {
-            _bloodMoonUIText.text = "BLOOD MOON IS ACTIVE";
-            _bloodMoonUIText.color = new Color(1f, 0.2f, 0.2f); // Red tint
+            _bloodMoonUIText.text = statusMessage;
+            _bloodMoonUIText.color = _isBloodMoonActive ? new Color(1f, 0.2f, 0.2f) : new Color(1f, 0.7f, 0.2f); // Red for active, orange for warning
             _bloodMoonUIText.gameObject.SetActive(true);
         }
         else

@@ -5,7 +5,7 @@ using ProjectEdelweiss.Utils;
 public class CalendarController : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _currentDayText;
-    [SerializeField] TextMeshProUGUI _bloodMoonWarningText; // Hook your UI text here
+    [SerializeField] TextMeshProUGUI _bloodMoonWarningText;
     [SerializeField] private int _daysCounter = 1;
     [SerializeField] private FeedingHelper _feedingHelper;
     private GameStatsManager _gameStatsManager;
@@ -20,7 +20,7 @@ public class CalendarController : MonoBehaviour
         _daysCounter = _gameStatsManager.currentDay;
         UpdateCurrentDayText();
         
-        // Initialize blood moon display on startup
+        // Show blood moon info at game start
         if (_bloodMoonManager != null)
         {
             _bloodMoonManager.LoadBloodMoonState();
@@ -38,21 +38,30 @@ public class CalendarController : MonoBehaviour
     {
         if (_bloodMoonManager == null) return;
 
-        if (_bloodMoonManager.IsBloodMoonActive)
+        string statusMessage = _bloodMoonManager.GetBloodMoonStatusMessage();
+        
+        if (_bloodMoonWarningText != null && !string.IsNullOrEmpty(statusMessage))
         {
-            if (_bloodMoonWarningText != null)
-            {
-                _bloodMoonWarningText.text = "BLOOD MOON";
-                _bloodMoonWarningText.color = new Color(1f, 0.2f, 0.2f); // Red tint
-                _bloodMoonWarningText.gameObject.SetActive(true);
-            }
+            _bloodMoonWarningText.text = statusMessage;
+            _bloodMoonWarningText.color = _bloodMoonManager.IsBloodMoonActive 
+                ? new Color(1f, 0.2f, 0.2f)  // Red for active
+                : new Color(1f, 0.7f, 0.2f); // Orange for warning
+            _bloodMoonWarningText.gameObject.SetActive(true);
         }
-        else
+        else if (_bloodMoonWarningText != null)
         {
-            if (_bloodMoonWarningText != null)
-            {
-                _bloodMoonWarningText.gameObject.SetActive(false);
-            }
+            _bloodMoonWarningText.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Call this when the player clicks on a battle node to hide the blood moon info
+    /// </summary>
+    public void HideBloodMoonInfo()
+    {
+        if (_bloodMoonWarningText != null)
+        {
+            _bloodMoonWarningText.gameObject.SetActive(false);
         }
     }
 
@@ -61,8 +70,10 @@ public class CalendarController : MonoBehaviour
         _daysCounter += days;
         UpdateCurrentDayText();
         
-        // Update blood moon state before applying buffs
+        // Update blood moon state after returning from battle
         _bloodMoonManager.UpdateBloodMoonState(_daysCounter);
+        
+        // Show blood moon info when returning from battle
         UpdateBloodMoonDisplay();
         
         GameManager.Instance.BuffManager.UpdateBuffs(days);
