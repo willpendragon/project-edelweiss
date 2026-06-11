@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 8394083939461001893}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.35, z: 0}
-  m_LocalScale: {x: 4.5, y: 4.5, z: 4.5}
+  m_LocalPosition: {x: 0, y: 0.78, z: 0}
+  m_LocalScale: {x: 2.8, y: 2.8, z: 2.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8194179579621356907}
@@ -53,7 +53,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 36e4d6f8fe4c2e44a960b53fcd82d3be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -118,9 +118,25 @@ PrefabInstance:
       propertyPath: fieldPrize
       value: 
       objectReference: {fileID: 11400000, guid: 27cb5a7026d37d84692fa4ea27970834, type: 2}
+    - target: {fileID: 2055579028622872174, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2055579028622872174, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171084943389819688, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.03
+      objectReference: {fileID: 0}
     - target: {fileID: 2788514426886983777, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitSprite
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: unitType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitHealth
@@ -138,6 +154,10 @@ PrefabInstance:
       propertyPath: positionIndex
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: characterAnimator
+      value: 
+      objectReference: {fileID: 3385465322218298873}
     - target: {fileID: 3031252642805861247, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: unitMovementLimit
       value: 0
@@ -214,6 +234,10 @@ PrefabInstance:
       propertyPath: enemyBehavior
       value: 
       objectReference: {fileID: 11400000, guid: 942df072a2e990a4799e28f0faee4951, type: 2}
+    - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: _enemyAIPriority
+      value: 
+      objectReference: {fileID: 11400000, guid: ce2308d695df5c044ba15a3aa8baa10e, type: 2}
     - target: {fileID: 5009294011632168283, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
       propertyPath: enemyCoinsReward
       value: 30
@@ -302,6 +326,10 @@ PrefabInstance:
       propertyPath: restorePlayerUnitPositionCooldown
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 9200487149715040493, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}
+      propertyPath: _ingredient
+      value: 
+      objectReference: {fileID: 11400000, guid: 3cc29c652b49f8e408bda80ffde41ff3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 4166987097090433852, guid: 4c417ea9a725fdc45959d3c123a66a12, type: 3}

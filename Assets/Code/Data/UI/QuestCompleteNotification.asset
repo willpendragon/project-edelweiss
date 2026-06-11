@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e7d7a786e274d44fa2c338eaa0e2ce8, type: 3}
+  m_Name: QuestCompleteNotification
+  m_EditorClassIdentifier: 
+  categoryName: New Quest Completed
+  icon: {fileID: 499045675, guid: 267274710855d2845ad818c804f9b078, type: 3}
+  themeColor: {r: 0.93143487, g: 0.93207544, b: 0.10375927, a: 0}
+  priority: 0
+  displayDuration: 3

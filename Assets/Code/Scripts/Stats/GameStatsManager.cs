@@ -1,0 +1,515 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+public class GameStatsManager : MonoBehaviour
+{
+    public int currentDay;
+    public int enemiesKilled;
+    public float warFunds;
+    public int timesSingleTargetSpellWasUsed;
+    public int captureCrystalsCount;
+    public int unlockedPuzzleKeys;
+    public bool hasMinibossKey;
+    public bool hasBossKey;
+
+    [SerializeField] private bool _secretLevelUnlocked; // Flow related bool.
+
+    public int currentNodeId; // Expose to Unity Editor logically
+
+    public Inventory inventory;
+    [SerializeField] FaithController faithController;
+    [SerializeField] TurnController _turnController;
+    [SerializeField] private List<Ingredient> allIngredientPrototypes;
+
+    private CharacterData characterData;
+
+    public bool SecretLevelUnlocked => _secretLevelUnlocked;
+
+    public void Awake()
+    {
+        LoadWarFunds();
+        LoadEnemiesKilled();
+        LoadUsedSingleTargetSpells();
+        LoadUnlockedKeys();
+        LoadBossKeys();
+        LoadCurrentNodeId(); // Bind the retrieval sequence
+        LoadCharacterData();
+    }
+
+    void Start()
+    {
+        LoadDeityTributesFromBakedItems();
+
+        // Load ingredients AFTER PersistentInventoryManager has been initialized.
+        StartCoroutine(DelayedLoadIngredients());
+
+        if (faithController != null)
+        {
+            faithController.DecreaseFaithPoints();
+        }
+    }
+
+    IEnumerator DelayedLoadIngredients()
+    {
+        // Wait until the CurrentInventory is initialized
+        yield return new WaitUntil(() => PersistentInventoryManager.CurrentInventory != null);
+
+        LoadIngredients(allIngredientPrototypes);
+    }
+
+    public void SaveCharacterData()
+    {
+        if (GameManager.Instance == null) return;
+        List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
+        GameSaveData characterSaveData = SaveStateManager.saveData;
+
+        foreach (var playerUnit in playerUnits)
+        {
+            if (playerUnit == null || playerUnit.gameObject == null) continue;
+
+            CharacterData existingCharacterData =
+                characterSaveData.characterData.Find(character => character.unitId == playerUnit.Id);
+
+            if (existingCharacterData != null)
+            {
+                // Update existing character data
+                existingCharacterData.unitHealthPoints = playerUnit.unitHealthPoints;
+                existingCharacterData.unitSavedManaPoints = playerUnit.unitManaPoints;
+                existingCharacterData.unitShieldPoints = playerUnit.unitShieldPoints;
+                existingCharacterData.unitLifeCondition = playerUnit.currentUnitLifeCondition;
+                existingCharacterData.unitAttackPower = playerUnit.unitAttackPower;
+                existingCharacterData.unitMagicPower = playerUnit.unitMagicPower;
+                existingCharacterData.unitFaithPoints = playerUnit.unitFaithPoints;
+                existingCharacterData.unitOccupiedFoodSlots = playerUnit.unitOccupiedFoodSlots;
+
+                SaveBuffsToData(playerUnit.gameObject, existingCharacterData);
+            }
+            else
+            {
+                // Add new character data
+                CharacterData newCharacterData = new CharacterData()
+                {
+                    unitId = playerUnit.Id,
+                    unitHealthPoints = playerUnit.unitHealthPoints,
+                    unitSavedManaPoints = playerUnit.unitManaPoints,
+                    unitShieldPoints = playerUnit.unitShieldPoints,
+                    unitLifeCondition = playerUnit.currentUnitLifeCondition,
+                    unitAttackPower = playerUnit.unitAttackPower,
+                    unitMagicPower = playerUnit.unitMagicPower,
+                    unitFaithPoints = playerUnit.unitFaithPoints,
+                    unitOccupiedFoodSlots = playerUnit.unitOccupiedFoodSlots
+                };
+
+                SaveBuffsToData(playerUnit.gameObject, newCharacterData);
+                characterSaveData.characterData.Add(newCharacterData);
+            }
+        }
+
+        SaveStateManager.SaveGame(characterSaveData);
+    }
+
+    public void LoadCharacterData()
+    {
+        if (GameManager.Instance == null)
+            return;
+
+        List<Unit> playerUnits = GameManager.Instance.playerPartyMembersInstances;
+        GameSaveData characterSaveData = SaveStateManager.saveData;
+
+        foreach (var playerUnit in playerUnits)
+        {
+            if (playerUnit == null || playerUnit.gameObject == null) continue;
+
+            // Initialize base limits first before applying the overriding save data
+            if (playerUnit.unitTemplate != null && playerUnit.unitMaxHealthPoints == 0)
+            {
+                playerUnit.RetrieveTemplateValues();
+            }
+
+            CharacterData loadedCharacterData =
+                characterSaveData?.characterData?.Find(character => character.unitId == playerUnit.Id);
+            if (loadedCharacterData != null)
+            {
+                // Correctly apply the saved, potentially depleted stats to the unit
+                playerUnit.unitHealthPoints = loadedCharacterData.unitHealthPoints;
+                playerUnit.unitManaPoints = loadedCharacterData.unitSavedManaPoints;
+                playerUnit.unitShieldPoints = loadedCharacterData.unitShieldPoints;
+                playerUnit.currentUnitLifeCondition = loadedCharacterData.unitLifeCondition;
+                playerUnit.unitAttackPower = loadedCharacterData.unitAttackPower;
+                playerUnit.unitMagicPower = loadedCharacterData.unitMagicPower;
+                playerUnit.unitFaithPoints = loadedCharacterData.unitFaithPoints;
+
+                Debug.Log($"Restoring Player Units HP, Mana, and Faith for {playerUnit.gameObject.name}");
+
+                playerUnit.unitOccupiedFoodSlots = loadedCharacterData.unitOccupiedFoodSlots;
+                LoadBuffsFromData(playerUnit.gameObject, loadedCharacterData);
+            }
+
+            // Will trigger death sequence accurately if HP is loaded as 0
+            if (TurnController.Instance != null && TurnController.Instance.battleStarted)
+            {
+                playerUnit.CheckUnitHealthStatus();
+            }
+        }
+    }
+
+    public void LoadWarFunds()
+    {
+        GameSaveData resourceSaveData = SaveStateManager.saveData;
+        if (resourceSaveData != null && resourceSaveData.resourceData != null)
+        {
+            warFunds = resourceSaveData.resourceData.warFunds;
+            Debug.Log($"Loaded War Funds: {warFunds}");
+        }
+    }
+
+    public void LoadCalendarData()
+    {
+        GameSaveData calendarSaveData = SaveStateManager.saveData;
+        if (calendarSaveData != null && calendarSaveData.calendarData != null)
+        {
+            currentDay = calendarSaveData.calendarData.currentDay;
+            Debug.Log($"Loaded Current Day: {currentDay}");
+        }
+    }
+
+    private void SaveBuffsToData(GameObject unitObject, CharacterData data)
+    {
+        UnitBuffController buffController = unitObject.GetComponent<UnitBuffController>();
+        if (buffController == null)
+            return;
+
+        data.activeBuffs.Clear();
+
+        var runtimeBuffs = buffController.GetActiveBuffs();
+
+        foreach (var kvp in runtimeBuffs)
+        {
+            foreach (var entry in kvp.Value)
+            {
+                data.activeBuffs.Add(new SavedBuffEntry
+                {
+                    type = entry.Type,
+                    appliedValue = entry.AppliedValue,
+                    remainingDuration = entry.RemainingDurationDays
+                });
+            }
+        }
+    }
+
+    private void LoadBuffsFromData(GameObject unitObject, CharacterData data)
+    {
+        UnitBuffController buffController = unitObject.GetComponent<UnitBuffController>();
+        if (buffController == null || data.activeBuffs == null) return;
+
+        buffController.ClearAppliedBuffs();
+        foreach (var savedBuff in data.activeBuffs)
+        {
+            // Pass 'true' for isLoading to prevent stats from being added twice
+            buffController.CreateAppliedBuffEntry(savedBuff.appliedValue, savedBuff.remainingDuration, savedBuff.type,
+                true);
+        }
+    }
+
+    public void SaveCalendarData(int daysPassed)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.calendarData != null)
+        {
+            gameSaveData.calendarData.currentDay += daysPassed;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Days Passed: {daysPassed}");
+        }
+    }
+
+    public void SaveWarFunds(float newWarFunds)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.warFunds += newWarFunds;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved War Funds: {newWarFunds}");
+        }
+    }
+
+    public void SaveSpentWarFunds(float spentWarFunds)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.warFunds -= spentWarFunds;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Spent War Funds: {spentWarFunds}");
+        }
+    }
+
+    public void LoadUnlockedKeys()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            unlockedPuzzleKeys = gameSaveData.resourceData.puzzleLevelKeys;
+            Debug.Log($"Loaded Keys: {unlockedPuzzleKeys}");
+        }
+    }
+
+    public void SaveUnlockedKeys(int unlockedKeys)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.puzzleLevelKeys += unlockedKeys;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Keys: {unlockedKeys}");
+        }
+    }
+
+    public void LoadBossKeys()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.resourceData != null)
+        {
+            hasMinibossKey = gameSaveData.resourceData.hasMinibossKey;
+            hasBossKey = gameSaveData.resourceData.hasBossKey;
+        }
+    }
+
+    public void SaveMinibossKey(bool hasKey)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.hasMinibossKey = hasKey;
+            hasMinibossKey = hasKey;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Miniboss Key Status: {hasKey}");
+        }
+    }
+
+    public void SaveBossKey(bool hasKey)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.hasBossKey = hasKey;
+            hasBossKey = hasKey;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Boss Key Status: {hasKey}");
+        }
+    }
+
+    public void LoadEnemiesKilled()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            enemiesKilled = gameSaveData.enemiesKilled;
+        }
+    }
+
+    public void LoadDeityTributesFromBakedItems()
+    {
+        GameSaveData save = SaveStateManager.saveData;
+
+        if (save != null && save.bakedItems != null)
+        {
+            var deityEntries = save.bakedItems
+                .FindAll(item => item.pastryName == "DeityTribute");
+
+            captureCrystalsCount = deityEntries.Sum(item => item.quantity);
+
+            Debug.Log($"Loaded Deity Tributes Battle Items Total: {captureCrystalsCount}");
+        }
+        else
+        {
+            captureCrystalsCount = 0;
+            Debug.LogWarning("Could not load deity tributes.");
+        }
+    }
+
+    public void ConsumeDeityTribute()
+    {
+        GameSaveData save = SaveStateManager.saveData;
+
+        if (save?.bakedItems == null)
+            return;
+
+        // Search for any entry with pastryName == "DeityTribute"
+        for (int i = 0; i < save.bakedItems.Count; i++)
+        {
+            BakedItemsData item = save.bakedItems[i];
+
+            if (item.pastryName == "DeityTribute")
+            {
+                if (item.quantity > 1)
+                {
+                    item.quantity--; // reduce this entry
+                }
+                else
+                {
+                    save.bakedItems.RemoveAt(i); // remove entry entirely
+                }
+
+                SaveStateManager.SaveGame(save);
+
+                Debug.Log("Consumed ONE DeityTribute from bakedItems.");
+                return;
+            }
+        }
+
+        Debug.LogWarning("Tried to consume a DeityTribute but none were found.");
+    }
+
+
+    public void SaveCaptureCrystalsCount()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData.resourceData != null)
+        {
+            gameSaveData.resourceData.captureCrystalsCount = captureCrystalsCount;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Capture Crystals: {captureCrystalsCount}");
+        }
+    }
+
+    public void SaveEnemiesKilled()
+    {
+        Debug.Log("Increasing Enemies Killed");
+
+        // Prepare the Save Data
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.enemiesKilled = enemiesKilled;
+
+        SaveStateManager.SaveGame(saveData);
+    }
+
+    public void LoadUsedSingleTargetSpells()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            timesSingleTargetSpellWasUsed = gameSaveData.timesSingleTargetSpellWasUsed;
+        }
+    }
+
+    public void SaveUsedSingleTargetSpells()
+    {
+        Debug.Log("Increasing Used Single Target Spells statistics");
+
+        // Prepare the save data
+        GameSaveData saveData = SaveStateManager.saveData;
+        saveData.timesSingleTargetSpellWasUsed = timesSingleTargetSpellWasUsed;
+
+        SaveStateManager.SaveGame(saveData);
+    }
+
+    public void SaveIngredients()
+    {
+        var currentInventoryData = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
+        var savedInventory = SaveStateManager.saveData.savedInventory;
+
+        // Merge or add new ingredients
+        foreach (var newEntry in currentInventoryData)
+        {
+            var existingEntry = savedInventory.Find(e => e.ingredientName == newEntry.ingredientName);
+
+            if (existingEntry != null)
+            {
+                existingEntry.quantity += newEntry.quantity;
+            }
+            else
+            {
+                savedInventory.Add(new IngredientSaveEntry
+                {
+                    ingredientName = newEntry.ingredientName,
+                    quantity = newEntry.quantity
+                });
+            }
+        }
+
+        SaveStateManager.saveData.savedInventory = savedInventory;
+        SaveStateManager.SaveGame(SaveStateManager.saveData);
+    }
+
+    public void SaveIngredientsAfterBaking()
+    {
+        var currentInventoryData = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
+
+        // Create a fresh list that matches exactly what's in memory.
+        List<IngredientSaveEntry> newSavedInventory = new List<IngredientSaveEntry>();
+
+        foreach (var entry in currentInventoryData)
+        {
+            newSavedInventory.Add(new IngredientSaveEntry
+            {
+                ingredientName = entry.ingredientName,
+                quantity = entry.quantity
+            });
+        }
+
+        SaveStateManager.saveData.savedInventory = newSavedInventory;
+
+        SaveStateManager.SaveGame(SaveStateManager.saveData);
+
+        Debug.Log($"[SaveIngredients] Inventory saved ({newSavedInventory.Count} ingredients).");
+    }
+
+    public void LoadIngredients(List<Ingredient> allIngredientPrototypes)
+    {
+        PersistentInventoryManager.FromSaveData(
+            SaveStateManager.saveData.savedInventory,
+            PersistentInventoryManager.CurrentInventory,
+            allIngredientPrototypes
+        );
+        Debug.Log("Loaded ingredients into runtime inventory.");
+    }
+
+    // Loads a bool that indicates whether the player has unlocked the secret level in the current playthrough. This is used to determine whether to show the secret level node on the overworld map.
+
+    public void LoadGameFlowData()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.gameFlowData != null)
+        {
+            _secretLevelUnlocked = gameSaveData.gameFlowData.secretLevelUnlocked;
+            Debug.Log($"Loaded Game Flow Data: Has Unlocked Secret Level = {_secretLevelUnlocked}");
+        }
+    }
+
+    // Save Game Flow Data, this indicates whether the player has unlocked the secret level.
+    public void SaveGameFlowData(bool hasUnlockedSecretLevel)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null && gameSaveData.gameFlowData != null)
+        {
+            gameSaveData.gameFlowData.secretLevelUnlocked = hasUnlockedSecretLevel;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Game Flow Data: Has Unlocked Secret Level = {hasUnlockedSecretLevel}");
+        }
+    }
+
+    public void LoadCurrentNodeId()
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            currentNodeId = gameSaveData.currentNodeId;
+        }
+    }
+
+    public void SaveCurrentNodeId(int nodeId)
+    {
+        GameSaveData gameSaveData = SaveStateManager.saveData;
+        if (gameSaveData != null)
+        {
+            gameSaveData.currentNodeId = nodeId;
+            currentNodeId = nodeId;
+            SaveStateManager.SaveGame(gameSaveData);
+            Debug.Log($"Saved Player's Current Node Map position ID: {nodeId}");
+        }
+    }
+}

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10f59b06a46d8d842a35a787e59b306d, type: 3}
+  m_Name: UnitTemplate_Edelweiss 1
+  m_EditorClassIdentifier: 
+  unitName: Edelweiss
+  unitHealthPoints: 30
+  unitMaxHealthPoints: 30
+  unitManaPoints: 35
+  unitMaxManaPoints: 35
+  unitOpportunityPoints: 4
+  unitFaithPoints: 100
+  unitMovemementLimit: 4
+  unitShieldPoints: 10
+  meleeAttackPower: 1.5
+  unitMagicPower: 1
+  unitMaxFoodSlots: 4
+  unitMeleeAttackBaseDamage: 1
+  spellsList:
+  - {fileID: 11400000, guid: eb9c1d71abcc4fc4eb07b21af5c1fd68, type: 2}
+  coinsRewardRange: {x: 0, y: 0}
+  unitExperiencePointsReward: 0
+  unitPortrait: {fileID: -364592101, guid: c01ed040a0c74b84ab40743d1bdc6763, type: 3}
+  unitMiniPortrait: {fileID: 21300000, guid: 9403ec44ea8adfe40ae3d4d2be0147ca, type: 3}
+  unitCalloutPortrait: {fileID: 6531937135514718842, guid: 04a9be1958d730941bcc7bb79b6a3918, type: 3}
+  unitBattlePortrait: {fileID: 124330149, guid: a1e4d64f89924334f88b4a67c66b7c06, type: 3}
+  unitCriticalHitVoice: {fileID: 7605954612506869959, guid: ff05ccc712fa6af499a0d64ffe3c3369, type: 3}

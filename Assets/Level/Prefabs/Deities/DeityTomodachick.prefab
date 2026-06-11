@@ -142,7 +142,6 @@ GameObject:
   - component: {fileID: 3348349630364506731}
   - component: {fileID: -5287236863881772563}
   - component: {fileID: 8320840809267973040}
-  - component: {fileID: 3098965702385623563}
   m_Layer: 0
   m_Name: DeityTomodachick
   m_TagString: Deity
@@ -242,13 +241,17 @@ MonoBehaviour:
   deitySpecialAttackPower: 35
   summoningPrice: 50
   deityPrayerPower: 0
+  _maxEnmity: 0
   deityAttackNotification: {fileID: 0}
   battleInterface: {fileID: 0}
   deityAttackVFX: {fileID: 6007220448518202060, guid: 2d47f96f93eed514e9334836fe933381, type: 3}
   deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
   deityPortrait: {fileID: 21300000, guid: 8f298345a85fe8d40a479ea7bd37db74, type: 3}
   deityHealthBar: {fileID: 0}
+  enmityTracker: {fileID: 0}
   deityCry: {fileID: 8214377848972271374}
+  currentDeityStatus: 0
+  _enmityBar: {fileID: 0}
 --- !u!114 &-5287236863881772563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,6 +280,7 @@ MonoBehaviour:
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitShieldPoints: 0
+  unitOccupiedFoodSlots: 0
   unitCoins: 0
   unitExperiencePoints: 0
   coinsRewardRange: {x: 0, y: 0}
@@ -286,8 +290,10 @@ MonoBehaviour:
   unitMeleeAttackBaseDamage: 0
   currentUnitLifeCondition: 1
   currentUnitBuff: 0
+  currentUnitPhase: 0
   unitStatusController: {fileID: 0}
   fieldPrizeController: {fileID: 0}
+  unitType: 0
   hasHookshot: 0
   bossFlag: 0
   linkedDeity: {fileID: 0}
@@ -327,25 +333,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ea15ee3f60ec9a46b47097f03cb5504, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeCharacterSelectorIcon: {fileID: 0}
-  moveButton: {fileID: 0}
-  waitButton: {fileID: 0}
   currentUnitSelectionStatus: 0
-  unitSpellUIController: {fileID: 0}
   unitSprite: {fileID: 0}
   unitIconsController: {fileID: 0}
---- !u!114 &3098965702385623563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3348349630364506734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7fcd7f4ba1b8ee408bdcc6ce6c47ede, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  selectedTileInstance: {fileID: 0}
+  tileVisualizer: {fileID: 0}
+  _activePlayerUnit: {fileID: 0}
+  _selectionIcon: {fileID: 0}
+  _selectedUnitPanel: {fileID: 0}
+  _enemyUnitPanel: {fileID: 0}
+  _playerUnits: []
+  _reachableEnemyTiles: []
+  _selectedTile: {fileID: 0}
 --- !u!1001 &1207794267044334020
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad8258388c8b3654e96b1bff53259a8b, type: 3}
+  m_Name: PastryShopTutorial
+  m_EditorClassIdentifier: 
+  tutorialName: Pastry Shop Tutorial
+  pages:
+  - text: 'Knights suffer lose HP and spend MP during a battle.
+
+      Luckily, you
+      can heal them using baked Pastry!'
+    image: {fileID: 0}
+  - text: Once you've baked a Pastry, you can drag and drop it on a character, to
+      immediately restore their HP or MP, depending on the Pastry's type.
+    image: {fileID: 0}
+  - text: Watch out the Fullness meter. You can't eat more than 4 Pastries per day.
+    image: {fileID: 0}
+  - text: It's also said that sometimes a good combination of Pastries may make your
+      character feel better... and stronger!
+    image: {fileID: 0}

@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4664133959109485875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4379607206079133590}
+  - component: {fileID: 3213001565536075898}
+  - component: {fileID: 1702753161611451231}
+  m_Layer: 0
+  m_Name: CafeMenuUIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4379607206079133590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4664133959109485875}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.091325, y: 0.41633385, z: 7.0901437}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3213001565536075898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4664133959109485875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a835a6f9d094bca479c2bf9d5ccbbb16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  confirmPurchasePopup: {fileID: 0}
+  confirmationText: {fileID: 0}
+  foodShelfContainer: {fileID: 0}
+  foodShelfItemPrefab: {fileID: 2923197463146752496, guid: 250dca0ed771efc4ea7d51d206f17815, type: 3}
+  foodItemsContainer: {fileID: 0}
+  characterProfilesContainer: {fileID: 0}
+  itemFoodList:
+  - {fileID: 11400000, guid: 34f3dd3c1d29ffb46b19ab3631d297b6, type: 2}
+  - {fileID: 11400000, guid: f584122fe187cea4dbb40391afc24d83, type: 2}
+  - {fileID: 11400000, guid: 38c3d31bfdb718349b0c7039d43141fa, type: 2}
+  - {fileID: 11400000, guid: 47d042e9a1c132c4e9d94d7fa0458b78, type: 2}
+  itemFoodPrefab: {fileID: 3437867856187355362, guid: c0d92f4076ddbff448f2732704d11603, type: 3}
+  characterProfilesPrefab: {fileID: 1968320970506569678, guid: c7d9cc8a22433b6458748860f66657ef, type: 3}
+  warFundsCounter: {fileID: 0}
+  gameStatsManager: {fileID: 0}
+  currentPurchasedFood: {fileID: 0}
+  characterProfileSmallControllers: []
+  feedPlayerCharactersButtons: []
+  notificationTexts: {fileID: 0}
+  loveIconPrefab: {fileID: 5120850841120903217, guid: 10258258988811949999ec1b858880a4, type: 3}
+  loveIconPrefabTransform: {fileID: 0}
+  _feedButton: {fileID: 3166382711190854684, guid: 4abfbe9982719c24ea730a27fc8c1a12, type: 3}
+--- !u!114 &1702753161611451231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4664133959109485875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a38c02ded4280b8448309447e66d658a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menu1: {fileID: 0}
+  menu2: {fileID: 0}
+  menu3: {fileID: 0}
+  button1: {fileID: 0}
+  button2: {fileID: 0}
+  button3: {fileID: 0}
+  buttonText1: {fileID: 0}
+  buttonText2: {fileID: 0}
+  buttonText3: {fileID: 0}
+  cafeMenuGroup: {fileID: 0}

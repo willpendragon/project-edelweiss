@@ -64,11 +64,12 @@ MonoBehaviour:
     open: 0
   globalScale: 1
   rayMaterial: {fileID: 2100000, guid: e349799befeba9948a28f3e1a260fa29, type: 2}
-  globalBrightness: 0.441
+  globalBrightness: 0.788
   variationSpeed: 2.37
   variationScale: 10
   variationColor: {r: 1, g: 1, b: 1, a: 0.5254902}
   autoAssignSun: 1
+  useLumenSun: 0
   sunDirection: {x: 0, y: 0, z: 0}
   bidirectional: 1
   showLayerSettings: 0

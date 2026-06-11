@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10f59b06a46d8d842a35a787e59b306d, type: 3}
+  m_Name: UnitTemplate_Krysta
+  m_EditorClassIdentifier: 
+  unitName: Krysta
+  unitHealthPoints: 200
+  unitMaxHealthPoints: 200
+  unitManaPoints: 50
+  unitMaxManaPoints: 50
+  unitOpportunityPoints: 3
+  unitFaithPoints: 70
+  unitMovemementLimit: 4
+  unitShieldPoints: 50
+  meleeAttackPower: 10
+  unitMagicPower: 1
+  unitMaxFoodSlots: 4
+  unitMeleeAttackBaseDamage: 1.5
+  spellsList:
+  - {fileID: 11400000, guid: eb9c1d71abcc4fc4eb07b21af5c1fd68, type: 2}
+  coinsRewardRange: {x: 0, y: 0}
+  unitExperiencePointsReward: 0
+  physicAttackBehavior: {fileID: 11400000, guid: daabf2565e05fd4499690d0185ca82e4, type: 2}
+  unitPortrait: {fileID: -1154286777, guid: 69b9242306047d344af8b6c3b24278d9, type: 3}
+  unitMiniPortrait: {fileID: 21300000, guid: ec9ee0855ea04bb4b9282194d026485a, type: 3}
+  unitCalloutPortrait: {fileID: 6531937135514718842, guid: 5a65f18ea7cfc544e92a6c94637acce4, type: 3}
+  unitBattlePortrait: {fileID: 1272748540, guid: a1e4d64f89924334f88b4a67c66b7c06, type: 3}
+  unitCriticalHitVoice: {fileID: 3982073005121114864, guid: 869853d1f2c6c8240a8376a60856c6fb, type: 3}

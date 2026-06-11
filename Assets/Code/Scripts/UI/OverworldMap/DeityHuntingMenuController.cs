@@ -1,0 +1,78 @@
+using UnityEngine;
+using TMPro;
+
+public class DeityHuntingMenuController : MonoBehaviour
+{
+    // Made public so AchievementUnlockedNotifications can access it!
+    public Achievement[] achievements;
+    [SerializeField] GameObject achievementBlock;
+    [SerializeField] Transform deityHuntingMenu;
+    [SerializeField] GameStatsManager gameStatsManager;
+    private void Start()
+    {
+        if (achievements.Length > 0)
+
+        {
+            foreach (var achievement in achievements)
+            {
+                GameObject newAchievementBlock = Instantiate(achievementBlock, deityHuntingMenu);
+                PopulateAchievementBlock(achievement, newAchievementBlock);
+            }
+        }
+    }
+    private void PopulateAchievementBlock(Achievement achievement, GameObject newAchievementBlock)
+    {
+        string achievementName = achievement.achievementName;
+        string achievementDescription = achievement.GetDescription();
+        string spawnableDeityName = achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName;
+        string achievementRequirement = RetrieveRequirement(achievement);
+        string achievementProgress = RetrieveAchievementProgress(achievement);
+
+        AchievementBlockHelper currentAchievementBlockHelper = newAchievementBlock.GetComponent<AchievementBlockHelper>();
+        currentAchievementBlockHelper.PopulateTexts(achievementName, achievementDescription, spawnableDeityName, achievementRequirement, achievementProgress);
+    }
+    private string RetrieveRequirement(Achievement achievement)
+    {
+        if (achievement is KillBasedAchievement killBasedAchievement)
+        {
+            string achievementRequirement = killBasedAchievement.requiredKills.ToString();
+            return achievementRequirement;
+        }
+        else if (achievement is MoveBasedAchievement moveBasedAchievement)
+        {
+            string achievementRequirement = moveBasedAchievement.requiredUsedMoves.ToString();
+            return achievementRequirement;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    private string RetrieveAchievementProgress(Achievement achievement)
+    {
+        if (achievement is KillBasedAchievement killBasedAchievement)
+        {
+            // Fetch the specific enemy's kill count from the save data.
+            int progress = 0;
+            if (killBasedAchievement.targetEnemy != null && SaveStateManager.saveData.killsByEnemyName != null)
+            {
+                SaveStateManager.saveData.killsByEnemyName.TryGetValue(killBasedAchievement.targetEnemy.unitName, out progress);
+            }
+            else
+            {
+                // Fallback to total kills if no specific target is set (optional backwards compatibility)
+                progress = SaveStateManager.saveData.enemiesKilled;
+            }
+            return progress.ToString();
+        }
+        else if (achievement is MoveBasedAchievement moveBasedAchievement)
+        {
+            string achievementProgress = gameStatsManager.timesSingleTargetSpellWasUsed.ToString();
+            return achievementProgress;
+        }
+        else
+        {
+            return null;
+        }
+    }
+}
