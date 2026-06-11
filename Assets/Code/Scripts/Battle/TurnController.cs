@@ -314,62 +314,52 @@ public class TurnController : MonoBehaviour
         //}
     }
 
-        private void HandlePuzzleBattle(GameStatsManager gameStatsManager)
+    private void HandlePuzzleBattle(GameStatsManager gameStatsManager)
+    {
+        // Try to find the Puzzle Deity / Resident Deity in the scene dynamically
+        GameObject deityObject = GameObject.FindGameObjectWithTag(GameTags.Deity);
+        Unit residentDeityUnit = deityObject != null ? deityObject.GetComponent<Unit>() : null;
+
+        bool isResidentDeityPresent = residentDeityUnit != null;
+        bool isDeityBoss = isResidentDeityPresent && residentDeityUnit.unitType == Unit.UnitType.DeityBoss;
+        bool residentDeityDefeated = false;
+
+        if (isResidentDeityPresent)
         {
-            // Try to find the Puzzle Deity / Resident Deity in the scene dynamically
-            GameObject deityObject = GameObject.FindGameObjectWithTag(GameTags.Deity);
-            Unit residentDeityUnit = deityObject != null ? deityObject.GetComponent<Unit>() : null;
-
-            bool isResidentDeityPresent = residentDeityUnit != null;
-            bool isDeityBoss = isResidentDeityPresent && residentDeityUnit.unitType == Unit.UnitType.DeityBoss;
-            bool residentDeityDefeated = false;
-
-            if (isResidentDeityPresent)
+            if (residentDeityUnit.currentUnitLifeCondition == UnitLifeCondition.unitDead || residentDeityUnit.HealthPoints <= 0)
             {
-                if (residentDeityUnit.currentUnitLifeCondition == UnitLifeCondition.unitDead || residentDeityUnit.HealthPoints <= 0)
-                {
-                    residentDeityDefeated = true;
-                }
+                residentDeityDefeated = true;
             }
+        }
 
-            // Check if all standard enemies are dead
-            bool allEnemiesDefeated = enemyUnitsOnBattlefield.All(enemy =>
-                enemy != null && enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead);
+        // Check if all standard enemies are dead
+        bool allEnemiesDefeated = enemyUnitsOnBattlefield.All(enemy =>
+            enemy != null && enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead);
 
-            bool playerPartyDefeated = playerUnitsOnBattlefield.All(player =>
-                player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead);
+        bool playerPartyDefeated = playerUnitsOnBattlefield.All(player =>
+            player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead);
 
-            if (playerPartyDefeated)
+        if (playerPartyDefeated)
+        {
+            BattleFlowController.Instance.PlayerPartyDefeatSequence();
+            return;
+        }
+
+        // Victory conditions
+        if (isResidentDeityPresent)
+        {
+            if (isDeityBoss)
             {
-                BattleFlowController.Instance.PlayerPartyDefeatSequence();
-                return;
-            }
-
-            // Victory conditions
-            if (isResidentDeityPresent)
-            {
-                if (isDeityBoss)
+                // Scenario 1 & 3: Resident deity is a killable DeityBoss.
+                // Victory triggers ONLY when it is defeated. Regular enemies' status doesn't matter.
+                if (residentDeityDefeated)
                 {
-                    // Scenario 1 & 3: Resident deity is a killable DeityBoss.
-                    // Victory triggers ONLY when it is defeated. Regular enemies' status doesn't matter.
-                    if (residentDeityDefeated)
-                    {
-                        BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
-                    }
-                }
-                else
-                {
-                    // Scenario: Resident deity is an untouchable normal Deity. 
-                    // Victory triggers when all standard enemies are dead.
-                    if (allEnemiesDefeated)
-                    {
-                        BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
-                    }
+                    BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
                 }
             }
             else
             {
-                // Scenario 2: Resident deity is NOT present at all. 
+                // Scenario: Resident deity is an untouchable normal Deity. 
                 // Victory triggers when all standard enemies are dead.
                 if (allEnemiesDefeated)
                 {
@@ -377,6 +367,16 @@ public class TurnController : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            // Scenario 2: Resident deity is NOT present at all. 
+            // Victory triggers when all standard enemies are dead.
+            if (allEnemiesDefeated)
+            {
+                BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
+            }
+        }
+    }
 
     public void RestorePlayerUnits()
     {
@@ -389,6 +389,8 @@ public class TurnController : MonoBehaviour
             {
                 playerUnitComponent.unitOpportunityPoints = playerUnitComponent.unitTemplate.unitOpportunityPoints;
                 playerUnit.GetComponent<UnitIconsController>().HideWaitingIcon();
+
+                AttemptStunRecovery(playerUnit);
             }
         }
 
@@ -415,6 +417,32 @@ public class TurnController : MonoBehaviour
         else
         {
             Debug.LogWarning("End Turn button not found in the current scene.");
+        }
+    }
+
+    private void AttemptStunRecovery(GameObject playerUnit)
+    {
+        UnitStatusController statusController = playerUnit.GetComponent<UnitStatusController>();
+
+        if (statusController != null && statusController.unitCurrentStatus == UnitStatus.stun)
+        {
+            // 30% chance to recover from stun
+            float recoveryChance = 0.3f;
+            if (UnityEngine.Random.value < recoveryChance)
+            {
+                statusController.unitCurrentStatus = UnitStatus.basic;
+
+                // Remove stun icon
+                BattleFeedbackController battleFeedbackController = playerUnit.GetComponent<BattleFeedbackController>();
+                if (battleFeedbackController != null && battleFeedbackController.stunIcon != null)
+                {
+                    Destroy(battleFeedbackController.stunIcon);
+                    battleFeedbackController.stunIcon = null;
+                }
+
+                // Log for debugging
+                Debug.Log($"{playerUnit.name} recovered from stun!");
+            }
         }
     }
 
