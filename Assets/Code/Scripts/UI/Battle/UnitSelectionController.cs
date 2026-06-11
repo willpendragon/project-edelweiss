@@ -17,6 +17,7 @@ public class UnitSelectionController : MonoBehaviour
     }
 
     public delegate void UnitTurnEnded();
+
     public static event UnitTurnEnded OnUnitTurnEnded;
 
     private const int ATTACKABLE_TILE_RANGE = 2;
@@ -37,29 +38,35 @@ public class UnitSelectionController : MonoBehaviour
 
     private BattleInterface _battleUI;
     private GridMovementController _gridMovementController;
-
+    private PlayerPartyProfilesUIManager _playerPartyProfilesUIManager;
 
     public delegate void FaithlessUnit(string notification);
+
     public static event FaithlessUnit OnFaithlessUnit;
 
     private void Awake()
     {
         _battleUI = GameObject.FindGameObjectWithTag(GameTags.BattleInterfaceCanvas)?.GetComponent<BattleInterface>();
-        _gridMovementController = GameObject.FindGameObjectWithTag(GameTags.GridMovementController)?.GetComponent<GridMovementController>();
+        _gridMovementController = GameObject.FindGameObjectWithTag(GameTags.GridMovementController)
+            ?.GetComponent<GridMovementController>();
+        _playerPartyProfilesUIManager = FindAnyObjectByType<PlayerPartyProfilesUIManager>();
     }
 
     private void OnEnable()
     {
         MovePlayerAction.OnUnitMovedToTile += OutlineAttackableEnemiesWrapper;
     }
+
     private void OnDisable()
     {
         MovePlayerAction.OnUnitMovedToTile -= OutlineAttackableEnemiesWrapper;
     }
+
     private void Start()
     {
         SetPlayerUnits();
     }
+
     private void SetPlayerUnits()
     {
         _playerUnits = new List<Unit>();
@@ -93,6 +100,7 @@ public class UnitSelectionController : MonoBehaviour
             OnFaithlessUnit($"{playerUnit.unitTemplate.unitName} became Faithless...");
             return;
         }
+
         if (playerUnit.gameObject.tag == GameTags.Enemy || playerUnit.gameObject.tag == GameTags.Deity)
             return;
         // Play Feedback for invalid selection. Include negative statuses as invalid as well (such as paralysis).
@@ -104,11 +112,13 @@ public class UnitSelectionController : MonoBehaviour
         ChangeActivePlayerUnitTile(playerUnit);
         SpawnUnitInfoPanel(playerUnit);
         PlaySelectionFeedback(playerUnit);
+        _playerPartyProfilesUIManager?.HighlightSelectedUnitProfile(playerUnit.unitTemplate.unitName);
         var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
         reachableTilesVisualizer.ShowReachableTiles();
 
         OutlineAttackableEnemies(playerUnit);
     }
+
     public void ChangeActivePlayerUnitTile(Unit playerUnit)
     {
         // Feedback to identify the currently selected Player Unit.
@@ -116,14 +126,15 @@ public class UnitSelectionController : MonoBehaviour
         tile.tileShaderController.SetTileColor(1f, Color.green);
         // Display the selected player unit cursor on the tile.
         selectedTileInstance = Instantiate(_selectedTile, tile.transform);
-        
+
         Collider tileCollider = tile.GetComponentInChildren<Collider>();
         float cursorYOffset = 0.07f; // Piccolo offset per evitare compenetrazione visiva
-        
+
         if (tileCollider != null)
         {
             // Troviamo il tetto in coordinate World, poi lo trasformiamo in coordinata Local
-            Vector3 worldTopPoint = new Vector3(tile.transform.position.x, tileCollider.bounds.max.y + cursorYOffset, tile.transform.position.z);
+            Vector3 worldTopPoint = new Vector3(tile.transform.position.x, tileCollider.bounds.max.y + cursorYOffset,
+                tile.transform.position.z);
             selectedTileInstance.transform.position = worldTopPoint;
         }
         else
@@ -137,6 +148,7 @@ public class UnitSelectionController : MonoBehaviour
     {
         OutlineAttackableEnemies(tile.detectedUnit.GetComponent<Unit>());
     }
+
     public void OutlineAttackableEnemies(Unit playerUnit)
     {
         ResetEnemyReachableTiles();
@@ -220,10 +232,12 @@ public class UnitSelectionController : MonoBehaviour
             Destroy(enemyPanel);
         }
     }
+
     public void SpawnSelectionIcon(GameObject playerUnit)
     {
         DestroySelectionIcons();
-        _selectionIcon = Instantiate(Resources.Load(GameTags.PlayerCharacterSelectorIcon) as GameObject, playerUnit.gameObject.transform);
+        _selectionIcon = Instantiate(Resources.Load(GameTags.PlayerCharacterSelectorIcon) as GameObject,
+            playerUnit.gameObject.transform);
         Vector3 playerSelectionInstanceOffset = new Vector3(0, 2.5f, 0);
         _selectionIcon.transform.localPosition += playerSelectionInstanceOffset;
     }
@@ -231,12 +245,12 @@ public class UnitSelectionController : MonoBehaviour
     public void SpawnUnitInfoPanel(Unit playerUnit)
     {
         ClearExistingPanels();
-        _selectedUnitPanel = Instantiate(Resources.Load(GameTags.CurrentlySelectedUnit) as GameObject, _battleUI.battleDetails.transform);
+        _selectedUnitPanel = Instantiate(Resources.Load(GameTags.CurrentlySelectedUnit) as GameObject,
+            _battleUI.battleDetails.transform);
         _selectedUnitPanel.tag = GameTags.ActiveCharacterUnitProfile;
         _selectedUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
         playerUnit.unitProfilePanel = _selectedUnitPanel;
         FillPanelDetails(playerUnit);
-
     }
 
     public void SelectEnemy(Unit enemyUnit)
@@ -246,7 +260,8 @@ public class UnitSelectionController : MonoBehaviour
         // Clear Existing Enemy Panels
         ClearPanelsByTag(GameTags.EnemyUnitProfile);
 
-        _enemyUnitPanel = Instantiate(Resources.Load(GameTags.ENEMY_PROFILE) as GameObject, _battleUI.battleDetails.transform);
+        _enemyUnitPanel = Instantiate(Resources.Load(GameTags.ENEMY_PROFILE) as GameObject,
+            _battleUI.battleDetails.transform);
         _enemyUnitPanel.tag = GameTags.EnemyUnitProfile;
         _enemyUnitPanel.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.LowerLeft;
         enemyUnit.unitProfilePanel = _enemyUnitPanel;
@@ -290,7 +305,8 @@ public class UnitSelectionController : MonoBehaviour
         GridManager.Instance.currentPlayerUnit = null;
         ClearPanelsByTag(GameTags.ActiveCharacterUnitProfile);
         ClearPanelsByTag(GameTags.EnemyUnitProfile);
-        
+        _playerPartyProfilesUIManager?.ClearProfileHighlights();
+
         foreach (var unitGO in _playerUnits)
         {
             if (unitGO != null) // Null-check safety
@@ -298,6 +314,7 @@ public class UnitSelectionController : MonoBehaviour
                 unitGO.GetComponent<Unit>().currentUnitPhase = Unit.UnitPhase.Waiting;
             }
         }
+
         OnUnitTurnEnded?.Invoke();
         // Hides the tiles where the Active Player Unit could move to.
         //tileVisualizer.ClearReachableTiles();

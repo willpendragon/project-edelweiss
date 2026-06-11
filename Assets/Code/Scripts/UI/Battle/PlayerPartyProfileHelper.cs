@@ -3,11 +3,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
-public class PlayerPartyProfileHelper : MonoBehaviour
+
+public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image unitPortrait;
     [SerializeField] private Slider hpSlider;
+    [SerializeField] private Outline _outline;
 
     [SerializeField] private Slider mpSlider;
     [SerializeField] private Slider _deityMoveSlider;
@@ -20,6 +23,32 @@ public class PlayerPartyProfileHelper : MonoBehaviour
     [SerializeField] private TextMeshProUGUI availableMovesText;
     [SerializeField] private CanvasGroup _partyProfileGroup;
     [SerializeField] private GameObject _deityMoveObj;
+
+    public event Action<Unit> OnProfileClicked;
+    private Unit _linkedUnit;
+
+    void Start()
+    {
+        _outline.enabled = false;
+    }
+
+    public void SetOutlineHighlight(bool isHighlighted)
+    {
+        _outline.enabled = isHighlighted;
+    }
+
+    public void Initialize(Unit unit)
+    {
+        _linkedUnit = unit;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (_linkedUnit == null)
+            return;
+
+        OnProfileClicked?.Invoke(_linkedUnit);
+    }
 
     public void FillPlayerDetails(Unit unit) // Avoid refreshing portrait and max values every single time.
     {
@@ -43,7 +72,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour
         _deityMoveObj.SetActive(true);
         DeityPowerController _deityPowerController = BattleManager.Instance.DeityPowerController;
         _deityMoveObj.GetComponentInChildren<Image>().sprite = unit.linkedDeity.deityPortrait;
-        
+
         // Clear old listeners before adding the new one
         Button deityButton = _deityMoveObj.GetComponentInChildren<Button>();
         deityButton.onClick.RemoveAllListeners();
@@ -145,5 +174,10 @@ public class PlayerPartyProfileHelper : MonoBehaviour
     public void CollectUpgradeFeedback()
     {
         Debug.Log("Displaying collect upgrade feedback");
+    }
+
+    public void ResetAvailableMovesCounter()
+    {
+        availableMovesText.text = $"-/-";
     }
 }

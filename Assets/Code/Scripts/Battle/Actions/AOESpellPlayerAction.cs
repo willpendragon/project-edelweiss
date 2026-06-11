@@ -57,17 +57,26 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
 
-        if (!CheckTargetTileValidity(targetTile))
-            return;
+        Spell spell = activePlayerUnit.unitTemplate.spellsList[0];
+        SetSpellType(spell);
+
+        // If it's single target, it MUST have a valid unit. 
+        // If it's AOE, we allow clicking empty tiles so long as the tile itself exists!
+        if (spellMode != SpellMode.AOE)
+        {
+            if (!CheckTargetTileValidity(targetTile))
+                return;
+        }
+        else
+        {
+            if (targetTile == null) return; // Basic safety check
+        }
 
         if (activePlayerUnit.unitManaPoints <= 0)
         {
-            OnNotEnoughMana("Not enough Mana...");
+            OnNotEnoughMana?.Invoke("Not enough Mana...");
             return;
         }
-
-        Spell spell = activePlayerUnit.unitTemplate.spellsList[0];
-        SetSpellType(spell);
 
         if (spellMode == SpellMode.AOE)
             CastAOESpell(spell, targetTile);
@@ -124,7 +133,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         DeityEnmityCheck(spell.alignment);
     }
 
-
     private void CastAOESpell(Spell spell, TileController targetTile)
     {
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
@@ -135,7 +143,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             .GetComponent<GridMovementController>();
         List<TileController> affectedTiles = gridMovementController.GetMultipleTiles(targetTile, aoeRange);
 
-        // Play feedback on Deity Obelisk when applicable.
         if (targetTile.detectedUnit.GetComponent<Unit>().unitType == Unit.UnitType.Deity)
         {
             activePlayerUnit.GetComponent<BattleFeedbackController>()
@@ -145,6 +152,8 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         SpendResources(activePlayerUnit, spell);
 
         OnUsedSpell?.Invoke($"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}");
+
+        activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
 
         foreach (var tile in affectedTiles)
         {
@@ -159,16 +168,19 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             int damageToApply = CalculateSpellDamage(spell);
             targetUnit.TakeDamage(damageToApply);
 
-            // Avoid attempting to Stun a lifeless Chest
             if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun && !tile.detectedUnit.CompareTag("Chest"))
                 TriggerSecondaryEffect(targetUnit);
 
-            PlaySpellFeedback(activePlayerUnit, targetUnit, spell);
+            // Handle per-target crits, enmity, and VFX individually:
+            if (_criticalHit == true)
+            {
+                OnSpellCriticalHit?.Invoke(); // Added safe navigation syntax ?. too
+            }
+
             DeityEnmityCheck(spell.alignment);
             PlayVFX(spell.spellVFX, tile, spell.spellVFXOffset);
         }
     }
-
 
     private void SpendResources(Unit activePlayerUnit, Spell spell)
     {
@@ -320,11 +332,12 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         if (unitManaPoints - spellPrice >= 0)
         {
-            OnNotEnoughMana("Not enough Mana...");
-            return true;
+            return true; // Has enough mana, proceed silently.
         }
         else
         {
+            // Only warn the player when they actually lack the mana!
+            OnNotEnoughMana?.Invoke("Not enough Mana..."); 
             return false;
         }
     }

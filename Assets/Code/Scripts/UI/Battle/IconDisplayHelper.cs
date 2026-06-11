@@ -21,6 +21,7 @@ public class IconDisplayHelper : MonoBehaviour
     public void ShowIcon()
     {
         // Kill any running tween to prevent conflicts
+        spriteRenderer.sortingOrder = 20;
         spriteRenderer.DOKill();
         spriteRenderer.DOFade(1f, fadeInDuration);
     }

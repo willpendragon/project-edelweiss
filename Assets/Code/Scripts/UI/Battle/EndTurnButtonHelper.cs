@@ -33,6 +33,8 @@ public class EndTurnButtonHelper : MonoBehaviour
         foreach (var profile in playersPartyProfiles)
         {
             profile.SetProfileAlpha(0.16f);
+            profile.ResetAvailableMovesCounter();
+
         }
     }
 }
