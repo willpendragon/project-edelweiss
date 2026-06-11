@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -147,11 +146,17 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
 
     private void ShowNotification(string message)
     {
-        // Add the new message to the queue
+        // Clear the queue and add the new message for immediate priority
+        _notificationQueue.Clear();
         _notificationQueue.Enqueue(message);
 
-        // If we aren't currently showing a message, start the display loop
-        if (!_isDisplayingNotification)
+        // If we're currently displaying, kill the active tween and immediately show the new notification
+        if (_isDisplayingNotification && activeNotificationTween != null && activeNotificationTween.IsActive())
+        {
+            activeNotificationTween.Kill();
+            DisplayNextNotification();
+        }
+        else if (!_isDisplayingNotification)
         {
             DisplayNextNotification();
         }
