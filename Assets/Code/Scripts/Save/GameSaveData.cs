@@ -15,6 +15,7 @@ public class GameSaveData
     public CalendarData calendarData = new CalendarData();
     public ResourceData resourceData = new ResourceData();
     public GameFlowData gameFlowData = new GameFlowData();
+    public BloodMoonData bloodMoonData = new BloodMoonData();
 
     public List<CharacterData> characterData = new List<CharacterData>();
     public Dictionary<string, string> unitsLinkedToDeities = new Dictionary<string, string>();
@@ -133,4 +134,11 @@ public class EatenPastryData
         this.unitId = id;
         this.foodNames = names;
     }
+}
+
+[System.Serializable]
+public class BloodMoonData
+{
+    public bool isActive;
+    public int bloodMoonStartDay;
 }
