@@ -23,7 +23,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI availableMovesText;
     [SerializeField] private CanvasGroup _partyProfileGroup;
     [SerializeField] private GameObject _deityMoveObj;
-    
+
     public event Action<Unit> OnProfileClicked;
     private Unit _linkedUnit;
 
@@ -31,12 +31,12 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
     {
         _outline.enabled = false;
     }
-    
+
     public void SetOutlineHighlight(bool isHighlighted)
     {
         _outline.enabled = isHighlighted;
     }
-    
+
     public void Initialize(Unit unit)
     {
         _linkedUnit = unit;
@@ -174,5 +174,10 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
     public void CollectUpgradeFeedback()
     {
         Debug.Log("Displaying collect upgrade feedback");
+    }
+
+    public void ResetAvailableMovesCounter()
+    {
+        availableMovesText.text = $"-/-";
     }
 }
