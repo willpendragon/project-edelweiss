@@ -441,6 +441,7 @@ public class TurnController : MonoBehaviour
                 }
 
                 // Log for debugging
+                BattleInterface.Instance.SendMessage("SetBattleNotification", $"{playerUnit.GetComponent<Unit>().unitTemplate.unitName} recovered from stun!");
                 Debug.Log($"{playerUnit.name} recovered from stun!");
             }
         }
