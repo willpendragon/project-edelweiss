@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Playables;
+using TMPro;
 using System.Collections.Generic;
 using ProjectEdelweiss.Utils;
 
@@ -16,13 +17,12 @@ public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
 
-    // Distribute responsibilities.
-
     [Header("Gameplay Flow")] [SerializeField]
     DeityAchievementsController deityAchievementsController;
 
     [SerializeField] private DeityPowerController _deityPowerController;
-
+    [SerializeField] private TextMeshProUGUI _bloodMoonBattleWarningText;
+    
     public EnemyTurnManager enemyTurnManager;
 
     [Header("Actors on Battlefield")] public GameObject[] enemiesOnBattlefield;
@@ -38,23 +38,18 @@ public class BattleManager : MonoBehaviour
     [Header("Camera")] [SerializeField] private CameraController _cameraController;
 
     public delegate void SavePlayerHealth(float finalPlayerHealth);
-
     public static event SavePlayerHealth OnSavePlayerHealth;
 
     public delegate void SavePlayerCoinsReward(float coinsReward);
-
     public static event SavePlayerCoinsReward OnSavePlayerCoinsReward;
 
     public delegate void SavePlayerExperienceReward(float experienceReward);
-
     public static event SavePlayerExperienceReward OnSavePlayerExperienceReward;
 
     public delegate void BattleEndResultsScreen(string battleEndMessage);
-
     public static event BattleEndResultsScreen OnBattleEndResultsScreen;
 
     public GridManager gridManager;
-
     public DeityPowerController DeityPowerController => _deityPowerController;
 
     private void Awake()
@@ -71,7 +66,6 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
-        // Don't wait! Grab the enemies instantly on frame 1 so UI sliders can bind to them properly!
         TrackEnemiesOnBattlefield();
         StartCoroutine(BeginBattleCoroutine());
     }
@@ -85,9 +79,62 @@ public class BattleManager : MonoBehaviour
             yield return new WaitUntil(() => !PixelCrushers.DialogueSystem.DialogueManager.isConversationActive);
         }
 
-        // Only flash the marquee and play sound AFTER dialogue clears!
+        // Display blood moon warning if active
+        DisplayBloodMoonWarning();
+        
         BattleInterface.Instance.battleMomentsScreenHelper?.ActivateBattleMomentsScreen(battleStartMessage);
         BattleSFXManager.PlaySound(SoundType.BATTLEBEGINS, 1);
+        
+        // Apply blood moon modifier to all enemies
+        ApplyBloodMoonModifier();
+    }
+
+    private void DisplayBloodMoonWarning()
+    {
+        BloodMoonManager bloodMoonManager = BloodMoonManager.Instance;
+        if (bloodMoonManager != null && bloodMoonManager.IsBloodMoonActive)
+        {
+            if (_bloodMoonBattleWarningText != null)
+            {
+                _bloodMoonBattleWarningText.text = "BLOOD MOON - ENEMIES STRENGTHENED";
+                _bloodMoonBattleWarningText.color = new Color(1f, 0.2f, 0.2f);
+                _bloodMoonBattleWarningText.gameObject.SetActive(true);
+                
+                StartCoroutine(FadeOutBloodMoonWarning());
+            }
+        }
+    }
+
+    private System.Collections.IEnumerator FadeOutBloodMoonWarning()
+    {
+        yield return new WaitForSeconds(3f);
+        
+        if (_bloodMoonBattleWarningText != null)
+        {
+            _bloodMoonBattleWarningText.gameObject.SetActive(false);
+        }
+    }
+
+    private void ApplyBloodMoonModifier()
+    {
+        BloodMoonManager bloodMoonManager = BloodMoonManager.Instance;
+        if (bloodMoonManager == null || !bloodMoonManager.IsBloodMoonActive)
+            return;
+
+        float multiplier = bloodMoonManager.EnemyAttackMultiplier;
+
+        foreach (GameObject enemy in enemiesOnBattlefield)
+        {
+            if (enemy == null) continue;
+            
+            Unit enemyUnit = enemy.GetComponent<Unit>();
+            if (enemyUnit != null)
+            {
+                // Modify the base melee damage that gets multiplied in the damage calculation
+                enemyUnit.unitMeleeAttackBaseDamage *= multiplier;
+                Debug.Log($"[Blood Moon] {enemy.name} melee base damage increased by {(multiplier - 1) * 100}% (now {enemyUnit.unitMeleeAttackBaseDamage})");
+            }
+        }
     }
 
     private void TrackEnemiesOnBattlefield()
@@ -126,15 +173,13 @@ public class BattleManager : MonoBehaviour
         GameSaveData saveData = SaveStateManager.saveData;
         int currentId = saveData.currentNodeId;
 
-        // Failsafe configuration
         if (saveData.clearedNodesId == null)
             saveData.clearedNodesId = new List<int>();
 
-        // Only append to cleared list and increase logic if the player hasn't already beaten this node
         if (!saveData.clearedNodesId.Contains(currentId))
         {
             saveData.clearedNodesId.Add(currentId);
-            saveData.highestUnlockedLevel++; // We retain this metric for legacy scripts relying on total progression counting
+            saveData.highestUnlockedLevel++;
         }
 
         SaveStateManager.SaveGame(saveData);

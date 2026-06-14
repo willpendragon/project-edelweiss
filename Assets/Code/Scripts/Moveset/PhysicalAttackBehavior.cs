@@ -9,7 +9,16 @@ public class PhysicalAttackBehavior : ScriptableObject
 
     public static event UsedPhysicalAttack OnUsedPhysicalAttack;
 
+    public delegate void PhysicalAttackMissed(string notification);
+
+    public static event PhysicalAttackMissed OnPhysicalAttackMissed;
+
     public int baseDamage;
+
+    [Header("Melee Accuracy")]
+    [Range(0f, 1f)]
+    [Tooltip("Base accuracy of melee attacks (0 = always misses, 1 = always hits)")]
+    public float baseAccuracy = 0.90f;
 
     // Usiamo Vector3Int
     private Vector3Int knockbackDirection;
@@ -52,10 +61,6 @@ public class PhysicalAttackBehavior : ScriptableObject
             {
                 activePlayerUnitAnimator.SetTrigger("Attack");
             }
-            // if (activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX != null)
-            // {
-            //     activePlayerUnit.battleFeedbackController.PlayMeleeAttackSFX.Invoke();
-            // }
 
             // Play Sword SFX
             BattleSFXManager.PlaySound(SoundType.SWORDATTACKKNOCKBACK);
@@ -77,6 +82,13 @@ public class PhysicalAttackBehavior : ScriptableObject
             return;
         if (defender.unitType == Unit.UnitType.Deity || defender.gameObject.CompareTag("Chest"))
             return;
+
+        // Check if the knockback attack hits
+        if (!AccuracyChecker.CheckMeleeAccuracy(attacker, defender, baseAccuracy))
+        {
+            OnPhysicalAttackMissed?.Invoke($"{attacker.unitTemplate.unitName}'s attack missed!");
+            return;
+        }
 
         ExecuteKnockback(attacker, defender);
 
@@ -192,7 +204,7 @@ public class PhysicalAttackBehavior : ScriptableObject
         Vector3Int defenderPos = defender.ownedTile.gridPosition;
 
         int deltaX = attackerPos.x - defenderPos.x;
-        int deltaZ = attackerPos.z - defenderPos.z; // Use Z instead of Y!
+        int deltaZ = attackerPos.z - defenderPos.z;
 
         knockbackDirection = Vector3Int.zero;
         if (Mathf.Abs(deltaX) > Mathf.Abs(deltaZ))
@@ -206,7 +218,6 @@ public class PhysicalAttackBehavior : ScriptableObject
     private bool IsKnockbackPossible(Unit activePlayerUnit, TileController targetTile)
     {
         DistanceController distanceController = GridManager.Instance.GetComponentInChildren<DistanceController>();
-        // Utilizziamo l'algoritmo puro in DistanceController
         return distanceController.CheckDistance(activePlayerUnit.ownedTile, targetTile);
     }
 
@@ -271,6 +282,10 @@ public class PhysicalAttackBehavior : ScriptableObject
     private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive, bool isWallKnockback = false)
     {
         float damageOutput = attacker.unitAttackPower * attacker.unitMeleeAttackBaseDamage;
+        
+        // Apply Faith-based damage modifier
+        damageOutput = FaithModifierCalculator.ApplyFaithDamageModifier(damageOutput, attacker);
+        
         if (modifierIsActive)
             damageOutput += 2;
 

@@ -39,8 +39,8 @@ public class StunnerEnemyBehavior : EnemyBehavior
         if (CheckDistanceFromTarget(targetUnit, enemyUnit))
         {
             // The target IS in range (<= 3 tiles). Now we roll for success.
-            float randomRoll = (float)localRandom.NextDouble() * 100f; 
-            
+            float randomRoll = (float)localRandom.NextDouble() * 100f;
+
             if (randomRoll <= stunSuccessChancePercentage)
             {
                 StunAbility(targetUnit, enemyUnit);
@@ -56,7 +56,7 @@ public class StunnerEnemyBehavior : EnemyBehavior
             // The closest target is further than 3 tiles away.
             OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} is too far from the target!");
         }
-        
+
         // opportunity -= 1;
     }
 
@@ -66,7 +66,7 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
         int distance = GetTileDistance(targetUnit.ownedTile, enemyUnit.ownedTile);
         int range = 3;
-        
+
         return distance <= range;
     }
 
@@ -86,7 +86,7 @@ public class StunnerEnemyBehavior : EnemyBehavior
             .Where(go => go != null)
             .Select(go => go.GetComponent<Unit>())
             .Where(unit => unit != null && unit.ownedTile != null) // Ensure they have an owned tile
-            .Where(unit => 
+            .Where(unit =>
             {
                 var statusController = unit.GetComponentInChildren<UnitStatusController>();
                 return statusController != null && statusController.unitCurrentStatus != UnitStatus.stun;
@@ -100,15 +100,15 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
     public void StunAbility(Unit targetUnit, Unit enemyUnit)
     {
-            OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} used Stun attack");
-            
-            Vector3 vfxPosition = targetUnit.transform.position + new Vector3(0, spellVfxYOffset, 0);
-            GameObject spellVFX = Instantiate(Resources.Load<GameObject>("VFX/StunningSpellVFX"), vfxPosition, Quaternion.identity);
-            Destroy(spellVFX, 1f);
+        OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} used Stun attack");
 
-            targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
-            targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
-            PlayStunFeedback(targetUnit);
+        Vector3 vfxPosition = targetUnit.transform.position + new Vector3(0, spellVfxYOffset, 0);
+        GameObject spellVFX = Instantiate(Resources.Load<GameObject>("VFX/StunningSpellVFX"), vfxPosition, Quaternion.identity);
+        Destroy(spellVFX, 1f);
+
+        targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
+        targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
+        PlayStunFeedback(targetUnit);
     }
 
     private void PlayStunFeedback(Unit targetUnit)
@@ -136,6 +136,8 @@ public class StunnerEnemyBehavior : EnemyBehavior
         {
             // Instantiate the StunIcon
             GameObject stunIconInstance = Instantiate(Resources.Load<GameObject>("StunIcon"), targetUnit.transform);
+            targetUnit.gameObject.GetComponent<BattleFeedbackController>().stunIcon = stunIconInstance;
+
             GridManager.Instance.statusIcons.Add(stunIconInstance);
 
             // Create a sequence for the StunIcon animations

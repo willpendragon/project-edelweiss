@@ -10,6 +10,7 @@ public enum SpellAlignment
     Spark,
     Lightning
 }
+
 public enum SpellType
 {
     SingleTarget,
@@ -36,6 +37,11 @@ public class Spell : ScriptableObject
     public SpellSecundaryEffect spellSecundaryEffect;
     public GameObject spellVFX;
     public Vector3 spellVFXOffset;
+
+    [Header("Spell Accuracy")]
+    [Range(0f, 1f)]
+    [Tooltip("Base accuracy of the spell (0 = always misses, 1 = always hits)")]
+    public float baseAccuracy = 0.95f;
 
     public float criticalHitChance;
 }
