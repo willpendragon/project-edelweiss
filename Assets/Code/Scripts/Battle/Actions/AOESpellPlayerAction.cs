@@ -50,6 +50,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public static event DeityAngered OnDeityAngered;
 
+    public delegate void SpellMissed(string notification);
+
+    public static event SpellMissed OnSpellMissed;
 
     public UnityEvent playSpellVFX;
 
@@ -105,10 +108,17 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
         Unit spellTarget = targetTile.detectedUnit.GetComponent<Unit>();
 
-
         if (!manaPointsAvailable(activePlayerUnit.unitManaPoints, spell.manaPointsCost))
         {
             OnNotEnoughMana("Not enough Mana...");
+            return;
+        }
+
+        // Check if the spell hits
+        if (!AccuracyChecker.CheckSpellAccuracy(activePlayerUnit, spellTarget, spell))
+        {
+            OnSpellMissed?.Invoke($"{activePlayerUnit.unitTemplate.unitName}'s {spell.spellName} missed!");
+            SpendResources(activePlayerUnit, spell);
             return;
         }
 
@@ -119,7 +129,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
                 .DisplaySpellObeliskDamageFeedback(activePlayerUnit);
         }
 
-        int damageToApply = CalculateSpellDamage(spell);
+        int damageToApply = CalculateSpellDamage(spell, activePlayerUnit);
         spellTarget.TakeDamage(damageToApply);
 
         // Only spawn the Frozen VFX if the Enemy has HP left after the attack
@@ -143,7 +153,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             .GetComponent<GridMovementController>();
         List<TileController> affectedTiles = gridMovementController.GetMultipleTiles(targetTile, aoeRange);
 
-        if (targetTile.detectedUnit.GetComponent<Unit>().unitType == Unit.UnitType.Deity)
+        if (targetTile.detectedUnit != null && targetTile.detectedUnit.GetComponent<Unit>().unitType == Unit.UnitType.Deity)
         {
             activePlayerUnit.GetComponent<BattleFeedbackController>()
                 .DisplaySpellObeliskDamageFeedback(activePlayerUnit);
@@ -155,6 +165,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
 
+        int hitCount = 0;
+        int missCount = 0;
+
         foreach (var tile in affectedTiles)
         {
             if (tile.detectedUnit == null || (tile.detectedUnit.tag != "Enemy" && tile.detectedUnit.tag != "Chest" &&
@@ -165,7 +178,16 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             if (targetUnit == null || targetUnit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitAlive)
                 continue;
 
-            int damageToApply = CalculateSpellDamage(spell);
+            // Check if this target is hit by the AOE
+            if (!AccuracyChecker.CheckAOEAccuracy(activePlayerUnit, targetUnit, spell))
+            {
+                missCount++;
+                continue;
+            }
+
+            hitCount++;
+
+            int damageToApply = CalculateSpellDamage(spell, activePlayerUnit);
             targetUnit.TakeDamage(damageToApply);
 
             if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun && !tile.detectedUnit.CompareTag("Chest"))
@@ -174,11 +196,16 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             // Handle per-target crits, enmity, and VFX individually:
             if (_criticalHit == true)
             {
-                OnSpellCriticalHit?.Invoke(); // Added safe navigation syntax ?. too
+                OnSpellCriticalHit?.Invoke();
             }
 
             DeityEnmityCheck(spell.alignment);
             PlayVFX(spell.spellVFX, tile, spell.spellVFXOffset);
+        }
+
+        if (missCount > 0)
+        {
+            OnSpellMissed?.Invoke($"{missCount} target(s) dodged the spell!");
         }
     }
 
@@ -186,7 +213,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         activePlayerUnit.SpendManaPoints(spell.manaPointsCost);
         activePlayerUnit.unitOpportunityPoints--;
-        // Update on the UI.
         UpdateActivePlayerUnitProfile(activePlayerUnit);
     }
 
@@ -199,15 +225,12 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         if (spellTarget.unitStatusController.unitCurrentStatus == UnitStatus.stun)
             return;
         spellTarget.unitStatusController.unitCurrentStatus = UnitStatus.stun;
-        // Currently this EFFECT works just like the Stun behaviour, but with a different icon.
-        // Should retrieve the secondary effect dynamically from the Spell properties.
         PlayFrozenFeedback(spellTarget);
     }
 
     private void PlaySpellFeedback(Unit activePlayerUnit, Unit spellTarget, Spell spell)
     {
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
-        // Used Spell notification appears on the Battle Interface
         OnUsedSpell($"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}");
 
         if (_criticalHit == true)
@@ -218,27 +241,28 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         PlayVFX(spell.spellVFX, spellTarget.ownedTile, spell.spellVFXOffset);
     }
 
-    private int CalculateSpellDamage(Spell spell)
+    private int CalculateSpellDamage(Spell spell, Unit activePlayerUnit)
     {
-        Unit activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit").GetComponent<Unit>();
-        // Base damage calculation retrieves the Attack Power from the Attacker's statistics.
-        int baseDamage = spell.damage + (int)(activePlayerUnit.unitMagicPower * 0.5);
-        // Critical hit damage calculation.
-        int damageToApply = baseDamage *
-                            (IsCritical(spell) ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100) : 1);
+        int baseDamage = spell.damage + (int)(activePlayerUnit.unitMagicPower * 0.5f);
+        float faithModifiedDamage = FaithModifierCalculator.ApplyFaithDamageModifier(baseDamage, activePlayerUnit);
+        
+        int damageToApply = Mathf.RoundToInt(faithModifiedDamage *
+                            (IsCritical(spell, activePlayerUnit) ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100f) : 1));
         return damageToApply;
     }
 
-    private bool IsCritical(Spell spell)
+    private bool IsCritical(Spell spell, Unit activePlayerUnit)
     {
-        // Determine if this is a critical hit
-        if (Random.value < spell.criticalHitChance)
+        float adjustedCritChance = FaithModifierCalculator.ApplyFaithCriticalModifier(spell.criticalHitChance, activePlayerUnit);
+        
+        if (Random.value < adjustedCritChance)
         {
             _criticalHit = true;
             return true;
         }
         else
         {
+            _criticalHit = false;
             return false;
         }
     }
@@ -260,7 +284,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public bool IsAttackable(GameObject detectedUnit)
     {
-        // Treat both proper enemies and breakable chests as attackable elements
         if (detectedUnit.gameObject.CompareTag("Enemy") || detectedUnit.gameObject.CompareTag("Chest") ||
             detectedUnit.gameObject.CompareTag("DeityShard"))
             return true;
@@ -287,13 +310,10 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         if (enemyTurnManager.deity == null)
             return;
 
-        // Look for the Unbound Deity on the Battlefield.
         unboundDeity = enemyTurnManager.deity.GetComponent<Deity>();
 
-        // Checks if the alignment of the casted spell is between the list of the Deity's Hated Spell Alignments.
         if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
         {
-            // This number should be retrieved dynamically instead.
             float enmityIncrease = 2.5f;
             unboundDeity.enmity += enmityIncrease;
             unboundDeity.UpdateDeityEnmitySlider();
@@ -303,7 +323,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     private void TriggeredFeedback()
     {
-        // Display Triggered Deity feedback
         if (unboundDeity.enmity >= unboundDeity._maxEnmity)
         {
             OnDeityAngered();
@@ -312,18 +331,14 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     public void UpdateActivePlayerUnitProfile(Unit activePlayerUnit)
     {
-        //activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
-        // Use the centralized logic.
         BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateProfile(activePlayerUnit.unitTemplate.unitName);
-        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate
-            .unitName);
+        BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateRemainingMoves(activePlayerUnit.unitTemplate.unitName);
     }
 
     public void PlayVFX(GameObject spellVFX, TileController enemyOccupiedTile, Vector3 spellVFXOffset)
     {
         GameObject spellVFXInstance = Instantiate(spellVFX, enemyOccupiedTile.transform.position, Quaternion.identity);
         spellVFXInstance.transform.localPosition += spellVFXOffset;
-        //Beware: Magic numbers
         Debug.Log("Instantiating VFX");
         Destroy(spellVFXInstance, 0.5f);
     }
@@ -332,11 +347,10 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         if (unitManaPoints - spellPrice >= 0)
         {
-            return true; // Has enough mana, proceed silently.
+            return true;
         }
         else
         {
-            // Only warn the player when they actually lack the mana!
             OnNotEnoughMana?.Invoke("Not enough Mana..."); 
             return false;
         }
@@ -344,13 +358,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     private void PlayFrozenFeedback(Unit targetUnit)
     {
-        // Define the Y offset for the VFX spawn position
         float yOffset = 1.0f;
-
-        // Calculate the new spawn position with the Y offset
         Vector3 stunVFXSpawnPosition = targetUnit.transform.position + new Vector3(0, yOffset, 0);
 
-        // Instantiate the VFX at the new position
         GameObject stunVFX = Instantiate(Resources.Load<GameObject>("StunAttackVFX"), stunVFXSpawnPosition,
             Quaternion.identity);
         float stunVFXDestroyCountdown = 1.5f;
@@ -361,7 +371,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             targetUnit.characterAnimator.SetTrigger("Frozen");
         }
 
-        // Spawn Frozen Cube
         GameObject frozenCubePrefab = Resources.Load<GameObject>("FrozenCube");
         if (frozenCubePrefab != null)
         {

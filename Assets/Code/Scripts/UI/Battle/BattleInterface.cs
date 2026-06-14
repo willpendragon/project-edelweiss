@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,7 +60,9 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         MovePlayerAction.OnUnitNegativeStatus += SetBattleNotification;
         AOESpellPlayerAction.OnUsedSpell += SetBattleNotification;
         AOESpellPlayerAction.OnNotEnoughMana += SetBattleNotification;
+        AOESpellPlayerAction.OnSpellMissed += SetBattleNotification;
         PhysicalAttackBehavior.OnUsedPhysicalAttack += SetBattleNotification;
+        PhysicalAttackBehavior.OnPhysicalAttackMissed += SetBattleNotification;
         PlaceCrystalPlayerAction.OnPlaceCrystal += SetBattleNotification;
         TrapPlayerAction.OnNotEnoughMana += SetBattleNotification;
         BumperEnemyBehavior.OnBumperEnemyAttack += SetBattleNotification;
@@ -78,7 +79,9 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         MovePlayerAction.OnUnitNegativeStatus -= SetBattleNotification;
         AOESpellPlayerAction.OnUsedSpell -= SetBattleNotification;
         AOESpellPlayerAction.OnNotEnoughMana -= SetBattleNotification;
+        AOESpellPlayerAction.OnSpellMissed -= SetBattleNotification;
         PhysicalAttackBehavior.OnUsedPhysicalAttack -= SetBattleNotification;
+        PhysicalAttackBehavior.OnPhysicalAttackMissed -= SetBattleNotification;
         PlaceCrystalPlayerAction.OnPlaceCrystal -= SetBattleNotification;
         TrapPlayerAction.OnNotEnoughMana -= SetBattleNotification;
         BumperEnemyBehavior.OnBumperEnemyAttack -= SetBattleNotification;
@@ -96,6 +99,7 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         SelectUnitPlayerAction.OnFaithlessCharacter += SetFaithlessCharacterNotification;
         SubscribeBattleNotifications();
     }
+
     private void OnDisable()
     {
         Deity.OnDeityNotificationUpdate -= SetDeityNotification;
@@ -113,6 +117,7 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
     {
         ShowNotification($"{summonName} blessed {unitName}");
     }
+
     public void SetDeityNotification(string deityNotification)
     {
         ShowNotification(deityNotification);
@@ -135,10 +140,12 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         SummonedUnitInfoPanelHelper summonedUnitInfoPanelHelper = newSummonedUnitInfoPanel.GetComponent<SummonedUnitInfoPanelHelper>();
         summonedUnitInfoPanelHelper.SetSummonedUnitInfoPanelValues(deityName, deityPrayerBuffThreshold, deityPrayerPower);
     }
+
     public void DestroyUISummonInfoPanel()
     {
         Destroy(summonedUnitInfoPanel, 1);
     }
+
     public void DeactivateActionInfoPanel()
     {
         OnDeselectPlayerAction();
@@ -189,11 +196,11 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
 
         battlefieldNotificationsPanel.transform.localScale = Vector3.one;
         battlefieldTextNotifications.text = message;
-        
+
         // Add a tiny, quick "pop" animation so the player notices the text changed instantly
         battlefieldNotificationsPanel.DOPunchScale(new Vector3(0.1f, 0.1f, 0.0f), 0.15f, 0, 0);
         BattleSFXManager.PlaySound(SoundType.POPUPMESSAGE, 1);
-        
+
         // Wait for the duration, then automatically trigger the next notification in the queue
         activeNotificationTween = DOVirtual.DelayedCall(battlefieldNotificationsPanelDurationTime, () =>
         {

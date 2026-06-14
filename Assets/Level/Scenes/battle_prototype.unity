@@ -3707,37 +3707,6 @@ MonoBehaviour:
   _gameManager: {fileID: 0}
   _playerProfilePrefab: {fileID: 6254837134984574998, guid: c86d65f9a3b3858439673ba966a0260b, type: 3}
   _playerProfileContainer: {fileID: 2114378566}
---- !u!21 &572962503
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &578258129
 GameObject:
   m_ObjectHideFlags: 0
@@ -5802,6 +5771,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782934660}
   m_CullTransparentMesh: 1
+--- !u!21 &785884002
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!114 &810722614 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6110140968250516965, guid: 921b258e64d81d24ba38bd044f1fdead, type: 3}
@@ -8983,6 +8983,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bloodMoonConfig: {fileID: 11400000, guid: d3ebddffebaa1b24f8e9e1ebb573ab9e, type: 2}
+  _bloodMoonUIText: {fileID: 0}
 --- !u!4 &1139478596
 Transform:
   m_ObjectHideFlags: 0
@@ -15271,7 +15272,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 572962503}
+  - {fileID: 785884002}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15953,6 +15954,7 @@ MonoBehaviour:
   playerPartyController: {fileID: 103291617}
   faithPointReductionRate: 10
   turnController: {fileID: 557972433}
+  faithModifierSettings: {fileID: 11400000, guid: 5d6cfd6d533c9f64d9d99f1fb93ce4da, type: 2}
 --- !u!33 &2465832440447023142
 MeshFilter:
   m_ObjectHideFlags: 0
