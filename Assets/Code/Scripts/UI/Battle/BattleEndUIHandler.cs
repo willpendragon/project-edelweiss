@@ -98,6 +98,8 @@ public class BattleEndUIHandler : MonoBehaviour
         {
             Destroy(statusIcon);
         }
+        // NEW: Clear the list after destroying all icons
+        GridManager.Instance.statusIcons.Clear();
     }
     private void ChangeReturnButton()
     {
