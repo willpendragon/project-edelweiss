@@ -13,12 +13,23 @@ public class PhysicalAttackBehavior : ScriptableObject
 
     public static event PhysicalAttackMissed OnPhysicalAttackMissed;
 
+    public delegate void MeleeCriticalHit();
+
+    public static event MeleeCriticalHit OnMeleeCriticalHit;
+
     public int baseDamage;
 
     [Header("Melee Accuracy")]
     [Range(0f, 1f)]
     [Tooltip("Base accuracy of melee attacks (0 = always misses, 1 = always hits)")]
     public float baseAccuracy = 0.90f;
+
+    [Header("Melee Critical Strike")]
+    [Range(0f, 1f)]
+    [Tooltip("Base critical hit chance for melee attacks (0 = never, 1 = always)")]
+    public float baseCriticalChance = 0.15f;
+
+    private bool _isCriticalHit;
 
     // Usiamo Vector3Int
     private Vector3Int knockbackDirection;
@@ -293,6 +304,36 @@ public class PhysicalAttackBehavior : ScriptableObject
         if (isWallKnockback)
             damageOutput += 3;
 
+        // Apply critical hit multiplier if this is a critical hit
+        if (IsCritical(attacker))
+        {
+            damageOutput *= 1 + Mathf.FloorToInt(attacker.unitAttackPower / 100f);
+        }
+
         return damageOutput;
+    }
+
+    private bool IsCritical(Unit attacker)
+    {
+        // Apply Faith modifier to critical hit chance
+        float adjustedCritChance = FaithModifierCalculator.ApplyFaithCriticalModifier(baseCriticalChance, attacker);
+        
+        // Determine if this is a critical hit
+        if (Random.value < adjustedCritChance)
+        {
+            _isCriticalHit = true;
+            OnMeleeCriticalHit?.Invoke();
+            return true;
+        }
+        else
+        {
+            _isCriticalHit = false;
+            return false;
+        }
+    }
+
+    public bool GetIsCriticalHit()
+    {
+        return _isCriticalHit;
     }
 }
