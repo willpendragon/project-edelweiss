@@ -192,6 +192,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
         OverworldMapManager.Instance.CalendarController
             .IncreaseDaysCounter(_dayCost); // We increment it additionally here inside interaction optionally.
+        OverworldMapManager.Instance.CalendarController.HideCalendarInfo();
     }
 
     private void SetOverworldUIVisibility(float alpha)
