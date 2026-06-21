@@ -143,6 +143,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
         if (unit.unitOpportunityPoints <= 0 || unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             SetProfileAlpha(0.16f);
+            availableMovesText.text = $"{unit.unitOpportunityPoints}/{unit.unitTemplate.unitOpportunityPoints}";
         }
         else
         {
