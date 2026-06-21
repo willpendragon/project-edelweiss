@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: SwordAttackBehaviour
   m_EditorClassIdentifier: 
   baseDamage: 2
+  baseAccuracy: 0.746
   knockbackStrength: 2
   selectionLimiter: 1
+  meleeRange: 2

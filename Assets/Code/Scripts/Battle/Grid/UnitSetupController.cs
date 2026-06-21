@@ -69,19 +69,33 @@ public class UnitSetupController : MonoBehaviour
         foreach (var playerUnitGO in TurnController.Instance.playerUnitsOnBattlefield)
         {
             Unit playerUnit = playerUnitGO.GetComponent<Unit>();
-            //playerUnit.GetComponent<UnitSelectionController>().currentUnitSelectionStatus = UnitSelectionController.UnitSelectionStatus.unitDeselected;
+
+            // Removes all ailments from previous battles
+            playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.basic;
+
+            // NEW: Clear any lingering stun icons from previous battles
+            BattleFeedbackController battleFeedbackController = playerUnitGO.GetComponent<BattleFeedbackController>();
+            if (battleFeedbackController != null && battleFeedbackController.stunIcon != null)
+            {
+                Destroy(battleFeedbackController.stunIcon);
+                battleFeedbackController.stunIcon = null;
+            }
+
             if (playerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
             {
                 playerUnitGO.GetComponent<Unit>().characterAnimator.SetTrigger("Die");
             }
 
-            // Removes all ailments from previous battles.
-            playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.basic;
             if (faithController != null)
             {
                 faithController.CheckFaithPoints();
             }
         }
-    }
 
+        // NEW: Clear the statusIcons list from previous battles
+        if (GridManager.Instance != null)
+        {
+            GridManager.Instance.statusIcons.Clear();
+        }
+    }
 }

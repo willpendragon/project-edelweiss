@@ -4,6 +4,7 @@ using System.Linq;
 using Language.Lua;
 using ProjectEdelweiss.Utils;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -45,6 +46,7 @@ public class CursorController : MonoBehaviour
 
     private Coroutine _escapeCoroutine;
     private GameObject _escapeUIRoot;
+    [SerializeField] private TMP_FontAsset escapeMenuFont;
 
     public Unit TargetedUnit => _targetedUnit;
 
@@ -209,7 +211,8 @@ public class CursorController : MonoBehaviour
         foreach (var hitInfo in hits)
         {
             if (hitInfo.collider.gameObject.CompareTag("Enemy") || hitInfo.collider.gameObject.CompareTag("Player") ||
-                hitInfo.collider.gameObject.CompareTag("ActivePlayerUnit") || hitInfo.collider.gameObject.CompareTag("Deity") || hitInfo.collider.gameObject.CompareTag("DeityShard"))
+                hitInfo.collider.gameObject.CompareTag("ActivePlayerUnit") ||
+                hitInfo.collider.gameObject.CompareTag("Deity") || hitInfo.collider.gameObject.CompareTag("DeityShard"))
             {
                 Unit hitUnit = hitInfo.collider.gameObject.GetComponentInParent<Unit>();
                 if (hitUnit != null && hitUnit.ownedTile != null)
@@ -266,7 +269,9 @@ public class CursorController : MonoBehaviour
         // Set menu position
         radialMenu.position = Camera.main.WorldToScreenPoint(_tileController.transform.position);
 
-        if (_tileController.detectedUnit != null && (_tileController.detectedUnit.CompareTag("Enemy") || _tileController.detectedUnit.CompareTag("Deity") || _tileController.detectedUnit.CompareTag("DeityShard")))
+        if (_tileController.detectedUnit != null && (_tileController.detectedUnit.CompareTag("Enemy") ||
+                                                     _tileController.detectedUnit.CompareTag("Deity") ||
+                                                     _tileController.detectedUnit.CompareTag("DeityShard")))
             _targetedUnit = _tileController.detectedUnit.GetComponent<Unit>();
 
         // Display Enemy Unit Info (where applicable).
@@ -568,12 +573,24 @@ public class CursorController : MonoBehaviour
         _escapeUIRoot.transform.SetParent(mainCanvas.transform, false);
 
         RectTransform rect = _escapeUIRoot.AddComponent<RectTransform>();
-        rect.anchorMin = new Vector2(0.5f, 0.8f);
-        rect.anchorMax = new Vector2(0.5f, 0.8f);
-        rect.pivot = new Vector2(0.5f, 0.5f);
+        // Set anchors to bottom-right
+        rect.anchorMin = new Vector2(1f, 0f);
+        rect.anchorMax = new Vector2(1f, 0f);
+
+        // Set pivot to bottom-right so it scales/positions from its own corner
+        rect.pivot = new Vector2(1f, 0f);
         rect.sizeDelta = new Vector2(400, 100);
 
+        // Add padding so it's not clipped by the screen edge (e.g., 20 pixels in)
+        rect.anchoredPosition = new Vector2(-20f, 20f);
+
         var text = _escapeUIRoot.AddComponent<TextMeshProUGUI>();
+
+        if (escapeMenuFont != null)
+        {
+            text.font = escapeMenuFont;
+        }
+
         text.alignment = TextAlignmentOptions.Center;
         text.fontSize = 24;
         text.color = Color.white;

@@ -153,6 +153,14 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             .GetComponent<GridMovementController>();
         List<TileController> affectedTiles = gridMovementController.GetMultipleTiles(targetTile, aoeRange);
 
+        // Check accuracy once for the entire AOE spell
+        if (!AccuracyChecker.CheckSpellAccuracy(activePlayerUnit, null, spell))
+        {
+            OnSpellMissed?.Invoke($"{activePlayerUnit.unitTemplate.unitName}'s {spell.spellName} missed!");
+            SpendResources(activePlayerUnit, spell);
+            return;
+        }
+
         if (targetTile.detectedUnit != null && targetTile.detectedUnit.GetComponent<Unit>().unitType == Unit.UnitType.Deity)
         {
             activePlayerUnit.GetComponent<BattleFeedbackController>()
@@ -166,7 +174,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
 
         int hitCount = 0;
-        int missCount = 0;
 
         foreach (var tile in affectedTiles)
         {
@@ -177,13 +184,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
             Unit targetUnit = tile.detectedUnit.GetComponent<Unit>();
             if (targetUnit == null || targetUnit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitAlive)
                 continue;
-
-            // Check if this target is hit by the AOE
-            if (!AccuracyChecker.CheckAOEAccuracy(activePlayerUnit, targetUnit, spell))
-            {
-                missCount++;
-                continue;
-            }
 
             hitCount++;
 
@@ -201,11 +201,6 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
             DeityEnmityCheck(spell.alignment);
             PlayVFX(spell.spellVFX, tile, spell.spellVFXOffset);
-        }
-
-        if (missCount > 0)
-        {
-            OnSpellMissed?.Invoke($"{missCount} target(s) dodged the spell!");
         }
     }
 

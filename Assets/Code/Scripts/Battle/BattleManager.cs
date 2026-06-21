@@ -91,6 +91,7 @@ public class BattleManager : MonoBehaviour
 
     private void DisplayBloodMoonWarning()
     {
+        _bloodMoonBattleWarningText.gameObject.SetActive(false);
         BloodMoonManager bloodMoonManager = BloodMoonManager.Instance;
         if (bloodMoonManager != null && bloodMoonManager.IsBloodMoonActive)
         {
