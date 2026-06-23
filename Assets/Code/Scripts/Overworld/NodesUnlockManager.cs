@@ -51,8 +51,12 @@ public class NodesUnlockManager : MonoBehaviour
         string message = $"Keys<sprite=109> {keyCount}"; // Also add the reference to the icon in the Font Asset.
         OverworldUIManager.Instance.UpdateKeyCounterText(message);
         // Enforce usage of booleans, refactor to use ints instead.
-        OverworldUIManager.Instance.UpdateMiniBossKeyCounterText(minibossKeyCount == true ? "MiniBoss Keys<sprite=109> 1" : "0");
-        OverworldUIManager.Instance.UpdateBossKeyCounterText(minibossKeyCount == true ? "Boss Keys<sprite=109> 1" : "0");
+        OverworldUIManager.Instance.UpdateMiniBossKeyCounterText(minibossKeyCount == true
+            ? "MiniBoss Keys<sprite=109> 1"
+            : "MiniBoss Keys<sprite=109> 0");
+        OverworldUIManager.Instance.UpdateBossKeyCounterText(bossKeyCount == true
+            ? "Boss Keys<sprite=109> 1"
+            : "Boss Keys<sprite=109> 0");
     }
 
     private bool IsLevelKeyAvailable()
