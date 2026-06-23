@@ -24,6 +24,8 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
     [SerializeField] private CanvasGroup _partyProfileGroup;
     [SerializeField] private GameObject _deityMoveObj;
 
+    [SerializeField] private bool _isInOverworldMap;
+
     public event Action<Unit> OnProfileClicked;
     private Unit _linkedUnit;
 
@@ -125,6 +127,9 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
 
     public void UpdateRemainingMovesDisplay(Unit unit)
     {
+        if (_isInOverworldMap == true)
+            return;
+        // Prevents refresh of the Remaining Moves display in the OverworldMap scene.
         RectTransform rt = availableMovesText.rectTransform;
 
         rt.DOKill();
