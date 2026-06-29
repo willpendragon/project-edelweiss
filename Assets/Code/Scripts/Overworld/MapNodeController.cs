@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,6 +10,8 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     [SerializeField] CanvasGroup _iconCanvas;
     [SerializeField] private OverworldMapUIController _mapMenuController;
     [SerializeField] private int _dayCost = 1; // The time entering this node subtracts adds to the Calendar.
+
+    [SerializeField] private TextMeshProUGUI _battleTypeLabel;
 
     public enum LockStatus
     {
@@ -145,6 +148,27 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         Time.timeScale = 0f;
         SetOverworldUIVisibility(0.8f);
         _mapMenuController.SetArrowsVisibility(0f);
+        SetBattleTypeLabel();
+    }
+
+    private void SetBattleTypeLabel()
+    {
+        switch (type)
+        {
+            case NodeType.RegularBattle:
+                _battleTypeLabel.text = "Skirmish";
+                break;
+
+            case NodeType.PuzzleBattle:
+                _battleTypeLabel.text = "Dungeon Battle";
+                break;
+            case NodeType.MinibossBattle:
+                _battleTypeLabel.text = "MiniBoss Battle";
+                break;
+            case NodeType.BossBattle:
+                _battleTypeLabel.text = "Boss Battle";
+                break;
+        }
     }
 
     public void CloseLocationEnterPanel()

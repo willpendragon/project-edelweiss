@@ -13,6 +13,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Outline _outline;
 
     [SerializeField] private Slider mpSlider;
+    [SerializeField] private Slider fpSlider;
     [SerializeField] private Slider _deityMoveSlider;
     private int _deityMoveCooldown;
     private int _currentCooldownTimer = 0;
@@ -20,9 +21,12 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
     //[SerializeField] private Slider SPSlider;
     [SerializeField] private TextMeshProUGUI hpText;
     [SerializeField] private TextMeshProUGUI mpText;
+    [SerializeField] private TextMeshProUGUI fpText;
     [SerializeField] private TextMeshProUGUI availableMovesText;
     [SerializeField] private CanvasGroup _partyProfileGroup;
     [SerializeField] private GameObject _deityMoveObj;
+
+    [SerializeField] private bool _isInOverworldMap;
 
     public event Action<Unit> OnProfileClicked;
     private Unit _linkedUnit;
@@ -59,6 +63,11 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
         availableMovesText.text = unit.unitOpportunityPoints.ToString();
         hpText.text = ($"{unit.unitHealthPoints}/{unit.unitMaxHealthPoints}");
         mpText.text = ($"{unit.unitManaPoints}/{unit.unitMaxManaPoints}");
+        if (fpText != null) // This logic applies only in the OverworldMap at the moment.
+        {
+            fpText.text = ($"{unit.unitFaithPoints}/{unit.unitFaithPoints}");
+        }
+
         Debug.Log("Filling Player Details");
         UpdateSliders(unit);
         AddDeityIcon(unit);
@@ -120,11 +129,19 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
         mpSlider.maxValue = unit.unitTemplate.unitManaPoints;
         hpSlider.value = unit.unitHealthPoints;
         mpSlider.value = unit.unitManaPoints;
+        if (_isInOverworldMap)
+        {
+            fpSlider.maxValue = unit.unitTemplate.unitFaithPoints;
+            fpSlider.value = unit.unitFaithPoints;
+        }
     }
 
 
     public void UpdateRemainingMovesDisplay(Unit unit)
     {
+        if (_isInOverworldMap == true)
+            return;
+        // Prevents refresh of the Remaining Moves display in the OverworldMap scene.
         RectTransform rt = availableMovesText.rectTransform;
 
         rt.DOKill();
@@ -143,6 +160,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
         if (unit.unitOpportunityPoints <= 0 || unit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             SetProfileAlpha(0.16f);
+            availableMovesText.text = $"{unit.unitOpportunityPoints}/{unit.unitTemplate.unitOpportunityPoints}";
         }
         else
         {
