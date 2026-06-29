@@ -27,7 +27,7 @@ public class BumperEnemyBehavior : EnemyBehavior
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
         // 1. Assicuriamoci che la flag sia falsa all'inizio del turno
-        enemyAgent.isTurnComplete = false; 
+        enemyAgent.isTurnComplete = false;
 
         if (enemyAgent.gameObject.tag == "DeadEnemy" ||
             enemyAgent.GetComponentInParent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
@@ -41,7 +41,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         if (enemyAgent.GetComponentInParent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.stun)
         {
             OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} can't move...");
-            enemyAgent.isTurnComplete = true; // Ha finito!
+            enemyAgent.isTurnComplete = true; // Enemy turn action is done.
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -53,17 +53,14 @@ public class BumperEnemyBehavior : EnemyBehavior
 
     private void PerformNextAction(Unit enemyUnit, EnemyAgent enemyAgent, int actionsLeft)
     {
-        // 2. Se non ci sono più azioni, il turno è UFFICIALMENTE concluso
         if (actionsLeft <= 0)
         {
-            enemyAgent.isTurnComplete = true; 
+            enemyAgent.isTurnComplete = true;
             OnCheckPlayer?.Invoke();
             return;
         }
 
         Unit targetPlayerUnit = enemyAgent.EnemyAIPriority.SelectTargetPlayerUnit(enemyUnit);
-
-        // 3. Se non ci sono bersagli validi, il turno è concluso
         if (targetPlayerUnit == null || targetPlayerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             enemyAgent.isTurnComplete = true;
@@ -75,7 +72,6 @@ public class BumperEnemyBehavior : EnemyBehavior
         if (CheckAttackRange(enemyUnit.ownedTile, targetPlayerUnit.ownedTile))
         {
             PerformAttack(enemyUnit, enemyAgent, targetPlayerUnit, actionsLeft);
-            // Nessun DOVirtual qui sotto, perché è già gestito nel callback di PerformAttack
         }
         else
         {
@@ -83,7 +79,8 @@ public class BumperEnemyBehavior : EnemyBehavior
 
             if (moveSuccess)
             {
-                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>()
+                    .SortUnits();
                 DOVirtual.DelayedCall(actionDelay, () => PerformNextAction(enemyUnit, enemyAgent, actionsLeft - 1));
             }
             else

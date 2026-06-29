@@ -126,7 +126,7 @@ public class EnemyAgent : MonoBehaviour
         }
 
         // Wait until frame hit
-        float timeUntilHit = 0.4f; // Have to tweak this value based on animation lenght.
+        float timeUntilHit = 0.4f; // Have to tweak this value based on animation length.
         yield return new WaitForSeconds(timeUntilHit);
 
         bool wasParried = false;
@@ -155,7 +155,7 @@ public class EnemyAgent : MonoBehaviour
                     RealTimeActionManager.Instance.OnParrySuccess += onSuccess;
                     RealTimeActionManager.Instance.OnParryFailure += onFailure;
 
-                    RealTimeActionManager.Instance.OpenParryWindow();
+                    RealTimeActionManager.Instance.OpenParryWindow(targetPlayerUnit);
 
                     // Wait before player's input or parry windows is over.
                     yield return new WaitUntil(() => isParryResolved);
