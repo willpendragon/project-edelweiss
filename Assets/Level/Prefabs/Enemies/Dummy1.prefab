@@ -383,6 +383,7 @@ GameObject:
   - component: {fileID: 975513701372675069}
   - component: {fileID: 1163028146103148358}
   - component: {fileID: 8120714621248630938}
+  - component: {fileID: 1252314190757858496}
   m_Layer: 10
   m_Name: Dummy1
   m_TagString: Enemy
@@ -456,6 +457,7 @@ MonoBehaviour:
   opportunityCounter: {fileID: 0}
   receivedDamageCounter: {fileID: 0}
   enemySpriteRenderer: {fileID: 5090446047043621278}
+  isTurnComplete: 0
   unitStunStatusIcon: {fileID: 3406946445924013396, guid: e9adfb87616477e4784c4a1060a542fd, type: 3}
 --- !u!114 &3031252642805861247
 MonoBehaviour:
@@ -805,6 +807,19 @@ MonoBehaviour:
   _keyPrizes:
   - {fileID: 11400000, guid: 55d215907fa163443a746e9504a75fb3, type: 2}
   weights: 0a0000005a000000
+--- !u!114 &1252314190757858496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5009294011632168286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca9a4f9446e055b44ad3bfee68493329, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 6894496248764469682}
 --- !u!1 &6077859705235512824
 GameObject:
   m_ObjectHideFlags: 0
@@ -6066,6 +6081,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3890993151345674166, guid: b732a19ba5e67014b85db8529feeb798, type: 3}
   m_PrefabInstance: {fileID: 3161152997801378974}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6894496248764469682 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8390347016928122156, guid: b732a19ba5e67014b85db8529feeb798, type: 3}
+  m_PrefabInstance: {fileID: 3161152997801378974}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3197135903630170926
 PrefabInstance:
   m_ObjectHideFlags: 0

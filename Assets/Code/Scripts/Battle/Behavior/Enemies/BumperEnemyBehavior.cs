@@ -13,20 +13,27 @@ public class BumperEnemyBehavior : EnemyBehavior
     public float actionDelay = 1.0f; // Pausa tra un'azione e l'altra (per le animazioni)
 
     public delegate void CheckPlayer();
+
     public static event CheckPlayer OnCheckPlayer;
 
     public delegate void BumperEnemyAttack(string notification);
+
     public static event BumperEnemyAttack OnBumperEnemyAttack;
 
     public delegate void MovementDisabled(string notification);
+
     public static event MovementDisabled OnMovementDisabled;
 
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
+        // 1. Assicuriamoci che la flag sia falsa all'inizio del turno
+        enemyAgent.isTurnComplete = false;
+
         if (enemyAgent.gameObject.tag == "DeadEnemy" ||
             enemyAgent.GetComponentInParent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             Debug.Log("Enemy is dead and cannot act.");
+            enemyAgent.isTurnComplete = true; // Ha finito!
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -34,6 +41,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         if (enemyAgent.GetComponentInParent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.stun)
         {
             OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} can't move...");
+            enemyAgent.isTurnComplete = true; // Enemy turn action is done.
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -47,14 +55,15 @@ public class BumperEnemyBehavior : EnemyBehavior
     {
         if (actionsLeft <= 0)
         {
+            enemyAgent.isTurnComplete = true;
             OnCheckPlayer?.Invoke();
             return;
         }
 
         Unit targetPlayerUnit = enemyAgent.EnemyAIPriority.SelectTargetPlayerUnit(enemyUnit);
-
         if (targetPlayerUnit == null || targetPlayerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
+            enemyAgent.isTurnComplete = true;
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -62,9 +71,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         // Validate range and attack.
         if (CheckAttackRange(enemyUnit.ownedTile, targetPlayerUnit.ownedTile))
         {
-            PerformAttack(enemyUnit, enemyAgent, targetPlayerUnit);
-
-            DOVirtual.DelayedCall(actionDelay, () => PerformNextAction(enemyUnit, enemyAgent, actionsLeft - 1));
+            PerformAttack(enemyUnit, enemyAgent, targetPlayerUnit, actionsLeft);
         }
         else
         {
@@ -72,11 +79,14 @@ public class BumperEnemyBehavior : EnemyBehavior
 
             if (moveSuccess)
             {
-                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>().SortUnits();
+                GameObject.FindGameObjectWithTag("CameraDistanceController").GetComponent<CameraDistanceController>()
+                    .SortUnits();
                 DOVirtual.DelayedCall(actionDelay, () => PerformNextAction(enemyUnit, enemyAgent, actionsLeft - 1));
             }
             else
             {
+                // 4. Se non può attaccare e non può muoversi (percorso bloccato), il turno finisce qui
+                enemyAgent.isTurnComplete = true;
                 OnCheckPlayer?.Invoke();
             }
         }
@@ -85,9 +95,9 @@ public class BumperEnemyBehavior : EnemyBehavior
     public bool CheckAttackRange(TileController attackerTile, TileController defenderTile)
     {
         // 1. Calculate Manhattan distance purely on the horizontal plane
-        int horizontalDistance = Mathf.Abs(attackerTile.gridPosition.x - defenderTile.gridPosition.x) + 
+        int horizontalDistance = Mathf.Abs(attackerTile.gridPosition.x - defenderTile.gridPosition.x) +
                                  Mathf.Abs(attackerTile.gridPosition.z - defenderTile.gridPosition.z);
-        
+
         // 2. Check the elevation difference
         int verticalDistance = Mathf.Abs(attackerTile.gridPosition.y - defenderTile.gridPosition.y);
 
@@ -97,11 +107,11 @@ public class BumperEnemyBehavior : EnemyBehavior
         Debug.Log(inRange
             ? $"Enemy is within attack range. (H-Dist: {horizontalDistance}, V-Dist: {verticalDistance})"
             : $"Enemy is out of attack range. (H-Dist: {horizontalDistance}, V-Dist: {verticalDistance})");
-            
+
         return inRange;
     }
 
-    private void PerformAttack(Unit enemyUnit, EnemyAgent enemyAgent, Unit targetPlayerUnit)
+    private void PerformAttack(Unit enemyUnit, EnemyAgent enemyAgent, Unit targetPlayerUnit, int actionsLeft)
     {
         float baseDamage = enemyUnit.unitMeleeAttackBaseDamage;
         float proximityModifier = 1.5f;
@@ -112,11 +122,13 @@ public class BumperEnemyBehavior : EnemyBehavior
             finalDamage *= proximityModifier;
         }
 
-        targetPlayerUnit.TakeDamage(finalDamage);
-        targetPlayerUnit.OnTakenDamage.Invoke(finalDamage);
+        DefenseRequirement defReq = DefenseRequirement.Parryable;
 
-        enemyAgent.gameObject.GetComponentInChildren<BattleFeedbackController>()
-            .PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
+        enemyAgent.StartAttackSequence(targetPlayerUnit, finalDamage, defReq,
+            () =>
+            {
+                DOVirtual.DelayedCall(actionDelay, () => PerformNextAction(enemyUnit, enemyAgent, actionsLeft - 1));
+            });
 
         OnBumperEnemyAttack?.Invoke($"{enemyUnit.unitTemplate.unitName} used Bump");
     }
@@ -144,14 +156,14 @@ public class BumperEnemyBehavior : EnemyBehavior
         while (limitedPath.Count > 0)
         {
             TileController prospectiveDestination = limitedPath.Last();
-            
+
             if (IsTileValidDestination(prospectiveDestination))
             {
                 // Substitute the instant teleport with our step-by-step visual sequencer
                 AnimateMovementAlongPath(enemyUnit, limitedPath);
                 return true;
             }
-            
+
             // Tile is occupied by another Unit or a Prize, step backward by 1 evaluating the previous tile.
             limitedPath.RemoveAt(limitedPath.Count - 1);
         }
@@ -184,16 +196,17 @@ public class BumperEnemyBehavior : EnemyBehavior
         foreach (TileController stepTile in path)
         {
             // Snap the unit to the tile exactly like the Player does
-            movementSequence.AppendCallback(() => 
+            movementSequence.AppendCallback(() =>
             {
                 GridManager.Instance.PlaceUnitOnTileSurface(unit.gameObject, stepTile);
             });
-            
+
             // Wait a tiny fraction of a second before the next step
             movementSequence.AppendInterval(stepDelay);
         }
 
-        Debug.Log($"Unit snap-animating along path to: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
+        Debug.Log(
+            $"Unit snap-animating along path to: ({destinationTile.tileXCoordinate}, {destinationTile.tileYCoordinate})");
     }
 
     protected List<TileController> RetracePathToTarget(TileController startTile, TileController targetTile)
@@ -230,7 +243,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             foreach (TileController neighbor in GetNeighbours(currentTile))
             {
                 if (closedSet.Contains(neighbor) ||
-                   (neighbor.currentSingleTileCondition == SingleTileCondition.occupied && neighbor != targetTile))
+                    (neighbor.currentSingleTileCondition == SingleTileCondition.occupied && neighbor != targetTile))
                 {
                     continue;
                 }
@@ -262,7 +275,8 @@ public class BumperEnemyBehavior : EnemyBehavior
         return null;
     }
 
-    protected List<TileController> LimitPath(List<TileController> fullPath, int movementLimit, TileController targetTile)
+    protected List<TileController> LimitPath(List<TileController> fullPath, int movementLimit,
+        TileController targetTile)
     {
         return fullPath.Take(movementLimit).ToList(); // Temporarily allow paths that include the target.
     }
@@ -329,7 +343,8 @@ public class BumperEnemyBehavior : EnemyBehavior
         unit.currentXCoordinate = destinationTile.tileXCoordinate;
         unit.currentYCoordinate = destinationTile.tileYCoordinate;
 
-        Debug.Log($"Unit moved to voxel block: ({destinationTile.gridPosition.x}, {destinationTile.gridPosition.y}, {destinationTile.gridPosition.z})");
+        Debug.Log(
+            $"Unit moved to voxel block: ({destinationTile.gridPosition.x}, {destinationTile.gridPosition.y}, {destinationTile.gridPosition.z})");
     }
 
     private int GetDistance(TileController tileA, TileController tileB)
