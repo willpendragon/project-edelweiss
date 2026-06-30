@@ -222,15 +222,29 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         if (detectedUnit != null && detectedUnit.CompareTag("ActivePlayerUnit"))
             return;
 
+        // Show HP slider for enemies only on hover
+        if (detectedUnit != null && detectedUnit.CompareTag("Enemy"))
+        {
+            Debug.Log($"[TileHover] Hovering over enemy tile with unit: {detectedUnit.name}, tag: {detectedUnit.tag}");
+            UnitHPSliderToggler.ShowHPSlider(detectedUnit);
+        }
+        else if (detectedUnit != null)
+        {
+            Debug.Log($"[TileHover] Hovering over non-enemy unit: {detectedUnit.name}, tag: {detectedUnit.tag}");
+        }
+        else
+        {
+            Debug.Log("[TileHover] Hovering over empty tile");
+        }
+
         // Show and position the cursor over the tile dynamically.
         if (cursorInstance != null)
         {
-            float cursorY = transform.position.y + 0.57f; // Fallback temporaneo
+            float cursorY = transform.position.y + 0.57f;
             Collider tileCollider = GetComponentInChildren<Collider>();
             
             if (tileCollider != null)
             {
-                // Posiziona il cursore esattamente sul margine superiore del collider (+0.07f per l'offset visivo per non compenetrare)
                 cursorY = tileCollider.bounds.max.y + 0.07f;
             }
 
@@ -241,6 +255,12 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     }
     public void OnPointerExit(PointerEventData eventData)
     {
+        // Hide HP slider when leaving the tile
+        if (detectedUnit != null && detectedUnit.CompareTag("Enemy"))
+        {
+            UnitHPSliderToggler.HideHPSlider(detectedUnit);
+        }
+
         // Hide the cursor when exiting the Tile.
         if (cursorInstance != null)
         {
