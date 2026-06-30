@@ -6,10 +6,13 @@ using UnityEngine;
 
 public class RealTimeActionManager : MonoBehaviour
 {
-    [Header("Configuration")] [SerializeField]
-    private ParryConfig config;
+    public enum ParryState { Idle, Windup, WindowOpen }
 
-    private bool isWindowOpen = false;
+    [Header("Configuration")] 
+    [SerializeField] private ParryConfig config;
+
+    private ParryState currentState = ParryState.Idle;
+    private bool isBotched = false;
     private bool hasAttemptedParry = false;
     private bool wasParrySuccessful = false;
 
@@ -20,72 +23,96 @@ public class RealTimeActionManager : MonoBehaviour
     public event Action OnParryFailure;
 
     private static RealTimeActionManager _instance;
-
     public static RealTimeActionManager Instance
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<RealTimeActionManager>();
-            }
-
+            if (_instance == null) _instance = FindObjectOfType<RealTimeActionManager>();
             return _instance;
         }
     }
 
+    private void Update()
+    {
+        // LA TRAPPOLA ANTI-MASHING
+        // Se preme il pulsante mentre il nemico sta caricando l'attacco, si brucia l'occasione!
+        if (Input.GetKeyDown(config.parryKey))
+        {
+            if (currentState == ParryState.Windup)
+            {
+                isBotched = true;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Va chiamato all'inizio dell'animazione di attacco del nemico.
+    /// </summary>
+    public void StartWindup()
+    {
+        currentState = ParryState.Windup;
+        isBotched = false; // Resetta lo stato di fallimento per il nuovo attacco
+    }
+
     public void OpenParryWindow(Unit targetPlayerUnit)
     {
-        if (isWindowOpen) return;
-
+        if (currentState == ParryState.WindowOpen) return;
         StartCoroutine(ParryWindowRoutine(targetPlayerUnit));
     }
 
     private IEnumerator ParryWindowRoutine(Unit targetPlayerUnit)
     {
-        isWindowOpen = true;
+        currentState = ParryState.WindowOpen;
         hasAttemptedParry = false;
         wasParrySuccessful = false;
-
         float timer = 0f;
 
         Debug.Log("Parry Window Opened! Press " + config.parryKey + " NOW!");
-        // Instantiate "exclamation mark" on the character's head".
         Vector3 offset = new Vector3(1f, 5f, 0f);
-       GameObject exclamationMarkObject = Instantiate(_exclamationMark, targetPlayerUnit.transform.position + offset,
-            targetPlayerUnit.transform.rotation);
-        // Wait for input or until the window expires
+        GameObject exclamationMarkObject = Instantiate(_exclamationMark, targetPlayerUnit.transform.position + offset, targetPlayerUnit.transform.rotation);
+        
         while (timer < config.windowOfOpportunity)
         {
             if (Input.GetKeyDown(config.parryKey) && !hasAttemptedParry)
             {
                 Destroy(exclamationMarkObject);
                 hasAttemptedParry = true;
-                wasParrySuccessful = true;
 
-                Debug.Log("<color=green>Attack parried successfully!</color>");
-                OnParrySuccess?.Invoke();
-
-                // Break out early so we don't keep polling
-                break;
+                // CONTROLLA SE AVEVA SPAMMATO PRIMA CHE SI APRISSE LA FINESTRA
+                if (isBotched)
+                {
+                    wasParrySuccessful = false;
+                    Debug.Log("<color=red>Parry failed: You mashed or pressed too early!</color>");
+                    break;
+                }
+                else
+                {
+                    wasParrySuccessful = true;
+                    Debug.Log("<color=green>Attack parried successfully!</color>");
+                    OnParrySuccess?.Invoke();
+                    break;
+                }
             }
 
             timer += Time.deltaTime;
             yield return null;
         }
 
-        // If the timer ran out and we didn't succeed
+        // Risoluzione fallimento (tempo scaduto o mashing)
         if (!wasParrySuccessful)
         {
-            Destroy(exclamationMarkObject);
-            if (hasAttemptedParry)
-                Debug.Log("<color=red>Parry failed: Pressed too early/late!</color>");
+            if (exclamationMarkObject != null) Destroy(exclamationMarkObject);
+
+            if (isBotched && hasAttemptedParry)
+                Debug.Log("<color=red>Parry failed: Botched from mashing!</color>");
+            else if (hasAttemptedParry)
+                Debug.Log("<color=red>Parry failed: Pressed too late!</color>");
             else
                 Debug.Log("<color=red>Parry failed: Missed the window!</color>");
 
             OnParryFailure?.Invoke();
         }
 
-        isWindowOpen = false;
+        currentState = ParryState.Idle; // Torna a riposo per il prossimo attacco
     }
 }

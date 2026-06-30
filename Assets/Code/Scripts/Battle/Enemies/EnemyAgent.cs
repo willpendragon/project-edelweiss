@@ -119,26 +119,27 @@ public class EnemyAgent : MonoBehaviour
     {
         Unit enemyUnit = GetComponent<Unit>();
 
+        if (defReq == EnemyBehavior.DefenseRequirement.Parryable && RealTimeActionManager.Instance != null)
+        {
+            RealTimeActionManager.Instance.StartWindup();
+        }
+
         if (gameObject.GetComponentInChildren<BattleFeedbackController>() != null)
         {
             gameObject.GetComponentInChildren<BattleFeedbackController>()
                 .PlayMeleeAttackAnimation(enemyUnit, targetPlayerUnit);
         }
 
-        // Wait until frame hit
-        float timeUntilHit = 0.4f; // Have to tweak this value based on animation length.
+        float timeUntilHit = 0.4f; // Tweak based on animation duration.
         yield return new WaitForSeconds(timeUntilHit);
 
         bool wasParried = false;
-
-        // Switch based on attack type.
 
         switch (defReq)
         {
             case EnemyBehavior.DefenseRequirement.Parryable:
                 bool isParryResolved = false;
 
-                // Listen to Parry outcome.
                 System.Action onSuccess = () =>
                 {
                     wasParried = true;
@@ -157,16 +158,14 @@ public class EnemyAgent : MonoBehaviour
 
                     RealTimeActionManager.Instance.OpenParryWindow(targetPlayerUnit);
 
-                    // Wait before player's input or parry windows is over.
                     yield return new WaitUntil(() => isParryResolved);
 
-                    // Clean up events.
                     RealTimeActionManager.Instance.OnParrySuccess -= onSuccess;
                     RealTimeActionManager.Instance.OnParryFailure -= onFailure;
                 }
                 else
                 {
-                    Debug.LogWarning("ParrySystem was not assigned " + gameObject.name);
+                    Debug.LogWarning("ParrySystem not assigned on " + gameObject.name);
                     wasParried = false;
                 }
 
@@ -177,7 +176,6 @@ public class EnemyAgent : MonoBehaviour
                 break;
         }
 
-        // Resolve damage.
         if (wasParried)
         {
             Debug.Log($"<color=cyan>{targetPlayerUnit.name} parried the attack!</color>");
@@ -193,11 +191,11 @@ public class EnemyAgent : MonoBehaviour
             targetPlayerUnit.TakeDamage(finalDamage);
             targetPlayerUnit.OnTakenDamage?.Invoke(finalDamage);
 
-            if (attackVFXAnimator != null)
-                Instantiate(attackVFXAnimator, targetPlayerUnit.transform.position, Quaternion.identity);
+            // if (attackVFXAnimator != null)
+            //     Instantiate(attackVFXAnimator, targetPlayerUnit.transform.position, Quaternion.identity);
+            // Spawn Feedback (currently has the fire icon as a fallback).
         }
 
-        // isTurnComplete = true;
         onAttackComplete?.Invoke();
     }
 }
