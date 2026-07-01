@@ -1,6 +1,8 @@
 using DG.Tweening;
+using ProjectEdelweiss.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class HowToPlay : MonoBehaviour, IPointerClickHandler // This class also handles the map pause menu
 {
@@ -29,7 +31,10 @@ public class HowToPlay : MonoBehaviour, IPointerClickHandler // This class also 
             Time.timeScale = 0f;
         }
 
-        if (_tutorialCanvas != null)
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        if (_tutorialCanvas != null &&
+            currentScene.name == GameTags.OVERWORLD_MAP) // Quick Fix, this logic will happen only in map scene
         {
             _tutorialCanvas.alpha = 1f;
             _tutorialCanvas.interactable = true;
