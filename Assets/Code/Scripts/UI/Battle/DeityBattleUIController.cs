@@ -253,6 +253,8 @@ public class DeityBattleUIController : MonoBehaviour
         if (CurrentDeity == null)
             return;
 
+        _deityPortraitImage.sprite = CurrentDeity.deityPortrait;
+
         if (_minimalEnmitySlider != null)
         {
             _minimalEnmitySlider.value = CurrentDeity.enmity;
