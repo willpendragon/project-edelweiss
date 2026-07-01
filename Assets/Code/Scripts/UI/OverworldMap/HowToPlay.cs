@@ -6,6 +6,7 @@ public class HowToPlay : MonoBehaviour, IPointerClickHandler // This class also 
 {
     [SerializeField] private CanvasGroup _mapCanvas;
     [SerializeField] private CanvasGroup _tutorialCanvas;
+    [SerializeField] private CanvasGroup _pauseMenuCanvas;
     [SerializeField] private OverworldMapUIController _mapMenuController;
 
     void Start()
@@ -15,15 +16,28 @@ public class HowToPlay : MonoBehaviour, IPointerClickHandler // This class also 
 
     public void OpenMenu()
     {
-        _mapCanvas.alpha = 0.8f;
+        if (_mapCanvas != null)
+        {
+            _mapCanvas.alpha = 0.8f;
+        }
 
-        _tutorialCanvas.alpha = 1f;
-        _tutorialCanvas.interactable = true;
-        _tutorialCanvas.blocksRaycasts = true;
-        Time.timeScale = 0f;
+        if (_pauseMenuCanvas != null)
+        {
+            _pauseMenuCanvas.alpha = 1f;
+            _pauseMenuCanvas.interactable = true;
+            _pauseMenuCanvas.blocksRaycasts = true;
+            Time.timeScale = 0f;
+        }
 
-        // Hide navigation arrows
-        _mapMenuController.SetArrowsVisibility(0f);
+        if (_tutorialCanvas != null)
+        {
+            _tutorialCanvas.alpha = 1f;
+            _tutorialCanvas.interactable = true;
+            _tutorialCanvas.blocksRaycasts = true;
+            Time.timeScale = 0f;
+        }
+        // // Hide navigation arrows
+        // _mapMenuController.SetArrowsVisibility(0f);
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -33,15 +47,30 @@ public class HowToPlay : MonoBehaviour, IPointerClickHandler // This class also 
 
     public void ResumeGame()
     {
-        _mapCanvas.alpha = 1f;
-        _tutorialCanvas.alpha = 0f;
-        _tutorialCanvas.interactable = false;
-        _tutorialCanvas.blocksRaycasts = false;
+        if (_mapCanvas != null)
+        {
+            _mapCanvas.alpha = 1f;
+        }
+
+        if (_tutorialCanvas != null)
+        {
+            _tutorialCanvas.alpha = 0f;
+            _tutorialCanvas.interactable = false;
+            _tutorialCanvas.blocksRaycasts = false;
+        }
+
+        if (_pauseMenuCanvas != null)
+        {
+            _pauseMenuCanvas.alpha = 0f;
+            _pauseMenuCanvas.interactable = false;
+            _pauseMenuCanvas.blocksRaycasts = false;
+        }
+
 
         // Resume the game immediately
         Time.timeScale = 1f;
 
-        // Show navigation arrows
-        _mapMenuController.SetArrowsVisibility(1f);
+        // // Show navigation arrows
+        // _mapMenuController.SetArrowsVisibility(1f);
     }
 }
