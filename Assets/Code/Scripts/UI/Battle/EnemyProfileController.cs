@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class EnemyProfileController : MonoBehaviour
 {
@@ -11,6 +11,8 @@ public class EnemyProfileController : MonoBehaviour
     
     // Dictionary mapping enemy GameObjects to their sliders for quick lookup
     private Dictionary<GameObject, Slider> _unitToSliderMap = new Dictionary<GameObject, Slider>();
+    // Dictionary mapping enemy Units to their health change listeners
+    private Dictionary<Unit, UnityAction<float>> _healthChangeListeners = new Dictionary<Unit, UnityAction<float>>();
 
     public static EnemyProfileController Instance { get; private set; }
 
@@ -36,6 +38,7 @@ public class EnemyProfileController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         var enemies = _battleManager.enemiesOnBattlefield;
+        
         foreach (var enemy in enemies)
         {
             var slider = enemy.GetComponentInChildren<Slider>();
@@ -44,11 +47,45 @@ public class EnemyProfileController : MonoBehaviour
                 _enemySliders.Add(slider);
                 _unitToSliderMap[enemy.gameObject] = slider;
                 
+                // Get the Unit component and subscribe to health changes
+                Unit enemyUnit = enemy.GetComponent<Unit>();
+                if (enemyUnit != null)
+                {
+                    SubscribeToEnemyHealthChanges(enemyUnit, slider);
+                }
+                
                 // Hide slider at battle start - only show on hover
                 slider.gameObject.SetActive(false);
             }
         }
+        
         GetSliderValues();
+    }
+
+    /// <summary>
+    /// Subscribes to health change events for an enemy unit.
+    /// </summary>
+    private void SubscribeToEnemyHealthChanges(Unit enemyUnit, Slider slider)
+    {
+        if (enemyUnit == null || slider == null)
+            return;
+
+        // Create a listener for this unit's health changes
+        UnityAction<float> healthChangeListener = (newHealth) =>
+        {
+            if (slider != null)
+            {
+                slider.value = newHealth;
+            }
+        };
+
+        // Store the listener so we can unsubscribe later if needed
+        _healthChangeListeners[enemyUnit] = healthChangeListener;
+
+        // Subscribe to the unit's health change event
+        enemyUnit.onHealthChanged.AddListener(healthChangeListener);
+
+        Debug.Log($"[EnemyProfileController] Subscribed to health changes for {enemyUnit.name}");
     }
 
     private void GetSliderValues()
@@ -59,13 +96,18 @@ public class EnemyProfileController : MonoBehaviour
         foreach (var enemySlider in _enemySliders)
         {
             // Failsafe check in case a slider was destroyed or malformed
-            if (enemySlider == null) continue;
+            if (enemySlider == null) 
+                continue;
 
             var parentUnit = enemySlider.GetComponentInParent<Unit>();
             if (parentUnit != null)
             {
-                enemySlider.maxValue = parentUnit.unitHealthPoints;
+                // Set max value to max health
+                enemySlider.maxValue = parentUnit.unitMaxHealthPoints;
+                // Initialize current value
                 enemySlider.value = parentUnit.unitHealthPoints;
+                
+                Debug.Log($"[EnemyProfileController] Initialized slider for {parentUnit.name}: {parentUnit.unitHealthPoints} / {parentUnit.unitMaxHealthPoints}");
             }
         }
     }
@@ -83,12 +125,20 @@ public class EnemyProfileController : MonoBehaviour
             if (slider != null)
             {
                 slider.gameObject.SetActive(true);
-                Debug.Log($"[EnemySlider] Showing slider for {enemyUnit.name}");
+                
+                // Ensure the slider value is up-to-date before showing
+                Unit unit = enemyUnit.GetComponent<Unit>();
+                if (unit != null)
+                {
+                    slider.value = unit.unitHealthPoints;
+                }
+                
+                Debug.Log($"[EnemyProfileController] Showing slider for {enemyUnit.name}");
             }
         }
         else
         {
-            Debug.LogWarning($"[EnemySlider] No slider found in map for {enemyUnit.name}");
+            Debug.LogWarning($"[EnemyProfileController] No slider found in map for {enemyUnit.name}");
         }
     }
 
@@ -105,8 +155,39 @@ public class EnemyProfileController : MonoBehaviour
             if (slider != null)
             {
                 slider.gameObject.SetActive(false);
-                Debug.Log($"[EnemySlider] Hiding slider for {enemyUnit.name}");
+                Debug.Log($"[EnemyProfileController] Hiding slider for {enemyUnit.name}");
             }
         }
+    }
+
+    /// <summary>
+    /// Unsubscribes from a unit's health changes (call when unit is destroyed).
+    /// </summary>
+    public void UnsubscribeFromEnemyHealthChanges(Unit enemyUnit)
+    {
+        if (enemyUnit == null)
+            return;
+
+        if (_healthChangeListeners.TryGetValue(enemyUnit, out var listener))
+        {
+            enemyUnit.onHealthChanged.RemoveListener(listener);
+            _healthChangeListeners.Remove(enemyUnit);
+            Debug.Log($"[EnemyProfileController] Unsubscribed from health changes for {enemyUnit.name}");
+        }
+    }
+
+    /// <summary>
+    /// Cleans up all listeners when the controller is destroyed.
+    /// </summary>
+    private void OnDestroy()
+    {
+        foreach (var kvp in _healthChangeListeners)
+        {
+            if (kvp.Key != null)
+            {
+                kvp.Key.onHealthChanged.RemoveListener(kvp.Value);
+            }
+        }
+        _healthChangeListeners.Clear();
     }
 }
