@@ -2083,6 +2083,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapNodeInfoPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 2574047309495191915, guid: c745ce6e38b4c2e4ea1eb3e2b67ec6ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2829576097272592197, guid: c745ce6e38b4c2e4ea1eb3e2b67ec6ed, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
