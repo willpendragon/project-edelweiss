@@ -973,6 +973,53 @@ MonoBehaviour:
   collectibleDeities:
   - {fileID: 3348349630364506731, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
   - {fileID: 3348349630364506731, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
+--- !u!1 &140861681
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 140861682}
+  - component: {fileID: 140861683}
+  m_Layer: 0
+  m_Name: DeityForecastUIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &140861682
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140861681}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &140861683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140861681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61c52a7c5b9cc0749876d42ba30ba828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _forecastController: {fileID: 1363025853}
+  _forecastContainer: {fileID: 299854602}
+  _forecastEntryPrefab: {fileID: 2781845131115418720, guid: 56d17b5d1b45ff044818c6208e0320af, type: 3}
 --- !u!1 &156869628
 GameObject:
   m_ObjectHideFlags: 0
@@ -1647,6 +1694,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &343675802
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &352406781
 GameObject:
   m_ObjectHideFlags: 0
@@ -3880,6 +3958,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mapCanvas: {fileID: 299854604}
   _tutorialCanvas: {fileID: 1328341420}
+  _pauseMenuCanvas: {fileID: 0}
   _mapMenuController: {fileID: 0}
 --- !u!114 &685719149 stripped
 MonoBehaviour:
@@ -5659,7 +5738,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2033806461}
+  - {fileID: 343675802}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6884,6 +6963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mapCanvas: {fileID: 299854604}
   _tutorialCanvas: {fileID: 1357878491}
+  _pauseMenuCanvas: {fileID: 0}
   _mapMenuController: {fileID: 0}
 --- !u!114 &1249540180
 MonoBehaviour:
@@ -8188,6 +8268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mapCanvas: {fileID: 299854604}
   _tutorialCanvas: {fileID: 1046834003}
+  _pauseMenuCanvas: {fileID: 0}
   _mapMenuController: {fileID: 0}
 --- !u!114 &1349019777
 MonoBehaviour:
@@ -8374,6 +8455,96 @@ MonoBehaviour:
   achievementBlock: {fileID: 8263711282531187409, guid: f27d92418e339754492d36da702d6954, type: 3}
   deityHuntingMenu: {fileID: 2037550691}
   gameStatsManager: {fileID: 2069997350}
+--- !u!1 &1363025851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1363025852}
+  - component: {fileID: 1363025853}
+  - component: {fileID: 1363025854}
+  - component: {fileID: 1363025855}
+  m_Layer: 0
+  m_Name: DeityForecastController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1363025852
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363025851}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1363025853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363025851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d502bf04ce87be64e8bb5f90f9c0ec68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _achievementsManager: {fileID: 1363025854}
+  _deitySpawner: {fileID: 1363025855}
+  _overseerDeityChance: 0.43
+  _captureDeityChance: 0.5
+--- !u!114 &1363025854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363025851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ccaed5fe82a6344880aca8d5fefb078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allAchievements:
+  - {fileID: 11400000, guid: f021f206d0f534742a12f6172277bbf8, type: 2}
+  - {fileID: 11400000, guid: 5b4aa263dfeff464ba80ff5eb12a49b7, type: 2}
+  currentAchievement: {fileID: 0}
+  _deitySpawner: {fileID: 1363025855}
+--- !u!114 &1363025855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363025851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfb83a52bcfb2594a96a7338f2287336, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnableDeities:
+  - {fileID: 3348349630364506731, guid: 6be6f4c337f4ec34a97d538254f38151, type: 3}
+  - {fileID: 3348349630364506731, guid: 9ef60eaf543f1884699d82be73ab782e, type: 3}
+  deitySpawnPosition: {fileID: 0}
+  deityAchievementsController: {fileID: 0}
+  battleManager: {fileID: 0}
+  deityObelisk: {fileID: 3891449085213674370, guid: c3d7c2c404976e441a804806ce605352, type: 3}
+  deityObeliskSpawningPoint: {fileID: 0}
+  _enemyTurnManager: {fileID: 0}
+  currentUnboundDeity: {fileID: 0}
+  deityHealthBar: {fileID: 7395316366926420676, guid: 2f84651896d321549ad1a81364cdcca6, type: 3}
 --- !u!1001 &1367350965
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12920,37 +13091,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2032901335}
   m_CullTransparentMesh: 1
---- !u!21 &2033806461
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &2034429823
 GameObject:
   m_ObjectHideFlags: 0
@@ -13769,6 +13909,10 @@ PrefabInstance:
     - target: {fileID: 7821740509712482367, guid: 862917fb3c7458e47bb148c1a8487c3b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.0000076293945
+      objectReference: {fileID: 0}
+    - target: {fileID: 8186801696236412452, guid: 862917fb3c7458e47bb148c1a8487c3b, type: 3}
+      propertyPath: m_Alpha
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20470,11 +20614,13 @@ SceneRoots:
   - {fileID: 303967805}
   - {fileID: 8432855776607886465}
   - {fileID: 1535054960}
+  - {fileID: 1363025852}
   - {fileID: 1534740274}
   - {fileID: 1423943421}
   - {fileID: 180053233}
   - {fileID: 44604000}
   - {fileID: 2056224113}
+  - {fileID: 140861682}
   - {fileID: 713656785}
   - {fileID: 299854602}
   - {fileID: 1328341419}

@@ -147,8 +147,14 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         SetCanvasVisibility(1f, true, true, Vector3.one);
         Time.timeScale = 0f;
         SetOverworldUIVisibility(0.8f);
-        _mapMenuController.SetArrowsVisibility(0f);
+        //_mapMenuController.SetArrowsVisibility(0f); // Not relevant, arriws removed
         SetBattleTypeLabel();
+        // Fill in with info related to Deities forecast.
+        DeityForecastUIController deityForecastUIController = FindAnyObjectByType<DeityForecastUIController>();
+        if (deityForecastUIController != null)
+        {
+            deityForecastUIController.DisplayDeityForecasts(_locationCanvas.transform);
+        }
     }
 
     private void SetBattleTypeLabel()
