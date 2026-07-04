@@ -17,15 +17,15 @@ public class DeityForecastUIController : MonoBehaviour
     /// Displays all deity forecasts in the UI.
     /// </summary>
     /// 
-    private void Start()
-    {
-        if (_forecastController == null)
-        {
-            Debug.LogError("DeityForecastUIController: DeityForecastController not assigned.");
-            return;
-        }
-        DisplayDeityForecasts(_forecastContainer);
-    }
+    //private void Start()
+    //{
+    //    if (_forecastController == null)
+    //    {
+    //        Debug.LogError("DeityForecastUIController: DeityForecastController not assigned.");
+    //        return;
+    //    }
+    //    DisplayDeityForecasts(_forecastContainer);
+    //}
 
     public void DisplayDeityForecasts(Transform uiContainer)
     {

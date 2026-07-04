@@ -4,10 +4,11 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Simple display for a single Deity forecast entry.
-/// Shows deity name, manifestation chance (overseer), and battle chance (capturable).
+/// Shows deity portrait, name, manifestation chance (overseer), and battle chance (capturable).
 /// </summary>
 public class DeityForecastEntryUI : MonoBehaviour
 {
+    [SerializeField] private Image _deityPortraitImage;
     [SerializeField] private TextMeshProUGUI _deityNameText;
     [SerializeField] private TextMeshProUGUI _manifestationChanceText;
     [SerializeField] private TextMeshProUGUI _battleChanceText;
@@ -22,6 +23,9 @@ public class DeityForecastEntryUI : MonoBehaviour
             Debug.LogWarning("DeityForecastEntryUI: Received null forecast.");
             return;
         }
+
+        // Display deity portrait
+        _deityPortraitImage.sprite = forecast.deityPortrait;
 
         // Display deity name
         if (_deityNameText != null)
@@ -61,6 +65,9 @@ public class DeityForecastEntryUI : MonoBehaviour
     /// </summary>
     public void Clear()
     {
+        if (_deityPortraitImage != null)
+            _deityPortraitImage.sprite = null;
+
         if (_deityNameText != null)
             _deityNameText.text = "";
 
