@@ -25,6 +25,7 @@ public class DeityForecastController : MonoBehaviour
     {
         public Deity deity;
         public string deityName;
+        public Sprite deityPortrait;
         public DeityType type;
         public float totalAppearanceChance;
         public float overseerChance;
@@ -69,7 +70,6 @@ public class DeityForecastController : MonoBehaviour
         }
 
         // Get all spawnable deities from the spawner
-        // Note: DeitySpawner's spawnableDeities list is private, so we may need to access via reflection or create a public getter
         var spawnableDeities = GetSpawnableDeities();
 
         if (spawnableDeities.Count == 0)
@@ -95,11 +95,15 @@ public class DeityForecastController : MonoBehaviour
             if (SaveStateManager.saveData.killedDeities.ContainsKey(unitComponent.unitTemplate.unitName))
                 continue;
 
+            // Get portrait from the unit's sprite renderer
+            Sprite portrait = unitComponent.unitTemplate.unitPortrait != null ? unitComponent.unitTemplate.unitPortrait : null;
+
             // Create forecast entry for overseer deity
             DeityForecast forecast = new DeityForecast
             {
                 deity = deity,
                 deityName = unitComponent.unitTemplate.unitName,
+                deityPortrait = portrait,
                 type = DeityForecast.DeityType.OverseerOnly,
                 overseerChance = _overseerDeityChance / spawnableDeities.Count,
                 captureChance = 0f
@@ -148,6 +152,9 @@ public class DeityForecastController : MonoBehaviour
             if (SaveStateManager.saveData.killedDeities.ContainsKey(unitComponent.unitTemplate.unitName))
                 continue;
 
+            // Get portrait from the unit's sprite renderer
+            Sprite portrait = unitComponent.unitSprite != null ? unitComponent.unitSprite.sprite : null;
+
             // Check if deity already exists in list (might be added as both overseer and capturable)
             var existingForecast = forecasts.FirstOrDefault(f => f.deity == deity);
 
@@ -164,6 +171,7 @@ public class DeityForecastController : MonoBehaviour
                 {
                     deity = deity,
                     deityName = unitComponent.unitTemplate.unitName,
+                    deityPortrait = portrait,
                     type = DeityForecast.DeityType.CaptureOnly,
                     overseerChance = 0f,
                     captureChance = _captureDeityChance
@@ -226,32 +234,5 @@ public class DeityForecastController : MonoBehaviour
 
         Debug.LogWarning("DeityForecastController: Could not access DeitySpawner's spawnableDeities list.");
         return new List<GameObject>();
-    }
-
-    /// <summary>
-    /// Gets a formatted string describing a deity's appearance chances.
-    /// </summary>
-    public string GetDeityForecastText(DeityForecast forecast)
-    {
-        string text = $"{forecast.deityName}\n";
-        text += $"Total Appearance: {forecast.totalAppearanceChance:P1}\n";
-
-        switch (forecast.type)
-        {
-            case DeityForecast.DeityType.OverseerOnly:
-                text += $"Overseer: {forecast.overseerChance:P1}";
-                break;
-
-            case DeityForecast.DeityType.CaptureOnly:
-                text += $"Capturable: {forecast.captureChance:P1}";
-                break;
-
-            case DeityForecast.DeityType.Both:
-                text += $"Overseer: {forecast.overseerChance:P1}\n";
-                text += $"Capturable: {forecast.captureChance:P1}";
-                break;
-        }
-
-        return text;
     }
 }

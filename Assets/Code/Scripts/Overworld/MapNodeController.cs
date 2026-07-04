@@ -7,6 +7,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
 {
     public EnemySelection enemySelection;
     [SerializeField] CanvasGroup _locationCanvas;
+    [SerializeField] CanvasGroup _deityForecastCanvas;
     [SerializeField] CanvasGroup _iconCanvas;
     [SerializeField] private OverworldMapUIController _mapMenuController;
     [SerializeField] private int _dayCost = 1; // The time entering this node subtracts adds to the Calendar.
@@ -153,7 +154,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         DeityForecastUIController deityForecastUIController = FindAnyObjectByType<DeityForecastUIController>();
         if (deityForecastUIController != null)
         {
-            deityForecastUIController.DisplayDeityForecasts(_locationCanvas.transform);
+            deityForecastUIController.DisplayDeityForecasts(_deityForecastCanvas.transform);
         }
     }
 
