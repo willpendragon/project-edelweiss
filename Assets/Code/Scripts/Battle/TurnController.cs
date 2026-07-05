@@ -67,6 +67,7 @@ public class TurnController : MonoBehaviour
     public static event ResetSummonBuffs OnResetSummonBuffs;
 
     public bool battleStarted;
+    private bool battleEnded;
 
     [Header("Core Gameplay Logic")] public GameStatsManager gameStatsManager;
 
@@ -229,6 +230,10 @@ public class TurnController : MonoBehaviour
 
     public void GameOverCheck()
     {
+        // Prevent multiple invocations of defeat/victory sequences
+        if (battleEnded)
+            return;
+
         // Fires different handling of the Game Over sequence, depending on the Battle Type.
         switch (BattleTypeController.Instance.currentBattleType)
         {
@@ -268,6 +273,7 @@ public class TurnController : MonoBehaviour
         if (enemyUnitsOnBattlefield.All(enemy =>
                 enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
+            battleEnded = true;
             BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
         }
         else if (enemyUnitsOnBattlefield.All(enemy =>
@@ -278,6 +284,7 @@ public class TurnController : MonoBehaviour
         else if (playerUnitsOnBattlefield.All(player =>
                      player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
+            battleEnded = true;
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
         else if (playerUnitsOnBattlefield.All(player =>
@@ -291,6 +298,7 @@ public class TurnController : MonoBehaviour
     {
         if (GameObject.FindGameObjectWithTag(Tags.ENEMY).GetComponent<Unit>().unitHealthPoints <= 0)
         {
+            battleEnded = true;
             BattleFlowController.Instance.PlayerPartyVictorySequence("Deicide", warFunds);
             // Add Deity to the Killed Deity Dictionary
             OnDeityKilled(_deitySpawner.currentUnboundDeity);
@@ -299,6 +307,7 @@ public class TurnController : MonoBehaviour
         else if (playerUnitsOnBattlefield.All(player =>
                      player.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
+            battleEnded = true;
             Debug.Log("Player Party was defeated by the Deity");
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
@@ -341,6 +350,7 @@ public class TurnController : MonoBehaviour
 
         if (playerPartyDefeated)
         {
+            battleEnded = true;
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
             return;
         }
@@ -354,6 +364,7 @@ public class TurnController : MonoBehaviour
                 // Victory triggers ONLY when it is defeated. Regular enemies' status doesn't matter.
                 if (residentDeityDefeated)
                 {
+                    battleEnded = true;
                     BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
                 }
             }
@@ -363,6 +374,7 @@ public class TurnController : MonoBehaviour
                 // Victory triggers when all standard enemies are dead.
                 if (allEnemiesDefeated)
                 {
+                    battleEnded = true;
                     BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
                 }
             }
@@ -373,6 +385,7 @@ public class TurnController : MonoBehaviour
             // Victory triggers when all standard enemies are dead.
             if (allEnemiesDefeated)
             {
+                battleEnded = true;
                 BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
             }
         }
