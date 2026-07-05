@@ -3,7 +3,6 @@ using ProjectEdelweiss.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 
 public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
@@ -240,10 +239,10 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         int baseDamage = spell.damage + (int)(activePlayerUnit.unitMagicPower * 0.5f);
         float faithModifiedDamage = FaithModifierCalculator.ApplyFaithDamageModifier(baseDamage, activePlayerUnit);
-        
+
         float damageOutput = faithModifiedDamage *
                             (IsCritical(spell, activePlayerUnit) ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100f) : 1);
-        
+
         // Flatten damage to remove excessive decimal places
         return DamageCalculationUtility.FlattenDamage(damageOutput);
     }
@@ -251,7 +250,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     private bool IsCritical(Spell spell, Unit activePlayerUnit)
     {
         float adjustedCritChance = FaithModifierCalculator.ApplyFaithCriticalModifier(spell.criticalHitChance, activePlayerUnit);
-        
+
         if (Random.value < adjustedCritChance)
         {
             _criticalHit = true;
@@ -348,7 +347,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         }
         else
         {
-            OnNotEnoughMana?.Invoke("Not enough Mana..."); 
+            OnNotEnoughMana?.Invoke("Not enough Mana...");
             return false;
         }
     }

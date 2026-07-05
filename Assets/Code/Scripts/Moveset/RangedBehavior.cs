@@ -71,11 +71,14 @@ public class RangedBehavior : PhysicalAttackBehavior
             // Compile the final damage output
             float finalDamage = baseDamageOutput * (1f + distanceBonus + elevationBonus);
 
+            // Flatten damage to remove excessive decimal places
+            int flattenedDamage = DamageCalculationUtility.FlattenDamage(finalDamage);
+
             // Apply Damage directly and fire UI text via Broadcast
-            targetUnit.TakeDamage(finalDamage);
+            targetUnit.TakeDamage(flattenedDamage);
             BroadcastAttackNotification($"{activePlayerUnit.unitTemplate.unitName} used Ranged Attack");
 
-            Debug.Log($"{activePlayerUnit.unitTemplate.unitName} fired a ranged attack at {targetUnit.unitTemplate.unitName}! Distance: {flatDistance}, Elevation: {elevationDifference}, Final Damage: {finalDamage}");
+            Debug.Log($"{activePlayerUnit.unitTemplate.unitName} fired a ranged attack at {targetUnit.unitTemplate.unitName}! Distance: {flatDistance}, Elevation: {elevationDifference}, Final Damage: {flattenedDamage}");
         }
     }
 
