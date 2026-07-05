@@ -44,10 +44,10 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            CameraCloseUp();
-        }
+        //if (Input.GetKeyDown(KeyCode.Z))
+        //{
+        //    CameraCloseUp();
+        //}
 
         // if (Input.GetKeyDown(KeyCode.E))
         // {
@@ -66,6 +66,7 @@ public class CameraController : MonoBehaviour
         BumperEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
         StunnerEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
         EnemyTurnManager.OnPlayerTurnSwap += PanCameraToActiveUnit;
+        EnemyTurnManager.OnDeityTurn += HandleDeityTurnCamera;
 
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
@@ -90,6 +91,7 @@ public class CameraController : MonoBehaviour
         BumperEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
         StunnerEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
         EnemyTurnManager.OnPlayerTurnSwap -= PanCameraToActiveUnit;
+        EnemyTurnManager.OnDeityTurn -= HandleDeityTurnCamera;
 
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
@@ -390,6 +392,26 @@ public class CameraController : MonoBehaviour
         if (targetTile != null)
         {
             PanCameraToPosition(targetTile.gameObject.transform.position, null, duration);
+        }
+    }
+
+    private void HandleDeityTurnCamera(string turnMessage)
+    {
+        var deity = FindObjectOfType<Deity>();
+        if (deity != null)
+        {
+            Vector3 targetPos = deity.transform.position;
+            var unit = deity.GetComponent<Unit>();
+            if (unit != null && unit.ownedTile != null)
+            {
+                targetPos = unit.ownedTile.gameObject.transform.position;
+            }
+
+            float quickPanDuration = 0.2f;
+            PanCameraToPosition(targetPos + _deityFocusOffset, _battleCameraSettings.ZoomAmount, quickPanDuration);
+
+            //float viewDuration = 1.0f;
+            //DOVirtual.DelayedCall(quickPanDuration + viewDuration, ResetCameraPositionSmooth);
         }
     }
 }
