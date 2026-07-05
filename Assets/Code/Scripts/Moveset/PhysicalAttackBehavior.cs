@@ -310,7 +310,8 @@ public class PhysicalAttackBehavior : ScriptableObject
             damageOutput *= 1 + Mathf.FloorToInt(attacker.unitAttackPower / 100f);
         }
 
-        return damageOutput;
+        // Flatten damage to remove excessive decimal places
+        return DamageCalculationUtility.FlattenDamage(damageOutput);
     }
 
     private bool IsCritical(Unit attacker)

@@ -241,9 +241,11 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         int baseDamage = spell.damage + (int)(activePlayerUnit.unitMagicPower * 0.5f);
         float faithModifiedDamage = FaithModifierCalculator.ApplyFaithDamageModifier(baseDamage, activePlayerUnit);
         
-        int damageToApply = Mathf.RoundToInt(faithModifiedDamage *
-                            (IsCritical(spell, activePlayerUnit) ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100f) : 1));
-        return damageToApply;
+        float damageOutput = faithModifiedDamage *
+                            (IsCritical(spell, activePlayerUnit) ? 1 + Mathf.FloorToInt(activePlayerUnit.unitMagicPower / 100f) : 1);
+        
+        // Flatten damage to remove excessive decimal places
+        return DamageCalculationUtility.FlattenDamage(damageOutput);
     }
 
     private bool IsCritical(Spell spell, Unit activePlayerUnit)
