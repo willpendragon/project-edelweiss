@@ -118,6 +118,7 @@ public class PrizeReleaseController : MonoBehaviour
         // Link the item to the tile
         fieldPrizeTile.tileCurrentFieldPrize = newFieldPrizeGO;
         fieldPrizeTile.currentSingleTileStatus = SingleTileStatus.selectedPlayerUnitOccupiedTile;
+        // Do NOT mark as occupied - this allows players to walk through but enemies cannot
 
         // Apply visual meshes
         MeshFilter targetMeshFilter = newFieldPrizeGO.GetComponentInChildren<MeshFilter>();
