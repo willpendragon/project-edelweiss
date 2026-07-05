@@ -65,6 +65,7 @@ public class CameraController : MonoBehaviour
         MovePlayerAction.OnUnitMovedToTile += FollowActiveUnitMovement;
         BumperEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
         StunnerEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
+        EnemyTurnManager.OnPlayerTurnSwap += PanCameraToActiveUnit;
 
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
@@ -88,6 +89,7 @@ public class CameraController : MonoBehaviour
         MovePlayerAction.OnUnitMovedToTile -= FollowActiveUnitMovement;
         BumperEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
         StunnerEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
+        EnemyTurnManager.OnPlayerTurnSwap -= PanCameraToActiveUnit;
 
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
@@ -198,6 +200,7 @@ public class CameraController : MonoBehaviour
             if (unit != null && unit.ownedTile != null)
             {
                 PanCameraToPosition(unit.ownedTile.gameObject.transform.position);
+                Debug.Log("Panning camera to active player unit at tile: " + unit.ownedTile.name);
             }
         }
     }
