@@ -63,8 +63,8 @@ public class CameraController : MonoBehaviour
         TurnController.OnPlayerTurn += HandlePlayerTurnCamera;
         TurnController.OnEnemyTurnSwap += HandleEnemyTurnCamera;
         MovePlayerAction.OnUnitMovedToTile += FollowActiveUnitMovement;
-
         BumperEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
+        StunnerEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
 
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
@@ -87,6 +87,7 @@ public class CameraController : MonoBehaviour
         TurnController.OnEnemyTurnSwap -= HandleEnemyTurnCamera;
         MovePlayerAction.OnUnitMovedToTile -= FollowActiveUnitMovement;
         BumperEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
+        StunnerEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
 
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
