@@ -149,7 +149,13 @@ public class PhysicalAttackBehavior : ScriptableObject
                 break;
             }
 
-            // 5. OBSTACLE/UNIT CHECK: Slamming into a hard structural object or unit -> WALL SLAM
+            // 5. PRIZE CHECK: Stop before prize, but not a wall slam
+            if (stepTile.tileCurrentFieldPrize != null)
+            {
+                break;
+            }
+
+            // 6. OBSTACLE/UNIT CHECK: Slamming into a hard structural object or unit -> WALL SLAM
             if (stepTile.tileType == TileType.Obstacle || stepTile.tileType == TileType.Environment ||
                 stepTile.detectedUnit != null)
             {
@@ -157,7 +163,7 @@ public class PhysicalAttackBehavior : ScriptableObject
                 break;
             }
 
-            // 6. VALID FLOOR: It's a standard empty, walkable tile.
+            // 7. VALID FLOOR: It's a standard empty, walkable tile.
             validGridPos = stepPos;
             finalDestinationTile = stepTile;
         }
@@ -310,7 +316,8 @@ public class PhysicalAttackBehavior : ScriptableObject
             damageOutput *= 1 + Mathf.FloorToInt(attacker.unitAttackPower / 100f);
         }
 
-        return damageOutput;
+        // Flatten damage to remove excessive decimal places
+        return DamageCalculationUtility.FlattenDamage(damageOutput);
     }
 
     private bool IsCritical(Unit attacker)

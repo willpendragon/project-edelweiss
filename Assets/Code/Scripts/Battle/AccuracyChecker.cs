@@ -1,14 +1,7 @@
 using UnityEngine;
-
-/// <summary>
-/// Utility class for performing accuracy checks on attacks and spells.
-/// Integrates with the Faith modifier system to affect hit chances.
-/// </summary>
 public static class AccuracyChecker
 {
-    /// <summary>
-    /// Checks if a melee attack hits the target.
-    /// </summary>
+    // Check if a melee attack hits the target.
     public static bool CheckMeleeAccuracy(Unit attacker, Unit defender, float baseAccuracy = 0.95f)
     {
         if (attacker == null) return true; // Fallback to hit if missing attacker
@@ -23,9 +16,7 @@ public static class AccuracyChecker
         return Random.value < accuracy;
     }
 
-    /// <summary>
-    /// Checks if a spell hits the target.
-    /// </summary>
+    // Check if a spell hits the target.
     public static bool CheckSpellAccuracy(Unit caster, Unit target, Spell spell)
     {
         if (caster == null || spell == null) return true; // Fallback to hit if missing data
@@ -40,9 +31,7 @@ public static class AccuracyChecker
         return Random.value < accuracy;
     }
 
-    /// <summary>
-    /// Checks if an AOE spell hits a specific target within the affected area.
-    /// </summary>
+    // Checks if an AOE spell hits a specific target within the affected area.
     public static bool CheckAOEAccuracy(Unit caster, Unit target, Spell spell)
     {
         if (caster == null || spell == null) return true;

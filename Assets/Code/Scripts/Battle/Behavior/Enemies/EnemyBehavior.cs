@@ -18,8 +18,8 @@ public abstract class EnemyBehavior : ScriptableObject
     {
         if (tile == null) return false;
 
-        // An Enemy cannot stop if the tile is technically occupied, there's another Unit inside it, 
-        // or a Field Prize currently holds the spot.
+        // An Enemy cannot stop if the tile is technically occupied, there's another Unit inside it,
+        // or a Field Prize currently holds the spot (regardless of tile condition).
         return tile.currentSingleTileCondition == SingleTileCondition.free
                && tile.detectedUnit == null
                && tile.tileCurrentFieldPrize == null;
