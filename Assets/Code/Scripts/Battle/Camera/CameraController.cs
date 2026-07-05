@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour
 {
     private Vector3 _originalCameraPosition;
     private float _originalZoomAmount;
+    private Tween _cameraTween;
 
     [Header("Settings")] [SerializeField] private BattleCameraSettings _battleCameraSettings;
     [SerializeField] private Vector3 _deityFocusOffset = new Vector3(0f, 3f, 0f);
@@ -15,6 +16,9 @@ public class CameraController : MonoBehaviour
 
     // These settings change how the camera looks at the end of a battle.
     [SerializeField] private EndBattleCameraSettings _endBattleCameraSettings;
+
+    [Header("Camera Transition")] [SerializeField] private float _cameraPanDuration = 0.8f;
+    [SerializeField] private Ease _cameraPanEase = Ease.InOutQuad;
 
     [Header("Cameras")] public List<Camera> _cameras;
 
@@ -52,6 +56,9 @@ public class CameraController : MonoBehaviour
     {
         PhysicalAttackBehavior.OnKnockbackFired += CameraCloseUp;
         AOESpellPlayerAction.OnDeityAngered += DeityCameraCloseUp;
+        UnitSelectionController.OnUnitTurnEnded += PanCameraToNextUnit;
+        TurnController.OnPlayerTurn += HandlePlayerTurnCamera;
+        TurnController.OnEnemyTurnSwap += HandleEnemyTurnCamera;
 
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
@@ -69,6 +76,9 @@ public class CameraController : MonoBehaviour
     {
         PhysicalAttackBehavior.OnKnockbackFired -= CameraCloseUp;
         AOESpellPlayerAction.OnDeityAngered -= DeityCameraCloseUp;
+        UnitSelectionController.OnUnitTurnEnded -= PanCameraToNextUnit;
+        TurnController.OnPlayerTurn -= HandlePlayerTurnCamera;
+        TurnController.OnEnemyTurnSwap -= HandleEnemyTurnCamera;
 
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
@@ -80,6 +90,9 @@ public class CameraController : MonoBehaviour
         {
             _endBattleCameraSettings.OnSettingsChanged -= ApplyBattleEndCameraSettings;
         }
+
+        // Kill any active camera tween to prevent lingering animations
+        _cameraTween?.Kill();
     }
 
     public void ApplyGeneralCameraSettings()
@@ -136,9 +149,107 @@ public class CameraController : MonoBehaviour
         Debug.Log("Saved current camera transforms to GeneralCameraSettings SO.");
     }
 
+    /// <summary>
+    /// Smoothly pans camera to a given target position with optional zoom adjustment.
+    /// </summary>
+    private void PanCameraToPosition(Vector3 targetPosition, float? targetZoom = null)
+    {
+        // Kill any existing tween to prevent conflicts
+        _cameraTween?.Kill();
+
+        if (_cameras == null || _cameras.Count == 0) return;
+
+        float zoomTarget = targetZoom ?? _battleCameraSettings.ZoomAmount;
+
+        foreach (var cam in _cameras)
+        {
+            Vector3 finalPosition = targetPosition + _battleCameraSettings.CameraOffset;
+
+            // Tween position
+            _cameraTween = cam.transform.DOMove(finalPosition, _cameraPanDuration).SetEase(_cameraPanEase);
+
+            // Tween zoom in parallel
+            DOVirtual.Float(cam.fieldOfView, zoomTarget, _cameraPanDuration, value =>
+            {
+                cam.fieldOfView = value;
+            }).SetEase(_cameraPanEase);
+        }
+    }
+
+    /// <summary>
+    /// Called when player selects a unit. Camera smoothly pans to the active player unit.
+    /// </summary>
+    public void PanCameraToActiveUnit()
+    {
+        var activeUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
+        if (activeUnit != null)
+        {
+            var unit = activeUnit.GetComponent<Unit>();
+            if (unit != null && unit.ownedTile != null)
+            {
+                PanCameraToPosition(unit.ownedTile.gameObject.transform.position);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Called when player turn begins. Pans camera to first available active player unit.
+    /// </summary>
+    private void HandlePlayerTurnCamera(string turnMessage)
+    {
+        PanCameraToActiveUnit();
+    }
+
+    /// <summary>
+    /// Called when the unit turn ends to reset camera. Optional: pan to next available unit.
+    /// </summary>
+    private void PanCameraToNextUnit()
+    {
+        // Option 1: Pan back to general overview
+        ResetCameraPositionSmooth();
+
+        // Option 2 (Alternative): Automatically pan to next available player unit
+        // PanCameraToActiveUnit();
+    }
+
+    /// <summary>
+    /// Called when enemy turn starts. Pans camera to cycle through enemies on battlefield.
+    /// </summary>
+    private void HandleEnemyTurnCamera()
+    {
+        PanCameraToFirstAvailableEnemy();
+    }
+
+    /// <summary>
+    /// Pans camera to the first available living enemy on the battlefield.
+    /// </summary>
+    private void PanCameraToFirstAvailableEnemy()
+    {
+        var turnController = TurnController.Instance;
+        if (turnController == null || turnController.enemyUnitsOnBattlefield == null) return;
+
+        foreach (var enemy in turnController.enemyUnitsOnBattlefield)
+        {
+            if (enemy != null)
+            {
+                var unit = enemy.GetComponent<Unit>();
+                if (unit != null && unit.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
+                {
+                    if (unit.ownedTile != null)
+                    {
+                        PanCameraToPosition(unit.ownedTile.gameObject.transform.position);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Close-up camera effect for knockback or special actions on active player unit.
+    /// </summary>
     public void CameraCloseUp()
     {
-        // Retrieve the position of the character
         var activeUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
         if (activeUnit != null)
         {
@@ -147,6 +258,9 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Close-up camera effect on a Deity unit.
+    /// </summary>
     public void DeityCameraCloseUp()
     {
         var deity = FindObjectOfType<Deity>();
@@ -158,14 +272,20 @@ public class CameraController : MonoBehaviour
             {
                 targetPos = unit.ownedTile.gameObject.transform.position;
             }
-            
+
             // Add the inspector offset to adjust the focus (e.g., higher up to see the face)
             UpdateCameraPosition(targetPos + _deityFocusOffset);
         }
     }
 
+    /// <summary>
+    /// Instant camera move with optional auto-reset delay.
+    /// </summary>
     private void UpdateCameraPosition(Vector3 targetPosition)
     {
+        // Kill any smooth pan tween
+        _cameraTween?.Kill();
+
         foreach (var cam in _cameras)
         {
             Vector3 finalTransform = targetPosition + _battleCameraSettings.CameraOffset;
@@ -176,8 +296,14 @@ public class CameraController : MonoBehaviour
         Invoke(nameof(ResetCameraPosition), _battleCameraSettings.CameraResetDelay);
     }
 
+    /// <summary>
+    /// Instantly reset camera to original position.
+    /// </summary>
     private void ResetCameraPosition()
     {
+        // Kill any active tween
+        _cameraTween?.Kill();
+
         foreach (var cam in _cameras)
         {
             cam.transform.position = _originalCameraPosition;
@@ -187,6 +313,37 @@ public class CameraController : MonoBehaviour
             if (_generalCameraSettings != null)
             {
                 cam.transform.eulerAngles = _generalCameraSettings.CameraRotation;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Smoothly reset camera to original position using DoTween.
+    /// </summary>
+    private void ResetCameraPositionSmooth()
+    {
+        // Kill any existing tween
+        _cameraTween?.Kill();
+
+        if (_cameras == null || _cameras.Count == 0) return;
+
+        foreach (var cam in _cameras)
+        {
+            // Tween position back to original
+            _cameraTween = cam.transform.DOMove(_originalCameraPosition, _cameraPanDuration)
+                .SetEase(_cameraPanEase);
+
+            // Tween zoom back to original
+            DOVirtual.Float(cam.fieldOfView, _originalZoomAmount, _cameraPanDuration, value =>
+            {
+                cam.fieldOfView = value;
+            }).SetEase(_cameraPanEase);
+
+            // Re-apply original rotation if needed
+            if (_generalCameraSettings != null)
+            {
+                cam.transform.DORotate(_generalCameraSettings.CameraRotation, _cameraPanDuration)
+                    .SetEase(_cameraPanEase);
             }
         }
     }

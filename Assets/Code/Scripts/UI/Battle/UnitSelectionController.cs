@@ -117,6 +117,13 @@ public class UnitSelectionController : MonoBehaviour
         reachableTilesVisualizer.ShowReachableTiles();
 
         OutlineAttackableEnemies(playerUnit);
+
+        // Pan camera to selected unit with smooth transition
+        var cameraController = FindAnyObjectByType<CameraController>();
+        if (cameraController != null)
+        {
+            cameraController.PanCameraToActiveUnit();
+        }
     }
 
     public void ChangeActivePlayerUnitTile(Unit playerUnit)
