@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
     private float _originalZoomAmount;
     private Tween _cameraTween;
 
-    [Header("Settings")] [SerializeField] private BattleCameraSettings _battleCameraSettings;
+    [Header("Settings")][SerializeField] private BattleCameraSettings _battleCameraSettings;
     [SerializeField] private Vector3 _deityFocusOffset = new Vector3(0f, 3f, 0f);
 
     [SerializeField] private GeneralCameraSettings _generalCameraSettings;
@@ -17,11 +17,13 @@ public class CameraController : MonoBehaviour
     // These settings change how the camera looks at the end of a battle.
     [SerializeField] private EndBattleCameraSettings _endBattleCameraSettings;
 
-    [Header("Camera Transition")] [SerializeField] private float _cameraPanDuration = 0.8f;
+    [Header("Camera Transition")][SerializeField] private float _cameraPanDuration = 0.8f;
     [SerializeField] private float _cameraFollowDuration = 0.6f;
     [SerializeField] private Ease _cameraPanEase = Ease.InOutQuad;
 
     [Header("Cameras")] public List<Camera> _cameras;
+
+
 
     private void Start()
     {
@@ -62,6 +64,8 @@ public class CameraController : MonoBehaviour
         TurnController.OnEnemyTurnSwap += HandleEnemyTurnCamera;
         MovePlayerAction.OnUnitMovedToTile += FollowActiveUnitMovement;
 
+        BumperEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
+
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
         {
@@ -82,6 +86,7 @@ public class CameraController : MonoBehaviour
         TurnController.OnPlayerTurn -= HandlePlayerTurnCamera;
         TurnController.OnEnemyTurnSwap -= HandleEnemyTurnCamera;
         MovePlayerAction.OnUnitMovedToTile -= FollowActiveUnitMovement;
+        BumperEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
 
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
@@ -373,6 +378,14 @@ public class CameraController : MonoBehaviour
             cam.transform.position = _endBattleCameraSettings.CameraPosition;
             cam.transform.eulerAngles = _endBattleCameraSettings.CameraRotation;
             cam.fieldOfView = _endBattleCameraSettings.ZoomAmount;
+        }
+    }
+
+    private void HandleEnemyFocus(TileController targetTile, float duration)
+    {
+        if (targetTile != null)
+        {
+            PanCameraToPosition(targetTile.gameObject.transform.position, null, duration);
         }
     }
 }
