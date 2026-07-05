@@ -18,6 +18,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private EndBattleCameraSettings _endBattleCameraSettings;
 
     [Header("Camera Transition")] [SerializeField] private float _cameraPanDuration = 0.8f;
+    [SerializeField] private float _cameraFollowDuration = 0.6f;
     [SerializeField] private Ease _cameraPanEase = Ease.InOutQuad;
 
     [Header("Cameras")] public List<Camera> _cameras;
@@ -59,6 +60,7 @@ public class CameraController : MonoBehaviour
         UnitSelectionController.OnUnitTurnEnded += PanCameraToNextUnit;
         TurnController.OnPlayerTurn += HandlePlayerTurnCamera;
         TurnController.OnEnemyTurnSwap += HandleEnemyTurnCamera;
+        MovePlayerAction.OnUnitMovedToTile += FollowActiveUnitMovement;
 
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
@@ -79,6 +81,7 @@ public class CameraController : MonoBehaviour
         UnitSelectionController.OnUnitTurnEnded -= PanCameraToNextUnit;
         TurnController.OnPlayerTurn -= HandlePlayerTurnCamera;
         TurnController.OnEnemyTurnSwap -= HandleEnemyTurnCamera;
+        MovePlayerAction.OnUnitMovedToTile -= FollowActiveUnitMovement;
 
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
@@ -152,7 +155,7 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// Smoothly pans camera to a given target position with optional zoom adjustment.
     /// </summary>
-    private void PanCameraToPosition(Vector3 targetPosition, float? targetZoom = null)
+    private void PanCameraToPosition(Vector3 targetPosition, float? targetZoom = null, float duration = -1f)
     {
         // Kill any existing tween to prevent conflicts
         _cameraTween?.Kill();
@@ -160,16 +163,17 @@ public class CameraController : MonoBehaviour
         if (_cameras == null || _cameras.Count == 0) return;
 
         float zoomTarget = targetZoom ?? _battleCameraSettings.ZoomAmount;
+        float panDuration = duration < 0 ? _cameraPanDuration : duration;
 
         foreach (var cam in _cameras)
         {
             Vector3 finalPosition = targetPosition + _battleCameraSettings.CameraOffset;
 
             // Tween position
-            _cameraTween = cam.transform.DOMove(finalPosition, _cameraPanDuration).SetEase(_cameraPanEase);
+            _cameraTween = cam.transform.DOMove(finalPosition, panDuration).SetEase(_cameraPanEase);
 
             // Tween zoom in parallel
-            DOVirtual.Float(cam.fieldOfView, zoomTarget, _cameraPanDuration, value =>
+            DOVirtual.Float(cam.fieldOfView, zoomTarget, panDuration, value =>
             {
                 cam.fieldOfView = value;
             }).SetEase(_cameraPanEase);
@@ -189,6 +193,18 @@ public class CameraController : MonoBehaviour
             {
                 PanCameraToPosition(unit.ownedTile.gameObject.transform.position);
             }
+        }
+    }
+
+    /// <summary>
+    /// Called when active unit moves to a new tile. Camera follows smoothly with a faster duration.
+    /// </summary>
+    private void FollowActiveUnitMovement(TileController targetTile)
+    {
+        if (targetTile != null)
+        {
+            // Use a faster follow duration to keep pace with character movement animation
+            PanCameraToPosition(targetTile.gameObject.transform.position, null, _cameraFollowDuration);
         }
     }
 
