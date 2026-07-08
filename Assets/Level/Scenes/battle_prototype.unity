@@ -6207,6 +6207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _battleManager: {fileID: 5409979177453231299}
   _battleTypeController: {fileID: 7632498469734801114}
+  _deitySpawner: {fileID: 0}
   _overlayCanvas: {fileID: 767884332}
   _deityPortraitImage: {fileID: 21497093}
   _deityNameText: {fileID: 926499599}
@@ -6218,6 +6219,7 @@ MonoBehaviour:
   _uiFadeDuration: 0.3
   _updateInterval: 0.1
   _delayedInitializationDelay: 0.5
+  _unboundDeityPresent: 0
 --- !u!1 &700046395
 GameObject:
   m_ObjectHideFlags: 0
@@ -7685,37 +7687,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &816948359
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &835587128
 GameObject:
   m_ObjectHideFlags: 0
@@ -8927,6 +8898,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!21 &939668543
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &957268439
 GameObject:
   m_ObjectHideFlags: 0
@@ -11897,6 +11899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fogGameObject: {fileID: 0}
   mainCamera: {fileID: 588608018}
+  _bloodMoonVolumeProfile: {fileID: 11400000, guid: 8f24b32ffb62f2c438726d0e0358cd7d, type: 2}
 --- !u!4 &1219378802
 Transform:
   m_ObjectHideFlags: 0
@@ -18415,7 +18418,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 816948359}
+  - {fileID: 939668543}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
