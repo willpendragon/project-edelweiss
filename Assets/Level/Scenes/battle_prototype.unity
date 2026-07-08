@@ -1106,7 +1106,7 @@ GameObject:
   - component: {fileID: 120938323}
   - component: {fileID: 120938322}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: DeityHPText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6208,16 +6208,13 @@ MonoBehaviour:
   _battleManager: {fileID: 5409979177453231299}
   _battleTypeController: {fileID: 7632498469734801114}
   _overlayCanvas: {fileID: 767884332}
-  _fullUIContainer: {fileID: 1076408725}
   _deityPortraitImage: {fileID: 21497093}
   _deityNameText: {fileID: 926499599}
-  _deityHealthSlider: {fileID: 498013189}
-  _deityHealthText: {fileID: 120938322}
+  _uIContainer: {fileID: 1076408725}
   _deityEnmitySlider: {fileID: 615885012}
   _deityEnmityText: {fileID: 783911109}
-  _minimalUIContainer: {fileID: 1076408725}
-  _minimalEnmitySlider: {fileID: 615885012}
-  _minimalEnmityText: {fileID: 783911109}
+  _deityHealthSlider: {fileID: 498013189}
+  _deityHealthText: {fileID: 120938322}
   _uiFadeDuration: 0.3
   _updateInterval: 0.1
   _delayedInitializationDelay: 0.5
@@ -7463,7 +7460,7 @@ GameObject:
   - component: {fileID: 783911110}
   - component: {fileID: 783911109}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: DeityEnmityText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7688,6 +7685,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &816948359
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &835587128
 GameObject:
   m_ObjectHideFlags: 0
@@ -11884,37 +11912,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1235878782
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1243446243
 GameObject:
   m_ObjectHideFlags: 0
@@ -17238,6 +17235,9 @@ MonoBehaviour:
   _deityFocusOffset: {x: 0, y: 3, z: 0}
   _generalCameraSettings: {fileID: 11400000, guid: 25e3269f68d37544ba4f3bfded7bebf5, type: 2}
   _endBattleCameraSettings: {fileID: 11400000, guid: c3288a01ed04297418a21c68dfde1295, type: 2}
+  _cameraPanDuration: 0.8
+  _cameraFollowDuration: 0.6
+  _cameraPanEase: 7
   _cameras:
   - {fileID: 588608018}
   - {fileID: 1362109347}
@@ -18415,7 +18415,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1235878782}
+  - {fileID: 816948359}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

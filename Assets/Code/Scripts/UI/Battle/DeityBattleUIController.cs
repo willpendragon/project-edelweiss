@@ -3,45 +3,37 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
-/// <summary>
-/// Manages Deity UI display in battle contexts with screen space overlay.
-/// Detects battle type and displays appropriate UI:
-/// - No UI: Regular battles without Deity
-/// - Minimal UI (Overlay): Deity present in regular battle (enmity only)
-/// - Full UI (Overlay): BattleWithDeity (HP + enmity)
-/// </summary>
 public class DeityBattleUIController : MonoBehaviour
 {
     [SerializeField] private BattleManager _battleManager;
     [SerializeField] private BattleTypeController _battleTypeController;
+    [SerializeField] private DeitySpawner _deitySpawner;
 
     [Header("Overlay Canvas Setup")]
     [SerializeField] private Canvas _overlayCanvas;
 
-    [Header("Full UI (BattleWithDeity)")]
-    [SerializeField] private CanvasGroup _fullUIContainer;
+    [Header("Deity UI Common Elements")]
     [SerializeField] private Image _deityPortraitImage;
     [SerializeField] private TextMeshProUGUI _deityNameText;
-    [SerializeField] private Slider _deityHealthSlider;
-    [SerializeField] private TextMeshProUGUI _deityHealthText;
+    [SerializeField] private CanvasGroup _uIContainer;
     [SerializeField] private Slider _deityEnmitySlider;
     [SerializeField] private TextMeshProUGUI _deityEnmityText;
+    [SerializeField] private Slider _deityHealthSlider;
+    [SerializeField] private TextMeshProUGUI _deityHealthText;
 
-    [Header("Minimal UI (Deity in Regular Battle)")]
-    [SerializeField] private CanvasGroup _minimalUIContainer;
-    [SerializeField] private Slider _minimalEnmitySlider;
-    [SerializeField] private TextMeshProUGUI _minimalEnmityText;
+    [Header("Deity UI Unbound Battle Elements")]
 
     [Header("Settings")]
     [SerializeField] private float _uiFadeDuration = 0.3f;
     [SerializeField] private float _updateInterval = 0.1f;
     [SerializeField] private float _delayedInitializationDelay = 0.5f;
 
-    public Deity CurrentDeity { get; private set; }
+    [SerializeField] public Deity CurrentDeity { get; private set; }
     private Unit _deityUnitComponent;
     private BattleTypeController.BattleType _currentBattleType;
     private bool _isInitialized = false;
     private Coroutine _updateCoroutine;
+    [SerializeField] private bool _unboundDeityPresent;
 
     private void OnEnable()
     {
@@ -62,36 +54,28 @@ public class DeityBattleUIController : MonoBehaviour
 
     private void Start()
     {
-        // Get references if not set in inspector
         if (_battleManager == null)
             _battleManager = FindAnyObjectByType<BattleManager>();
 
         if (_battleTypeController == null)
             _battleTypeController = BattleTypeController.Instance;
+
+        if (_deitySpawner == null)
+        {
+            _deitySpawner = GameObject.FindAnyObjectByType<DeitySpawner>();
+        }
     }
 
-    /// <summary>
-    /// Called when BattleTypeController has determined the battle type.
-    /// Uses delayed initialization to ensure Deity has been spawned.
-    /// </summary>
     private void OnBattleTypeInitialized()
     {
-        // Delay initialization to allow DeitySpawner to spawn the Deity
+        // Delay initialization to allow DeitySpawner to spawn the Deity.
         StartCoroutine(DelayedInitialize());
     }
-
-    /// <summary>
-    /// Waits for Deity to be spawned, then initializes the UI.
-    /// </summary>
     private IEnumerator DelayedInitialize()
     {
         yield return new WaitForSeconds(_delayedInitializationDelay);
         InitializeDeityUI();
     }
-
-    /// <summary>
-    /// Initializes the Deity UI based on the current battle type.
-    /// </summary>
     private void InitializeDeityUI()
     {
         if (_isInitialized)
@@ -100,36 +84,53 @@ public class DeityBattleUIController : MonoBehaviour
         _isInitialized = true;
         _currentBattleType = _battleTypeController.currentBattleType;
 
-        // Check if Deity is present in the battle
-        if (_battleManager == null || _battleManager.deity == null)
+        // Check if the Deity is present as an Unbound Deity (this is the case when the Battle is against the Deity itself, so it doesn't populate the BattleManager).
+
+        if (_deitySpawner != null && _deitySpawner.currentUnboundDeity != null)
+        {
+            _unboundDeityPresent = true;
+        }
+
+        // Check if Deity is present in the battle. If not, hide dedicated UI.
+        if (_battleManager == null || _battleManager.deity == null && !_unboundDeityPresent)
         {
             Debug.Log("DeityBattleUIController: No Deity present in battle.");
             HideAllDeityUI();
             return;
         }
 
-        CurrentDeity = _battleManager.deity;
-        _deityUnitComponent = CurrentDeity.GetComponentInChildren<Unit>();
-
-        if (_deityUnitComponent == null)
-        {
-            Debug.LogWarning("DeityBattleUIController: Deity found but missing Unit component.");
-            HideAllDeityUI();
-            return;
-        }
-
-        Debug.Log($"DeityBattleUIController: Initializing Deity UI for {CurrentDeity.name} in {_currentBattleType} battle.");
-
-        // Set up UI based on battle type
+        // Set up UI and retrives Deity based on battle type. At the moment, Deity spawn in two different ways (hence the need for the switch).
         switch (_currentBattleType)
         {
             case BattleTypeController.BattleType.BattleWithDeity:
-                SetupFullUI();
+                CurrentDeity = _deitySpawner.currentUnboundDeity;
+                _deityUnitComponent = CurrentDeity.GetComponentInChildren<Unit>();
+
+                if (_deityUnitComponent == null)
+                {
+                    Debug.LogWarning("DeityBattleUIController: Deity found but missing Unit component.");
+                    HideAllDeityUI();
+                    return;
+                }
+
+                SetupUI();
+                Debug.Log($"DeityBattleUIController: Initialized Deity UI for {CurrentDeity.name} in {_currentBattleType} battle.");
                 break;
 
             case BattleTypeController.BattleType.RegularBattle:
+                CurrentDeity = _battleManager.deity;
+                _deityUnitComponent = CurrentDeity.GetComponentInChildren<Unit>();
+
+                if (_deityUnitComponent == null)
+                {
+                    Debug.LogWarning("DeityBattleUIController: Deity found but missing Unit component.");
+                    HideAllDeityUI();
+                    return;
+                }
+
                 // Deity is present in a regular battle
-                SetupMinimalUI();
+                SetupUI();
+                Debug.Log($"DeityBattleUIController: Initialized Deity UI for {CurrentDeity.name} in {_currentBattleType} battle.");
                 break;
 
             default:
@@ -138,58 +139,34 @@ public class DeityBattleUIController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Sets up full UI with HP, enmity, portrait, and name.
-    /// Used in BattleWithDeity encounters.
-    /// </summary>
-    private void SetupFullUI()
+
+    private void SetupUI()
     {
-        if (_fullUIContainer == null)
+        if (_uIContainer == null)
         {
-            Debug.LogWarning("DeityBattleUIController: Full UI container not assigned.", gameObject);
+            Debug.LogWarning("DeityBattleUIController: UI container not assigned.", gameObject);
             return;
         }
 
-        // Hide minimal UI
-        FadeOutUI(_minimalUIContainer);
-
-        // Show full UI
-        FadeInUI(_fullUIContainer);
-
-        // Initialize UI values
-        UpdateFullUIValues();
-
-        // Start update coroutine
-        if (_updateCoroutine != null)
-        {
-            StopCoroutine(_updateCoroutine);
-        }
-        _updateCoroutine = StartCoroutine(ContinuousUpdateFullUI());
-    }
-
-    /// <summary>
-    /// Sets up minimal UI with only enmity meter.
-    /// Used when a Deity is present in a regular battle.
-    /// </summary>
-    private void SetupMinimalUI()
-    {
-        if (_minimalUIContainer == null)
-        {
-            Debug.LogWarning("DeityBattleUIController: Minimal UI container not assigned.", gameObject);
-            return;
-        }
-
-        // Hide full UI
-        FadeOutUI(_fullUIContainer);
-
-        // Show minimal UI
-        FadeInUI(_minimalUIContainer);
+        // Show UI
+        FadeInUI(_uIContainer);
 
         // Initialize enmity slider
-        if (_minimalEnmitySlider != null)
+        if (_deityEnmitySlider != null)
         {
-            _minimalEnmitySlider.maxValue = CurrentDeity._maxEnmity;
-            _minimalEnmitySlider.value = CurrentDeity.enmity;
+            _deityEnmitySlider.maxValue = CurrentDeity._maxEnmity;
+            _deityEnmitySlider.value = CurrentDeity.enmity;
+        }
+
+        if (_unboundDeityPresent == true)
+        {
+            // Initialize Deity HP slider.
+            if (_deityHealthSlider != null)
+            {
+                _deityHealthSlider.maxValue = CurrentDeity._maxEnmity;
+                _deityHealthSlider.value = CurrentDeity.enmity;
+            }
+
         }
 
         // Start update coroutine
@@ -197,17 +174,12 @@ public class DeityBattleUIController : MonoBehaviour
         {
             StopCoroutine(_updateCoroutine);
         }
-        _updateCoroutine = StartCoroutine(ContinuousUpdateMinimalUI());
+        _updateCoroutine = StartCoroutine(ContinuousUpdateUI());
+
     }
 
-    /// <summary>
-    /// Updates all full UI elements with current values.
-    /// </summary>
-    private void UpdateFullUIValues()
+    private void UpdateUIValues()
     {
-        if (_deityUnitComponent == null || CurrentDeity == null)
-            return;
-
         // Update portrait
         if (_deityPortraitImage != null && CurrentDeity.deityPortrait != null)
         {
@@ -220,7 +192,19 @@ public class DeityBattleUIController : MonoBehaviour
             _deityNameText.text = _deityUnitComponent.unitTemplate.unitName;
         }
 
-        // Update health
+        // Update enmity.
+        if (_deityEnmitySlider != null)
+        {
+            _deityEnmitySlider.maxValue = CurrentDeity._maxEnmity;
+            _deityEnmitySlider.value = CurrentDeity.enmity;
+        }
+
+        if (_deityEnmityText != null)
+        {
+            _deityEnmityText.text = $"{CurrentDeity.enmity:F0} / {CurrentDeity._maxEnmity:F0}";
+        }
+
+        // Update health (this logic is applicable only during fights against the Deity, or where the Player can attack them directly!).
         if (_deityHealthSlider != null)
         {
             _deityHealthSlider.maxValue = _deityUnitComponent.unitMaxHealthPoints;
@@ -232,84 +216,23 @@ public class DeityBattleUIController : MonoBehaviour
             _deityHealthText.text = $"{_deityUnitComponent.unitHealthPoints:F0} / {_deityUnitComponent.unitMaxHealthPoints:F0}";
         }
 
-        // Update enmity
-        if (_deityEnmitySlider != null)
-        {
-            _deityEnmitySlider.maxValue = CurrentDeity._maxEnmity;
-            _deityEnmitySlider.value = CurrentDeity.enmity;
-        }
-
-        if (_deityEnmityText != null)
-        {
-            _deityEnmityText.text = $"{CurrentDeity.enmity:F0} / {CurrentDeity._maxEnmity:F0}";
-        }
     }
 
-    /// <summary>
-    /// Updates minimal UI enmity values.
-    /// </summary>
-    private void UpdateMinimalUIValues()
+    private IEnumerator ContinuousUpdateUI()
     {
-        if (CurrentDeity == null)
-            return;
-
-        _deityPortraitImage.sprite = CurrentDeity.deityPortrait;
-
-        if (_minimalEnmitySlider != null)
-        {
-            _minimalEnmitySlider.value = CurrentDeity.enmity;
-            _minimalEnmitySlider.maxValue = CurrentDeity._maxEnmity;
-            _minimalEnmityText.text = $"{CurrentDeity.enmity:F0} / {CurrentDeity._maxEnmity:F0}";
-            _deityHealthSlider.gameObject.SetActive(false); // Hide health slider in minimal UI
-            _deityHealthText.gameObject.SetActive(false); // Hide health text in minimal UI
-        }
-
-        if (_minimalEnmityText != null)
-        {
-            _minimalEnmityText.text = $"{CurrentDeity.enmity:F0} / {CurrentDeity._maxEnmity:F0}";
-        }
-
-        _deityNameText.text = CurrentDeity.gameObject.GetComponent<Unit>().unitTemplate.unitName;
-    }
-
-    /// <summary>
-    /// Continuously updates full UI values during BattleWithDeity.
-    /// </summary>
-    private IEnumerator ContinuousUpdateFullUI()
-    {
-        while (_currentBattleType == BattleTypeController.BattleType.BattleWithDeity &&
-               _deityUnitComponent != null)
-        {
-            UpdateFullUIValues();
-            yield return new WaitForSeconds(_updateInterval);
-        }
-    }
-
-    /// <summary>
-    /// Continuously updates minimal UI values when Deity is in regular battle.
-    /// </summary>
-    private IEnumerator ContinuousUpdateMinimalUI()
-    {
-        while (_currentBattleType == BattleTypeController.BattleType.RegularBattle &&
+        while ((_currentBattleType == BattleTypeController.BattleType.RegularBattle ||
+                _currentBattleType == BattleTypeController.BattleType.BattleWithDeity) &&
                CurrentDeity != null)
         {
-            UpdateMinimalUIValues();
+            UpdateUIValues();
             yield return new WaitForSeconds(_updateInterval);
         }
     }
-
-    /// <summary>
-    /// Handles notifications from the Deity and updates UI feedback if needed.
-    /// </summary>
     private void HandleDeityNotification(string notificationText)
     {
-        // Can be extended for visual feedback like brief highlights
-        // Example: Show damage numbers or status effects
+        // Hook into this to display notifications.
     }
 
-    /// <summary>
-    /// Fades in a UI container with smooth transition.
-    /// </summary>
     private void FadeInUI(CanvasGroup canvasGroup)
     {
         if (canvasGroup == null)
@@ -320,9 +243,6 @@ public class DeityBattleUIController : MonoBehaviour
         StartCoroutine(FadeCoroutine(canvasGroup, 0, 1));
     }
 
-    /// <summary>
-    /// Fades out a UI container with smooth transition.
-    /// </summary>
     private void FadeOutUI(CanvasGroup canvasGroup)
     {
         if (canvasGroup == null)
@@ -333,9 +253,6 @@ public class DeityBattleUIController : MonoBehaviour
         StartCoroutine(FadeCoroutine(canvasGroup, 1, 0));
     }
 
-    /// <summary>
-    /// Coroutine for smoothly fading UI elements.
-    /// </summary>
     private IEnumerator FadeCoroutine(CanvasGroup canvasGroup, float startAlpha, float endAlpha)
     {
         float elapsedTime = 0f;
@@ -350,21 +267,23 @@ public class DeityBattleUIController : MonoBehaviour
         canvasGroup.alpha = endAlpha;
     }
 
-    /// <summary>
-    /// Hides all Deity UI elements and cleans up coroutines.
-    /// </summary>
     private void HideAllDeityUI()
     {
-        if (_fullUIContainer != null)
+        // Quick fix to prevent the UI to appear in cases where there is a direct confrontation with the Deity.
+        if (_unboundDeityPresent == true)
+            return;
+
+
+        if (_uIContainer != null)
         {
-            _fullUIContainer.alpha = 0;
-            _fullUIContainer.blocksRaycasts = false;
+            _uIContainer.alpha = 0;
+            _uIContainer.blocksRaycasts = false;
         }
 
-        if (_minimalUIContainer != null)
+        if (_uIContainer != null)
         {
-            _minimalUIContainer.alpha = 0;
-            _minimalUIContainer.blocksRaycasts = false;
+            _uIContainer.alpha = 0;
+            _uIContainer.blocksRaycasts = false;
         }
 
         if (_updateCoroutine != null)
@@ -374,9 +293,6 @@ public class DeityBattleUIController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Cleans up when battle ends. Call this from BattleFlowController or similar.
-    /// </summary>
     public void OnBattleEnd()
     {
         HideAllDeityUI();
