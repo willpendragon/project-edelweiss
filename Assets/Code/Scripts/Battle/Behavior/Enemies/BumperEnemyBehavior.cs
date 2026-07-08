@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 [CreateAssetMenu(fileName = "BumperEnemyBehavior", menuName = "EnemyBehavior/BumperEnemy")]
 public class BumperEnemyBehavior : EnemyBehavior
@@ -23,6 +24,8 @@ public class BumperEnemyBehavior : EnemyBehavior
     public delegate void MovementDisabled(string notification);
 
     public static event MovementDisabled OnMovementDisabled;
+
+    public static event Action<TileController, float> OnEnemyActionFocusRequested;
 
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
@@ -121,6 +124,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         {
             finalDamage *= proximityModifier;
         }
+        OnEnemyActionFocusRequested?.Invoke(enemyUnit.ownedTile, 0.2f);
 
         DefenseRequirement defReq = DefenseRequirement.Parryable;
 
@@ -159,7 +163,13 @@ public class BumperEnemyBehavior : EnemyBehavior
 
             if (IsTileValidDestination(prospectiveDestination))
             {
-                // Substitute the instant teleport with our step-by-step visual sequencer
+                // Calculate how long the movement animation will take
+                float stepDelay = 0.05f;
+                float totalMoveDuration = limitedPath.Count * stepDelay;
+
+                // Tell the camera to pan to the final destination smoothly over the movement duration
+                OnEnemyActionFocusRequested?.Invoke(prospectiveDestination, totalMoveDuration);
+
                 AnimateMovementAlongPath(enemyUnit, limitedPath);
                 return true;
             }

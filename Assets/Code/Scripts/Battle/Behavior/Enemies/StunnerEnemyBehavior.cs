@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
     private System.Random localRandom = new System.Random(); // Local random number generator
 
+    public static event Action<TileController, float> OnEnemyActionFocusRequested;
+
     public override void ExecuteBehavior(EnemyAgent enemyAgent)
     {
         Unit enemyUnit = enemyAgent.gameObject.GetComponentInParent<Unit>();
@@ -35,10 +38,15 @@ public class StunnerEnemyBehavior : EnemyBehavior
             return;
         }
 
+        // Focus the camera on the Stunner quickly (0.2s) right before it acts.
+        if (enemyUnit.ownedTile != null)
+        {
+            OnEnemyActionFocusRequested?.Invoke(enemyUnit.ownedTile, 0.2f);
+        }
+
         // Stun Ability triggering formula.
         if (CheckDistanceFromTarget(targetUnit, enemyUnit))
         {
-            // The target IS in range (<= 3 tiles). Now we roll for success.
             float randomRoll = (float)localRandom.NextDouble() * 100f;
 
             if (randomRoll <= stunSuccessChancePercentage)
@@ -47,17 +55,13 @@ public class StunnerEnemyBehavior : EnemyBehavior
             }
             else
             {
-                // In range, but the percentage chance failed.
                 OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} missed the attack!");
             }
         }
         else
         {
-            // The closest target is further than 3 tiles away.
             OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} is too far from the target!");
         }
-
-        // opportunity -= 1;
     }
 
     bool CheckDistanceFromTarget(Unit targetUnit, Unit enemyUnit)
