@@ -1,3 +1,4 @@
+using ProjectEdelweiss.Utils;
 using UnityEngine;
 
 public class Gate : MonoBehaviour
@@ -6,19 +7,19 @@ public class Gate : MonoBehaviour
 
     public int tileX;
     public int tileY; // Acting as Z in your 3D grid
-    
+
     private TileController _myTile;
     private bool _isOpen = false;
 
     // Optional: Reference to the visual mesh to hide/show it
-    [SerializeField] private GameObject gateMesh; 
+    [SerializeField] private GameObject gateMesh;
 
     private void Start()
     {
         SyncWithGrid();
-        
+
         // By default, gates start closed and block the tile
-        CloseGate(); 
+        CloseGate();
     }
 
     public void SyncWithGrid()
@@ -38,7 +39,7 @@ public class Gate : MonoBehaviour
         if (_myTile != null)
         {
             _myTile.currentSingleTileCondition = SingleTileCondition.free;
-            
+
             // Clear the detected unit so the tile routing knows it's empty
             if (_myTile.detectedUnit == this.gameObject)
             {
@@ -49,8 +50,11 @@ public class Gate : MonoBehaviour
         // Hide the physical gate
         if (gateMesh != null) gateMesh.SetActive(false);
         else gameObject.GetComponentInChildren<Renderer>().enabled = false;
-
-        Debug.Log($"Gate {linkID} Opened! Tile is now walkable.");
+        var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
+        if (activePlayerUnit != null)
+        {
+            BattleInterface.Instance.SetDeityNotification($"{activePlayerUnit.GetComponent<Unit>().unitTemplate.unitName} pushed the button. Gate is now open!");
+        }
     }
 
     public void CloseGate()
