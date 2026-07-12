@@ -111,14 +111,15 @@ public class Deity : MonoBehaviour
     {
         _enmityBar.value = enmity;
         enmityTracker.PlayEnmityIconFeedback();
+        // Commented out to avoid old world-space feedback UI to appear (now the UI should be in Overlay canvas). 
         if (_enmityBar.value >= _maxEnmity)
         {
-            enmityTracker.PlayFullBarFeedback();
+            //enmityTracker.PlayFullBarFeedback();
         }
 
         else if (_enmityBar.value == 0)
         {
-            enmityTracker.StopFullBarFeedback();
+            //enmityTracker.StopFullBarFeedback();
         }
     }
 
