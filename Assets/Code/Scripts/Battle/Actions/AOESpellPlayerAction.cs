@@ -303,6 +303,7 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     {
         var enemyTurnManager = GameObject.FindGameObjectWithTag(GameTags.ENEMY_TURN_MANAGER)
             .GetComponent<EnemyTurnManager>();
+
         if (enemyTurnManager.deity == null)
             return;
 
@@ -311,7 +312,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         if (unboundDeity.hatedSpellAlignments.Contains(spellAlignment))
         {
             float enmityIncrease = 2.5f;
-            unboundDeity.enmity += enmityIncrease;
+
+            unboundDeity.enmity = Mathf.Clamp(unboundDeity.enmity + enmityIncrease, 0f, unboundDeity._maxEnmity);
+
             unboundDeity.UpdateDeityEnmitySlider();
             TriggeredFeedback();
         }
@@ -319,8 +322,9 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
     private void TriggeredFeedback()
     {
-        if (unboundDeity.enmity >= unboundDeity._maxEnmity)
+        if (unboundDeity.enmity >= unboundDeity._maxEnmity && !unboundDeity.IsDeityTriggered)
         {
+            unboundDeity.IsDeityTriggered = true;
             OnDeityAngered();
         }
     }
