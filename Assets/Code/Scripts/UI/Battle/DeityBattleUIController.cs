@@ -201,7 +201,9 @@ public class DeityBattleUIController : MonoBehaviour
 
         if (_deityEnmityText != null)
         {
-            _deityEnmityText.text = $"{CurrentDeity.enmity:F0} / {CurrentDeity._maxEnmity:F0}";
+            //_deityEnmityText.text = $"{CurrentDeity.enmity:F0} / {CurrentDeity._maxEnmity:F0}";
+            // Show decimal values in UI.
+            _deityEnmityText.text = $"{CurrentDeity.enmity:F1} / {CurrentDeity._maxEnmity:F0}";
         }
 
         // Update health (this logic is applicable only during fights against the Deity, or where the Player can attack them directly!).
