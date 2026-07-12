@@ -5315,37 +5315,6 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588608016}
   m_Enabled: 1
---- !u!21 &607199894
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &608919234
 GameObject:
   m_ObjectHideFlags: 0
@@ -11962,6 +11931,37 @@ MonoBehaviour:
   summonResetHelper: {fileID: 1983234665}
   _lootedIngredients: []
   enemiesKilledInCurrentBattle: 0
+--- !u!21 &1246741538
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &1248081780
 GameObject:
   m_ObjectHideFlags: 0
@@ -17234,6 +17234,7 @@ MonoBehaviour:
   _battleCameraSettings: {fileID: 11400000, guid: 02efce6c002f0de4e8d2bc2bbf97af1e, type: 2}
   _deityFocusOffset: {x: 0, y: 3, z: 0}
   _generalCameraSettings: {fileID: 11400000, guid: 25e3269f68d37544ba4f3bfded7bebf5, type: 2}
+  _enemyCameraSettings: {fileID: 11400000, guid: 8af8416b8fc5d3647b5e1b13a8fd9f3f, type: 2}
   _endBattleCameraSettings: {fileID: 11400000, guid: c3288a01ed04297418a21c68dfde1295, type: 2}
   _cameraPanDuration: 0.8
   _cameraFollowDuration: 0.6
@@ -18415,7 +18416,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 607199894}
+  - {fileID: 1246741538}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

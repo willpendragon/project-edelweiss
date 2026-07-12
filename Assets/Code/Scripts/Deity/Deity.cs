@@ -38,6 +38,9 @@ public class Deity : MonoBehaviour
     public GameObject deityEnmityTracker;
     public Sprite deityPortrait;
     public GameObject deityHealthBar;
+
+    public bool IsDeityTriggered; // Flags the deity as triggered/angry when the Rage meter is full.
+
     [SerializeField] DeityEnmityTrackerController enmityTracker;
 
     public AudioSource deityCry;
@@ -109,16 +112,22 @@ public class Deity : MonoBehaviour
 
     public void UpdateDeityEnmitySlider()
     {
-        _enmityBar.value = enmity;
+        // Avoid updating the slider is the slider is already full.
+        if (_enmityBar.value != _maxEnmity)
+        {
+            _enmityBar.value = enmity;
+        }
+
         enmityTracker.PlayEnmityIconFeedback();
+        // Commented out to avoid old world-space feedback UI to appear (now the UI should be in Overlay canvas). 
         if (_enmityBar.value >= _maxEnmity)
         {
-            enmityTracker.PlayFullBarFeedback();
+            //enmityTracker.PlayFullBarFeedback();
         }
 
         else if (_enmityBar.value == 0)
         {
-            enmityTracker.StopFullBarFeedback();
+            //enmityTracker.StopFullBarFeedback();
         }
     }
 
