@@ -164,25 +164,23 @@ public class CameraController : MonoBehaviour
 
     private void PanCameraToPosition(Vector3 targetPosition, float? targetZoom = null, float duration = -1f, Ease? overrideEase = null)
     {
-        // Kill any existing tween to prevent conflicts
+        // Kill any existing tween and clear pending invokes to prevent conflicts
         _cameraTween?.Kill();
+        CancelInvoke(nameof(ResetCameraPosition));
 
         if (_cameras == null || _cameras.Count == 0) return;
 
         float zoomTarget = targetZoom ?? _battleCameraSettings.ZoomAmount;
         float panDuration = duration < 0 ? _cameraPanDuration : duration;
 
-        // Determine which ease to use: the override (if provided), or the default
         Ease easeToUse = overrideEase ?? _cameraPanEase;
 
         foreach (var cam in _cameras)
         {
             Vector3 finalPosition = targetPosition + _battleCameraSettings.CameraOffset;
 
-            // Tween position
             _cameraTween = cam.transform.DOMove(finalPosition, panDuration).SetEase(easeToUse);
 
-            // Tween zoom in parallel
             DOVirtual.Float(cam.fieldOfView, zoomTarget, panDuration, value =>
             {
                 cam.fieldOfView = value;
@@ -292,56 +290,63 @@ public class CameraController : MonoBehaviour
     }
     private void UpdateCameraPosition(Vector3 targetPosition)
     {
-        // Kill any smooth pan tween
+        // Kill current tweens and cancel any pending camera resets to prevent overlap jitter.
         _cameraTween?.Kill();
+        CancelInvoke(nameof(ResetCameraPosition));
+
+        // Use a fast transition instead of an instant snap to smooth out back-to-back calls
+        float fastTransitionTime = 0.25f;
 
         foreach (var cam in _cameras)
         {
             Vector3 finalTransform = targetPosition + _battleCameraSettings.CameraOffset;
-            cam.transform.position = finalTransform;
-            cam.fieldOfView = _battleCameraSettings.ZoomAmount;
+
+            // Smoothly slide to the closeup 
+            _cameraTween = cam.transform.DOMove(finalTransform, fastTransitionTime).SetEase(Ease.OutQuad);
+
+            DOVirtual.Float(cam.fieldOfView, _battleCameraSettings.ZoomAmount, fastTransitionTime, value =>
+            {
+                cam.fieldOfView = value;
+            });
         }
 
-        Invoke(nameof(ResetCameraPosition), _battleCameraSettings.CameraResetDelay);
+        // Restart the reset timer from right now.
+        // If another attack happens before this timer ends, this invoke gets canceled and restarted.
+        Invoke(nameof(ResetCameraPosition), _battleCameraSettings.CameraResetDelay + fastTransitionTime);
     }
     private void ResetCameraPosition()
     {
-        // Kill any active tween
         _cameraTween?.Kill();
+        CancelInvoke(nameof(ResetCameraPosition));
 
         foreach (var cam in _cameras)
         {
             cam.transform.position = _originalCameraPosition;
             cam.fieldOfView = _originalZoomAmount;
 
-            // Re-apply original rotation if needed
             if (_generalCameraSettings != null)
             {
                 cam.transform.eulerAngles = _generalCameraSettings.CameraRotation;
             }
         }
     }
-
     private void ResetCameraPositionSmooth()
     {
-        // Kill any existing tween
         _cameraTween?.Kill();
+        CancelInvoke(nameof(ResetCameraPosition));
 
         if (_cameras == null || _cameras.Count == 0) return;
 
         foreach (var cam in _cameras)
         {
-            // Tween position back to original
             _cameraTween = cam.transform.DOMove(_originalCameraPosition, _cameraPanDuration)
                 .SetEase(_cameraPanEase);
 
-            // Tween zoom back to original
             DOVirtual.Float(cam.fieldOfView, _originalZoomAmount, _cameraPanDuration, value =>
             {
                 cam.fieldOfView = value;
             }).SetEase(_cameraPanEase);
 
-            // Re-apply original rotation if needed
             if (_generalCameraSettings != null)
             {
                 cam.transform.DORotate(_generalCameraSettings.CameraRotation, _cameraPanDuration)
