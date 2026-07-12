@@ -86,8 +86,8 @@ public class DeitySimildeBehavior : DeityBehavior
                 // Rotate 90 degrees on the X-axis to lie flat on the 3D ground
                 effectInstance.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
                 
-                // Scale uniform to 2.5 fitting the new 3D tile size
-                effectInstance.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                // Scale uniform to fit 3D tile size
+                effectInstance.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             }
 
             Debug.Log($"Similde enchanted {tile.gameObject.name} at {tile.tileXCoordinate}, {tile.tileYCoordinate}");
