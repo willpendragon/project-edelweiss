@@ -27,20 +27,22 @@ public class EnemyAgent : MonoBehaviour
     public EnemyBehavior enemyBehavior;
     [SerializeField] private EnemyAIPriority _enemyAIPriority;
 
-    [SerializeField] private EnemyAITilePriority
+    [SerializeField]
+    private EnemyAITilePriority
         _enemyAITilePriority; // Specification of which type of tile the AI Unit should privilege.
 
     public ElementalImbue elementalImbue;
     [SerializeField] private Unit _enemyUnit;
 
-    [Header("Presentation")] [SerializeField]
+    [Header("Presentation")]
+    [SerializeField]
     float enemyMoveElapsingTime;
 
     [SerializeField] Animator enemyAnimator;
     [SerializeField] GameObject attackVFXAnimator;
     public Vector3 enemyOriginalPosition;
 
-    [Header("Enemy UI")] [SerializeField] TextMeshProUGUI healthPointsCounter;
+    [Header("Enemy UI")][SerializeField] TextMeshProUGUI healthPointsCounter;
     [SerializeField] TextMeshProUGUI opportunityCounter;
     [SerializeField] TextMeshProUGUI receivedDamageCounter;
     [SerializeField] SpriteRenderer enemySpriteRenderer;
@@ -77,7 +79,7 @@ public class EnemyAgent : MonoBehaviour
                 // Change aspect (rock becomes imbued with elemental power)
                 SwapGraphics();
                 break;
-            // Specify other cases to create more classes with different elements.
+                // Specify other cases to create more classes with different elements.
         }
     }
 
@@ -157,7 +159,7 @@ public class EnemyAgent : MonoBehaviour
                     RealTimeActionManager.Instance.OnParryFailure += onFailure;
 
                     RealTimeActionManager.Instance.OpenParryWindow(targetPlayerUnit);
-
+                    GetComponentInChildren<IconDisplayHelper>()?.HideIcon();
                     yield return new WaitUntil(() => isParryResolved);
 
                     RealTimeActionManager.Instance.OnParrySuccess -= onSuccess;
