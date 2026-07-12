@@ -224,7 +224,6 @@ public class CameraController : MonoBehaviour
         // Alternative: Automatically pan to next available player unit
         // PanCameraToActiveUnit();
     }
-
     private void HandleEnemyTurnCamera()
     {
         PanCameraToFirstAvailableEnemy();

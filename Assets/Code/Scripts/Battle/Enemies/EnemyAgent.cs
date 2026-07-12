@@ -159,6 +159,7 @@ public class EnemyAgent : MonoBehaviour
                     RealTimeActionManager.Instance.OnParryFailure += onFailure;
 
                     RealTimeActionManager.Instance.OpenParryWindow(targetPlayerUnit);
+                    // Hide the Thinking Icon to avoid obstructing Parry's warning view.
                     GetComponentInChildren<IconDisplayHelper>()?.HideIcon();
                     yield return new WaitUntil(() => isParryResolved);
 
