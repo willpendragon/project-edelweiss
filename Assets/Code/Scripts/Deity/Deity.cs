@@ -112,12 +112,12 @@ public class Deity : MonoBehaviour
 
     public void UpdateDeityEnmitySlider()
     {
-        // Avoid updating the slider is the slider is already full.
-        if (_enmityBar.value != _maxEnmity)
-        {
-            _enmityBar.value = enmity;
-        }
-
+        //// Avoid updating the slider is the slider is already full.
+        //if (_enmityBar.value != _maxEnmity)
+        //{
+        //    _enmityBar.value = enmity;
+        //}
+        _enmityBar.value = enmity;
         enmityTracker.PlayEnmityIconFeedback();
         // Commented out to avoid old world-space feedback UI to appear (now the UI should be in Overlay canvas). 
         if (_enmityBar.value >= _maxEnmity)
