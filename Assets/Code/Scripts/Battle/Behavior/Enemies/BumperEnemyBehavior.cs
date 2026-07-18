@@ -36,7 +36,8 @@ public class BumperEnemyBehavior : EnemyBehavior
             enemyAgent.GetComponentInParent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             Debug.Log("Enemy is dead and cannot act.");
-            enemyAgent.isTurnComplete = true; // Ha finito!
+            enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[BumperEnemyBehavior] {enemyAgent.name} turn complete (Dead)</color>");
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -44,7 +45,8 @@ public class BumperEnemyBehavior : EnemyBehavior
         if (enemyAgent.GetComponentInParent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.stun)
         {
             OnMovementDisabled($"{enemyAgent.GetComponentInParent<Unit>().unitTemplate.unitName} can't move...");
-            enemyAgent.isTurnComplete = true; // Enemy turn action is done.
+            enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[BumperEnemyBehavior] {enemyAgent.name} turn complete (Stunned)</color>");
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -59,6 +61,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         if (actionsLeft <= 0)
         {
             enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[BumperEnemyBehavior] {enemyAgent.name} turn complete (Actions exhausted)</color>");
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -67,6 +70,7 @@ public class BumperEnemyBehavior : EnemyBehavior
         if (targetPlayerUnit == null || targetPlayerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
             enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[BumperEnemyBehavior] {enemyAgent.name} turn complete (No valid target)</color>");
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -90,6 +94,7 @@ public class BumperEnemyBehavior : EnemyBehavior
             {
                 // 4. Se non può attaccare e non può muoversi (percorso bloccato), il turno finisce qui
                 enemyAgent.isTurnComplete = true;
+                Debug.Log($"<color=cyan>[BumperEnemyBehavior] {enemyAgent.name} turn complete (Path blocked)</color>");
                 OnCheckPlayer?.Invoke();
             }
         }
@@ -124,7 +129,8 @@ public class BumperEnemyBehavior : EnemyBehavior
         {
             finalDamage *= proximityModifier;
         }
-        OnEnemyActionFocusRequested?.Invoke(enemyUnit.ownedTile, 0.2f);
+        // Camera is already focused on this enemy from turn start - don't move it during attack
+        // OnEnemyActionFocusRequested?.Invoke(enemyUnit.ownedTile, 0.2f);
 
         DefenseRequirement defReq = DefenseRequirement.Parryable;
 
@@ -167,8 +173,8 @@ public class BumperEnemyBehavior : EnemyBehavior
                 float stepDelay = 0.05f;
                 float totalMoveDuration = limitedPath.Count * stepDelay;
 
-                // Tell the camera to pan to the final destination smoothly over the movement duration
-                OnEnemyActionFocusRequested?.Invoke(prospectiveDestination, totalMoveDuration);
+                // Camera is already focused on this enemy from turn start - don't move it during movement
+                // OnEnemyActionFocusRequested?.Invoke(prospectiveDestination, totalMoveDuration);
 
                 AnimateMovementAlongPath(enemyUnit, limitedPath);
                 return true;

@@ -63,8 +63,7 @@ public class CameraController : MonoBehaviour
         TurnController.OnPlayerTurn += HandlePlayerTurnCamera;
         TurnController.OnEnemyTurnSwap += HandleEnemyTurnCamera;
         MovePlayerAction.OnUnitMovedToTile += FollowActiveUnitMovement;
-        BumperEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
-        StunnerEnemyBehavior.OnEnemyActionFocusRequested += HandleEnemyFocus;
+        EnemyTurnManager.OnEnemyTurnStarted += HandleIndividualEnemyTurnStart;
         EnemyTurnManager.OnPlayerTurnSwap += PanCameraToActiveUnit;
         EnemyTurnManager.OnDeityTurn += HandleDeityTurnCamera;
 
@@ -88,8 +87,7 @@ public class CameraController : MonoBehaviour
         TurnController.OnPlayerTurn -= HandlePlayerTurnCamera;
         TurnController.OnEnemyTurnSwap -= HandleEnemyTurnCamera;
         MovePlayerAction.OnUnitMovedToTile -= FollowActiveUnitMovement;
-        BumperEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
-        StunnerEnemyBehavior.OnEnemyActionFocusRequested -= HandleEnemyFocus;
+        EnemyTurnManager.OnEnemyTurnStarted -= HandleIndividualEnemyTurnStart;
         EnemyTurnManager.OnPlayerTurnSwap -= PanCameraToActiveUnit;
         EnemyTurnManager.OnDeityTurn -= HandleDeityTurnCamera;
 
@@ -367,11 +365,31 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void HandleEnemyFocus(TileController targetTile, float duration)
+    /// <summary>
+    /// Pans camera to each enemy when their turn starts.
+    /// The isTurnComplete flag in EnemyTurnManager ensures we wait for parry resolution before moving to next enemy.
+    /// </summary>
+    private void HandleIndividualEnemyTurnStart(EnemyAgent enemy)
     {
-        if (targetTile != null)
+        if (enemy != null)
         {
-            PanCameraToPosition(targetTile.gameObject.transform.position, null, duration);
+            var unit = enemy.GetComponent<Unit>();
+            if (unit != null && unit.ownedTile != null)
+            {
+                Debug.Log($"<color=magenta>[CameraController] Panning to {enemy.name} at turn start</color>");
+                PanCameraToPosition(unit.ownedTile.gameObject.transform.position);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Called when an enemy performs a parryable attack. Locks camera on attacker.
+    /// </summary>
+    public void FocusOnEnemyAttack(TileController enemyTile)
+    {
+        if (enemyTile != null)
+        {
+            PanCameraToPosition(enemyTile.gameObject.transform.position);
         }
     }
 
