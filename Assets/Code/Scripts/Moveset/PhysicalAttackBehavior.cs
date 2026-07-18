@@ -41,6 +41,10 @@ public class PhysicalAttackBehavior : ScriptableObject
 
     public static event KnockbackFired OnKnockbackFired;
 
+    public delegate void KnockbackResolved();
+
+    public static event KnockbackResolved OnKnockbackResolved;
+
     public virtual void AttackSequence(Unit targetUnit, TileController targetTile, Unit activePlayerUnit)
     {
         if (targetTile.tileType == TileType.Obstacle)
@@ -90,14 +94,21 @@ public class PhysicalAttackBehavior : ScriptableObject
     public void AttemptKnockback(Unit attacker, Unit defender)
     {
         if (!IsKnockbackPossible(attacker, defender.ownedTile))
+        {
+            NotifyKnockbackResolved();
             return;
+        }
         if (defender.unitType == Unit.UnitType.Deity || defender.gameObject.CompareTag("Chest"))
+        {
+            NotifyKnockbackResolved();
             return;
+        }
 
         // Check if the knockback attack hits
         if (!AccuracyChecker.CheckMeleeAccuracy(attacker, defender, baseAccuracy))
         {
             OnPhysicalAttackMissed?.Invoke($"{attacker.unitTemplate.unitName}'s attack missed!");
+            NotifyKnockbackResolved();
             return;
         }
 
@@ -192,6 +203,7 @@ public class PhysicalAttackBehavior : ScriptableObject
                 defenderAgent2.RemoveElementalBuff(defenderAgent2);
 
             RemoveInvulnerableMask(defender);
+            NotifyKnockbackResolved();
             return; // Early return prevents standard movement logic below
         }
 
@@ -213,6 +225,13 @@ public class PhysicalAttackBehavior : ScriptableObject
                 finalDestinationTile.tileShaderController.EnemyTileFeedback();
             }
         }
+
+        NotifyKnockbackResolved();
+    }
+
+    private void NotifyKnockbackResolved()
+    {
+        OnKnockbackResolved?.Invoke();
     }
 
     private void ExecuteKnockback(Unit attacker, Unit defender)

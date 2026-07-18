@@ -37,6 +37,17 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public delegate void NoPointsNotification(string notification);
     public static event NoPointsNotification OnPointsDepleted;
 
+    private void OnEnable()
+    {
+        PhysicalAttackBehavior.OnKnockbackResolved += HandleKnockbackResolved;
+    }
+
+    private void OnDisable()
+    {
+        PhysicalAttackBehavior.OnKnockbackResolved -= HandleKnockbackResolved;
+        ResetKnockbackPreview();
+    }
+
     public void SetLabel(string labelText)
     {
         _actionLabel.text = labelText;
@@ -85,9 +96,19 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerExit(PointerEventData eventData)
     {
         transform.DOScale(1f, 0.5f);
+        ResetKnockbackPreview();
+    }
 
+    private void HandleKnockbackResolved()
+    {
+        ResetKnockbackPreview();
+    }
+
+    private void ResetKnockbackPreview()
+    {
         if (_knockbackTile == null)
             return;
+
         // Reset Knockback Preview (where applicable).
         _knockbackTile.tileShaderController.SetTileColor(1f, _originalTileColor);
         _knockbackTile = null;
@@ -100,6 +121,9 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void DisplayKnockbackPreview()
     {
+        // Ensure old preview state never persists between targeting attempts.
+        ResetKnockbackPreview();
+
         var activePlayerUnit = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
         // Block the Knockback preview for Magnet-equipped units.
         if (activePlayerUnit.GetComponent<Unit>().hasHookshot == true)
