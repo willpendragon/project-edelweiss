@@ -40,9 +40,16 @@ public class CameraDistanceController : MonoBehaviour
             .ToList();
 
         // Assign sorting order to SpriteRenderers
+        int spriteSortOrder = 0;
         for (int i = 0; i < allRenderers.Count; i++)
         {
-            allRenderers[i].sortingOrder = i;
+            if (ShouldSkipRendererSorting(allRenderers[i]))
+            {
+                continue;
+            }
+
+            allRenderers[i].sortingOrder = spriteSortOrder;
+            spriteSortOrder++;
         }
 
         // Flatten all Canvas components from all units into a single list
@@ -71,5 +78,19 @@ public class CameraDistanceController : MonoBehaviour
         }
 
         return objectsInLayer.ToArray();
+    }
+
+    private bool ShouldSkipRendererSorting(SpriteRenderer renderer)
+    {
+        if (renderer == null)
+            return true;
+
+        if (renderer.GetComponentInParent<IconDisplayHelper>() != null)
+            return true;
+
+        if (renderer.sortingLayerName == "BattleIndicators")
+            return true;
+
+        return false;
     }
 }
