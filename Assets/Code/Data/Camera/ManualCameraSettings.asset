@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b629a0a5f87d3e4c996d294f98121dd, type: 3}
+  m_Name: ManualCameraSettings
+  m_EditorClassIdentifier: 
+  _panSpeed: 30
+  _panDamping: 0.5
+  _zoomSpeed: 5
+  _minZoom: 20
+  _maxZoom: 70
+  _zoomSmoothTime: 0.15
+  _horizontalBoundaryPadding: 5442
+  _verticalBoundaryPadding: 4376
+  _resetKey: 32
+  _enableReset: 1

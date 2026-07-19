@@ -17,6 +17,18 @@ public class CameraController : MonoBehaviour
 
     // These settings change how the camera looks at the end of a battle.
     [SerializeField] private EndBattleCameraSettings _endBattleCameraSettings;
+    
+    [Header("Manual Camera Control")][SerializeField] private ManualCameraSettings _manualCameraSettings;
+
+    // Manual camera control state
+    private bool _isManualControlEnabled = false;
+    private bool _isAutomaticPanningActive = false;
+    private Vector3 _manualPanVelocity;
+    private float _currentManualZoom;
+    private float _zoomVelocity;
+    
+    // Camera boundaries
+    private float _minX, _maxX, _minZ, _maxZ;
 
     [Header("Camera Transition")][SerializeField] private float _cameraPanDuration = 0.8f;
     [SerializeField] private float _cameraFollowDuration = 0.6f;
@@ -40,6 +52,15 @@ public class CameraController : MonoBehaviour
         {
             ApplyGeneralCameraSettings();
         }
+        
+        // Calculate camera boundaries based on grid size
+        CalculateCameraBoundaries();
+        
+        // Initialize manual zoom to current FOV
+        if (_cameras != null && _cameras.Count > 0)
+        {
+            _currentManualZoom = _cameras[0].fieldOfView;
+        }
     }
 
     private void Update()
@@ -53,6 +74,19 @@ public class CameraController : MonoBehaviour
         // {
         //     DeityCameraCloseUp();
         // }
+        
+        // Manual camera control (only during player turn and when not automatically panning)
+        if (_isManualControlEnabled && !_isAutomaticPanningActive && _manualCameraSettings != null)
+        {
+            HandleManualPanInput();
+            HandleManualZoomInput();
+            
+            // Reset camera with configured key
+            if (_manualCameraSettings.EnableReset && Input.GetKeyDown(_manualCameraSettings.ResetKey))
+            {
+                ResetToDefaultPosition();
+            }
+        }
     }
 
     private void OnEnable()
@@ -66,6 +100,10 @@ public class CameraController : MonoBehaviour
         EnemyTurnManager.OnEnemyTurnStarted += HandleIndividualEnemyTurnStart;
         EnemyTurnManager.OnPlayerTurnSwap += PanCameraToActiveUnit;
         EnemyTurnManager.OnDeityTurn += HandleDeityTurnCamera;
+        
+        // Manual camera control events
+        TurnController.OnPlayerTurn += EnableManualCameraControl;
+        TurnController.OnEnemyTurnSwap += DisableManualCameraControl;
 
         // Listen to live tweaks from the ScriptableObject
         if (_generalCameraSettings != null)
@@ -90,6 +128,10 @@ public class CameraController : MonoBehaviour
         EnemyTurnManager.OnEnemyTurnStarted -= HandleIndividualEnemyTurnStart;
         EnemyTurnManager.OnPlayerTurnSwap -= PanCameraToActiveUnit;
         EnemyTurnManager.OnDeityTurn -= HandleDeityTurnCamera;
+        
+        // Manual camera control events
+        TurnController.OnPlayerTurn -= EnableManualCameraControl;
+        TurnController.OnEnemyTurnSwap -= DisableManualCameraControl;
 
         // Stop listening when disabled/destroyed
         if (_generalCameraSettings != null)
@@ -167,6 +209,9 @@ public class CameraController : MonoBehaviour
         CancelInvoke(nameof(ResetCameraPosition));
 
         if (_cameras == null || _cameras.Count == 0) return;
+        
+        // Block manual control during automatic panning
+        _isAutomaticPanningActive = true;
 
         float zoomTarget = targetZoom ?? _battleCameraSettings.ZoomAmount;
         float panDuration = duration < 0 ? _cameraPanDuration : duration;
@@ -177,7 +222,11 @@ public class CameraController : MonoBehaviour
         {
             Vector3 finalPosition = targetPosition + _battleCameraSettings.CameraOffset;
 
-            _cameraTween = cam.transform.DOMove(finalPosition, panDuration).SetEase(easeToUse);
+            _cameraTween = cam.transform.DOMove(finalPosition, panDuration).SetEase(easeToUse).OnComplete(() =>
+            {
+                // Re-enable manual control when automatic panning completes
+                _isAutomaticPanningActive = false;
+            });
 
             DOVirtual.Float(cam.fieldOfView, zoomTarget, panDuration, value =>
             {
@@ -291,6 +340,9 @@ public class CameraController : MonoBehaviour
         // Kill current tweens and cancel any pending camera resets to prevent overlap jitter.
         _cameraTween?.Kill();
         CancelInvoke(nameof(ResetCameraPosition));
+        
+        // Block manual control during automatic panning
+        _isAutomaticPanningActive = true;
 
         // Use a fast transition instead of an instant snap to smooth out back-to-back calls
         float fastTransitionTime = 0.25f;
@@ -300,7 +352,11 @@ public class CameraController : MonoBehaviour
             Vector3 finalTransform = targetPosition + _battleCameraSettings.CameraOffset;
 
             // Smoothly slide to the closeup 
-            _cameraTween = cam.transform.DOMove(finalTransform, fastTransitionTime).SetEase(Ease.OutQuad);
+            _cameraTween = cam.transform.DOMove(finalTransform, fastTransitionTime).SetEase(Ease.OutQuad).OnComplete(() =>
+            {
+                // Re-enable manual control when automatic panning completes
+                _isAutomaticPanningActive = false;
+            });
 
             DOVirtual.Float(cam.fieldOfView, _battleCameraSettings.ZoomAmount, fastTransitionTime, value =>
             {
@@ -412,4 +468,167 @@ public class CameraController : MonoBehaviour
             PanCameraToPosition(targetPos + _deityFocusOffset, _battleCameraSettings.ZoomAmount, panTime, panEase);
         }
     }
+    
+    #region Manual Camera Control
+    
+    /// <summary>
+    /// Calculates camera movement boundaries based on grid size and padding settings
+    /// </summary>
+    private void CalculateCameraBoundaries()
+    {
+        if (GridManager.Instance == null || _manualCameraSettings == null)
+        {
+            Debug.LogWarning("[CameraController] Cannot calculate boundaries: GridManager or ManualCameraSettings is null");
+            return;
+        }
+        
+        // Get actual world positions of all tiles to find grid extents
+        if (GridManager.Instance.gridTileControllers == null || GridManager.Instance.gridTileControllers.Length == 0)
+        {
+            Debug.LogWarning("[CameraController] No tiles found for boundary calculation");
+            return;
+        }
+        
+        // Find the actual min/max positions of all tiles in world space
+        float minWorldX = float.MaxValue;
+        float maxWorldX = float.MinValue;
+        float minWorldZ = float.MaxValue;
+        float maxWorldZ = float.MinValue;
+        
+        foreach (var tile in GridManager.Instance.gridTileControllers)
+        {
+            if (tile != null)
+            {
+                Vector3 tilePos = tile.transform.position;
+                
+                if (tilePos.x < minWorldX) minWorldX = tilePos.x;
+                if (tilePos.x > maxWorldX) maxWorldX = tilePos.x;
+                if (tilePos.z < minWorldZ) minWorldZ = tilePos.z;
+                if (tilePos.z > maxWorldZ) maxWorldZ = tilePos.z;
+            }
+        }
+        
+        // Apply padding from settings to create absolute world-space boundaries
+        _minX = minWorldX - _manualCameraSettings.HorizontalBoundaryPadding;
+        _maxX = maxWorldX + _manualCameraSettings.HorizontalBoundaryPadding;
+        _minZ = minWorldZ - _manualCameraSettings.VerticalBoundaryPadding;
+        _maxZ = maxWorldZ + _manualCameraSettings.VerticalBoundaryPadding;
+        
+        Debug.Log($"[CameraController] Camera boundaries calculated: X[{_minX:F1}, {_maxX:F1}], Z[{_minZ:F1}, {_maxZ:F1}] | Grid extents in world: X[{minWorldX:F1}, {maxWorldX:F1}], Z[{minWorldZ:F1}, {maxWorldZ:F1}]");
+    }
+    
+    /// <summary>
+    /// Handles WASD/arrow key input for manual camera panning
+    /// </summary>
+    private void HandleManualPanInput()
+    {
+        if (_cameras == null || _cameras.Count == 0) return;
+        
+        // Get input axes
+        float horizontal = Input.GetAxis("Horizontal"); // A/D or Left/Right arrows
+        float vertical = Input.GetAxis("Vertical"); // W/S or Up/Down arrows
+        
+        // Skip if no input
+        if (Mathf.Approximately(horizontal, 0f) && Mathf.Approximately(vertical, 0f))
+            return;
+        
+        Camera mainCam = _cameras[0];
+        Vector3 currentPos = mainCam.transform.position;
+        
+        // For isometric camera: calculate movement relative to camera's orientation
+        // Get camera's forward and right vectors projected onto the horizontal plane (XZ)
+        Vector3 forward = mainCam.transform.forward;
+        Vector3 right = mainCam.transform.right;
+        
+        // Project onto XZ plane (remove Y component) and normalize
+        forward.y = 0f;
+        right.y = 0f;
+        forward.Normalize();
+        right.Normalize();
+        
+        // Calculate movement direction based on camera orientation
+        Vector3 moveDirection = (right * horizontal + forward * vertical).normalized;
+        
+        // Calculate target position with snappy movement
+        float moveAmount = _manualCameraSettings.PanSpeed * Time.deltaTime;
+        Vector3 targetPosition = currentPos + moveDirection * moveAmount;
+        
+        // Clamp to boundaries
+        targetPosition.x = Mathf.Clamp(targetPosition.x, _minX, _maxX);
+        targetPosition.z = Mathf.Clamp(targetPosition.z, _minZ, _maxZ);
+        
+        // Apply with optional light damping for feel (lerp is faster than SmoothDamp)
+        Vector3 newPosition = Vector3.Lerp(currentPos, targetPosition, 1f - _manualCameraSettings.PanDamping);
+        
+        foreach (var cam in _cameras)
+        {
+            cam.transform.position = newPosition;
+        }
+    }
+    
+    /// <summary>
+    /// Handles mouse scroll wheel input for zoom
+    /// </summary>
+    private void HandleManualZoomInput()
+    {
+        if (_cameras == null || _cameras.Count == 0) return;
+        
+        float scrollDelta = Input.mouseScrollDelta.y;
+        
+        // Skip if no scroll input
+        if (Mathf.Approximately(scrollDelta, 0f))
+            return;
+        
+        // Update target zoom
+        _currentManualZoom -= scrollDelta * _manualCameraSettings.ZoomSpeed;
+        _currentManualZoom = Mathf.Clamp(_currentManualZoom, _manualCameraSettings.MinZoom, _manualCameraSettings.MaxZoom);
+        
+        // Apply smooth zoom to all cameras
+        foreach (var cam in _cameras)
+        {
+            cam.fieldOfView = Mathf.SmoothDamp(cam.fieldOfView, _currentManualZoom, ref _zoomVelocity, _manualCameraSettings.ZoomSmoothTime);
+        }
+    }
+    
+    /// <summary>
+    /// Enables manual camera control (called on player turn start)
+    /// </summary>
+    private void EnableManualCameraControl(string turnMessage)
+    {
+        _isManualControlEnabled = true;
+        Debug.Log("[CameraController] Manual camera control enabled");
+    }
+    
+    /// <summary>
+    /// Disables manual camera control (called on enemy turn start)
+    /// </summary>
+    private void DisableManualCameraControl()
+    {
+        _isManualControlEnabled = false;
+        Debug.Log("[CameraController] Manual camera control disabled");
+    }
+    
+    /// <summary>
+    /// Resets camera to the original/default position
+    /// </summary>
+    private void ResetToDefaultPosition()
+    {
+        if (_cameras == null || _cameras.Count == 0) return;
+        
+        // Smoothly return to original position
+        foreach (var cam in _cameras)
+        {
+            cam.transform.DOMove(_originalCameraPosition, 0.5f).SetEase(Ease.OutQuad);
+            
+            DOVirtual.Float(cam.fieldOfView, _originalZoomAmount, 0.5f, value =>
+            {
+                cam.fieldOfView = value;
+                _currentManualZoom = value;
+            }).SetEase(Ease.OutQuad);
+        }
+        
+        Debug.Log("[CameraController] Camera reset to default position");
+    }
+    
+    #endregion
 }
