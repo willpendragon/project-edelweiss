@@ -221,6 +221,12 @@ public class CameraController : MonoBehaviour
         foreach (var cam in _cameras)
         {
             Vector3 finalPosition = targetPosition + _battleCameraSettings.CameraOffset;
+            
+            // Clamp to boundaries before tweening to prevent camera from going outside valid area
+            finalPosition.x = Mathf.Clamp(finalPosition.x, _minX, _maxX);
+            finalPosition.z = Mathf.Clamp(finalPosition.z, _minZ, _maxZ);
+            
+            Debug.Log($"[Auto Pan to Character] Target tile: ({targetPosition.x:F2}, {targetPosition.z:F2}) | Camera will be at: ({finalPosition.x:F2}, {finalPosition.z:F2}) | Boundaries: X[{_minX:F1}, {_maxX:F1}], Z[{_minZ:F1}, {_maxZ:F1}]");
 
             _cameraTween = cam.transform.DOMove(finalPosition, panDuration).SetEase(easeToUse).OnComplete(() =>
             {
@@ -350,6 +356,10 @@ public class CameraController : MonoBehaviour
         foreach (var cam in _cameras)
         {
             Vector3 finalTransform = targetPosition + _battleCameraSettings.CameraOffset;
+            
+            // Clamp to boundaries before tweening to prevent camera from going outside valid area
+            finalTransform.x = Mathf.Clamp(finalTransform.x, _minX, _maxX);
+            finalTransform.z = Mathf.Clamp(finalTransform.z, _minZ, _maxZ);
 
             // Smoothly slide to the closeup 
             _cameraTween = cam.transform.DOMove(finalTransform, fastTransitionTime).SetEase(Ease.OutQuad).OnComplete(() =>
@@ -508,13 +518,21 @@ public class CameraController : MonoBehaviour
             }
         }
         
-        // Apply padding from settings to create absolute world-space boundaries
-        _minX = minWorldX - _manualCameraSettings.HorizontalBoundaryPadding;
-        _maxX = maxWorldX + _manualCameraSettings.HorizontalBoundaryPadding;
-        _minZ = minWorldZ - _manualCameraSettings.VerticalBoundaryPadding;
-        _maxZ = maxWorldZ + _manualCameraSettings.VerticalBoundaryPadding;
+        // Account for camera offset - boundaries should be based on camera positions, not tile positions
+        // The camera sits at tile position + offset, so we need to adjust boundaries accordingly
+        Vector3 cameraOffset = _battleCameraSettings.CameraOffset;
+        float minCameraX = minWorldX + cameraOffset.x;
+        float maxCameraX = maxWorldX + cameraOffset.x;
+        float minCameraZ = minWorldZ + cameraOffset.z;
+        float maxCameraZ = maxWorldZ + cameraOffset.z;
         
-        Debug.Log($"[CameraController] Camera boundaries calculated: X[{_minX:F1}, {_maxX:F1}], Z[{_minZ:F1}, {_maxZ:F1}] | Grid extents in world: X[{minWorldX:F1}, {maxWorldX:F1}], Z[{minWorldZ:F1}, {maxWorldZ:F1}]");
+        // Apply padding from settings to create absolute world-space boundaries
+        _minX = minCameraX - _manualCameraSettings.HorizontalBoundaryPadding;
+        _maxX = maxCameraX + _manualCameraSettings.HorizontalBoundaryPadding;
+        _minZ = minCameraZ - _manualCameraSettings.VerticalBoundaryPadding;
+        _maxZ = maxCameraZ + _manualCameraSettings.VerticalBoundaryPadding;
+        
+        Debug.Log($"[CameraController] Camera boundaries calculated: X[{_minX:F1}, {_maxX:F1}], Z[{_minZ:F1}, {_maxZ:F1}] | Tile extents: X[{minWorldX:F1}, {maxWorldX:F1}], Z[{minWorldZ:F1}, {maxWorldZ:F1}] | Camera offset: {cameraOffset}");
     }
     
     /// <summary>
@@ -559,6 +577,16 @@ public class CameraController : MonoBehaviour
         
         // Apply with optional light damping for feel (lerp is faster than SmoothDamp)
         Vector3 newPosition = Vector3.Lerp(currentPos, targetPosition, 1f - _manualCameraSettings.PanDamping);
+        
+        // Final clamp to ensure boundaries are never exceeded
+        newPosition.x = Mathf.Clamp(newPosition.x, _minX, _maxX);
+        newPosition.z = Mathf.Clamp(newPosition.z, _minZ, _maxZ);
+        
+        // Press B during play to see boundary debug info
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            Debug.Log($"[Manual Pan] Pos: ({currentPos.x:F2}, {currentPos.z:F2}) | Boundaries: X[{_minX:F1}, {_maxX:F1}], Z[{_minZ:F1}, {_maxZ:F1}] | AtMinX: {Mathf.Approximately(currentPos.x, _minX)} | AtMaxX: {Mathf.Approximately(currentPos.x, _maxX)}");
+        }
         
         foreach (var cam in _cameras)
         {
