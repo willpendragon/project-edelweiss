@@ -20,6 +20,9 @@ public class EnemyTurnManager : MonoBehaviour
     public delegate void PlayerTurnSwap();
     public static event PlayerTurnSwap OnPlayerTurnSwap;
 
+    public delegate void EnemyTurnStarted(EnemyAgent enemy);
+    public static event EnemyTurnStarted OnEnemyTurnStarted;
+
     [SerializeField] IconDisplayHelper _iconDisplayHelper;
 
     public GameObject deity;
@@ -64,19 +67,46 @@ public class EnemyTurnManager : MonoBehaviour
         while (currentEnemyTurnIndex < enemiesInQueue.Count)
         {
             EnemyAgent activeEnemy = enemiesInQueue[currentEnemyTurnIndex];
-            Debug.Log("Current Turn: " + activeEnemy.name);
+            Debug.Log($"<color=cyan>[EnemyTurnManager] Starting turn for {activeEnemy.name} (Index: {currentEnemyTurnIndex})</color>");
             ActivateThinkingIcon(activeEnemy);
 
             if (activeEnemy.gameObject.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
             {
+                // Pan camera to this enemy - waits for previous enemy's parry to complete due to isTurnComplete check
+                OnEnemyTurnStarted?.Invoke(activeEnemy);
+                
                 _iconDisplayHelper.ShowIcon();
+                
+                // Reset turn completion flag before starting enemy's turn
+                activeEnemy.isTurnComplete = false;
+                
                 activeEnemy.EnemyTurnEvents();
-                yield return new WaitForSeconds(singleEnemyturnDuration);
+                
+                // Wait for the enemy to complete their turn, with timeout fallback
+                float timeout = 10f; // Safety timeout to prevent infinite hangs
+                float elapsedTime = 0f;
+                
+                while (!activeEnemy.isTurnComplete && elapsedTime < timeout)
+                {
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+                
+                if (activeEnemy.isTurnComplete)
+                {
+                    Debug.Log($"<color=cyan>[EnemyTurnManager] {activeEnemy.name} completed turn normally (Time: {elapsedTime:F2}s)</color>");
+                }
+                else
+                {
+                    Debug.LogWarning($"<color=yellow>[EnemyTurnManager] {activeEnemy.name} TIMED OUT after {timeout}s - forcing completion</color>");
+                }
+                
                 _iconDisplayHelper.HideIcon();
             }
             else
             {
                 float deadEnemyTurnWaitingTime = 0.1f;
+                Debug.Log($"<color=cyan>[EnemyTurnManager] {activeEnemy.name} is dead, skipping turn</color>");
                 yield return new WaitForSeconds(deadEnemyTurnWaitingTime);
             }
             currentEnemyTurnIndex++;

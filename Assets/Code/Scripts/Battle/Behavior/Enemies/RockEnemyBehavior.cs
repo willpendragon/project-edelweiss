@@ -20,6 +20,8 @@ public class RockEnemyBehavior : BumperEnemyBehavior
         if (enemyUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead ||
             enemyUnit.unitStatusController.unitCurrentStatus == UnitStatus.stun)
         {
+            enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[RockEnemyBehavior] {enemyAgent.name} turn complete (Dead/Stunned)</color>");
             OnCheckPlayer?.Invoke();
             return;
         }
@@ -95,7 +97,12 @@ public class RockEnemyBehavior : BumperEnemyBehavior
                 }
             }
         }
-        DOVirtual.DelayedCall(actionDelay, () => OnCheckPlayer?.Invoke());
+        DOVirtual.DelayedCall(actionDelay, () =>
+        {
+            enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[RockEnemyBehavior] {enemyAgent.name} turn complete (Second action done)</color>");
+            OnCheckPlayer?.Invoke();
+        });
     }
 
     private void PerformAttack(Unit enemyUnit, EnemyAgent enemyAgent, Unit targetPlayerUnit)

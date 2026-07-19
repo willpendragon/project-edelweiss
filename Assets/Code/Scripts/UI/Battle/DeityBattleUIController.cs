@@ -151,6 +151,12 @@ public class DeityBattleUIController : MonoBehaviour
         // Show UI
         FadeInUI(_uIContainer);
 
+        // Enmity should always be visible when deity UI is active.
+        SetEnmityUIVisible(true);
+
+        // Health should only be visible in direct deity battles.
+        SetHealthUIVisible(ShouldShowHealthUI());
+
         // Initialize enmity slider
         if (_deityEnmitySlider != null)
         {
@@ -158,15 +164,19 @@ public class DeityBattleUIController : MonoBehaviour
             _deityEnmitySlider.value = CurrentDeity.enmity;
         }
 
-        if (_unboundDeityPresent == true)
+        if (ShouldShowHealthUI())
         {
             // Initialize Deity HP slider.
             if (_deityHealthSlider != null)
             {
-                _deityHealthSlider.maxValue = CurrentDeity._maxEnmity;
-                _deityHealthSlider.value = CurrentDeity.enmity;
+                _deityHealthSlider.maxValue = _deityUnitComponent.unitMaxHealthPoints;
+                _deityHealthSlider.value = _deityUnitComponent.unitHealthPoints;
             }
 
+            if (_deityHealthText != null)
+            {
+                _deityHealthText.text = $"{_deityUnitComponent.unitHealthPoints:F0} / {_deityUnitComponent.unitMaxHealthPoints:F0}";
+            }
         }
 
         // Start update coroutine
@@ -207,17 +217,48 @@ public class DeityBattleUIController : MonoBehaviour
         }
 
         // Update health (this logic is applicable only during fights against the Deity, or where the Player can attack them directly!).
-        if (_deityHealthSlider != null)
+        if (ShouldShowHealthUI() && _deityHealthSlider != null)
         {
             _deityHealthSlider.maxValue = _deityUnitComponent.unitMaxHealthPoints;
             _deityHealthSlider.value = _deityUnitComponent.unitHealthPoints;
         }
 
-        if (_deityHealthText != null)
+        if (ShouldShowHealthUI() && _deityHealthText != null)
         {
             _deityHealthText.text = $"{_deityUnitComponent.unitHealthPoints:F0} / {_deityUnitComponent.unitMaxHealthPoints:F0}";
         }
 
+    }
+
+    private bool ShouldShowHealthUI()
+    {
+        return _currentBattleType == BattleTypeController.BattleType.BattleWithDeity;
+    }
+
+    private void SetHealthUIVisible(bool isVisible)
+    {
+        if (_deityHealthSlider != null)
+        {
+            _deityHealthSlider.gameObject.SetActive(isVisible);
+        }
+
+        if (_deityHealthText != null)
+        {
+            _deityHealthText.gameObject.SetActive(isVisible);
+        }
+    }
+
+    private void SetEnmityUIVisible(bool isVisible)
+    {
+        if (_deityEnmitySlider != null)
+        {
+            _deityEnmitySlider.gameObject.SetActive(isVisible);
+        }
+
+        if (_deityEnmityText != null)
+        {
+            _deityEnmityText.gameObject.SetActive(isVisible);
+        }
     }
 
     private IEnumerator ContinuousUpdateUI()
@@ -271,22 +312,15 @@ public class DeityBattleUIController : MonoBehaviour
 
     private void HideAllDeityUI()
     {
-        // Quick fix to prevent the UI to appear in cases where there is a direct confrontation with the Deity.
-        if (_unboundDeityPresent == true)
-            return;
-
-
         if (_uIContainer != null)
         {
             _uIContainer.alpha = 0;
             _uIContainer.blocksRaycasts = false;
+            _uIContainer.interactable = false;
         }
 
-        if (_uIContainer != null)
-        {
-            _uIContainer.alpha = 0;
-            _uIContainer.blocksRaycasts = false;
-        }
+        SetHealthUIVisible(false);
+        SetEnmityUIVisible(false);
 
         if (_updateCoroutine != null)
         {

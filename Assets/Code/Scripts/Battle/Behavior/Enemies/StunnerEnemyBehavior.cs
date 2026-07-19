@@ -29,20 +29,24 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
         if (enemyAgent.gameObject.CompareTag("DeadEnemy") && enemyUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead)
         {
+            enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[StunnerEnemyBehavior] {enemyAgent.name} turn complete (Dead)</color>");
             OnCheckPlayer?.Invoke();
             return;
         }
         if (targetUnit == null)
         {
+            enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[StunnerEnemyBehavior] {enemyAgent.name} turn complete (No target)</color>");
             OnCheckPlayer?.Invoke();
             return;
         }
 
-        // Focus the camera on the Stunner quickly (0.2s) right before it acts.
-        if (enemyUnit.ownedTile != null)
-        {
-            OnEnemyActionFocusRequested?.Invoke(enemyUnit.ownedTile, 0.2f);
-        }
+        // Camera is already focused on this enemy from turn start - don't move it during attack
+        // if (enemyUnit.ownedTile != null)
+        // {
+        //     OnEnemyActionFocusRequested?.Invoke(enemyUnit.ownedTile, 0.2f);
+        // }
 
         // Stun Ability triggering formula.
         if (CheckDistanceFromTarget(targetUnit, enemyUnit))
@@ -51,16 +55,30 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
             if (randomRoll <= stunSuccessChancePercentage)
             {
-                StunAbility(targetUnit, enemyUnit);
+                StunAbility(targetUnit, enemyUnit, enemyAgent);
             }
             else
             {
                 OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} missed the attack!");
+                
+                // Add delay so notification is visible before turn completes
+                DOVirtual.DelayedCall(1.0f, () =>
+                {
+                    enemyAgent.isTurnComplete = true;
+                    Debug.Log($"<color=cyan>[StunnerEnemyBehavior] {enemyAgent.name} turn complete (Stun missed)</color>");
+                });
             }
         }
         else
         {
             OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} is too far from the target!");
+            
+            // Add delay so notification is visible before turn completes
+            DOVirtual.DelayedCall(1.0f, () =>
+            {
+                enemyAgent.isTurnComplete = true;
+                Debug.Log($"<color=cyan>[StunnerEnemyBehavior] {enemyAgent.name} turn complete (Out of range)</color>");
+            });
         }
     }
 
@@ -102,7 +120,7 @@ public class StunnerEnemyBehavior : EnemyBehavior
         return selectedUnit;
     }
 
-    public void StunAbility(Unit targetUnit, Unit enemyUnit)
+    public void StunAbility(Unit targetUnit, Unit enemyUnit, EnemyAgent enemyAgent)
     {
         OnStunnerEnemyAttack($"{enemyUnit.unitTemplate.unitName} used Stun attack");
 
@@ -112,10 +130,10 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
         targetUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
         targetUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
-        PlayStunFeedback(targetUnit);
+        PlayStunFeedback(targetUnit, enemyAgent);
     }
 
-    private void PlayStunFeedback(Unit targetUnit)
+    private void PlayStunFeedback(Unit targetUnit, EnemyAgent enemyAgent)
     {
         // Define the Y offset for the VFX spawn position
         float yOffset = 1.0f;
@@ -162,5 +180,13 @@ public class StunnerEnemyBehavior : EnemyBehavior
 
         float stunVFXDestroyCountdown = 1.5f;
         Destroy(stunVFX, stunVFXDestroyCountdown);
+        
+        // Mark turn complete after all animations finish
+        float totalAnimationTime = vfxDuration + 0.8f; // VFX duration + icon animation time
+        DOVirtual.DelayedCall(totalAnimationTime, () =>
+        {
+            enemyAgent.isTurnComplete = true;
+            Debug.Log($"<color=cyan>[StunnerEnemyBehavior] {enemyAgent.name} turn complete (Stun success)</color>");
+        });
     }
 }
