@@ -56,10 +56,10 @@ public class CameraController : MonoBehaviour
         // Calculate camera boundaries based on grid size
         CalculateCameraBoundaries();
         
-        // Initialize manual zoom to current FOV
+        // Initialize manual zoom to current orthographic size
         if (_cameras != null && _cameras.Count > 0)
         {
-            _currentManualZoom = _cameras[0].fieldOfView;
+            _currentManualZoom = _cameras[0].orthographicSize;
         }
     }
 
@@ -595,7 +595,7 @@ public class CameraController : MonoBehaviour
     }
     
     /// <summary>
-    /// Handles mouse scroll wheel input for zoom
+    /// Handles mouse scroll wheel input for zoom (orthographic size)
     /// </summary>
     private void HandleManualZoomInput()
     {
@@ -603,18 +603,28 @@ public class CameraController : MonoBehaviour
         
         float scrollDelta = Input.mouseScrollDelta.y;
         
-        // Skip if no scroll input
-        if (Mathf.Approximately(scrollDelta, 0f))
-            return;
+        // Debug: Press Z to see current state
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            Debug.Log($"[Zoom Debug] Manual control: {_isManualControlEnabled} | Auto-panning: {_isAutomaticPanningActive} | Current Size: {_cameras[0].orthographicSize:F1} | Target: {_currentManualZoom:F1} | Range: [{_manualCameraSettings.MinZoom}, {_manualCameraSettings.MaxZoom}]");
+        }
         
-        // Update target zoom
-        _currentManualZoom -= scrollDelta * _manualCameraSettings.ZoomSpeed;
-        _currentManualZoom = Mathf.Clamp(_currentManualZoom, _manualCameraSettings.MinZoom, _manualCameraSettings.MaxZoom);
+        // Update target zoom based on scroll input
+        if (!Mathf.Approximately(scrollDelta, 0f))
+        {
+            float oldTarget = _currentManualZoom;
+            _currentManualZoom -= scrollDelta * _manualCameraSettings.ZoomSpeed;
+            _currentManualZoom = Mathf.Clamp(_currentManualZoom, _manualCameraSettings.MinZoom, _manualCameraSettings.MaxZoom);
+            
+            Debug.Log($"[Manual Zoom] SCROLL DETECTED! Delta: {scrollDelta:F2} | Old: {oldTarget:F1} → New: {_currentManualZoom:F1} | Current Size: {_cameras[0].orthographicSize:F1} | ZoomSpeed: {_manualCameraSettings.ZoomSpeed}");
+        }
         
-        // Apply smooth zoom to all cameras
+        // Apply smooth zoom to all cameras EVERY FRAME (not just when scrolling)
         foreach (var cam in _cameras)
         {
-            cam.fieldOfView = Mathf.SmoothDamp(cam.fieldOfView, _currentManualZoom, ref _zoomVelocity, _manualCameraSettings.ZoomSmoothTime);
+            // Use Lerp for responsive zoom feel
+            float newSize = Mathf.Lerp(cam.orthographicSize, _currentManualZoom, Time.deltaTime / _manualCameraSettings.ZoomSmoothTime);
+            cam.orthographicSize = newSize;
         }
     }
     

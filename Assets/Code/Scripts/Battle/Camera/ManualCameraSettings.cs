@@ -14,13 +14,13 @@ namespace ProjectEdelweiss.Settings
 
         [Header("Zoom Settings")]
         [Tooltip("Speed at which the camera zooms in/out with mouse scroll")]
-        [SerializeField] private float _zoomSpeed = 5f;
+        [SerializeField] private float _zoomSpeed = 0.5f;
         
-        [Tooltip("Minimum field of view (most zoomed in)")]
-        [SerializeField] private float _minZoom = 20f;
+        [Tooltip("Minimum orthographic size (most zoomed in)")]
+        [SerializeField] private float _minZoom = 5f;
         
-        [Tooltip("Maximum field of view (most zoomed out)")]
-        [SerializeField] private float _maxZoom = 70f;
+        [Tooltip("Maximum orthographic size (most zoomed out)")]
+        [SerializeField] private float _maxZoom = 20f;
         
         [Tooltip("Smoothing applied to zoom transitions")]
         [SerializeField] private float _zoomSmoothTime = 0.15f;
