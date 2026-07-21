@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: ManualCameraSettings
   m_EditorClassIdentifier: 
   _panSpeed: 30
-  _panDamping: 0.5
+  _panDamping: 0
   _zoomSpeed: 5
-  _minZoom: 20
-  _maxZoom: 70
+  _minZoom: 10
+  _maxZoom: 15
   _zoomSmoothTime: 0.15
   _horizontalBoundaryPadding: 0.5
   _verticalBoundaryPadding: 0.5
