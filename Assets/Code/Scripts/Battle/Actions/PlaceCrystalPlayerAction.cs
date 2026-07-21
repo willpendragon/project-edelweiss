@@ -14,14 +14,15 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
     private const int ManaCost = 5;
 
-    public delegate void BattleEndCapturedDeity(string battleEndMessage);
-    public static event BattleEndCapturedDeity OnBattleEndCapturedDeity;
     public delegate void CaptureAttempt(string captureResult);
     public static event CaptureAttempt OnCaptureAttempt;
     public delegate void PlaceCrystal(string notification);
     public static event PlaceCrystal OnPlaceCrystal;
+    public delegate void TributeUsed(int totalStacks, float totalModifier);
+    public static event TributeUsed OnTributeUsed;
 
     private const string FAILED_CAPTURE_MESSAGE = "The binding attempt failed.";
+    private const string TRIBUTE_USED_MESSAGE = "Tribute offered. Capture chance increased!";
 
     public void Select(TileController selectedTile)
     {
@@ -60,28 +61,16 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
 
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlayPlaceCrystalSFX.Invoke();
 
-        if (AttemptCapture()) // Attempt capture is successful
-        {
-            Deity capturedUnboundDeity = GameObject.FindGameObjectWithTag(GameTags.DEITY_SPAWNER).GetComponent<DeitySpawner>().currentUnboundDeity;
-            OnBattleEndCapturedDeity?.Invoke("Deity was Captured");
-
-            TurnController turnController = GameObject.FindGameObjectWithTag(GameTags.BATTLE_MANAGER).GetComponent<TurnController>();
-            BattleFlowController.Instance.ResetTags();
-            BattleManager.Instance.UnlockNextLevel();
-            gameStatsManager.SaveCaptureCrystalsCount();
-
-            string activePlayerUnitId = activePlayerUnit.GetComponent<Unit>().Id;
-
-            CreateDictionaryEntry(capturedUnboundDeity, activePlayerUnitId);
-            GameManager.Instance.DeityLinkManager.ApplyDeityLinks();
-        }
-        else
-        {
-            // Failed Capture Feedback on Obelisk.
-            OnCaptureAttempt(FAILED_CAPTURE_MESSAGE);
-            GameObject deityObelisk = GameObject.FindGameObjectWithTag(GameTags.DEITY_SPAWNER).GetComponent<DeitySpawner>().DeityObelisk;
-            PlayFailureFeedback(deityObelisk);
-        }
+        // Add tribute modifier stack (replaces old immediate capture attempt)
+        float totalModifier = TributeModifierTracker.Instance.AddTributeStack();
+        int totalStacks = TributeModifierTracker.Instance.TributeStacks;
+        
+        // Notify UI systems
+        OnTributeUsed?.Invoke(totalStacks, totalModifier);
+        OnPlaceCrystal?.Invoke($"Tribute offered (+{(totalModifier * 100):F0}% total bonus)");
+        
+        // Save the updated tribute count
+        gameStatsManager.SaveCaptureCrystalsCount();
     }
 
     public void PlayFailureFeedback(GameObject deityObelisk)
@@ -181,4 +170,5 @@ public class PlaceCrystalPlayerAction : MonoBehaviour, IPlayerAction<TileControl
         //activePlayerUnit.unitProfilePanel.GetComponent<UnitProfileController>().UpdateActivePlayerProfile(activePlayerUnit);
         BattleInterface.Instance.PlayerPartyProfilesUIManager.UpdateProfile(activePlayerUnit.unitTemplate.unitName);
     }
+
 }

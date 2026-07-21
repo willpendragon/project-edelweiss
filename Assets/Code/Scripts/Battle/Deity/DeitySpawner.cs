@@ -233,6 +233,9 @@ public class DeitySpawner : MonoBehaviour
         //Unlocks Deity as an Unbound Entity
         Debug.Log($"Unlocked {unlockedDeity.GetComponent<Unit>().unitTemplate.unitName}");
 
+        // Reset tribute modifier stacks for new deity battle
+        TributeModifierTracker.Instance.ResetStacks();
+
         string deityName = unlockedDeity.GetComponent<Unit>().unitTemplate.unitName;
 
         if (DeityIsKilled(deityName))

@@ -24,7 +24,8 @@ public class RadialMenuEntry : MonoBehaviour, IPointerEnterHandler, IPointerExit
         Pray,
         Summon,
         Crystal,
-        Run
+        Run,
+        Attunement
     }
 
 

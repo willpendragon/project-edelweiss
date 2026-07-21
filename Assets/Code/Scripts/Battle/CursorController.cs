@@ -21,7 +21,8 @@ public class CursorController : MonoBehaviour
         Pray,
         Move,
         Run,
-        Crystal
+        Crystal,
+        Attunement
     }
 
     [SerializeField] TileController tileController;
@@ -60,6 +61,7 @@ public class CursorController : MonoBehaviour
     [SerializeField] private Sprite _summonIcon;
     [SerializeField] private Sprite _prayIcon;
     [SerializeField] private Sprite _magnetIcon;
+    [SerializeField] private Sprite _attunementIcon;
 
     private bool _isRadialMenuOpen;
 
@@ -87,6 +89,12 @@ public class CursorController : MonoBehaviour
 
         // Display Deity Tributes count on place Tributes buttons.
         if (entry.actionType == RadialMenuEntry.ActionType.Crystal)
+        {
+            entry.DisplayTributesCounterWrapper();
+        }
+
+        // Display Deity Tributes count on Attunement buttons.
+        if (entry.actionType == RadialMenuEntry.ActionType.Attunement)
         {
             entry.DisplayTributesCounterWrapper();
         }
@@ -306,7 +314,13 @@ public class CursorController : MonoBehaviour
                     RadialMenuEntry.ActionType.Trap, _trapIcon, "Trap", 2);
 
             if (isTileFree && gameStatsManager.captureCrystalsCount > 0)
-                CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Crystal", 4);
+                CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Tribute", 4);
+        }
+
+        // Attunement button - shown when clicking deity altar tile while adjacent
+        if (IsDeityAltarTile(_tileController) && IsAdjacentToDeityAltar(activePlayerUnit))
+        {
+            CreateActionButton(RadialMenuEntry.ActionType.Attunement, _attunementIcon, "Attune", 6);
         }
 
         // Melee/Magnet
@@ -421,6 +435,11 @@ public class CursorController : MonoBehaviour
                 _tileController.currentPlayerAction = new PlaceCrystalPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 break;
+            case RadialMenuEntry.ActionType.Attunement:
+                // TODO: Implement AttunementPlayerAction in Phase 2
+                _tileController.currentPlayerAction = new AttunementPlayerAction();
+                _tileController.currentPlayerAction.Execute(_tileController);
+                break;
             // case RadialMenuEntry.ActionType.Summon:
             //     _tileController.currentPlayerAction = new SummonPlayerAction();
             //     _tileController.currentPlayerAction.Execute(_tileController);
@@ -502,6 +521,44 @@ public class CursorController : MonoBehaviour
         int blockDistance = dstX + dstZ;
 
         return blockDistance <= limit;
+    }
+
+    private bool IsDeityAltarTile(TileController tile)
+    {
+        if (tile == null) return false;
+        
+        // Check if this tile is marked as a DeityTile or occupied by deity
+        return tile.tileType == TileType.DeityTile || 
+               tile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity;
+    }
+
+    private bool IsAdjacentToDeityAltar(Unit activePlayerUnit)
+    {
+        if (activePlayerUnit == null || activePlayerUnit.ownedTile == null)
+            return false;
+
+        // Find the deity's current tile
+        var battleTypeController = BattleTypeController.Instance;
+        if (battleTypeController == null || 
+            battleTypeController.currentBattleType != BattleTypeController.BattleType.BattleWithDeity)
+            return false;
+
+        var deitySpawner = FindAnyObjectByType<DeitySpawner>();
+        if (deitySpawner == null || deitySpawner.currentUnboundDeity == null)
+            return false;
+
+        var deityUnit = deitySpawner.currentUnboundDeity.GetComponent<Unit>();
+        if (deityUnit == null || deityUnit.ownedTile == null)
+            return false;
+
+        // Calculate Manhattan distance to deity altar
+        Vector3Int playerPos = activePlayerUnit.ownedTile.gridPosition;
+        Vector3Int deityPos = deityUnit.ownedTile.gridPosition;
+        
+        int distance = Mathf.Abs(playerPos.x - deityPos.x) + Mathf.Abs(playerPos.z - deityPos.z);
+        
+        // Adjacent means distance of 1
+        return distance == 1;
     }
 
     private void DestroyEnemyInfoPanels()
