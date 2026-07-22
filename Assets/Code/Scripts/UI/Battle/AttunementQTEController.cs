@@ -16,7 +16,7 @@ public class AttunementQTEController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI resultText;
     
     [Header("Configuration")]
-    [SerializeField] private AttunementSettings settings;
+    public AttunementSettings settings;
     [SerializeField] private KeyCode inputKey = KeyCode.Space;
     
     // QTE state
@@ -190,24 +190,24 @@ public class AttunementQTEController : MonoBehaviour
     /// <summary>
     /// Returns the singleton instance. Creates one if it doesn't exist.
     /// </summary>
-    public static AttunementQTEController Instance
-    {
-        get
-        {
-            var existing = FindAnyObjectByType<AttunementQTEController>();
-            if (existing != null) return existing;
+    // public static AttunementQTEController Instance
+    // {
+    //     get
+    //     {
+    //         var existing = FindAnyObjectByType<AttunementQTEController>();
+    //         if (existing != null) return existing;
 
-            // Create a new instance
-            var go = new GameObject("AttunementQTEController");
-            return go.AddComponent<AttunementQTEController>();
-        }
-    }
+    //         // Create a new instance
+    //         var go = new GameObject("AttunementQTEController");
+    //         return go.AddComponent<AttunementQTEController>();
+    //     }
+    // }
 
     /// <summary>
     /// Sets the AttunementSettings for this controller.
     /// </summary>
-    public void SetSettings(AttunementSettings newSettings)
-    {
-        settings = newSettings;
-    }
+    // public void SetSettings(AttunementSettings newSettings)
+    // {
+    //     settings = newSettings;
+    // }
 }

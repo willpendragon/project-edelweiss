@@ -87,12 +87,14 @@ public class AttunementPlayerAction : MonoBehaviour, IPlayerAction<TileControlle
     private void TriggerQTE(Deity deity, Unit activePlayerUnit)
     {
         // Try to find QTE controller in scene
-        var qteController = AttunementQTEController.Instance;
-        
+        var qteController = FindAnyObjectByType<AttunementQTEController>();
+        // Just retrieve settings from the slot I've manually populated in the scene.
+        settings = qteController.settings;
+
         if (qteController != null && settings != null)
         {
-            // Pass settings to QTE controller
-            qteController.SetSettings(settings);
+            // // Pass settings to QTE controller
+            // qteController.SetSettings(settings);
             
             // Start QTE with callback
             qteController.StartQTE((distanceFromCenter) => {
