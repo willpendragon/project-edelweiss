@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using ProjectEdelweiss.Utils;
 
 
 public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
@@ -25,7 +27,7 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI availableMovesText;
     [SerializeField] private CanvasGroup _partyProfileGroup;
     [SerializeField] private GameObject _deityMoveObj;
-
+    [SerializeField] private GameObject _deityMoveButton;
     [SerializeField] private bool _isInOverworldMap;
 
     public event Action<Unit> OnProfileClicked;
@@ -79,13 +81,23 @@ public class PlayerPartyProfileHelper : MonoBehaviour, IPointerClickHandler
         if (unit.linkedDeity == null)
             return;
         _deityMoveObj.SetActive(true);
-        DeityPowerController _deityPowerController = BattleManager.Instance.DeityPowerController;
+        DeityPowerController _deityPowerController = BattleManager.Instance?.DeityPowerController;            
         _deityMoveObj.GetComponentInChildren<Image>().sprite = unit.linkedDeity.deityPortrait;
+
+        var scene = SceneManager.GetActiveScene();
+        string sceneName = scene.name;
+        if (sceneName == GameTags.OVERWORLD_MAP)
+        {
+            _deityMoveSlider.gameObject.SetActive(false);
+            _deityMoveButton.gameObject.SetActive(false);
+            return;
+        }
 
         // Clear old listeners before adding the new one
         Button deityButton = _deityMoveObj.GetComponentInChildren<Button>();
         deityButton.onClick.RemoveAllListeners();
         deityButton.onClick.AddListener(() => _deityPowerController.UseDeityMove());
+        // This logic applies only to Anguana, needs to be extended to all of the other Deities.
         if (unit.linkedDeity.summoningBehaviour is DeityAnguanaSummoningBehavior anguanaBehavior)
         {
             _deityMoveSlider.maxValue = anguanaBehavior.moveCooldown;
