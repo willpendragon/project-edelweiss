@@ -96,7 +96,7 @@ public class CursorController : MonoBehaviour
         // Display Deity Tributes count on Attunement buttons.
         if (entry.actionType == RadialMenuEntry.ActionType.Attunement)
         {
-            entry.DisplayTributesCounterWrapper();
+            // entry.DisplayTributesCounterWrapper();
         }
 
         return button;
