@@ -3,11 +3,6 @@ using DG.Tweening;
 using Edelweiss.Core;
 using ProjectEdelweiss.Utils;
 
-/// <summary>
-/// Player action for attempting to attune (capture) a Deity.
-/// This action triggers a QTE and resolves the capture attempt based on
-/// timing, deity health, and tribute modifiers.
-/// </summary>
 public class AttunementPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
     private System.Random localRandom = new System.Random();
