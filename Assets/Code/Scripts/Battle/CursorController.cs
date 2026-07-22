@@ -318,8 +318,12 @@ public class CursorController : MonoBehaviour
         }
 
         // Attunement button - shown when clicking deity altar tile while adjacent
-        if (IsDeityAltarTile(_tileController) && IsAdjacentToDeityAltar(activePlayerUnit))
+        bool isAltarTile = IsDeityAltarTile(_tileController);
+        bool isPlayerAdjacent = IsAdjacentToDeityAltar(activePlayerUnit);
+
+        if (isAltarTile && isPlayerAdjacent)
         {
+            Debug.Log("Created Attunement button.");
             CreateActionButton(RadialMenuEntry.ActionType.Attunement, _attunementIcon, "Attune", 6);
         }
 
@@ -512,11 +516,11 @@ public class CursorController : MonoBehaviour
         Vector3Int pPos = activePlayerUnit.ownedTile.gridPosition;
         Vector3Int targetPos = _tileController.gridPosition;
 
-        // Quanti "passi" di griglia in X e Z (profondit�) abbiamo?
+        // Quanti "passi" di griglia in X e Z (profondit) abbiamo?
         int dstX = Mathf.Abs(pPos.x - targetPos.x);
         int dstZ = Mathf.Abs(pPos.z - targetPos.z);
         // Opzionale: int dstY = Mathf.Abs(pPos.y - targetPos.y); 
-        // Aggiungi + dstY se vuoi che bersagliare uno pi� in alto costi range extra.
+        // Aggiungi + dstY se vuoi che bersagliare uno pi in alto costi range extra.
 
         int blockDistance = dstX + dstZ;
 
@@ -525,39 +529,51 @@ public class CursorController : MonoBehaviour
 
     private bool IsDeityAltarTile(TileController tile)
     {
-        if (tile == null) return false;
+        if (tile == null)
+        {
+            Debug.LogWarning("[IsDeityAltarTile] Tile is null!");
+            return false;
+        }
+                bool isDeityTileType = tile.tileType == TileType.DeityTile;
+        bool isOccupiedByDeity = tile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity;
         
         // Check if this tile is marked as a DeityTile or occupied by deity
-        return tile.tileType == TileType.DeityTile || 
-               tile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity;
+        return isDeityTileType || isOccupiedByDeity;
     }
 
     private bool IsAdjacentToDeityAltar(Unit activePlayerUnit)
     {
         if (activePlayerUnit == null || activePlayerUnit.ownedTile == null)
+        {
             return false;
+        }
 
-        // Find the deity's current tile
         var battleTypeController = BattleTypeController.Instance;
         if (battleTypeController == null || 
             battleTypeController.currentBattleType != BattleTypeController.BattleType.BattleWithDeity)
+        {
             return false;
+        }
 
         var deitySpawner = FindAnyObjectByType<DeitySpawner>();
         if (deitySpawner == null || deitySpawner.currentUnboundDeity == null)
+        {
             return false;
+        }
 
         var deityUnit = deitySpawner.currentUnboundDeity.GetComponent<Unit>();
         if (deityUnit == null || deityUnit.ownedTile == null)
+        {
             return false;
+        }
 
-        // Calculate Manhattan distance to deity altar
         Vector3Int playerPos = activePlayerUnit.ownedTile.gridPosition;
         Vector3Int deityPos = deityUnit.ownedTile.gridPosition;
         
         int distance = Mathf.Abs(playerPos.x - deityPos.x) + Mathf.Abs(playerPos.z - deityPos.z);
         
-        // Adjacent means distance of 1
+        Debug.Log($"[Adjacency] Player: {playerPos}, Deity: {deityPos}, Distance: {distance}");
+        
         return distance == 1;
     }
 

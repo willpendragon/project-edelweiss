@@ -304,6 +304,7 @@ public class DeitySpawner : MonoBehaviour
         }
 
         unboundDeity.gameObject.tag = "Enemy";
+        
     }
 
     public bool DeityIsKilled(string deityName)

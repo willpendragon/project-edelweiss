@@ -41,7 +41,7 @@ public class UnitSetupController : MonoBehaviour
             // INSTEAD OF MATH BOUNDS -> Check if the actual tile exists!
             TileController startingTile = GridManager.Instance.GetTileControllerInstance(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate);
 
-            if (startingTile != null)
+            if (startingTile != null && enemyUnit.unitType != Unit.UnitType.Deity)
             {
                 // Move the unit to its starting tile and update the tile's state.
                 enemyUnit.SetPosition(enemyUnit.startingXCoordinate, enemyUnit.startingYCoordinate);
