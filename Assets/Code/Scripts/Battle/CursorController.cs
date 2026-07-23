@@ -324,7 +324,7 @@ public class CursorController : MonoBehaviour
         if (isAltarTile && isPlayerAdjacent)
         {
             Debug.Log("Created Attunement button.");
-            CreateActionButton(RadialMenuEntry.ActionType.Attunement, _attunementIcon, "Attune", 6);
+            CreateActionButton(RadialMenuEntry.ActionType.Attunement, _attunementIcon, "Attune", 9);
         }
 
         // Melee/Magnet
