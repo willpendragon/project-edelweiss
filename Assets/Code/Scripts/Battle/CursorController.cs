@@ -48,6 +48,9 @@ public class CursorController : MonoBehaviour
     private Coroutine _escapeCoroutine;
     private GameObject _escapeUIRoot;
     [SerializeField] private TMP_FontAsset escapeMenuFont;
+    
+    private bool _isEscaping = false;
+    private EventSystem _eventSystem;
 
     public Unit TargetedUnit => _targetedUnit;
 
@@ -116,6 +119,12 @@ public class CursorController : MonoBehaviour
         MovePlayerAction.OnUnitMovedToTile -= UpdateTilesVisualizer;
     }
 
+    private void Awake()
+    {
+        // Cache EventSystem reference - EventSystem.current becomes null once disabled
+        _eventSystem = EventSystem.current;
+    }
+
     private void Start()
     {
         state = CursorState.Basic;
@@ -125,6 +134,17 @@ public class CursorController : MonoBehaviour
     {
         if (GridManager.IsUnitMoving)
             return;
+
+        // Block all input (grid clicks, UI interactions) during escape sequence
+        if (_isEscaping)
+        {
+            // Only allow ESC key to cancel escape
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                CancelEscape();
+            }
+            return;
+        }
 
         if (_escapeCoroutine != null && Input.GetKeyDown(KeyCode.Escape))
         {
@@ -261,7 +281,8 @@ public class CursorController : MonoBehaviour
 
     public void OpenRadialMenu()
     {
-        if (_isRadialMenuOpen
+        if (_isEscaping
+            || _isRadialMenuOpen
             || (_tileController.detectedUnit != null && (
                 _tileController.detectedUnit.CompareTag("Player") ||
                 _tileController.detectedUnit.CompareTag("ActivePlayerUnit")))
@@ -602,6 +623,13 @@ public class CursorController : MonoBehaviour
         var activePlayerUnitObj = GameObject.FindGameObjectWithTag(GameTags.ActivePlayerUnit);
         Unit activePlayerUnit = activePlayerUnitObj.GetComponent<Unit>();
 
+        // Disable all player input during escape
+        _isEscaping = true;
+        if (_eventSystem != null)
+        {
+            _eventSystem.enabled = false;
+        }
+
         float timer = _escapeSettings != null ? _escapeSettings.gracePeriod : 1.5f;
         CreateEscapeUI();
 
@@ -626,6 +654,13 @@ public class CursorController : MonoBehaviour
         // Execute the actual roll
         float roll = UnityEngine.Random.Range(0f, 100f);
         float chance = _escapeSettings != null ? _escapeSettings.escapeProbability : 100f;
+
+        // Always re-enable input before transitioning (success or failure)
+        _isEscaping = false;
+        if (_eventSystem != null)
+        {
+            _eventSystem.enabled = true;
+        }
 
         if (roll <= chance)
         {
@@ -682,6 +717,13 @@ public class CursorController : MonoBehaviour
         if (_escapeUIRoot != null)
         {
             Destroy(_escapeUIRoot);
+        }
+
+        // Re-enable all player input
+        _isEscaping = false;
+        if (_eventSystem != null)
+        {
+            _eventSystem.enabled = true;
         }
 
         BattleInterface.Instance.SetDeityNotification("Escape Cancelled");
