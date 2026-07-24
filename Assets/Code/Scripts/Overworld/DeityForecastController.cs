@@ -78,6 +78,8 @@ public class DeityForecastController : MonoBehaviour
             return;
         }
 
+        GameSaveData saveData = SaveStateManager.saveData;
+
         foreach (var deityGO in spawnableDeities)
         {
             if (deityGO == null)
@@ -91,8 +93,18 @@ public class DeityForecastController : MonoBehaviour
             if (unitComponent == null)
                 continue;
 
-            // Check if this deity is already captured (killed)
-            if (SaveStateManager.saveData.killedDeities.ContainsKey(unitComponent.unitTemplate.unitName))
+            string deityId = deity.Id;
+
+            // Check if this deity is already killed
+            if (saveData.killedDeities.ContainsKey(unitComponent.unitTemplate.unitName))
+                continue;
+
+            // Check if this deity is linked to any player
+            if (saveData.unitsLinkedToDeities.ContainsValue(deityId))
+                continue;
+
+            // Check if this deity is captured but unassigned
+            if (saveData.unassignedCapturedDeities.Contains(deityId))
                 continue;
 
             // Get portrait from the unit's sprite renderer
@@ -130,6 +142,8 @@ public class DeityForecastController : MonoBehaviour
             return;
         }
 
+        GameSaveData saveData = SaveStateManager.saveData;
+
         // Get all unlocked achievements
         var unlockedAchievements = _achievementsManager.allAchievements
             .Where(a => a != null && a.AchievementIsUnlocked())
@@ -148,8 +162,18 @@ public class DeityForecastController : MonoBehaviour
             if (unitComponent == null)
                 continue;
 
-            // Check if this deity is already captured
-            if (SaveStateManager.saveData.killedDeities.ContainsKey(unitComponent.unitTemplate.unitName))
+            string deityId = deity.Id;
+
+            // Check if this deity is already killed
+            if (saveData.killedDeities.ContainsKey(unitComponent.unitTemplate.unitName))
+                continue;
+
+            // Check if this deity is linked to any player
+            if (saveData.unitsLinkedToDeities.ContainsValue(deityId))
+                continue;
+
+            // Check if this deity is captured but unassigned
+            if (saveData.unassignedCapturedDeities.Contains(deityId))
                 continue;
 
             // Get portrait from the unit's sprite renderer

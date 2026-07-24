@@ -124,7 +124,9 @@ public class DeitySpawner : MonoBehaviour
 
     private void UpdateSpawnableDeities()
     {
-        // Remove deities that are either killed OR captured
+        // Remove deities that are killed, linked to players, or captured but unassigned
+        GameSaveData saveData = SaveStateManager.saveData;
+        
         for (int i = spawnableDeities.Count - 1; i >= 0; i--)
         {
             var deity = spawnableDeities[i];
@@ -135,12 +137,15 @@ public class DeitySpawner : MonoBehaviour
             bool deityIsKilled = _killedDeityDictionary.ContainsKey(deityName) && 
                                  _killedDeityDictionary[deityName];
 
-            // Check if captured by any player unit
-            bool deityIsCaptured = SaveStateManager.saveData.unitsLinkedToDeities.ContainsValue(deityId);
+            // Check if captured and linked to a player
+            bool deityIsLinked = saveData.unitsLinkedToDeities.ContainsValue(deityId);
+            
+            // Check if captured but unassigned
+            bool deityIsUnassignedCaptured = saveData.unassignedCapturedDeities.Contains(deityId);
 
-            if (deityIsKilled || deityIsCaptured)
+            if (deityIsKilled || deityIsLinked || deityIsUnassignedCaptured)
             {
-                Debug.Log($"[UpdateSpawnableDeities] Removing {deityName} - Killed: {deityIsKilled}, Captured: {deityIsCaptured}");
+                Debug.Log($"[UpdateSpawnableDeities] Removing {deityName} - Killed: {deityIsKilled}, Linked: {deityIsLinked}, Unassigned: {deityIsUnassignedCaptured}");
                 spawnableDeities.RemoveAt(i);
             }
         }

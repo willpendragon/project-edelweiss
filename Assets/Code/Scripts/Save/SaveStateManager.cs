@@ -46,6 +46,14 @@ public static class SaveStateManager
             // File exists, proceed to read it
             string json = File.ReadAllText(saveFilePathTest);
             GameSaveData loadedData = JsonConvert.DeserializeObject<GameSaveData>(json);
+            
+            // Initialize new fields for backwards compatibility with old save files
+            if (loadedData.unassignedCapturedDeities == null)
+            {
+                loadedData.unassignedCapturedDeities = new List<string>();
+                Debug.Log("Initialized unassignedCapturedDeities list for legacy save file.");
+            }
+            
             return loadedData;
         }
         else

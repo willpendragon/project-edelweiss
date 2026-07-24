@@ -28,10 +28,26 @@ public class AchievementsManager : MonoBehaviour
 
     private bool CanTriggerDeityBattle(Achievement achievement, double deitySpawnChance)
     {
-        return achievement != null
-            && achievement.spawnableDeity != null
-            && !_deitySpawner.DeityIsUnavailable(achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName)
-            && localRandom.NextDouble() <= deitySpawnChance;
+        if (achievement == null || achievement.spawnableDeity == null)
+            return false;
+            
+        string deityName = achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName;
+        string deityId = achievement.spawnableDeity.GetComponent<Deity>().Id;
+        GameSaveData saveData = SaveStateManager.saveData;
+        
+        // Check if deity is killed
+        bool isKilled = _deitySpawner.DeityIsKilled(deityName);
+        
+        // Check if deity is linked to any player
+        bool isLinked = saveData.unitsLinkedToDeities.ContainsValue(deityId);
+        
+        // Check if deity is captured but unassigned
+        bool isUnassigned = saveData.unassignedCapturedDeities.Contains(deityId);
+        
+        // Deity is available if not killed, linked, or unassigned, and passes spawn chance
+        bool isAvailable = !isKilled && !isLinked && !isUnassigned;
+        
+        return isAvailable && localRandom.NextDouble() <= deitySpawnChance;
     }
     public BattleTypeController.BattleType TriggerDeityAchievementLogic()
     {

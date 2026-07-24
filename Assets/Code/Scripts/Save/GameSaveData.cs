@@ -23,6 +23,7 @@ public class GameSaveData
     public List<IngredientSaveEntry> savedInventory = new List<IngredientSaveEntry>();
     public List<BakedItemsData> bakedItems = new List<BakedItemsData>();
     public Dictionary<string, bool> killedDeities = new Dictionary<string, bool>();
+    public List<string> unassignedCapturedDeities = new List<string>();
     public List<EatenPastryData> eatenPastriesHistory = new List<EatenPastryData>();
     public int runSeed = 0; // 0 means a new run hasn't generated a seed yet
     public Dictionary<string, int> killsByEnemyName = new Dictionary<string, int>();

@@ -282,14 +282,33 @@ public class AttunementPlayerAction : MonoBehaviour, IPlayerAction<TileControlle
     }
 
     /// <summary>
-    /// Creates persistent save entry linking captured deity to player unit
+    /// Creates persistent save entry linking captured deity to player unit.
+    /// If player already has a bond, adds deity to unassigned pool instead.
     /// </summary>
     private void CreateDictionaryEntry(Deity capturedDeity, string playerId)
     {
         GameSaveData saveData = SaveStateManager.saveData;
-        saveData.unitsLinkedToDeities.Add(playerId, capturedDeity.Id);
-        SaveStateManager.SaveGame(saveData);
-        Debug.Log($"AttunementPlayerAction: Saved link - Player:{playerId} -> Deity:{capturedDeity.Id}");
+        
+        // Check if this player unit already has a deity link
+        if (saveData.unitsLinkedToDeities.ContainsKey(playerId))
+        {
+            // Unit already bonded - add deity to unassigned pool instead
+            string deityId = capturedDeity.Id;
+            if (!saveData.unassignedCapturedDeities.Contains(deityId))
+            {
+                saveData.unassignedCapturedDeities.Add(deityId);
+                SaveStateManager.SaveGame(saveData);
+                Debug.Log($"AttunementPlayerAction: {capturedDeity.name} captured but unassigned (player already bonded). Available in Deity Altar.");
+                BattleInterface.Instance.SetDeityNotification($"{capturedDeity.GetComponent<Unit>().unitTemplate.unitName} captured! Visit Deity Altar to assign.");
+            }
+        }
+        else
+        {
+            // No existing bond - create link normally
+            saveData.unitsLinkedToDeities.Add(playerId, capturedDeity.Id);
+            SaveStateManager.SaveGame(saveData);
+            Debug.Log($"AttunementPlayerAction: Saved link - Player:{playerId} -> Deity:{capturedDeity.Id}");
+        }
     }
 
     public void Deselect()

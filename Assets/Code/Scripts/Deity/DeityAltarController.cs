@@ -75,6 +75,17 @@ public class DeityAltarController : MonoBehaviour
             GameObject newDeityUnitProfileInstance = Instantiate(deityProfileGO, capturedDeitiesContainer);
             newDeityUnitProfileInstance.GetComponent<AltarDeityUnitProfileController>().PopulateDeityUnitProfile(deity.GetComponent<Unit>(), deity);
         }
+        
+        // Also show unassigned captured deities in the pool
+        GameSaveData saveData = SaveStateManager.saveData;
+        foreach (string unassignedDeityId in saveData.unassignedCapturedDeities)
+        {
+            var unassignedDeity = GameManager.Instance.DeityLinkManager.collectibleDeities.Find(d => d.Id == unassignedDeityId);
+            if (unassignedDeity == null) continue;
+
+            GameObject unassignedDeityProfileInstance = Instantiate(deityProfileGO, capturedDeitiesContainer);
+            unassignedDeityProfileInstance.GetComponent<AltarDeityUnitProfileController>().PopulateDeityUnitProfile(unassignedDeity.GetComponent<Unit>(), unassignedDeity);
+        }
     }
     public void SetCurrentSelectedUnit(Unit unit, GameObject unitPanel)
     {
@@ -159,6 +170,13 @@ public class DeityAltarController : MonoBehaviour
             // Add the new link.
             PlayLinkAnimation(selectedPlayerUnit, deity);
             saveData.unitsLinkedToDeities.Add(selectedPlayerUnitId, deityId);
+            
+            // If deity was in unassigned pool, remove it
+            if (saveData.unassignedCapturedDeities.Contains(deityId))
+            {
+                saveData.unassignedCapturedDeities.Remove(deityId);
+                Debug.Log($"Removed {deity.GetComponent<Unit>().unitTemplate.unitName} from unassigned pool");
+            }
 
             selectedPlayerUnitProfileGO.GetComponent<AltarPlayerUnitProfileController>().linkedDeityName.text = deity.GetComponent<Unit>().unitTemplate.unitName;
             GameManager.Instance.DeityLinkManager.ApplyDeityLinks();
