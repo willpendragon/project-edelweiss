@@ -70,7 +70,9 @@ public abstract class DeityBehavior : ScriptableObject
 
         deity.gameObject.GetComponent<Unit>().ownedTile = destinationTile;
         destinationTile.detectedUnit = deity.gameObject;
-        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+
+        // Changed to occupiedByDeity so Player can target if to attempt an Attunement.
+        destinationTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
 
         deity.gameObject.GetComponent<Unit>().currentXCoordinate = destinationTile.tileXCoordinate;
         deity.gameObject.GetComponent<Unit>().currentYCoordinate = destinationTile.tileYCoordinate;

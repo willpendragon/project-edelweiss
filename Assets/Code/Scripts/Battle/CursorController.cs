@@ -21,7 +21,8 @@ public class CursorController : MonoBehaviour
         Pray,
         Move,
         Run,
-        Crystal
+        Crystal,
+        Attunement
     }
 
     [SerializeField] TileController tileController;
@@ -60,6 +61,7 @@ public class CursorController : MonoBehaviour
     [SerializeField] private Sprite _summonIcon;
     [SerializeField] private Sprite _prayIcon;
     [SerializeField] private Sprite _magnetIcon;
+    [SerializeField] private Sprite _attunementIcon;
 
     private bool _isRadialMenuOpen;
 
@@ -89,6 +91,12 @@ public class CursorController : MonoBehaviour
         if (entry.actionType == RadialMenuEntry.ActionType.Crystal)
         {
             entry.DisplayTributesCounterWrapper();
+        }
+
+        // Display Deity Tributes count on Attunement buttons.
+        if (entry.actionType == RadialMenuEntry.ActionType.Attunement)
+        {
+            // entry.DisplayTributesCounterWrapper();
         }
 
         return button;
@@ -306,7 +314,17 @@ public class CursorController : MonoBehaviour
                     RadialMenuEntry.ActionType.Trap, _trapIcon, "Trap", 2);
 
             if (isTileFree && gameStatsManager.captureCrystalsCount > 0)
-                CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Crystal", 4);
+                CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Tribute", 4);
+        }
+
+        // Attunement button - shown when clicking deity altar tile while adjacent
+        bool isAltarTile = IsDeityAltarTile(_tileController);
+        bool isPlayerAdjacent = IsAdjacentToDeityAltar(activePlayerUnit);
+
+        if (isAltarTile && isPlayerAdjacent)
+        {
+            Debug.Log("Created Attunement button.");
+            CreateActionButton(RadialMenuEntry.ActionType.Attunement, _attunementIcon, "Attune", 9);
         }
 
         // Melee/Magnet
@@ -421,6 +439,11 @@ public class CursorController : MonoBehaviour
                 _tileController.currentPlayerAction = new PlaceCrystalPlayerAction();
                 _tileController.currentPlayerAction.Execute(_tileController);
                 break;
+            case RadialMenuEntry.ActionType.Attunement:
+                // TODO: Implement AttunementPlayerAction in Phase 2
+                _tileController.currentPlayerAction = new AttunementPlayerAction();
+                _tileController.currentPlayerAction.Execute(_tileController);
+                break;
             // case RadialMenuEntry.ActionType.Summon:
             //     _tileController.currentPlayerAction = new SummonPlayerAction();
             //     _tileController.currentPlayerAction.Execute(_tileController);
@@ -493,15 +516,65 @@ public class CursorController : MonoBehaviour
         Vector3Int pPos = activePlayerUnit.ownedTile.gridPosition;
         Vector3Int targetPos = _tileController.gridPosition;
 
-        // Quanti "passi" di griglia in X e Z (profondit�) abbiamo?
+        // Quanti "passi" di griglia in X e Z (profondit) abbiamo?
         int dstX = Mathf.Abs(pPos.x - targetPos.x);
         int dstZ = Mathf.Abs(pPos.z - targetPos.z);
         // Opzionale: int dstY = Mathf.Abs(pPos.y - targetPos.y); 
-        // Aggiungi + dstY se vuoi che bersagliare uno pi� in alto costi range extra.
+        // Aggiungi + dstY se vuoi che bersagliare uno pi in alto costi range extra.
 
         int blockDistance = dstX + dstZ;
 
         return blockDistance <= limit;
+    }
+
+    private bool IsDeityAltarTile(TileController tile)
+    {
+        if (tile == null)
+        {
+            Debug.LogWarning("[IsDeityAltarTile] Tile is null!");
+            return false;
+        }
+                bool isDeityTileType = tile.tileType == TileType.DeityTile;
+        bool isOccupiedByDeity = tile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity;
+        
+        // Check if this tile is marked as a DeityTile or occupied by deity
+        return isDeityTileType || isOccupiedByDeity;
+    }
+
+    private bool IsAdjacentToDeityAltar(Unit activePlayerUnit)
+    {
+        if (activePlayerUnit == null || activePlayerUnit.ownedTile == null)
+        {
+            return false;
+        }
+
+        var battleTypeController = BattleTypeController.Instance;
+        if (battleTypeController == null || 
+            battleTypeController.currentBattleType != BattleTypeController.BattleType.BattleWithDeity)
+        {
+            return false;
+        }
+
+        var deitySpawner = FindAnyObjectByType<DeitySpawner>();
+        if (deitySpawner == null || deitySpawner.currentUnboundDeity == null)
+        {
+            return false;
+        }
+
+        var deityUnit = deitySpawner.currentUnboundDeity.GetComponent<Unit>();
+        if (deityUnit == null || deityUnit.ownedTile == null)
+        {
+            return false;
+        }
+
+        Vector3Int playerPos = activePlayerUnit.ownedTile.gridPosition;
+        Vector3Int deityPos = deityUnit.ownedTile.gridPosition;
+        
+        int distance = Mathf.Abs(playerPos.x - deityPos.x) + Mathf.Abs(playerPos.z - deityPos.z);
+        
+        Debug.Log($"[Adjacency] Player: {playerPos}, Deity: {deityPos}, Distance: {distance}");
+        
+        return distance == 1;
     }
 
     private void DestroyEnemyInfoPanels()

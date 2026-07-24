@@ -2216,12 +2216,16 @@ MonoBehaviour:
   hpSlider: {fileID: 6254837135591373701}
   _outline: {fileID: 7010897931889571713}
   mpSlider: {fileID: 6254837136158420259}
+  fpSlider: {fileID: 0}
   _deityMoveSlider: {fileID: 6699123658328133321}
   hpText: {fileID: 6254837135413843151}
   mpText: {fileID: 6254837136584655132}
+  fpText: {fileID: 0}
   availableMovesText: {fileID: 896709891285809779}
   _partyProfileGroup: {fileID: 3763222423325221038}
   _deityMoveObj: {fileID: 5922678110182623893}
+  _deityMoveButton: {fileID: 2639458882651989847}
+  _isInOverworldMap: 0
 --- !u!222 &1609752702143962194
 CanvasRenderer:
   m_ObjectHideFlags: 0

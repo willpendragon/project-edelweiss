@@ -21,24 +21,49 @@ public class AltarDeityUnitProfileController : MonoBehaviour
 
     public void PopulateDeityUnitProfile(Unit deityUnit, Deity deity)
     {
-        DeityAnguanaSummoningBehavior summoningBehavior = deity.summoningBehaviour as DeityAnguanaSummoningBehavior;
+        // Null safety checks
+        if (deityUnit == null || deity == null)
+        {
+            Debug.LogWarning("PopulateDeityUnitProfile: Null deity or unit provided");
+            return;
+        }
 
+        if (deityUnit.unitTemplate == null)
+        {
+            Debug.LogWarning("PopulateDeityUnitProfile: Deity unit missing template");
+            return;
+        }
 
         deityName.text = deityUnit.unitTemplate.unitName;
 
-        // Sets the parameter of the Deity Prayer Buff on the menu
+        // Handle summoning behavior generically for all deity types
+        if (deity.summoningBehaviour != null)
+        {
+            // Try to get moveName from Anguana type specifically, otherwise use deity name as fallback
+            DeityAnguanaSummoningBehavior anguanaBehavior = deity.summoningBehaviour as DeityAnguanaSummoningBehavior;
+            buffType.text = anguanaBehavior?.moveName ?? deityUnit.unitTemplate.unitName ?? "Deity Ability";
+            
+            // Use base class description property (works for all deity types)
+            buffAmountCounter.text = deity.summoningBehaviour.description ?? "Deity summoning ability";
+        }
+        else
+        {
+            // Fallback if no summoning behavior
+            buffType.text = deityUnit.unitTemplate.unitName;
+            buffAmountCounter.text = "Deity summoning ability";
+            Debug.LogWarning($"Deity {deityUnit.unitTemplate.unitName} missing summoningBehaviour");
+        }
 
-
-        // buffAmountSlider.maxValue = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
-        // buffAmountSlider.value = healingBehavior.bubbleBuffShieldPointsIncreaseAmount;
-        buffType.text = summoningBehavior.moveName;
-
-        //buffAmountCounter.text = healingBehavior.bubbleBuffShieldPointsIncreaseAmount.ToString();
-        // Using the buff's description as a temporary solution.
-        // buffAmountCounter.text = healingBehavior.deityBuffDescription;
-        buffAmountCounter.text = summoningBehavior.description;
-
-        deityUnitPortrait.sprite = deityUnit.unitTemplate.unitPortrait;
+        // Portrait with null check
+        if (deityUnit.unitTemplate.unitPortrait != null)
+        {
+            deityUnitPortrait.sprite = deityUnit.unitTemplate.unitPortrait;
+        }
+        else
+        {
+            Debug.LogWarning($"Missing portrait for deity: {deityUnit.unitTemplate.unitName}");
+        }
+        
         linkedUnitPortrait.sprite = RetrieveLinkedUnitSmallPortrait(deity);
         selectedDeity = deity;
         selectDeityButton.onClick.AddListener(SelectDeityUnit);

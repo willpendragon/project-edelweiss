@@ -71,6 +71,10 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         RockEnemyBehavior.OnRockEnemyAttack += SetBattleNotification;
         PrizeCollectionHelper.OnUpgradeObtained += SetBattleNotification;
         UnitSelectionController.OnFaithlessUnit += SetBattleNotification;
+        
+        // Attunement notifications
+        AttunementPlayerAction.OnAttunementSuccess += SetDeityNotification;
+        AttunementPlayerAction.OnAttunementFailed += SetDeityNotification;
     }
 
     private void UnsubscribeBattleNotifications()
@@ -90,6 +94,10 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         RockEnemyBehavior.OnRockEnemyAttack -= SetBattleNotification;
         PrizeCollectionHelper.OnUpgradeObtained -= SetBattleNotification;
         UnitSelectionController.OnFaithlessUnit -= SetBattleNotification;
+        
+        // Attunement notifications
+        AttunementPlayerAction.OnAttunementSuccess -= SetDeityNotification;
+        AttunementPlayerAction.OnAttunementFailed -= SetDeityNotification;
     }
 
     private void OnEnable()

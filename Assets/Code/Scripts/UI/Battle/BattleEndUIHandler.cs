@@ -39,13 +39,13 @@ public class BattleEndUIHandler : MonoBehaviour
     {
         BattleFlowController.OnBattleEnd += DisplayBattleEndScreen;
         TurnController.OnBattleEnd += DisplayBattleEndScreen;
-        PlaceCrystalPlayerAction.OnBattleEndCapturedDeity += DisplayBattleEndScreen;
+        AttunementPlayerAction.OnBattleEndCapturedDeity += DisplayBattleEndScreen;
     }
     private void OnDisable()
     {
         BattleFlowController.OnBattleEnd -= DisplayBattleEndScreen;
         TurnController.OnBattleEnd -= DisplayBattleEndScreen;
-        PlaceCrystalPlayerAction.OnBattleEndCapturedDeity -= DisplayBattleEndScreen;
+        AttunementPlayerAction.OnBattleEndCapturedDeity -= DisplayBattleEndScreen;
     }
 
     private void Start()

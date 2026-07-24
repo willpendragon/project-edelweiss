@@ -124,22 +124,28 @@ public class DeitySpawner : MonoBehaviour
 
     private void UpdateSpawnableDeities()
     {
-        // Load the Killed Deity Dictionary
-        // If there is a match between a Deity in the Spawnable Deity array
-        // And a Deity in the Killed Deity Dictionary
-        // Delete that Spawnable Deity from the Dictionary
-
+        // Remove deities that are killed, linked to players, or captured but unassigned
+        GameSaveData saveData = SaveStateManager.saveData;
+        
         for (int i = spawnableDeities.Count - 1; i >= 0; i--)
         {
             var deity = spawnableDeities[i];
             string deityName = deity.gameObject.GetComponent<Unit>().unitTemplate.unitName;
+            string deityId = deity.Id;
 
-            bool deityIsKilled =
-                _killedDeityDictionary.ContainsKey(deityName) &&
-                _killedDeityDictionary[deityName];
+            // Check if killed
+            bool deityIsKilled = _killedDeityDictionary.ContainsKey(deityName) && 
+                                 _killedDeityDictionary[deityName];
 
-            if (deityIsKilled == true)
+            // Check if captured and linked to a player
+            bool deityIsLinked = saveData.unitsLinkedToDeities.ContainsValue(deityId);
+            
+            // Check if captured but unassigned
+            bool deityIsUnassignedCaptured = saveData.unassignedCapturedDeities.Contains(deityId);
+
+            if (deityIsKilled || deityIsLinked || deityIsUnassignedCaptured)
             {
+                Debug.Log($"[UpdateSpawnableDeities] Removing {deityName} - Killed: {deityIsKilled}, Linked: {deityIsLinked}, Unassigned: {deityIsUnassignedCaptured}");
                 spawnableDeities.RemoveAt(i);
             }
         }
@@ -233,6 +239,9 @@ public class DeitySpawner : MonoBehaviour
         //Unlocks Deity as an Unbound Entity
         Debug.Log($"Unlocked {unlockedDeity.GetComponent<Unit>().unitTemplate.unitName}");
 
+        // Reset tribute modifier stacks for new deity battle
+        TributeModifierTracker.Instance.ResetStacks();
+
         string deityName = unlockedDeity.GetComponent<Unit>().unitTemplate.unitName;
 
         if (DeityIsKilled(deityName))
@@ -301,19 +310,46 @@ public class DeitySpawner : MonoBehaviour
         }
 
         unboundDeity.gameObject.tag = "Enemy";
+        
     }
 
-    public bool DeityIsKilled(string deityName)
+    public bool DeityIsUnavailable(string deityName)
     {
+        // Check if killed
         if (_killedDeityDictionary.TryGetValue(deityName, out bool isKilled) && isKilled)
         {
             Debug.Log($"{deityName} has been killed, Player can't fight it");
             return true;
         }
-        else
+
+        // Check if captured - find deity ID first
+        var deity = spawnableDeities.FirstOrDefault(d => 
+            d.GetComponent<Unit>().unitTemplate.unitName == deityName);
+        
+        if (deity != null)
         {
-            return false;
+            bool isCaptured = SaveStateManager.saveData.unitsLinkedToDeities.ContainsValue(deity.Id);
+            if (isCaptured)
+            {
+                Debug.Log($"{deityName} has been captured, Player can't fight it");
+                return true;
+            }
         }
+        
+        return false;
+    }
+
+    public bool DeityIsKilled(string deityName)
+    {
+        return DeityIsUnavailable(deityName);
+    }
+
+    private string GetDeityIdByName(string deityName)
+    {
+        // Find deity ID from spawnable deities or loaded data
+        var deity = spawnableDeities.FirstOrDefault(d => 
+            d.GetComponent<Unit>().unitTemplate.unitName == deityName);
+        return deity != null ? deity.Id : null;
     }
 
     void PopulateDeityHealthBar()
