@@ -30,7 +30,7 @@ public class AchievementsManager : MonoBehaviour
     {
         return achievement != null
             && achievement.spawnableDeity != null
-            && !_deitySpawner.DeityIsKilled(achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName)
+            && !_deitySpawner.DeityIsUnavailable(achievement.spawnableDeity.GetComponent<Unit>().unitTemplate.unitName)
             && localRandom.NextDouble() <= deitySpawnChance;
     }
     public BattleTypeController.BattleType TriggerDeityAchievementLogic()
