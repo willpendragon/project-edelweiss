@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro; 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [System.Serializable]
 
@@ -30,6 +31,13 @@ public class EventsUIManager : MonoBehaviour
     // The queue processes the notifications in an orderly manner.
     private Queue<NotificationRequest> _queue = new Queue<NotificationRequest>();
     private bool _isShowing = false;
+    private EventSystem _eventSystem;
+
+    private void Awake()
+    {
+        // Cache reference directly - EventSystem.current becomes null once disabled
+        _eventSystem = EventSystem.current;
+    }
 
     public void AddNotification(NotificationConfig config, string title, string description, string category)
     {
@@ -46,10 +54,18 @@ public class EventsUIManager : MonoBehaviour
         if (_queue.Count == 0)
         {
             _isShowing = false;
+            if (_eventSystem != null)
+            {
+                _eventSystem.enabled = true;
+            }
             return;
         }
 
         _isShowing = true;
+        if (_eventSystem != null)
+        {
+            _eventSystem.enabled = false;
+        }
         NotificationRequest current = _queue.Dequeue();
 
         _eventImage.sprite = current.config.icon;
