@@ -13,11 +13,22 @@ public class AtmosphereController : MonoBehaviour
     [SerializeField] UnityEngine.Rendering.VolumeProfile _bloodMoonVolumeProfile;
     void Start()
     {
+        // Different atmospheres apply to different types of battle.
         if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             fogGameObject.SetActive(false);
             mainCamera.clearFlags = CameraClearFlags.Skybox;
         }
+
+        // Quick-fix: deactivates fog in Puzzle Battles to give a dungeon-like impression.
+        // Can't be applied to all puzzle battles but it's alright for the time being.
+        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.PuzzleBattle)
+        {
+            fogGameObject.SetActive(false);
+            mainCamera.clearFlags = CameraClearFlags.SolidColor;
+            mainCamera.backgroundColor = Color.black;
+        }
+
 
         BloodMoonManager bloodMoonManager = BloodMoonManager.Instance;
         if (bloodMoonManager != null && bloodMoonManager.IsBloodMoonActive)
