@@ -4,6 +4,12 @@ using DG.Tweening;
 [CreateAssetMenu(fileName = "AnguanaSummonBehavior", menuName = "DeityBehavior/AnguanaSummonBehavior")]
 public class DeityAnguanaSummoningBehavior : DeityBehavior
 {
+    // Event system for cutins
+    public delegate void UsedFrozenPunishment(DeityCutinConfig config, System.Action onMoveComplete);
+    public static event UsedFrozenPunishment OnUsedFrozenPunishment;
+
+    [SerializeField] private DeityCutinConfig _cutinConfig;
+
     public float baseDamage = 20f;
     public string moveName = "Deity Summon Move";
     public int moveCooldown = 3;
@@ -16,14 +22,22 @@ public class DeityAnguanaSummoningBehavior : DeityBehavior
         int roll = Random.Range(1, 13);
         int cycleDuration = (roll <= 6) ? 6 : 12;
 
-        StartFreezeCycle(enemies, cycleDuration, deity);
+        // Trigger cutin if configured, otherwise execute directly
+        if (_cutinConfig != null && OnUsedFrozenPunishment != null)
+        {
+            OnUsedFrozenPunishment.Invoke(_cutinConfig, () => ExecuteFrozenPunishment(enemies, cycleDuration, deity));
+        }
+        else
+        {
+            ExecuteFrozenPunishment(enemies, cycleDuration, deity);
+        }
     }
 
     public override void ExecuteBuffBehaviour(Deity deity, Unit linkedUnit)
     {
     }
 
-    private void StartFreezeCycle(GameObject[] enemies, int roll, Deity deity)
+    private void ExecuteFrozenPunishment(GameObject[] enemies, int roll, Deity deity)
     {
         if (enemies == null || enemies.Length == 0)
             return;

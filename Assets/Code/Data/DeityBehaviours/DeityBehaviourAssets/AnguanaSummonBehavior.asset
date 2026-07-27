@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: AnguanaSummonBehavior
   m_EditorClassIdentifier: 
   description: Chance to hit and freeze multiple enemies.
+  _cutinConfig: {fileID: 11400000, guid: 839da9cfe942c4c49a3050a2cf0f59b7, type: 2}
   baseDamage: 20
   moveName: Deity Summon Move
+  moveCooldown: 3
