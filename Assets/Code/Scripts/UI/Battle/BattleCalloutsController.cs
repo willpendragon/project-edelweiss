@@ -113,7 +113,7 @@ public class BattleCalloutsController : MonoBehaviour
             return null;
         }
 
-        // Instantiate cutin prefab
+        // Instantiate cutin prefab (same as angered deity callout - let prefab handle initial position)
         GameObject cutinInstance = Instantiate(config.CutinPrefab, _calloutCanvas.transform);
         RectTransform cutinRect = cutinInstance.GetComponent<RectTransform>();
 
@@ -125,28 +125,27 @@ public class BattleCalloutsController : MonoBehaviour
             return null;
         }
 
-        // Calculate positions for slide animation
-        float canvasWidth = _calloutCanvas.GetComponent<RectTransform>().rect.width;
-        float cutinWidth = cutinRect.rect.width;
-        Vector2 startPosition = new Vector2(canvasWidth / 2 + cutinWidth, 0); // Off-screen right
-        Vector2 centerPosition = Vector2.zero; // Center of screen
-        Vector2 endPosition = new Vector2(-canvasWidth / 2 - cutinWidth, 0); // Off-screen left
-
-        // Set initial position
-        cutinRect.anchoredPosition = startPosition;
+        // Store the prefab's original position (this is where it should appear centered)
+        Vector3 originalLocalPosition = cutinRect.localPosition;
+        
+        // Calculate slide distances
+        float slideDistance = Screen.width * 0.75f; // Slide from 75% of screen width
+        
+        // Set starting position off-screen to the right
+        cutinRect.localPosition = originalLocalPosition + new Vector3(slideDistance, 0, 0);
 
         // Create DOTween sequence
         Sequence cutinSequence = DOTween.Sequence();
 
-        // Slide in from right
-        cutinSequence.Append(cutinRect.DOAnchorPos(centerPosition, config.SlideInDuration)
+        // Slide in from right to center
+        cutinSequence.Append(cutinRect.DOLocalMove(originalLocalPosition, config.SlideInDuration)
             .SetEase(config.SlideInEase));
 
         // Hold at center
         cutinSequence.AppendInterval(config.HoldDuration);
 
         // Slide out to left
-        cutinSequence.Append(cutinRect.DOAnchorPos(endPosition, config.SlideOutDuration)
+        cutinSequence.Append(cutinRect.DOLocalMove(originalLocalPosition + new Vector3(-slideDistance, 0, 0), config.SlideOutDuration)
             .SetEase(config.SlideOutEase));
 
         // Destroy cutin GameObject
@@ -178,6 +177,10 @@ public class BattleCalloutsController : MonoBehaviour
         {
             cutinAnimator.SetTrigger(GameTags.SHOW_UNIT_CALLOUT);
         }
+
+        // Fade Background
+        CanvasGroup canvasGroup = cutinInstance.GetComponentInChildren<CanvasGroup>();
+        canvasGroup.DOFade(0, 0.4f);
 
         return cutinSequence;
     }
