@@ -1,11 +1,18 @@
+using System.Runtime.InteropServices;
 using DG.Tweening;
 using ProjectEdelweiss.Utils;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class BattleCalloutsController : MonoBehaviour
 {
     [SerializeField] private GameObject _angeredDeityCallout;
+    [SerializeField] Volume _globalVolume;
+    [SerializeField] Canvas _calloutCanvas;
+    [SerializeField] float _originalExposure;
+    [SerializeField] ColorAdjustments _colorAdjustments; 
+    private Sequence _activeCutinSequence;
 
     public void OnEnable()
     {
@@ -23,15 +30,13 @@ public class BattleCalloutsController : MonoBehaviour
         DeityAnguanaSummoningBehavior.OnUsedFrozenPunishment -= ShowAnguanaSummonCutin;
     }
 
-    [SerializeField] Volume _globalVolume;
-    [SerializeField] Canvas _calloutCanvas;
-
+ 
     private void Start()
     {
-        _globalVolume = FindAnyObjectByType<Volume>(); // It doesn't always retrieves the volume, investigate.
+        if (_globalVolume == null)
+            _globalVolume = FindAnyObjectByType<Volume>(); // It doesn't always retrieves the volume, investigate.
+            SetOriginalExposure();
     }
-
-    private Sequence _activeCutinSequence;
 
     public void ShowCriticalHitCallout()
     {
@@ -190,22 +195,35 @@ public class BattleCalloutsController : MonoBehaviour
         return cutinSequence;
     }
 
+    private void SetOriginalExposure()
+    {
+        if (_globalVolume != null && _globalVolume.profile.TryGet(out _colorAdjustments))
+        {
+            _originalExposure = _colorAdjustments.postExposure.value;
+        }
+    }
+
     private void DarkenScreen()
     {
-        Sequence volumeSequence = DOTween.Sequence();
+        if (_colorAdjustments == null)
+        return;
 
-        volumeSequence.Append(DOTween.To(
-            () => _globalVolume.weight,
-            x => _globalVolume.weight = x,
-            0.1f,
+        Sequence exposureSequence = DOTween.Sequence();
+
+        float targetDarkExposure = _originalExposure - 3f; // Magic number, need to fix if "later".. 02082026
+
+        exposureSequence.Append(DOTween.To(
+            () => _colorAdjustments.postExposure.value,
+            x => _colorAdjustments.postExposure.value = x,
+            targetDarkExposure,
             0.5f
         ).SetEase(Ease.InOutSine));
 
-        volumeSequence.Append(DOTween.To(
-            () => _globalVolume.weight,
-            x => _globalVolume.weight = x,
-            0f,
-            0.5f
-        ).SetEase(Ease.InOutSine)); // Doesn't actually darken the screen, check this later.
+        exposureSequence.Append(DOTween.To(
+            () => _colorAdjustments.postExposure.value,
+            x => _colorAdjustments.postExposure.value = x,
+            _originalExposure,
+            0.5f 
+        ).SetEase(Ease.InOutSine));
     }
 }
