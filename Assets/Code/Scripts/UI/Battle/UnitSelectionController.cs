@@ -20,7 +20,8 @@ public class UnitSelectionController : MonoBehaviour
 
     public static event UnitTurnEnded OnUnitTurnEnded;
 
-    private const int ATTACKABLE_TILE_RANGE = 2;
+    // DEPRECATED: Use playerUnit.unitTemplate.physicAttackBehavior.GetAttackRange() instead
+    // private const int ATTACKABLE_TILE_RANGE = 2;
 
     public UnitSelectionStatus currentUnitSelectionStatus;
     public SpriteRenderer unitSprite;
@@ -161,7 +162,9 @@ public class UnitSelectionController : MonoBehaviour
         ResetEnemyReachableTiles();
         _reachableEnemyTiles.Clear();
 
-        _reachableEnemyTiles = _gridMovementController.GetMultipleTiles(playerUnit.ownedTile, ATTACKABLE_TILE_RANGE);
+        // Get the actual attack range from the unit's physical attack behavior
+        int attackRange = playerUnit.unitTemplate.physicAttackBehavior.GetAttackRange();
+        _reachableEnemyTiles = _gridMovementController.GetMultipleTiles(playerUnit.ownedTile, attackRange);
 
         foreach (var tile in _reachableEnemyTiles)
         {
