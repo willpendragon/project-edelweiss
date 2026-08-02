@@ -17,6 +17,8 @@ public class DeityCutinConfig : ScriptableObject
     [Tooltip("Delay before the actual action executes after cutin completes (seconds)")]
     [SerializeField] private float _delayBeforeAction = 0.5f;
 
+    [SerializeField] private float _bgFadeDelay = 0.4f;
+
     [Header("Animation Easing")]
     [Tooltip("Easing curve for slide in animation")]
     [SerializeField] private Ease _slideInEase = Ease.OutCubic;
@@ -36,6 +38,7 @@ public class DeityCutinConfig : ScriptableObject
     public float HoldDuration => _holdDuration;
     public float SlideOutDuration => _slideOutDuration;
     public float DelayBeforeAction => _delayBeforeAction;
+    public float BgFadeDelay => _bgFadeDelay;
     public Ease SlideInEase => _slideInEase;
     public Ease SlideOutEase => _slideOutEase;
     public GameObject CutinPrefab => _cutinPrefab;

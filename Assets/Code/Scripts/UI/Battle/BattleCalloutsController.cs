@@ -26,6 +26,11 @@ public class BattleCalloutsController : MonoBehaviour
     [SerializeField] Volume _globalVolume;
     [SerializeField] Canvas _calloutCanvas;
 
+    private void Start()
+    {
+        _globalVolume = FindAnyObjectByType<Volume>(); // It doesn't always retrieves the volume, investigate.
+    }
+
     private Sequence _activeCutinSequence;
 
     public void ShowCriticalHitCallout()
@@ -180,7 +185,7 @@ public class BattleCalloutsController : MonoBehaviour
 
         // Fade Background
         CanvasGroup canvasGroup = cutinInstance.GetComponentInChildren<CanvasGroup>();
-        canvasGroup.DOFade(0, 0.4f);
+        canvasGroup.DOFade(0, config.BgFadeDelay);
 
         return cutinSequence;
     }
@@ -201,6 +206,6 @@ public class BattleCalloutsController : MonoBehaviour
             x => _globalVolume.weight = x,
             0f,
             0.5f
-        ).SetEase(Ease.InOutSine));
+        ).SetEase(Ease.InOutSine)); // Doesn't actually darken the screen, check this later.
     }
 }
