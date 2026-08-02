@@ -1,17 +1,25 @@
+using System.Runtime.InteropServices;
 using DG.Tweening;
 using ProjectEdelweiss.Utils;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class BattleCalloutsController : MonoBehaviour
 {
     [SerializeField] private GameObject _angeredDeityCallout;
+    [SerializeField] Volume _globalVolume;
+    [SerializeField] Canvas _calloutCanvas;
+    [SerializeField] float _originalExposure;
+    [SerializeField] ColorAdjustments _colorAdjustments; 
+    private Sequence _activeCutinSequence;
 
     public void OnEnable()
     {
         AOESpellPlayerAction.OnSpellCriticalHit += ShowCriticalHitCallout;
         AOESpellPlayerAction.OnDeityAngered += ShowDeityAngeredCallout;
         DeityKingLaurinusBehavior.OnUsedCursedGarden += ShowDeityAttackCallout;
+        DeityAnguanaSummoningBehavior.OnUsedFrozenPunishment += ShowAnguanaSummonCutin;
     }
 
     public void OnDisable()
@@ -19,10 +27,16 @@ public class BattleCalloutsController : MonoBehaviour
         AOESpellPlayerAction.OnSpellCriticalHit -= ShowCriticalHitCallout;
         AOESpellPlayerAction.OnDeityAngered -= ShowDeityAngeredCallout;
         DeityKingLaurinusBehavior.OnUsedCursedGarden -= ShowDeityAttackCallout;
+        DeityAnguanaSummoningBehavior.OnUsedFrozenPunishment -= ShowAnguanaSummonCutin;
     }
 
-    [SerializeField] Volume _globalVolume;
-    [SerializeField] Canvas _calloutCanvas;
+ 
+    private void Start()
+    {
+        if (_globalVolume == null)
+            _globalVolume = FindAnyObjectByType<Volume>(); // It doesn't always retrieves the volume, investigate.
+            SetOriginalExposure();
+    }
 
     public void ShowCriticalHitCallout()
     {
@@ -81,22 +95,135 @@ public class BattleCalloutsController : MonoBehaviour
         DarkenScreen();
     }
 
+    private void ShowAnguanaSummonCutin(DeityCutinConfig config, System.Action onMoveComplete)
+    {
+        // Kill any active cutin to prevent overlaps
+        if (_activeCutinSequence != null && _activeCutinSequence.IsActive())
+        {
+            _activeCutinSequence.Kill();
+            _activeCutinSequence = null;
+        }
+
+        _activeCutinSequence = ShowDeitySummonCutin(config, onMoveComplete);
+    }
+
+    public Sequence ShowDeitySummonCutin(DeityCutinConfig config, System.Action onComplete)
+    {
+        if (config == null)
+        {
+            Debug.LogWarning("DeityCutinConfig is null, executing action immediately.");
+            onComplete?.Invoke();
+            return null;
+        }
+
+        if (config.CutinPrefab == null)
+        {
+            Debug.LogWarning("Cutin prefab is null in config, executing action immediately.");
+            onComplete?.Invoke();
+            return null;
+        }
+
+        // Instantiate cutin prefab (same as angered deity callout - let prefab handle initial position)
+        GameObject cutinInstance = Instantiate(config.CutinPrefab, _calloutCanvas.transform);
+        RectTransform cutinRect = cutinInstance.GetComponent<RectTransform>();
+
+        if (cutinRect == null)
+        {
+            Debug.LogError("Cutin prefab doesn't have a RectTransform component!");
+            Destroy(cutinInstance);
+            onComplete?.Invoke();
+            return null;
+        }
+
+        // Store the prefab's original position (this is where it should appear centered)
+        Vector3 originalLocalPosition = cutinRect.localPosition;
+        
+        // Calculate slide distances
+        float slideDistance = Screen.width * 0.75f; // Slide from 75% of screen width
+        
+        // Set starting position off-screen to the right
+        cutinRect.localPosition = originalLocalPosition + new Vector3(slideDistance, 0, 0);
+
+        // Create DOTween sequence
+        Sequence cutinSequence = DOTween.Sequence();
+
+        // Slide in from right to center
+        cutinSequence.Append(cutinRect.DOLocalMove(originalLocalPosition, config.SlideInDuration)
+            .SetEase(config.SlideInEase));
+
+        // Hold at center
+        cutinSequence.AppendInterval(config.HoldDuration);
+
+        // Slide out to left
+        cutinSequence.Append(cutinRect.DOLocalMove(originalLocalPosition + new Vector3(-slideDistance, 0, 0), config.SlideOutDuration)
+            .SetEase(config.SlideOutEase));
+
+        // Destroy cutin GameObject
+        cutinSequence.AppendCallback(() =>
+        {
+            if (cutinInstance != null)
+                Destroy(cutinInstance);
+        });
+
+        // Delay before action
+        cutinSequence.AppendInterval(config.DelayBeforeAction);
+
+        // Execute the actual move
+        cutinSequence.OnComplete(() =>
+        {
+            onComplete?.Invoke();
+            _activeCutinSequence = null;
+        });
+
+        // Optional: Apply screen darkening effect
+        if (config.ShouldDarkenScreen)
+        {
+            DarkenScreen();
+        }
+
+        // Optional: Trigger animator if present
+        Animator cutinAnimator = cutinInstance.GetComponentInChildren<Animator>();
+        if (cutinAnimator != null)
+        {
+            cutinAnimator.SetTrigger(GameTags.SHOW_UNIT_CALLOUT);
+        }
+
+        // Fade Background
+        CanvasGroup canvasGroup = cutinInstance.GetComponentInChildren<CanvasGroup>();
+        canvasGroup.DOFade(0, config.BgFadeDelay);
+
+        return cutinSequence;
+    }
+
+    private void SetOriginalExposure()
+    {
+        if (_globalVolume != null && _globalVolume.profile.TryGet(out _colorAdjustments))
+        {
+            _originalExposure = _colorAdjustments.postExposure.value;
+        }
+    }
+
     private void DarkenScreen()
     {
-        Sequence volumeSequence = DOTween.Sequence();
+        if (_colorAdjustments == null)
+        return;
 
-        volumeSequence.Append(DOTween.To(
-            () => _globalVolume.weight,
-            x => _globalVolume.weight = x,
-            0.1f,
+        Sequence exposureSequence = DOTween.Sequence();
+
+        float targetDarkExposure = _originalExposure - 3f; // Magic number, need to fix if "later".. 02082026
+
+        exposureSequence.Append(DOTween.To(
+            () => _colorAdjustments.postExposure.value,
+            x => _colorAdjustments.postExposure.value = x,
+            targetDarkExposure,
             0.5f
         ).SetEase(Ease.InOutSine));
 
-        volumeSequence.Append(DOTween.To(
-            () => _globalVolume.weight,
-            x => _globalVolume.weight = x,
-            0f,
-            0.5f
+        exposureSequence.Append(DOTween.To(
+            () => _colorAdjustments.postExposure.value,
+            x => _colorAdjustments.postExposure.value = x,
+            _originalExposure,
+            0.5f 
         ).SetEase(Ease.InOutSine));
     }
 }

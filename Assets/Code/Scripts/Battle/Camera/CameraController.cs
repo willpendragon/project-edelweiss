@@ -21,8 +21,8 @@ public class CameraController : MonoBehaviour
     [Header("Manual Camera Control")][SerializeField] private ManualCameraSettings _manualCameraSettings;
 
     // Manual camera control state
-    private bool _isManualControlEnabled = false;
-    private bool _isAutomaticPanningActive = false;
+    [SerializeField] private bool _isManualControlEnabled = false;
+    [SerializeField] private bool _isAutomaticPanningActive = false;
     private Vector3 _manualPanVelocity;
     private float _currentManualZoom;
     private float _zoomVelocity;
@@ -103,6 +103,7 @@ public class CameraController : MonoBehaviour
         
         // Manual camera control events
         TurnController.OnPlayerTurn += EnableManualCameraControl;
+        EnemyTurnManager.OnPlayerTurn += EnableManualCameraControl;
         TurnController.OnEnemyTurnSwap += DisableManualCameraControl;
 
         // Listen to live tweaks from the ScriptableObject
@@ -131,6 +132,7 @@ public class CameraController : MonoBehaviour
         
         // Manual camera control events
         TurnController.OnPlayerTurn -= EnableManualCameraControl;
+        EnemyTurnManager.OnPlayerTurn -= EnableManualCameraControl;
         TurnController.OnEnemyTurnSwap -= DisableManualCameraControl;
 
         // Stop listening when disabled/destroyed
@@ -393,6 +395,9 @@ public class CameraController : MonoBehaviour
                 cam.transform.eulerAngles = _generalCameraSettings.CameraRotation;
             }
         }
+        
+        // Reset automatic panning flag since this is an instant reset
+        _isAutomaticPanningActive = false;
     }
     private void ResetCameraPositionSmooth()
     {
@@ -400,11 +405,19 @@ public class CameraController : MonoBehaviour
         CancelInvoke(nameof(ResetCameraPosition));
 
         if (_cameras == null || _cameras.Count == 0) return;
+        
+        // Block manual control during smooth reset animation
+        _isAutomaticPanningActive = true;
 
         foreach (var cam in _cameras)
         {
             _cameraTween = cam.transform.DOMove(_originalCameraPosition, _cameraPanDuration)
-                .SetEase(_cameraPanEase);
+                .SetEase(_cameraPanEase)
+                .OnComplete(() =>
+                {
+                    // Re-enable manual control when smooth reset completes
+                    _isAutomaticPanningActive = false;
+                });
 
             DOVirtual.Float(cam.fieldOfView, _originalZoomAmount, _cameraPanDuration, value =>
             {

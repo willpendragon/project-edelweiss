@@ -4420,6 +4420,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 547500540}
   m_CullTransparentMesh: 1
+--- !u!21 &552506628
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &557735088
 GameObject:
   m_ObjectHideFlags: 0
@@ -6484,8 +6515,8 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 0.9928409, b: 0.745283, a: 1}
-  m_Intensity: 200
-  m_Range: 22.55975
+  m_Intensity: 800
+  m_Range: 60
   m_SpotAngle: 179
   m_InnerSpotAngle: 0
   m_CookieSize: 10
@@ -6543,7 +6574,7 @@ Transform:
   m_GameObject: {fileID: 700046395}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 8.2, y: 11.8, z: 8.6}
+  m_LocalPosition: {x: 8.2, y: 30, z: 8.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9967,37 +9998,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021433295}
   m_CullTransparentMesh: 1
---- !u!21 &1022960339
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1031576376
 GameObject:
   m_ObjectHideFlags: 0
@@ -10645,7 +10645,7 @@ MonoBehaviour:
   m_EndAngleFade: 180
   m_UVScale: {x: 5, y: 5}
   m_UVBias: {x: 0, y: 0}
-  m_DecalLayerMask: 1
+  m_DecalLayerMask: 2
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 48.4}
   m_Size: {x: 92.4, y: 77.9, z: 96.8}
@@ -12328,7 +12328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c83b8174591c344b91afd1d2fc24672, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fogGameObject: {fileID: 0}
+  fogGameObject: {fileID: 8242432496207273727}
   mainCamera: {fileID: 588608018}
   _bloodMoonVolumeProfile: {fileID: 11400000, guid: 8f24b32ffb62f2c438726d0e0358cd7d, type: 2}
 --- !u!4 &1219378802
@@ -18278,6 +18278,8 @@ MonoBehaviour:
   _enemyCameraSettings: {fileID: 11400000, guid: 8af8416b8fc5d3647b5e1b13a8fd9f3f, type: 2}
   _endBattleCameraSettings: {fileID: 11400000, guid: c3288a01ed04297418a21c68dfde1295, type: 2}
   _manualCameraSettings: {fileID: 11400000, guid: e48411d788eeb4748bc1db631633105d, type: 2}
+  _isManualControlEnabled: 0
+  _isAutomaticPanningActive: 0
   _cameraPanDuration: 0.8
   _cameraFollowDuration: 0.6
   _cameraPanEase: 7
@@ -19458,7 +19460,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1022960339}
+  - {fileID: 552506628}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
