@@ -1758,6 +1758,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 810722614}
   _mirrorPrefab: {fileID: 1532709617461329243, guid: 9adf01f37d3b3544b92901c187bbf383, type: 3}
+--- !u!21 &208687670
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &209913981
 GameObject:
   m_ObjectHideFlags: 0
@@ -3205,6 +3236,8 @@ MonoBehaviour:
   _angeredDeityCallout: {fileID: 0}
   _globalVolume: {fileID: 0}
   _calloutCanvas: {fileID: 0}
+  _originalExposure: 0
+  _colorAdjustments: {fileID: 0}
 --- !u!1 &478547257
 GameObject:
   m_ObjectHideFlags: 0
@@ -4420,37 +4453,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 547500540}
   m_CullTransparentMesh: 1
---- !u!21 &552506628
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &557735088
 GameObject:
   m_ObjectHideFlags: 0
@@ -5334,6 +5336,7 @@ MonoBehaviour:
   _prayIcon: {fileID: 21300000, guid: 93358870a62beda48a2e3da54c9bfa6c, type: 3}
   _magnetIcon: {fileID: 21300000, guid: ce69fc0ff24038f419a67ea3566c06ce, type: 3}
   _attunementIcon: {fileID: 21300000, guid: 8238ef2033eddc4428b53d4551540f91, type: 3}
+  _bowIcon: {fileID: 21300000, guid: 519e521f6774fdc449840e869d45d850, type: 3}
 --- !u!4 &582521118
 Transform:
   m_ObjectHideFlags: 0
@@ -7342,6 +7345,8 @@ MonoBehaviour:
   _angeredDeityCallout: {fileID: 3138224175913867863, guid: 84f8cc6338a83394399b6b81795096c9, type: 3}
   _globalVolume: {fileID: 0}
   _calloutCanvas: {fileID: 478547260}
+  _originalExposure: 0
+  _colorAdjustments: {fileID: 0}
 --- !u!1 &766386419
 GameObject:
   m_ObjectHideFlags: 0
@@ -19460,7 +19465,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 552506628}
+  - {fileID: 208687670}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

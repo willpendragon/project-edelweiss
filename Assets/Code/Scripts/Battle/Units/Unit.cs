@@ -78,6 +78,7 @@ public class Unit : MonoBehaviour
     public UnitType unitType;
 
     public bool hasHookshot;
+    public bool hasBow; // Quick fix to allow displaying the bow attack icon.
     public bool bossFlag = false;
 
     [Header("Deity Related")] public Deity linkedDeity;
