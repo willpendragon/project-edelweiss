@@ -13,7 +13,16 @@ MonoBehaviour:
   m_Name: ArcherBehavior
   m_EditorClassIdentifier: 
   baseDamage: 0
+  baseAccuracy: 0.9
+  baseCriticalChance: 0.15
   knockbackStrength: 2
   selectionLimiter: 1
+  meleeRange: 2
   maxAttackRange: 10
   minAttackRange: 2
+  distanceDamageMultiplier: 0.1
+  heightDamageMultiplier: 0.15
+  _projectilePrefab: {fileID: 1966950310960501367, guid: 57196e59ae64b8c4a8079afc530601cd, type: 3}
+  projectileArcHeight: 2
+  projectileDuration: 0.6
+  spawnYOffset: 1

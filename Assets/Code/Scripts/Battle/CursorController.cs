@@ -65,6 +65,8 @@ public class CursorController : MonoBehaviour
     [SerializeField] private Sprite _prayIcon;
     [SerializeField] private Sprite _magnetIcon;
     [SerializeField] private Sprite _attunementIcon;
+    [SerializeField] private Sprite _bowIcon;
+
 
     private bool _isRadialMenuOpen;
 
@@ -407,6 +409,13 @@ public class CursorController : MonoBehaviour
         {
             return _magnetIcon;
         }
+
+        else if (activePlayerUnit.hasBow == true)
+
+        {
+            return _bowIcon;
+        }
+
         else
         {
             return _meleeIcon;
@@ -418,6 +427,11 @@ public class CursorController : MonoBehaviour
         if (activePlayerUnit.hasHookshot == true)
         {
             return "Magnet";
+        }
+
+        if (activePlayerUnit.hasBow == true)
+        {
+            return "Ranged";
         }
         else
         {
