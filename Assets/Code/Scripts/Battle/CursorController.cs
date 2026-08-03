@@ -1,7 +1,6 @@
 using Edelweiss.Core;
 using System.Collections.Generic;
 using System.Linq;
-using Language.Lua;
 using ProjectEdelweiss.Utils;
 using TMPro;
 using Unity.VisualScripting;
@@ -123,7 +122,6 @@ public class CursorController : MonoBehaviour
 
     private void Awake()
     {
-        // Cache EventSystem reference - EventSystem.current becomes null once disabled
         _eventSystem = EventSystem.current;
     }
 
@@ -137,10 +135,10 @@ public class CursorController : MonoBehaviour
         if (GridManager.IsUnitMoving)
             return;
 
-        // Block all input (grid clicks, UI interactions) during escape sequence
+        // Block all input (grid clicks, UI interactions) during escape sequence.
         if (_isEscaping)
         {
-            // Only allow ESC key to cancel escape
+            // Only allow ESC key to cancel escape.
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 CancelEscape();
@@ -167,7 +165,7 @@ public class CursorController : MonoBehaviour
 
     private void SortInteractedItemExit()
     {
-        // Check UI interactions
+        // Check UI interactions.
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
         {
             position = Input.mousePosition
@@ -178,10 +176,10 @@ public class CursorController : MonoBehaviour
 
         bool actionFired = false;
 
-        // Iterate over all UI results
+        // Iterate over all UI results.
         foreach (RaycastResult result in results)
         {
-            // Check for ActionButton Tag
+            // Check for ActionButton Tag.
             if (result.gameObject.CompareTag("ActionButton"))
             {
                 result.gameObject.GetComponent<RadialMenuEntry>().FireAction();
@@ -197,15 +195,15 @@ public class CursorController : MonoBehaviour
         }
     }
 
+    // The following method is instrumental to correctly filter out what the Player is not supposed to interact with.
     public void SortInteractedItem()
     {
         Vector3 mousePosition = Input.mousePosition;
         Ray rayOrigin = Camera.main.ScreenPointToRay(mousePosition);
 
-        // Shoot through everything to find all potential targets under the cursor
         RaycastHit[] hits = Physics.RaycastAll(rayOrigin).OrderBy(h => h.distance).ToArray();
 
-        // PASS 1: Prioritize Action Buttons immediately
+        // If an Action Button has been found, shoot the corresponding action.
         foreach (var hitInfo in hits)
         {
             if (hitInfo.collider.gameObject.CompareTag("ActionButton"))
@@ -216,18 +214,13 @@ public class CursorController : MonoBehaviour
             }
         }
 
-        // PASS 1.5: Environment Blocking!
-        // If the very first thing the cursor touched (excluding UI) was a decorative wall/pillar, 
-        // we stop right here. We do not want to click 'through' the pillar and select the tile/unit behind it.
+        // Prevents the cursor to trigger on environment (as in, non-traversable) tiles.
         var firstPhysicalHit = hits.FirstOrDefault(h => !h.collider.gameObject.CompareTag("ActionButton"));
         if (firstPhysicalHit.collider != null)
         {
-            // Assuming your decorations have a "Decorations" or "Environment" tag. 
-            // If they are untagged, we check if they are attached to a Tile that is Environment.
             TileController hitTc = firstPhysicalHit.collider.GetComponentInParent<TileController>();
 
-            // If we clearly hit an Environment tile mesh or a purely visual decoration prefab 
-            // (You can also check for CompareTag("Obstacle") or whatever your prefab is tagged)
+            // Ignore the raycast if an environment tile has been found. Need to remember to tag map elements properly.
             if ((hitTc != null && hitTc.tileType == TileType.Environment) ||
                 firstPhysicalHit.collider.gameObject.CompareTag("DecorationEnvironment"))
             {
@@ -237,7 +230,7 @@ public class CursorController : MonoBehaviour
             }
         }
 
-        // PASS 2: Prioritize Enemies & Players
+        // Prioritize Player Units and Enemies.
         foreach (var hitInfo in hits)
         {
             if (hitInfo.collider.gameObject.CompareTag("Enemy") || hitInfo.collider.gameObject.CompareTag("Player") ||
@@ -253,7 +246,7 @@ public class CursorController : MonoBehaviour
             }
         }
 
-        // PASS 3: Fallback to the Grid Map Tiles (Only legitimate map tiles)
+        // Fallback to the GridMap Tiles.
         foreach (var hitInfo in hits)
         {
             if (hitInfo.collider.gameObject.CompareTag("Tile"))
@@ -262,7 +255,7 @@ public class CursorController : MonoBehaviour
 
                 if (tc != null)
                 {
-                    // Prevent clicking on purely visual decorations that act as fake tiles
+                    // Prevent clicking on purely visual flavour tiles.
                     if (!GridManager.Instance.gridMapDictionary.ContainsValue(tc))
                         continue;
 
@@ -291,13 +284,11 @@ public class CursorController : MonoBehaviour
             || _turnController.currentTurn == TurnController.Turn.EnemyTurn)
             return;
 
-
-        // Cache references
         var radialMenuComp = radialMenu.GetComponent<RadialMenu>();
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit")?.GetComponent<Unit>();
         var gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager").GetComponent<GameStatsManager>();
 
-        // Set menu position
+        // Set menu position.
         radialMenu.position = Camera.main.WorldToScreenPoint(_tileController.transform.position);
 
         if (_tileController.detectedUnit != null && (_tileController.detectedUnit.CompareTag("Enemy") ||
@@ -312,19 +303,20 @@ public class CursorController : MonoBehaviour
             _unitSelectionController.SelectEnemy(_targetedUnit);
         }
 
-        // Run button
+        // Run button.
         _runButtonPrefabInstance = CreateActionButton(
             RadialMenuEntry.ActionType.Run, _runIcon, "Escape", 3);
 
-        // Move button
+        // Move button.
         if (activePlayerUnit != null && CheckDistance(activePlayerUnit.unitMovementLimit) &&
             _tileController.detectedUnit == null)
             _moveButtonPrefabInstance = CreateActionButton(
                 RadialMenuEntry.ActionType.Move, _moveIcon, "Move", 1);
 
-        // Trap, Crystal, Summon
+        // Trap, Crystal, Summon.
         bool canPlaceHazard = CheckDistance(_hazardsLimit) && _tileController.detectedUnit == null;
-        // Band-aid fix to allow only Aliza to use Traps.
+        
+        // Band-aid fix to allow only Aliza to use Traps. Will need later to reshuffle this into a data-driven approach.
         if (canPlaceHazard)
         {
             var trapController = _tileController.GetComponentInChildren<TrapController>();
@@ -340,7 +332,7 @@ public class CursorController : MonoBehaviour
                 CreateActionButton(RadialMenuEntry.ActionType.Crystal, _crystalIcon, "Tribute", 4);
         }
 
-        // Attunement button - shown when clicking deity altar tile while adjacent
+        // Attunement button - shown when clicking a Deity Altar tile while adjacent.
         bool isAltarTile = IsDeityAltarTile(_tileController);
         bool isPlayerAdjacent = IsAdjacentToDeityAltar(activePlayerUnit);
 
@@ -350,7 +342,7 @@ public class CursorController : MonoBehaviour
             CreateActionButton(RadialMenuEntry.ActionType.Attunement, _attunementIcon, "Attune", 9);
         }
 
-        // Melee/Magnet
+        // Melee/Magnet.
         if (activePlayerUnit != null && activePlayerUnit.unitTemplate != null)
         {
             int _meleeRange = activePlayerUnit.unitTemplate.physicAttackBehavior.GetAttackRange();
@@ -367,11 +359,19 @@ public class CursorController : MonoBehaviour
             }
         }
 
-        // Spell
-        bool canSpell = CheckDistance(_spellRange) && _tileController.detectedUnit != null;
-        if (canSpell)
-            _spellButtonPrefabInstance = CreateActionButton(
-                RadialMenuEntry.ActionType.Spell, _spellIcon, "Spell", 5);
+        // Spell logic.
+        if (activePlayerUnit != null && activePlayerUnit.unitTemplate != null &&
+            activePlayerUnit.unitTemplate.spellsList != null && activePlayerUnit.unitTemplate.spellsList.Count > 0)
+        {
+            int spellRange = activePlayerUnit.unitTemplate.spellsList[0].spellRange;
+            // Dynamically retrieve spell range from the Unit.
+            bool canSpell = CheckDistance(spellRange) && _tileController.detectedUnit != null;
+            if (canSpell)
+            {
+                _spellButtonPrefabInstance = CreateActionButton(
+                    RadialMenuEntry.ActionType.Spell, _spellIcon, "Spell", 5);
+            }
+        }
 
         _isRadialMenuOpen = true;
         PopulateButtonsList();
@@ -547,15 +547,13 @@ public class CursorController : MonoBehaviour
         if (activePlayerUnit == null || _tileController == null)
             return false;
 
-        // Misuriamo manualmente i blocchi di "Distanza Manhattan" (Voxel Orthogonal Distance)
+        // Measure path length between blocks, using Manhattan distance.
         Vector3Int pPos = activePlayerUnit.ownedTile.gridPosition;
         Vector3Int targetPos = _tileController.gridPosition;
-
-        // Quanti "passi" di griglia in X e Z (profondit) abbiamo?
         int dstX = Mathf.Abs(pPos.x - targetPos.x);
         int dstZ = Mathf.Abs(pPos.z - targetPos.z);
-        // Opzionale: int dstY = Mathf.Abs(pPos.y - targetPos.y); 
-        // Aggiungi + dstY se vuoi che bersagliare uno pi in alto costi range extra.
+        // int dstY = Mathf.Abs(pPos.y - targetPos.y); 
+        // Consider adding "+ dstY" to increase costs for targetting Units sittings on higher tiles.
 
         int blockDistance = dstX + dstZ;
 
@@ -564,6 +562,7 @@ public class CursorController : MonoBehaviour
 
     private bool IsDeityAltarTile(TileController tile)
     {
+        // This logic pertains to Deity Battles, where a targetable Obelisk (or Altar) is supposed to appear as a way to attack the Deity.
         if (tile == null)
         {
             Debug.LogWarning("[IsDeityAltarTile] Tile is null!");
@@ -571,8 +570,7 @@ public class CursorController : MonoBehaviour
         }
                 bool isDeityTileType = tile.tileType == TileType.DeityTile;
         bool isOccupiedByDeity = tile.currentSingleTileCondition == SingleTileCondition.occupiedByDeity;
-        
-        // Check if this tile is marked as a DeityTile or occupied by deity
+    
         return isDeityTileType || isOccupiedByDeity;
     }
 
@@ -665,7 +663,6 @@ public class CursorController : MonoBehaviour
         Destroy(_escapeUIRoot);
         _escapeCoroutine = null;
 
-        // Execute the actual roll
         float roll = UnityEngine.Random.Range(0f, 100f);
         float chance = _escapeSettings != null ? _escapeSettings.escapeProbability : 100f;
 
@@ -694,16 +691,15 @@ public class CursorController : MonoBehaviour
         _escapeUIRoot = new GameObject("EscapeCountdownUI");
         _escapeUIRoot.transform.SetParent(mainCanvas.transform, false);
 
+        // Position the small escape UI.
         RectTransform rect = _escapeUIRoot.AddComponent<RectTransform>();
-        // Set anchors to bottom-right
         rect.anchorMin = new Vector2(1f, 0f);
         rect.anchorMax = new Vector2(1f, 0f);
 
-        // Set pivot to bottom-right so it scales/positions from its own corner
         rect.pivot = new Vector2(1f, 0f);
         rect.sizeDelta = new Vector2(400, 100);
 
-        // Add padding so it's not clipped by the screen edge (e.g., 20 pixels in)
+        // Padding.
         rect.anchoredPosition = new Vector2(-20f, 20f);
 
         var text = _escapeUIRoot.AddComponent<TextMeshProUGUI>();
@@ -733,7 +729,7 @@ public class CursorController : MonoBehaviour
             Destroy(_escapeUIRoot);
         }
 
-        // Re-enable all player input
+        // Re-enable all player input.
         _isEscaping = false;
         if (_eventSystem != null)
         {
