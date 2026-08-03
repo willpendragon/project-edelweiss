@@ -10,6 +10,9 @@ public class PrizeCollectionHelper : MonoBehaviour
 
     public static event UpgradeObtained OnUpgradeObtained;
 
+    public delegate void KeyCollected(string message);
+    public static event UpgradeObtained OnKeyCollected;
+
     // This class controls the logic of a Unit grabbing a Prize on the Battlefield.
     public void CheckFieldPrizes(TileController destinationTile, Unit activePlayerUnit)
     {
@@ -43,12 +46,14 @@ public class PrizeCollectionHelper : MonoBehaviour
                 gameStatsManager.unlockedPuzzleKeys += 1;
                 gameStatsManager.SaveUnlockedKeys(gameStatsManager.unlockedPuzzleKeys);
                 BattleSFXManager.PlaySound(SoundType.PICKUPKEY);
+                OnKeyCollected("Key Collected!");
                 Debug.Log("Added Key to Game Stats Manager and saved to game state");
             }
             else if (fieldPrizeController != null &&
                      fieldPrizeController.ItemFieldPrizeType == ItemFieldPrizeType.MinibossKey)
             {
                 BattleManager.Instance.battleRewardsController.acquiredMinibossKey = true;
+                OnKeyCollected("MiniBoss Key Collected!");
                 Debug.Log("Added Miniboss Key to current battle pool. Will save upon victory.");
                 // Optional: Play Sound/VFX here
                 BattleSFXManager.PlaySound(SoundType.PICKUPMINIBOSSKEY);
@@ -58,6 +63,7 @@ public class PrizeCollectionHelper : MonoBehaviour
             {
                 BattleSFXManager.PlaySound(SoundType.PICKUPBOSSKEY);
                 BattleManager.Instance.battleRewardsController.acquiredBossKey = true;
+                OnKeyCollected("Boss Key Collected!");
                 Debug.Log("Added Boss Key to current battle pool. Will save upon victory.");
                 // Optional: Play Sound/VFX here
             }
