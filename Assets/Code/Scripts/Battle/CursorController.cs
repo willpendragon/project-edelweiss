@@ -342,20 +342,52 @@ public class CursorController : MonoBehaviour
             CreateActionButton(RadialMenuEntry.ActionType.Attunement, _attunementIcon, "Attune", 9);
         }
 
-        // Melee/Magnet.
+        // Melee/Ranged/Magnet
         if (activePlayerUnit != null && activePlayerUnit.unitTemplate != null)
         {
-            int _meleeRange = activePlayerUnit.unitTemplate.physicAttackBehavior.GetAttackRange();
-            bool canMelee = CheckDistance(_meleeRange) && _tileController.detectedUnit != null;
-
-            if (canMelee)
+            PhysicalAttackBehavior attackBehavior = activePlayerUnit.unitTemplate.physicAttackBehavior;
+            
+            // Check if this is a ranged attack
+            if (activePlayerUnit.hasBow && attackBehavior is RangedBehavior rangedBehavior)
             {
-                _meleeButtonPrefabInstance = CreateActionButton(
-                    RadialMenuEntry.ActionType.Melee,
-                    GetButtonIcon(activePlayerUnit),
-                    GetButtonName(activePlayerUnit),
-                    4);
-                DisplayHelp();
+                // For ranged attacks, use Chebyshev distance (Max of X,Z differences)
+                // and check BOTH minAttackRange and maxAttackRange
+                Vector3Int attackerPos = activePlayerUnit.ownedTile.gridPosition;
+                Vector3Int targetPos = _tileController.gridPosition;
+                
+                int distanceX = Mathf.Abs(attackerPos.x - targetPos.x);
+                int distanceZ = Mathf.Abs(attackerPos.z - targetPos.z);
+                int flatDistance = Mathf.Max(distanceX, distanceZ); // Chebyshev distance
+                
+                bool isInRangedRange = flatDistance >= rangedBehavior.minAttackRange && 
+                                      flatDistance <= rangedBehavior.maxAttackRange && 
+                                      _tileController.detectedUnit != null;
+                
+                if (isInRangedRange)
+                {
+                    _meleeButtonPrefabInstance = CreateActionButton(
+                        RadialMenuEntry.ActionType.Melee,
+                        GetButtonIcon(activePlayerUnit),
+                        GetButtonName(activePlayerUnit),
+                        4);
+                    DisplayHelp();
+                }
+            }
+            else
+            {
+                // Standard melee attack - use Manhattan distance
+                int _meleeRange = attackBehavior.GetAttackRange();
+                bool canMelee = CheckDistance(_meleeRange) && _tileController.detectedUnit != null;
+
+                if (canMelee)
+                {
+                    _meleeButtonPrefabInstance = CreateActionButton(
+                        RadialMenuEntry.ActionType.Melee,
+                        GetButtonIcon(activePlayerUnit),
+                        GetButtonName(activePlayerUnit),
+                        4);
+                    DisplayHelp();
+                }
             }
         }
 
