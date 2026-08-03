@@ -21,7 +21,6 @@ public class OverworldMapGenerator : MonoBehaviour
     [Tooltip("Assegna qui la tua configurazione ScriptableObject per regole e pesi.")]
     public MapGenerationConfig config;
 
-    // --- NEW: Map Data Pools ---
     [Header("Map Data Pools")]
     [Tooltip("Maps to randomly select from based on the generated Node Type.")]
     public List<MapData> regularMaps = new List<MapData>();
@@ -29,7 +28,7 @@ public class OverworldMapGenerator : MonoBehaviour
     public List<MapData> minibossMaps = new List<MapData>();
     public List<MapData> bossMaps = new List<MapData>();
 
-    // --- NEW: Difficulty Rules ---
+    // This set of rule dictates the distribution of maps based on their difficulty level.
     [Header("Difficulty Progression")]
     public bool enforceDifficultyProgression = true;
     [Tooltip("Nodes up to this index will exclusively pull Easy maps.")]
@@ -59,7 +58,6 @@ public class OverworldMapGenerator : MonoBehaviour
     private List<Vector3> nodePositions = new List<Vector3>();
     private int currentDomainId = 0;
 
-    // --- Variabili per il tracciamento e la distruzione ---
     private Domain currentDomain;
     public List<GameObject> spawnedNodes { get; private set; } = new List<GameObject>();
     private List<GameObject> spawnedPartyIcons = new List<GameObject>();
@@ -84,6 +82,8 @@ public class OverworldMapGenerator : MonoBehaviour
 
     // Hold a runtime copy so we don't permanently modify the actual ScriptableObject in the Editor
     private MapGenerationConfig runtimeConfig;
+
+    public Domain CurrentDomain => currentDomain;
 
     public void GenerateLevel(Domain domainLevelSelection)
     {
