@@ -31,6 +31,7 @@ public class CafeBuffController : MonoBehaviour
         List<ItemFood> eatenFood = _pastrySlotUIController.GetHistory(fedUnit);
 
         var groupedFood = eatenFood
+            .Where(food => food.foodBuff != null)
             .GroupBy(food => new { food.foodBuff.alignment, food.foodBuff.foodBuffType });
 
         foreach (var group in groupedFood)

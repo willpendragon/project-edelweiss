@@ -75,7 +75,7 @@ public class CafeMenuUIController : MonoBehaviour
     {
         gameStatsManager = GameObject.FindWithTag("GameStatsManager").GetComponent<GameStatsManager>();
         warFundsCounter.text = gameStatsManager.warFunds.ToString();
-        // Reload the Baked items. Allow to update the list in cases where the food was consumed outside the café.
+        // Reload the Baked items. Allow to update the list in cases where the food was consumed outside the cafï¿½.
         // (Namely in battle, offered as a tribute).
         PersistentInventoryManager.ReloadBakedItems();
         _foodListUIController.GenerateFoodList();
@@ -184,8 +184,8 @@ public class CafeMenuUIController : MonoBehaviour
                 // Save the change:
                 _saveBakedItemsHelper.SaveBakedItems();
 
-                // Refresh UI:
-                _foodListUIController.GenerateFoodList();
+                // Refresh UI after drag animation completes (deferred to prevent race condition)
+                StartCoroutine(DeferredFoodListRefresh());
 
                 selectedItem = null;
                 return;
@@ -325,6 +325,16 @@ public class CafeMenuUIController : MonoBehaviour
                         _draggedFoodRT = null;
                     });
             });
+    }
+
+    /// <summary>
+    /// Defers the regeneration of the food list to avoid race conditions.
+    /// Waits 0.5s to ensure the current drag-and-drop animation is fully complete.
+    /// </summary>
+    private IEnumerator DeferredFoodListRefresh()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _foodListUIController.GenerateFoodList();
     }
 
 }
