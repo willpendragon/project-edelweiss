@@ -70,6 +70,7 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         StunnerEnemyBehavior.OnStunnerEnemyAttack += SetBattleNotification;
         RockEnemyBehavior.OnRockEnemyAttack += SetBattleNotification;
         PrizeCollectionHelper.OnUpgradeObtained += SetBattleNotification;
+        PrizeCollectionHelper.OnKeyCollected += SetBattleNotification;
         UnitSelectionController.OnFaithlessUnit += SetBattleNotification;
         
         // Attunement notifications
@@ -93,6 +94,7 @@ public class BattleInterface : MonoBehaviour // must be renamed to BattleUIManag
         StunnerEnemyBehavior.OnStunnerEnemyAttack -= SetBattleNotification;
         RockEnemyBehavior.OnRockEnemyAttack -= SetBattleNotification;
         PrizeCollectionHelper.OnUpgradeObtained -= SetBattleNotification;
+        PrizeCollectionHelper.OnKeyCollected -= SetBattleNotification;
         UnitSelectionController.OnFaithlessUnit -= SetBattleNotification;
         
         // Attunement notifications

@@ -394,9 +394,11 @@ public class TurnController : MonoBehaviour
     public void RestorePlayerUnits()
     {
         currentTurn = Turn.PlayerTurn;
+        TurnController.Instance.turnCounter++;
+        // Increase turn counter. Quick fix to prevent concurrent race condition with auto stun recovery and battle start stun recovery.
+
         foreach (var playerUnit in TurnController.Instance.playerUnitsOnBattlefield)
         {
-            // TurnController.Instance.turnCounter++;
             Unit playerUnitComponent = playerUnit.GetComponent<Unit>();
             if (playerUnitComponent.currentUnitLifeCondition != UnitLifeCondition.unitDead)
             {
@@ -435,6 +437,12 @@ public class TurnController : MonoBehaviour
 
     private void AttemptStunRecovery(GameObject playerUnit)
     {
+        if (turnCounter == 1)
+        {
+            Debug.Log("Stop stun recovery attempt, as this is the first turn");
+            return;            
+        }
+
         UnitStatusController statusController = playerUnit.GetComponent<UnitStatusController>();
 
         if (statusController != null && statusController.unitCurrentStatus == UnitStatus.stun)

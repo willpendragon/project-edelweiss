@@ -20,8 +20,6 @@ public class UnitSelectionController : MonoBehaviour
 
     public static event UnitTurnEnded OnUnitTurnEnded;
 
-    private const int ATTACKABLE_TILE_RANGE = 2;
-
     public UnitSelectionStatus currentUnitSelectionStatus;
     public SpriteRenderer unitSprite;
     public UnitIconsController unitIconsController;
@@ -71,7 +69,7 @@ public class UnitSelectionController : MonoBehaviour
     {
         _playerUnits = new List<Unit>();
 
-        // Grab the freshly spawned dynamic units from the updated Party Controller!
+        // Retrieve the dynamic units, which just spawned, from the updated Party Controller.
         GameObject partyControllerObj = GameObject.FindGameObjectWithTag("PlayerPartyController");
         if (partyControllerObj != null)
         {
@@ -103,7 +101,7 @@ public class UnitSelectionController : MonoBehaviour
 
         if (playerUnit.gameObject.tag == GameTags.Enemy || playerUnit.gameObject.tag == GameTags.Deity)
             return;
-        // Play Feedback for invalid selection. Include negative statuses as invalid as well (such as paralysis).
+        // Play Feedback for invalid selection. Include negative statuses as invalid as well (such as STUN).
         // Add icons that convey the Player Unit status.
         ResetEnemyReachableTiles();
         ClearPreviousSelection();
@@ -118,7 +116,7 @@ public class UnitSelectionController : MonoBehaviour
 
         OutlineAttackableEnemies(playerUnit);
 
-        // Pan camera to selected unit with smooth transition
+        // Pan camera to selected unit with a smooth transition.
         var cameraController = FindAnyObjectByType<CameraController>();
         if (cameraController != null)
         {
@@ -135,18 +133,18 @@ public class UnitSelectionController : MonoBehaviour
         selectedTileInstance = Instantiate(_selectedTile, tile.transform);
 
         Collider tileCollider = tile.GetComponentInChildren<Collider>();
-        float cursorYOffset = 0.07f; // Piccolo offset per evitare compenetrazione visiva
+        float cursorYOffset = 0.07f; // Add an offset to make the cursor actually visible.
 
         if (tileCollider != null)
         {
-            // Troviamo il tetto in coordinate World, poi lo trasformiamo in coordinata Local
+            // Find the tile top as a world coordinate, than transforsm it into a local coordinate.
             Vector3 worldTopPoint = new Vector3(tile.transform.position.x, tileCollider.bounds.max.y + cursorYOffset,
                 tile.transform.position.z);
             selectedTileInstance.transform.position = worldTopPoint;
         }
         else
         {
-            // Fallback se il tile non avesse un collider
+            // This logic trigger if the above fails (aka, no collider).
             selectedTileInstance.transform.localPosition = new Vector3(0, 0.57f, 0);
         }
     }
@@ -155,14 +153,55 @@ public class UnitSelectionController : MonoBehaviour
     {
         OutlineAttackableEnemies(tile.detectedUnit.GetComponent<Unit>());
     }
+    private bool IsWithinManhattanDistance(TileController sourceTile, TileController targetTile, int maxDistance)
+    {
+        Vector3Int sourcePos = sourceTile.gridPosition;
+        Vector3Int targetPos = targetTile.gridPosition;
+
+        int dstX = Mathf.Abs(sourcePos.x - targetPos.x);
+        int dstZ = Mathf.Abs(sourcePos.z - targetPos.z);
+        int manhattanDistance = dstX + dstZ;
+
+        return manhattanDistance <= maxDistance;
+    }
 
     public void OutlineAttackableEnemies(Unit playerUnit)
     {
         ResetEnemyReachableTiles();
         _reachableEnemyTiles.Clear();
 
-        _reachableEnemyTiles = _gridMovementController.GetMultipleTiles(playerUnit.ownedTile, ATTACKABLE_TILE_RANGE);
+        // Get the actual attack range from the Unit's physical attack behavior.
+        int attackRange = playerUnit.unitTemplate.physicAttackBehavior.GetAttackRange();
+        List<TileController> attackRangeTiles = _gridMovementController.GetMultipleTiles(playerUnit.ownedTile, attackRange);
+        
+        // Filter, only include tiles within the Manhattan distance for physical attacks.
+        foreach (var tile in attackRangeTiles)
+        {
+            if (IsWithinManhattanDistance(playerUnit.ownedTile, tile, attackRange))
+            {
+                if (!_reachableEnemyTiles.Contains(tile))
+                    _reachableEnemyTiles.Add(tile);
+            }
+        }
 
+        // Include spell range (given the unit has actually spells).
+        if (playerUnit.unitTemplate.spellsList != null && playerUnit.unitTemplate.spellsList.Count > 0)
+        {
+            int spellRange = playerUnit.unitTemplate.spellsList[0].spellRange;
+            List<TileController> spellRangeTiles = _gridMovementController.GetMultipleTiles(playerUnit.ownedTile, spellRange);
+            
+            // Filter, only include tiles within the Manhattan distance for spells.
+            foreach (var tile in spellRangeTiles)
+            {
+                if (IsWithinManhattanDistance(playerUnit.ownedTile, tile, spellRange))
+                {
+                    if (!_reachableEnemyTiles.Contains(tile))
+                        _reachableEnemyTiles.Add(tile);
+                }
+            }
+        }
+
+        // Use this to highlight all reachable enemies. Need to consider moving this into a separate class...
         foreach (var tile in _reachableEnemyTiles)
         {
             if (tile.detectedUnit != null && tile.detectedUnit.CompareTag(GameTags.Enemy))
@@ -204,7 +243,6 @@ public class UnitSelectionController : MonoBehaviour
 
         foreach (var playerUnit in _playerUnits)
         {
-            // Null-check prevents any remaining destroyed artifacts from crashing the loop
             if (playerUnit != null && playerUnit.gameObject != null)
             {
                 playerUnit.tag = GameTags.Player;
@@ -230,12 +268,11 @@ public class UnitSelectionController : MonoBehaviour
         _activePlayerUnit = playerUnit;
         Debug.Log($"{playerUnit.unitTemplate.unitName} is now the {GameTags.ActivePlayerUnit}");
 
-        // Destroy Enemy Info Panels
+        // Destroy Enemy Info Panels.
         var enemyPanels = GameObject.FindGameObjectsWithTag(GameTags.EnemyUnitProfile);
 
         foreach (var enemyPanel in enemyPanels)
         {
-            // Destroy Enemy Info Panels.
             Destroy(enemyPanel);
         }
     }

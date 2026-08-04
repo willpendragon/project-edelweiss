@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -9,6 +10,27 @@ public class OverworldUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _miniBossKeyCounterText;
     [SerializeField] private TextMeshProUGUI _bossKeyCounterText;
     [SerializeField] private EventsUIManager _eventsUIManager;
+    [SerializeField] private TextMeshProUGUI _completedNodesCounter;
+
+    [SerializeField] private OverworldMapGenerator _overWorldMapGenerator;
+    [SerializeField] private GameStatsManager _gameStatsManager;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        UpdateCompletedNodesCounter();
+    }
 
     public EventsUIManager EventsUIManager => _eventsUIManager;
 
@@ -27,15 +49,11 @@ public class OverworldUIManager : MonoBehaviour
         _bossKeyCounterText.text = message;
     }
 
-    private void Awake()
+    public void UpdateCompletedNodesCounter()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        // Quick solution, refactor later.
+        int currentUnlockedLevel = SaveStateManager.saveData.highestUnlockedLevel;
+        int clearRequirement = _overWorldMapGenerator.CurrentDomain.clearRequirement;
+        _completedNodesCounter.text = $"Completed Nodes {currentUnlockedLevel}/{clearRequirement}";
     }
 }
