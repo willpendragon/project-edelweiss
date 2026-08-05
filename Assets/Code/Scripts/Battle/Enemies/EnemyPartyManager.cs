@@ -61,10 +61,24 @@ public class EnemyPartyManager : MonoBehaviour
         // 4. Generate random positions strictly from the perfectly safe whitelist
         List<Vector2> enemyPositions = GenerateEnemyPositions(enemyPoolSize, finalValidTiles);
 
+        // CRITICAL FIX: Synchronize enemy IDs and coordinates to same length
+        // This prevents index out of range when positions < generated enemies (crowded maps with painted enemies)
+        int actualSpawnCount = Mathf.Min(generatedEnemies.Count, enemyPositions.Count);
+        
+        if (actualSpawnCount < enemyPoolSize)
+        {
+            Debug.LogWarning($"[EnemyPartyManager] Could only place {actualSpawnCount} enemies out of {enemyPoolSize} requested. Map may be too crowded with painted enemies/decorations.");
+        }
+
         currentEnemySelectionIds.Clear();
         currentEnemySelectionCoords.Clear();
-        currentEnemySelectionIds.AddRange(generatedEnemies);
-        currentEnemySelectionCoords.AddRange(enemyPositions);
+        
+        // Only add the synchronized count to ensure both lists have identical length
+        for (int i = 0; i < actualSpawnCount; i++)
+        {
+            currentEnemySelectionIds.Add(generatedEnemies[i]);
+            currentEnemySelectionCoords.Add(enemyPositions[i]);
+        }
     }
 
     private List<EnemyType> GenerateEnemyPool(List<EnemyWeight> weights, int poolSize)
