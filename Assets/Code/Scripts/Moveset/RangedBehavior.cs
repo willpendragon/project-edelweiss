@@ -70,8 +70,11 @@ public class RangedBehavior : PhysicalAttackBehavior
             }
             else if (targetUnit != null && targetUnit.unitType != Unit.UnitType.Deity)
             {
+                string message = targetUnit.unitType == Unit.UnitType.DeityShard
+                    ? $"{activePlayerUnit.unitTemplate.unitName} attacked Shard"
+                    : $"{activePlayerUnit.unitTemplate.unitName} used Ranged Attack";
+                BroadcastAttackNotification(message);
                 targetUnit.TakeDamage(flattenedDamage);
-                BroadcastAttackNotification($"{activePlayerUnit.unitTemplate.unitName} used Ranged Attack");
                 Debug.Log($"{activePlayerUnit.unitTemplate.unitName} fired a ranged attack! Final Damage: {flattenedDamage}");
             }
         };
