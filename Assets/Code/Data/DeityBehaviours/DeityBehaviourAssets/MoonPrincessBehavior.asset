@@ -19,8 +19,12 @@ MonoBehaviour:
   windGustAttackName: Wind Gust
   zapAttackVFX: {fileID: 0}
   windGustVFX: {fileID: 0}
-  zapAttackChance: 0
+  zapAttackChance: 86
   defaultWindDirection: 2
   randomizeWindDirection: 0
   angryHpThreshold: 0.666
   veryAngryHpThreshold: 0.333
+  rageAttackName: Moonlight's Glare
+  rageAttackVFX: {fileID: 8642158147560031244, guid: 7b14dd14a170d6340b359df363658dd4, type: 3}
+  paralyzeSuccessChancePercentage: 75
+  rageAttackVfxYOffset: 1

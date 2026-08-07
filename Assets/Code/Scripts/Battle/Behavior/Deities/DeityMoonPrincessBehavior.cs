@@ -31,6 +31,12 @@ public class DeityMoonPrincessBehavior : DeityBehavior
     public float angryHpThreshold = 0.666f; // 2/3 HP left
     public float veryAngryHpThreshold = 0.333f; // 1/3 HP left
 
+    [Header("Rage Attack (triggered when enmity is full)")]
+    public string rageAttackName = "Moonlight's Glare";
+    public GameObject rageAttackVFX; // Assign in Inspector
+    [SerializeField, Range(0f, 100f)] private float paralyzeSuccessChancePercentage = 75f;
+    [SerializeField] private float rageAttackVfxYOffset = 1.0f;
+
     private System.Random localRandom;
     private const int WIND_GUST_PUSH_DISTANCE = 3;
 
@@ -49,6 +55,14 @@ public class DeityMoonPrincessBehavior : DeityBehavior
             return;
         }
 
+        // RAGE ATTACK PRIORITY: Check if enmity is full first
+        if (deity.PerformDeityEnmityCheck())
+        {
+            AttemptRageAttack(deity, deityUnit);
+            return;
+        }
+
+        // Normal attack logic if enmity is not full
         int roll = localRandom.Next(1, 101);
 
         if (roll <= zapAttackChance)
@@ -64,6 +78,55 @@ public class DeityMoonPrincessBehavior : DeityBehavior
     public override void ExecuteBuffBehaviour(Deity deity, Unit unit)
     {
         // MoonPrincess does not have a buff behavior for units.
+    }
+
+    private void AttemptRageAttack(Deity deity, Unit deityUnit)
+    {
+        BattleInterface.Instance.SetDeityNotification($"{deityName} used {rageAttackName}!");
+        DOVirtual.DelayedCall(1.5f, () => DoRageAttack(deity, deityUnit));
+    }
+
+    private void DoRageAttack(Deity deity, Unit deityUnit)
+    {
+        BattleInterface.Instance.SetDeityNotification($"{deityName} used {rageAttackName}!");
+        deity.deityCry.Play();
+
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
+            .GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+
+        foreach (var playerUnitGO in playerUnitsOnBattlefield)
+        {
+            Unit playerUnit = playerUnitGO.GetComponent<Unit>();
+            if (playerUnit != null && playerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitAlive)
+            {
+                // Instantiate VFX at player unit's position
+                Vector3 vfxPosition = playerUnit.transform.position + new Vector3(0, rageAttackVfxYOffset, 0);
+                if (rageAttackVFX != null)
+                {
+                    GameObject rageVFX = Instantiate(rageAttackVFX, vfxPosition, Quaternion.identity);
+                    Destroy(rageVFX, vfxDurationDelay);
+                }
+
+                // Roll for paralyze success
+                float randomRoll = (float)localRandom.NextDouble() * 100f;
+                if (randomRoll <= paralyzeSuccessChancePercentage)
+                {
+                    // Apply stun status to the player unit
+                    playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
+                    playerUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
+                }
+            }
+        }
+
+        // Reset enmity after rage attack completes
+        ResetDeityEnmity(deity);
+
+        // Mark turn complete after animations finish
+        float totalAnimationTime = vfxDurationDelay + 0.5f; // VFX duration + buffer
+        DOVirtual.DelayedCall(totalAnimationTime, () =>
+        {
+            Debug.Log($"<color=cyan>[DeityMoonPrincessBehavior] Rage attack complete, turn finished</color>");
+        });
     }
 
     private void AttemptZapAttack(Deity deity, Unit deityUnit)
