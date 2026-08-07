@@ -73,6 +73,13 @@ public class DeityShard : MonoBehaviour
                             $"{deityUnit.unitTemplate.unitName} is furious! Its power intensifies!");
                     }
                 }
+
+                // Update the Deity Battle UI to reflect the new health value
+                DeityBattleUIController uiController = FindAnyObjectByType<DeityBattleUIController>();
+                if (uiController != null)
+                {
+                    uiController.UpdateUIValues();
+                }
             }
             else
             {
