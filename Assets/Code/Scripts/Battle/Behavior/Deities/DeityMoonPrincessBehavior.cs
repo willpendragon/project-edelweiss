@@ -364,17 +364,34 @@ public class DeityMoonPrincessBehavior : DeityBehavior
             }
             else if (currentPos != targetUnitGridPos)
             {
+                // Save the original tile before moving
+                TileController originalTile = targetUnit.ownedTile;
+                
                 // Attempt to move the unit normally to the valid safe tile we found
                 bool moved = targetUnit.MoveUnit(currentPos.x, currentPos.y, true);
 
                 if (moved)
                 {
-                    // Take possess of the target Tile destination.
-                    targetUnit.ownedTile = GridManager.Instance.GetTileControllerInstance(currentPos.x, currentPos.y);
-                    targetUnit.ownedTile.detectedUnit = targetUnit.gameObject;
+                    // Free the originally occupied tile
+                    if (originalTile != null)
+                    {
+                        originalTile.detectedUnit = null;
+                        originalTile.currentSingleTileCondition = SingleTileCondition.free;
+                    }
+
+                    // Take possess of the target Tile destination
+                    TileController destinationTile = GridManager.Instance.GetTileControllerInstance(currentPos.x, currentPos.y);
+                    if (destinationTile != null)
+                    {
+                        destinationTile.detectedUnit = targetUnit.gameObject;
+                        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                        targetUnit.ownedTile = destinationTile;
+                    }
+                    
+                    // Update unit's position coordinates
                     targetUnit.currentXCoordinate = currentPos.x;
                     targetUnit.currentYCoordinate = currentPos.y;
-                    targetUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                    
                     Debug.Log($"{targetUnit.gameObject.name} was pushed by Wind Gust to ({currentPos.x}, {currentPos.y})");
                 }
                 else
