@@ -114,6 +114,9 @@ public class DeityMoonPrincessBehavior : DeityBehavior
                     // Apply stun status to the player unit
                     playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
                     playerUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
+                    
+                    // Play visual feedback for the stun
+                    PlayRageStunFeedback(playerUnit);
                 }
             }
         }
@@ -122,10 +125,44 @@ public class DeityMoonPrincessBehavior : DeityBehavior
         ResetDeityEnmity(deity);
 
         // Mark turn complete after animations finish
-        float totalAnimationTime = vfxDurationDelay + 0.5f; // VFX duration + buffer
+        float totalAnimationTime = vfxDurationDelay + 0.8f; // VFX duration + icon animation time
         DOVirtual.DelayedCall(totalAnimationTime, () =>
         {
             Debug.Log($"<color=cyan>[DeityMoonPrincessBehavior] Rage attack complete, turn finished</color>");
+        });
+    }
+
+    private void PlayRageStunFeedback(Unit targetUnit)
+    {
+        // Create a sequence for timing
+        Sequence sequence = DOTween.Sequence();
+
+        // Add a delay to the sequence equal to the duration of the attack VFX
+        sequence.AppendInterval(vfxDurationDelay);
+
+        // Add a callback to instantiate the StunIcon after the VFX delay
+        sequence.AppendCallback(() =>
+        {
+            // Instantiate the StunIcon
+            GameObject stunIconInstance = Instantiate(Resources.Load<GameObject>("StunIcon"), targetUnit.transform);
+            targetUnit.gameObject.GetComponent<BattleFeedbackController>().stunIcon = stunIconInstance;
+
+            GridManager.Instance.statusIcons.Add(stunIconInstance);
+
+            // Create a sequence for the StunIcon animations
+            Sequence iconSequence = DOTween.Sequence();
+
+            // Add a scale up animation for the pop effect
+            iconSequence.Append(stunIconInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.2f).SetEase(Ease.OutBack));
+
+            // Add a scale back to normal size
+            iconSequence.Append(stunIconInstance.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack));
+
+            // Add a shake animation
+            iconSequence.Append(stunIconInstance.transform.DOShakePosition(0.5f, new Vector3(0.2f, 0.2f, 0), 10, 90, false, true));
+
+            // Play the icon sequence
+            iconSequence.Play();
         });
     }
 
