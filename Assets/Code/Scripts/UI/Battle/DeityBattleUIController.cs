@@ -133,6 +133,24 @@ public class DeityBattleUIController : MonoBehaviour
                 Debug.Log($"DeityBattleUIController: Initialized Deity UI for {CurrentDeity.name} in {_currentBattleType} battle.");
                 break;
 
+            case BattleTypeController.BattleType.PuzzleBattle:
+                // Quick fiX: Puzzle battles shouldn't contain deities, but in current config a boss battle is flagged as a puzzle battle.
+                // This case allows deity parameters to be displayed in boss fights that are incorrectly classified as puzzle battles.
+                CurrentDeity = _battleManager.deity;
+                _deityUnitComponent = CurrentDeity.GetComponentInChildren<Unit>();
+
+                if (_deityUnitComponent == null)
+                {
+                    Debug.LogWarning("DeityBattleUIController: Deity found but missing Unit component.");
+                    HideAllDeityUI();
+                    return;
+                }
+
+                // Deity is present in a puzzle battle (treated as boss battle)
+                SetupUI();
+                Debug.Log($"DeityBattleUIController: Initialized Deity UI for {CurrentDeity.name} in {_currentBattleType} battle.");
+                break;
+
             default:
                 HideAllDeityUI();
                 break;
@@ -179,16 +197,18 @@ public class DeityBattleUIController : MonoBehaviour
             }
         }
 
+        // Update all UI values immediately (portrait, enmity text, health text)
+        UpdateUIValues();
+
         // Start update coroutine
         if (_updateCoroutine != null)
         {
             StopCoroutine(_updateCoroutine);
         }
         _updateCoroutine = StartCoroutine(ContinuousUpdateUI());
-
     }
 
-    private void UpdateUIValues()
+    public void UpdateUIValues()
     {
         // Update portrait
         if (_deityPortraitImage != null && CurrentDeity.deityPortrait != null)
@@ -232,7 +252,9 @@ public class DeityBattleUIController : MonoBehaviour
 
     private bool ShouldShowHealthUI()
     {
-        return _currentBattleType == BattleTypeController.BattleType.BattleWithDeity;
+        // Quick fix: Show health in PuzzleBattle because boss battles are currently flagged as puzzle battles in the config.
+        return _currentBattleType == BattleTypeController.BattleType.BattleWithDeity || 
+               _currentBattleType == BattleTypeController.BattleType.PuzzleBattle;
     }
 
     private void SetHealthUIVisible(bool isVisible)
