@@ -17,7 +17,7 @@ MonoBehaviour:
   cameraDepthFadeEnd: 0
   useCameraDistanceFade: 1
   cameraDistanceFadeStart: 40
-  cameraDistanceFadeEnd: 60
+  cameraDistanceFadeEnd: 150
   useSceneDepthFade: 1
   sceneDepthFadeStart: 0
   sceneDepthFadeEnd: 2
@@ -28,7 +28,7 @@ MonoBehaviour:
   useRaylengthFade: 0
   angleRaylengthEffect: 1
   useVariation: 0
-  useLightColor: 0
+  useLightColor: 1
   rayLayers:
   - rayShape: 7
     rayMesh: {fileID: 0}

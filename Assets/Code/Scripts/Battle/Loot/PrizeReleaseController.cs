@@ -38,6 +38,13 @@ public class PrizeReleaseController : MonoBehaviour
             return;
         }
 
+        // 1b. OCCUPANCY CHECK: Prevent spawning on deity shards or other occupied units
+        if (fieldPrizeTile.currentSingleTileCondition == SingleTileCondition.occupied)
+        {
+            Debug.Log($"Tile {fieldPrizeTile.name} is occupied. Skipping prize spawn.");
+            return;
+        }
+
         // 2. Roll for success
         if (!RollFieldPrizeChance())
             return;
@@ -144,6 +151,13 @@ public class PrizeReleaseController : MonoBehaviour
         {
             Debug.Log($"Tile {fieldPrizeTile.name} already has a prize. Skipping spawn.");
             return; // Prevent stacking
+        }
+
+        // OCCUPANCY CHECK: Prevent spawning on deity shards or other occupied units
+        if (fieldPrizeTile.currentSingleTileCondition == SingleTileCondition.occupied)
+        {
+            Debug.Log($"Tile {fieldPrizeTile.name} is occupied. Skipping prize spawn.");
+            return;
         }
 
         // Guaranteed Failsafe: Dynamically load the base prefab if missing (e.g., dynamically built Chests)

@@ -53,8 +53,6 @@ public class DeityShard : MonoBehaviour
 
                 float currentHpPercentage = maxHp > 0 ? deityUnit.unitHealthPoints / maxHp : 0;
 
-                BattleInterface.Instance.SetDeityNotification(
-                    $"Shard attacked, {damageAmount} damage on {deityUnit.unitTemplate.unitName}.");
                 Debug.Log($"Shard attacked, {damageAmount} damage on {deityUnit.unitTemplate.unitName}.");
 
                 _residentDeity.deityCry.Play();
@@ -74,6 +72,13 @@ public class DeityShard : MonoBehaviour
                         BattleInterface.Instance.SetDeityNotification(
                             $"{deityUnit.unitTemplate.unitName} is furious! Its power intensifies!");
                     }
+                }
+
+                // Update the Deity Battle UI to reflect the new health value
+                DeityBattleUIController uiController = FindAnyObjectByType<DeityBattleUIController>();
+                if (uiController != null)
+                {
+                    uiController.UpdateUIValues();
                 }
             }
             else

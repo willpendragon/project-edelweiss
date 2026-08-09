@@ -31,6 +31,12 @@ public class DeityMoonPrincessBehavior : DeityBehavior
     public float angryHpThreshold = 0.666f; // 2/3 HP left
     public float veryAngryHpThreshold = 0.333f; // 1/3 HP left
 
+    [Header("Rage Attack (triggered when enmity is full)")]
+    public string rageAttackName = "Moonlight's Glare";
+    public GameObject rageAttackVFX; // Assign in Inspector
+    [SerializeField, Range(0f, 100f)] private float paralyzeSuccessChancePercentage = 75f;
+    [SerializeField] private float rageAttackVfxYOffset = 1.0f;
+
     private System.Random localRandom;
     private const int WIND_GUST_PUSH_DISTANCE = 3;
 
@@ -49,6 +55,14 @@ public class DeityMoonPrincessBehavior : DeityBehavior
             return;
         }
 
+        // RAGE ATTACK PRIORITY: Check if enmity is full first
+        if (deity.PerformDeityEnmityCheck())
+        {
+            AttemptRageAttack(deity, deityUnit);
+            return;
+        }
+
+        // Normal attack logic if enmity is not full
         int roll = localRandom.Next(1, 101);
 
         if (roll <= zapAttackChance)
@@ -64,6 +78,92 @@ public class DeityMoonPrincessBehavior : DeityBehavior
     public override void ExecuteBuffBehaviour(Deity deity, Unit unit)
     {
         // MoonPrincess does not have a buff behavior for units.
+    }
+
+    private void AttemptRageAttack(Deity deity, Unit deityUnit)
+    {
+        BattleInterface.Instance.SetDeityNotification($"{deityName} used {rageAttackName}!");
+        DOVirtual.DelayedCall(1.5f, () => DoRageAttack(deity, deityUnit));
+    }
+
+    private void DoRageAttack(Deity deity, Unit deityUnit)
+    {
+        BattleInterface.Instance.SetDeityNotification($"{deityName} used {rageAttackName}!");
+        deity.deityCry.Play();
+
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
+            .GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+
+        foreach (var playerUnitGO in playerUnitsOnBattlefield)
+        {
+            Unit playerUnit = playerUnitGO.GetComponent<Unit>();
+            if (playerUnit != null && playerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitAlive)
+            {
+                // Instantiate VFX at player unit's position
+                Vector3 vfxPosition = playerUnit.transform.position + new Vector3(0, rageAttackVfxYOffset, 0);
+                if (rageAttackVFX != null)
+                {
+                    GameObject rageVFX = Instantiate(rageAttackVFX, vfxPosition, Quaternion.identity);
+                    Destroy(rageVFX, vfxDurationDelay);
+                }
+
+                // Roll for paralyze success
+                float randomRoll = (float)localRandom.NextDouble() * 100f;
+                if (randomRoll <= paralyzeSuccessChancePercentage)
+                {
+                    // Apply stun status to the player unit
+                    playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
+                    playerUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
+                    
+                    // Play visual feedback for the stun
+                    PlayRageStunFeedback(playerUnit);
+                }
+            }
+        }
+
+        // Reset enmity after rage attack completes
+        ResetDeityEnmity(deity);
+
+        // Mark turn complete after animations finish
+        float totalAnimationTime = vfxDurationDelay + 0.8f; // VFX duration + icon animation time
+        DOVirtual.DelayedCall(totalAnimationTime, () =>
+        {
+            Debug.Log($"<color=cyan>[DeityMoonPrincessBehavior] Rage attack complete, turn finished</color>");
+        });
+    }
+
+    private void PlayRageStunFeedback(Unit targetUnit)
+    {
+        // Create a sequence for timing
+        Sequence sequence = DOTween.Sequence();
+
+        // Add a delay to the sequence equal to the duration of the attack VFX
+        sequence.AppendInterval(vfxDurationDelay);
+
+        // Add a callback to instantiate the StunIcon after the VFX delay
+        sequence.AppendCallback(() =>
+        {
+            // Instantiate the StunIcon
+            GameObject stunIconInstance = Instantiate(Resources.Load<GameObject>("StunIcon"), targetUnit.transform);
+            targetUnit.gameObject.GetComponent<BattleFeedbackController>().stunIcon = stunIconInstance;
+
+            GridManager.Instance.statusIcons.Add(stunIconInstance);
+
+            // Create a sequence for the StunIcon animations
+            Sequence iconSequence = DOTween.Sequence();
+
+            // Add a scale up animation for the pop effect
+            iconSequence.Append(stunIconInstance.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.2f).SetEase(Ease.OutBack));
+
+            // Add a scale back to normal size
+            iconSequence.Append(stunIconInstance.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack));
+
+            // Add a shake animation
+            iconSequence.Append(stunIconInstance.transform.DOShakePosition(0.5f, new Vector3(0.2f, 0.2f, 0), 10, 90, false, true));
+
+            // Play the icon sequence
+            iconSequence.Play();
+        });
     }
 
     private void AttemptZapAttack(Deity deity, Unit deityUnit)
@@ -264,17 +364,34 @@ public class DeityMoonPrincessBehavior : DeityBehavior
             }
             else if (currentPos != targetUnitGridPos)
             {
+                // Save the original tile before moving
+                TileController originalTile = targetUnit.ownedTile;
+                
                 // Attempt to move the unit normally to the valid safe tile we found
                 bool moved = targetUnit.MoveUnit(currentPos.x, currentPos.y, true);
 
                 if (moved)
                 {
-                    // Take possess of the target Tile destination.
-                    targetUnit.ownedTile = GridManager.Instance.GetTileControllerInstance(currentPos.x, currentPos.y);
-                    targetUnit.ownedTile.detectedUnit = targetUnit.gameObject;
+                    // Free the originally occupied tile
+                    if (originalTile != null)
+                    {
+                        originalTile.detectedUnit = null;
+                        originalTile.currentSingleTileCondition = SingleTileCondition.free;
+                    }
+
+                    // Take possess of the target Tile destination
+                    TileController destinationTile = GridManager.Instance.GetTileControllerInstance(currentPos.x, currentPos.y);
+                    if (destinationTile != null)
+                    {
+                        destinationTile.detectedUnit = targetUnit.gameObject;
+                        destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                        targetUnit.ownedTile = destinationTile;
+                    }
+                    
+                    // Update unit's position coordinates
                     targetUnit.currentXCoordinate = currentPos.x;
                     targetUnit.currentYCoordinate = currentPos.y;
-                    targetUnit.ownedTile.currentSingleTileCondition = SingleTileCondition.occupied;
+                    
                     Debug.Log($"{targetUnit.gameObject.name} was pushed by Wind Gust to ({currentPos.x}, {currentPos.y})");
                 }
                 else

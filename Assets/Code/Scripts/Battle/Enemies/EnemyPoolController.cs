@@ -46,18 +46,72 @@ public class EnemyPoolController : MonoBehaviour
 
     private void SpawnEnemies()
     {
+        // CRITICAL: Validate list synchronization before looping
+        if (GameManager.Instance.EnemyPartyManager.currentEnemySelectionIds.Count !=
+            GameManager.Instance.EnemyPartyManager.currentEnemySelectionCoords.Count)
+        {
+            Debug.LogError($"[EnemyPoolController] Enemy ID list ({GameManager.Instance.EnemyPartyManager.currentEnemySelectionIds.Count}) and Coordinate list ({GameManager.Instance.EnemyPartyManager.currentEnemySelectionCoords.Count}) are out of sync! Cannot spawn enemies safely.");
+            return;
+        }
+
+        // Validate EnemyPoolGameObjects array configuration
+        if (EnemyPoolGameObjects == null || EnemyPoolGameObjects.Length == 0)
+        {
+            Debug.LogError("[EnemyPoolController] EnemyPoolGameObjects array is null or empty! Cannot spawn enemies. Please configure the array in the Unity Inspector.");
+            return;
+        }
+
+        // Warn if array size doesn't match enum count
+        int expectedSize = System.Enum.GetValues(typeof(EnemyType)).Length;
+        if (EnemyPoolGameObjects.Length < expectedSize)
+        {
+            Debug.LogWarning($"[EnemyPoolController] EnemyPoolGameObjects array has {EnemyPoolGameObjects.Length} elements but EnemyType enum has {expectedSize} values. Some enemy types may fail to spawn.");
+        }
+
+        int successfulSpawns = 0;
         for (int i = 0; i < GameManager.Instance.EnemyPartyManager.currentEnemySelectionIds.Count; i++)
         {
             EnemyType type = GameManager.Instance.EnemyPartyManager.currentEnemySelectionIds[i];
             Vector2 coords = GameManager.Instance.EnemyPartyManager.currentEnemySelectionCoords[i];
 
-            GameObject spawnedEnemy = Instantiate(EnemyPoolGameObjects[(int)type]);
+            // Validate array bounds before access
+            int typeIndex = (int)type;
+            if (typeIndex < 0 || typeIndex >= EnemyPoolGameObjects.Length)
+            {
+                Debug.LogError($"[EnemyPoolController] Cannot spawn enemy of type '{type}' (index {typeIndex}). Index is out of bounds for EnemyPoolGameObjects array (length: {EnemyPoolGameObjects.Length}). Skipping this enemy.");
+                continue;
+            }
+
+            // Validate prefab is not null
+            if (EnemyPoolGameObjects[typeIndex] == null)
+            {
+                Debug.LogError($"[EnemyPoolController] EnemyPoolGameObjects[{typeIndex}] (type '{type}') is null! Please assign the prefab in the Unity Inspector. Skipping this enemy.");
+                continue;
+            }
+
+            GameObject spawnedEnemy = Instantiate(EnemyPoolGameObjects[typeIndex]);
             Unit unitComponent = spawnedEnemy.GetComponent<Unit>();
+
+            if (unitComponent == null)
+            {
+                Debug.LogError($"[EnemyPoolController] Spawned enemy of type '{type}' does not have a Unit component! Destroying and skipping.");
+                Destroy(spawnedEnemy);
+                continue;
+            }
 
             unitComponent.startingXCoordinate = (int)coords.x;
             unitComponent.startingYCoordinate = (int)coords.y;
             SetTileDetectedUnit(unitComponent, spawnedEnemy);
-            Debug.Log("Spawned Enemies on the Battlefield");
+            successfulSpawns++;
+        }
+
+        if (successfulSpawns > 0)
+        {
+            Debug.Log($"[EnemyPoolController] Successfully spawned {successfulSpawns} enemies on the battlefield.");
+        }
+        else
+        {
+            Debug.LogError("[EnemyPoolController] Failed to spawn any enemies! Battle initialization may be incomplete.");
         }
     }
 

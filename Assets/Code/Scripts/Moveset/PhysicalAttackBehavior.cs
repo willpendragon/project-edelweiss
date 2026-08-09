@@ -309,10 +309,14 @@ public class PhysicalAttackBehavior : ScriptableObject
     protected void HitTarget(Unit attacker, Unit defender, bool modifierIsActive, bool isWallKnockback = false)
     {
         float damage = CalculateDamage(attacker, defender, modifierIsActive, isWallKnockback);
-        defender.TakeDamage(damage);
 
         string wallMessage = isWallKnockback ? " (Wall Slam!)" : "";
-        BroadcastAttackNotification($"{attacker.unitTemplate.unitName} used Melee Attack" + wallMessage);
+        string message = defender.unitType == Unit.UnitType.DeityShard
+            ? $"{attacker.unitTemplate.unitName} attacked Shard"
+            : $"{attacker.unitTemplate.unitName} used Melee Attack" + wallMessage;
+        BroadcastAttackNotification(message);
+
+        defender.TakeDamage(damage);
     }
 
     private float CalculateDamage(Unit attacker, Unit defender, bool modifierIsActive, bool isWallKnockback = false)

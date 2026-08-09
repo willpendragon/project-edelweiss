@@ -866,6 +866,10 @@ public class OverworldMapGenerator : MonoBehaviour
                 bossEnemySelection.mapData = debugBossMapData;
             }
         }
+
+        // Force the Boss Key unlock
+        var gameStatsManager = FindAnyObjectByType<GameStatsManager>();
+        gameStatsManager.hasBossKey = true;
         
         // Optional: Persist this change to the save file.
         GameStatsManager statsManager = FindObjectOfType<GameStatsManager>();

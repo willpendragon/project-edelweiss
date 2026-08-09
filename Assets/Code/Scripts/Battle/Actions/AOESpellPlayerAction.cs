@@ -129,13 +129,14 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         }
 
         int damageToApply = CalculateSpellDamage(spell, activePlayerUnit);
+
+        PlaySpellFeedback(activePlayerUnit, spellTarget, spell);
         spellTarget.TakeDamage(damageToApply);
 
         // Only spawn the Frozen VFX if the Enemy has HP left after the attack
         if (spell.spellSecundaryEffect == SpellSecundaryEffect.Stun && spellTarget.unitHealthPoints > 0)
             TriggerSecondaryEffect(spellTarget);
 
-        PlaySpellFeedback(activePlayerUnit, spellTarget, spell);
         SpendResources(activePlayerUnit, spell);
 
         OnUsedSingleTargetSpell?.Invoke();
@@ -168,7 +169,11 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 
         SpendResources(activePlayerUnit, spell);
 
-        OnUsedSpell?.Invoke($"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}");
+        Unit clickedUnit = targetTile.detectedUnit != null ? targetTile.detectedUnit.GetComponent<Unit>() : null;
+        string castMessage = clickedUnit != null && clickedUnit.unitType == Unit.UnitType.DeityShard
+            ? $"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName} on Shard"
+            : $"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}";
+        OnUsedSpell?.Invoke(castMessage);
 
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
 
@@ -225,7 +230,10 @@ public class AOESpellPlayerAction : MonoBehaviour, IPlayerAction<TileController>
     private void PlaySpellFeedback(Unit activePlayerUnit, Unit spellTarget, Spell spell)
     {
         activePlayerUnit.GetComponent<BattleFeedbackController>().PlaySpellSFX.Invoke();
-        OnUsedSpell($"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}");
+        string message = spellTarget.unitType == Unit.UnitType.DeityShard
+            ? $"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName} on Shard"
+            : $"{activePlayerUnit.unitTemplate.unitName} used {spell.spellName}";
+        OnUsedSpell(message);
 
         if (_criticalHit == true)
         {
