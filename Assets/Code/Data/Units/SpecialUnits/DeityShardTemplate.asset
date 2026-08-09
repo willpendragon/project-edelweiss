@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89ae9d3b5586f2d42a51300bd556058f, type: 3}
   m_Name: DeityShardTemplate
   m_EditorClassIdentifier: 
-  unitName: deity_shard
-  unitHealthPoints: 10000000
-  unitMaxHealthPoints: 0
+  unitName: Deity Shard
+  unitHealthPoints: 99999
+  unitMaxHealthPoints: 99999
   unitManaPoints: 0
   unitMaxManaPoints: 0
   unitOpportunityPoints: 0
@@ -29,8 +29,8 @@ MonoBehaviour:
   coinsRewardRange: {x: 0, y: 0}
   unitExperiencePointsReward: 0
   physicAttackBehavior: {fileID: 0}
-  unitPortrait: {fileID: 0}
-  unitMiniPortrait: {fileID: 0}
+  unitPortrait: {fileID: 21300000, guid: 9e64832fdbba60347839155c5abb883d, type: 3}
+  unitMiniPortrait: {fileID: 21300000, guid: 9e64832fdbba60347839155c5abb883d, type: 3}
   unitCalloutPortrait: {fileID: 0}
-  unitBattlePortrait: {fileID: 0}
+  unitBattlePortrait: {fileID: 21300000, guid: 9e64832fdbba60347839155c5abb883d, type: 3}
   unitCriticalHitVoice: {fileID: 0}
