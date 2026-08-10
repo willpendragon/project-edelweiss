@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
@@ -59,19 +60,25 @@ public class DeityShard : MonoBehaviour
                 _residentDeity.deityCry.Play();
                 _battleFeedbackController.PlayHitAnimation();
                 // If the Boss is Moon Princess, use her public thresholds to trigger phase shift notifications
-                if (_residentDeity.summoningBehaviour is DeityMoonPrincessBehavior moonPrincessBehavior)
+                if (_residentDeity.deityBehavior is DeityMoonPrincessBehavior moonPrincessBehavior)
                 {
                     if (previousHpPercentage > moonPrincessBehavior.angryHpThreshold &&
                         currentHpPercentage <= moonPrincessBehavior.angryHpThreshold)
                     {
-                        BattleInterface.Instance.SetDeityNotification(
-                            $"{deityUnit.unitTemplate.unitName}'s rage makes it stronger!");
+                        // Delay notification to prevent race condition with attack notification
+                        DOTween.Sequence()
+                            .AppendInterval(0.35f)
+                            .AppendCallback(() => BattleInterface.Instance.SetDeityNotification(
+                                $"{deityUnit.unitTemplate.unitName}'s suffering makes it stronger!"));
                     }
                     else if (previousHpPercentage > moonPrincessBehavior.veryAngryHpThreshold &&
                              currentHpPercentage <= moonPrincessBehavior.veryAngryHpThreshold)
                     {
-                        BattleInterface.Instance.SetDeityNotification(
-                            $"{deityUnit.unitTemplate.unitName} is furious! Its power intensifies!");
+                        // Delay notification to prevent race condition with attack notification
+                        DOTween.Sequence()
+                            .AppendInterval(0.35f)
+                            .AppendCallback(() => BattleInterface.Instance.SetDeityNotification(
+                                $"{deityUnit.unitTemplate.unitName} is suffering more! Its power intensifies!"));
                     }
                 }
 
