@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public NodesUnlockManager NodesUnlockManager => _nodesUnlockManager;
     
     public const int MaxActivePartySize = 3;
+    public string currentConversationTitle;
 
     private void Awake()
     {

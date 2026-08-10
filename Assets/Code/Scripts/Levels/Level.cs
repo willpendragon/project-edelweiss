@@ -7,4 +7,5 @@ public class Level : ScriptableObject
     public int levelNumber;
     public EnemyPartyData enemyPartyData;
     public MapData map;
+    public string conversationTitle; // Overrides MapData dialogue config. Leave it blank, if you don't want to override/show dialogues.
 }

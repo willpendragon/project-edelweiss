@@ -325,9 +325,12 @@ public class OverworldMapGenerator : MonoBehaviour
 
             spawnedNodes.Add(newNode);
 
+            // Spawn a node an inject all data (set by designers) from the Level SOs into the actual nodes created at runtime.
+            // Beware: the Enemy Selection class now handles more than just enemy data.
             var enemySelection = newNode.GetComponent<EnemySelection>();
             enemySelection.enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
             enemySelection.levelNumber = domainLevelSelection.levelList[i].levelNumber;
+            enemySelection.conversationTitle = domainLevelSelection.levelList[i].conversationTitle; // Allows designers to set which convo will play in which node.
             
             // Pass the current index 'i' to evaluate difficulty.
             MapData randomlySelectedMap = GetRandomMapForType(nodeType, i);
