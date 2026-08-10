@@ -9,6 +9,7 @@ public class DeityShard : MonoBehaviour
 {
     private Deity _residentDeity;
     private Unit _unitComponent;
+    [SerializeField] private BattleFeedbackController _battleFeedbackController;
 
     void Start()
     {
@@ -56,7 +57,7 @@ public class DeityShard : MonoBehaviour
                 Debug.Log($"Shard attacked, {damageAmount} damage on {deityUnit.unitTemplate.unitName}.");
 
                 _residentDeity.deityCry.Play();
-
+                _battleFeedbackController.PlayHitAnimation();
                 // If the Boss is Moon Princess, use her public thresholds to trigger phase shift notifications
                 if (_residentDeity.summoningBehaviour is DeityMoonPrincessBehavior moonPrincessBehavior)
                 {
