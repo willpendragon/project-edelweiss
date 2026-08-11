@@ -151,6 +151,22 @@ public class DeityBattleUIController : MonoBehaviour
                 Debug.Log($"DeityBattleUIController: Initialized Deity UI for {CurrentDeity.name} in {_currentBattleType} battle.");
                 break;
 
+            case BattleTypeController.BattleType.BossBattle:
+                CurrentDeity = _battleManager.deity;
+                _deityUnitComponent = CurrentDeity.GetComponentInChildren<Unit>();
+
+                if (_deityUnitComponent == null)
+                {
+                    Debug.LogWarning("DeityBattleUIController: Deity found but missing Unit component.");
+                    HideAllDeityUI();
+                    return;
+                }
+
+                // Deity is present in a boss battle
+                SetupUI();
+                Debug.Log($"DeityBattleUIController: Initialized Deity UI for {CurrentDeity.name} in {_currentBattleType} battle.");
+                break;
+
             default:
                 HideAllDeityUI();
                 break;
@@ -286,7 +302,9 @@ public class DeityBattleUIController : MonoBehaviour
     private IEnumerator ContinuousUpdateUI()
     {
         while ((_currentBattleType == BattleTypeController.BattleType.RegularBattle ||
-                _currentBattleType == BattleTypeController.BattleType.BattleWithDeity) &&
+                _currentBattleType == BattleTypeController.BattleType.BattleWithDeity ||
+                _currentBattleType == BattleTypeController.BattleType.PuzzleBattle ||
+                _currentBattleType == BattleTypeController.BattleType.BossBattle) &&
                CurrentDeity != null)
         {
             UpdateUIValues();
