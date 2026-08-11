@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 
 [CreateAssetMenu(fileName = "SimildeBehavior", menuName = "DeityBehavior/Similde")]
 public class DeitySimildeBehavior : DeityBehavior
@@ -8,8 +9,21 @@ public class DeitySimildeBehavior : DeityBehavior
     private string deityName = "Similde";
     private System.Random localRandom;
 
+    [Header("Zap Attack (when enmity is full)")]
+    public string zapAttackName = "Witches Touch";
+    public GameObject zapAttackVFX;
+    public float vfxDurationDelay = 1f;
+
     public override void ExecuteBehavior(Deity deity)
     {
+        // If enmity is full, use zap attack instead
+        if (deity.PerformDeityEnmityCheck())
+        {
+            ZapAttack(deity);
+            deity.ResetDeityEnmity();
+            return;
+        }
+
         Debug.Log("Deity is acting");
         
         if (localRandom == null)
@@ -104,5 +118,35 @@ public class DeitySimildeBehavior : DeityBehavior
     public override void ExecuteBuffBehaviour(Deity deity, Unit unit)
     {
 
+    }
+
+    private void ZapAttack(Deity deity)
+    {
+        BattleInterface.Instance.SetDeityNotification($"{deityName} used {zapAttackName}!");
+        deity.deityCry.Play();
+
+        GameObject[] playerUnitsOnBattlefield = GameObject.FindGameObjectWithTag("PlayerPartyController")
+            .GetComponent<PlayerPartyController>().playerUnitsOnBattlefield;
+
+        float baseDamage = deity.deitySpecialAttackPower;
+
+        foreach (var playerUnitGO in playerUnitsOnBattlefield)
+        {
+            Unit playerUnit = playerUnitGO.GetComponent<Unit>();
+            if (playerUnit != null && playerUnit.currentUnitLifeCondition == Unit.UnitLifeCondition.unitAlive)
+            {
+                if (zapAttackVFX != null)
+                {
+                    GameObject newDeityAttackVFX = Instantiate(zapAttackVFX, playerUnit.ownedTile.transform.position,
+                        Quaternion.identity);
+                    Vector3 attackVFXOffset = new Vector3(0, 1, 0);
+                    newDeityAttackVFX.transform.localPosition += attackVFXOffset;
+                    Destroy(newDeityAttackVFX, vfxDurationDelay);
+                }
+
+                playerUnit.TakeDamage(baseDamage);
+                Debug.Log($"Damaged {playerUnit.unitTemplate.unitName} for {baseDamage}");
+            }
+        }
     }
 }
