@@ -8,9 +8,13 @@ public class ChestTemplate : UnitTemplate
     {
         SimpleKey,
         MinibossKey,
-        BossKey
+        BossKey,
+        Ingredient // Appended at end to preserve serialized int values of existing templates
     }
 
     [Header("Chest Specifics")]
     public ChestPrizeType chestPrizeType;
+
+    [Tooltip("Optional direct reference. Overrides the Resources-folder naming convention when assigned.")]
+    public ItemFieldPrize prizeOverride;
 }

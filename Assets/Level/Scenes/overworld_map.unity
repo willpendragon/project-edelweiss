@@ -924,6 +924,8 @@ MonoBehaviour:
   iconZOffset: -2
   autoUpdateInPlayMode: 1
   debugBossMapData: {fileID: 11400000, guid: b5868fbdab7a12e49be0a18a8e2c683b, type: 2}
+  debugMapDataPopulationIsActive: 0
+  debugNodeMapOverrides: []
   currentMapNodeTransform: {fileID: 0}
   currentNodeId: 0
 --- !u!1 &129807939
@@ -5966,7 +5968,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2095898453}
+  - {fileID: 1721515486}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7917,6 +7919,7 @@ MonoBehaviour:
   _buffManager: {fileID: 1562431199}
   _nodesUnlockManager: {fileID: 647307573}
   CurrentMap: {fileID: 11400000, guid: f43a7862c78c6b54ca3eb20e0dfc95a9, type: 2}
+  currentConversationTitle: 
 --- !u!1001 &1306802357
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11478,6 +11481,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1696414149}
   m_CullTransparentMesh: 1
+--- !u!21 &1721515486
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1001 &1741886540
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14367,37 +14401,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &2095898453
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &2097589266
 GameObject:
   m_ObjectHideFlags: 0
@@ -20913,7 +20916,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1614430402459218551, guid: 0b85d868fd135cb45ad174aeeb25970c, type: 3}
       propertyPath: allIngredientPrototypes.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1614430402459218551, guid: 0b85d868fd135cb45ad174aeeb25970c, type: 3}
       propertyPath: allBakedItemPrototypes.Array.data[0]
@@ -20947,6 +20950,10 @@ PrefabInstance:
       propertyPath: allIngredientPrototypes.Array.data[2]
       value: 
       objectReference: {fileID: 11400000, guid: 3cc29c652b49f8e408bda80ffde41ff3, type: 2}
+    - target: {fileID: 1614430402459218551, guid: 0b85d868fd135cb45ad174aeeb25970c, type: 3}
+      propertyPath: allIngredientPrototypes.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: dfba422950aa157449de84851a4fe96f, type: 2}
     - target: {fileID: 2168545818871395205, guid: 0b85d868fd135cb45ad174aeeb25970c, type: 3}
       propertyPath: m_Name
       value: PersistentInventory

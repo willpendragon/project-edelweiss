@@ -38,7 +38,8 @@ public enum TileType
     BossChest,
     Environment, // <-- NEW: Used for solid decorative tiles
     Beacon,
-    DeityTile
+    DeityTile,
+    IngredientChest // Appended at end to preserve serialized int values of existing tile types
 }
 
 public enum TileElement // Such properties could be moved in an SO.
@@ -85,7 +86,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     // Sostituiamo le coordinate X e Y singole con un Vector3Int completo
     public Vector3Int gridPosition; 
     
-    // Mantenute per compatibilità immediata se altri script vi accedono, 
+    // Mantenute per compatibilitï¿½ immediata se altri script vi accedono, 
     // ma ti consiglio di migrare tutto a 'gridPosition.x', 'gridPosition.y', 'gridPosition.z' in futuro.
     public int tileXCoordinate { get => gridPosition.x; set => gridPosition.x = value; }
     public int tileYCoordinate { get => gridPosition.z; set => gridPosition.z = value; } // L'estetica dice "Y" per i vecchi script, la logica usa "Z"
