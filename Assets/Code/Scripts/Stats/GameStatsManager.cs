@@ -409,53 +409,20 @@ public class GameStatsManager : MonoBehaviour
 
     public void SaveIngredients()
     {
-        var currentInventoryData = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
-        var savedInventory = SaveStateManager.saveData.savedInventory;
-
-        // Merge or add new ingredients
-        foreach (var newEntry in currentInventoryData)
-        {
-            var existingEntry = savedInventory.Find(e => e.ingredientName == newEntry.ingredientName);
-
-            if (existingEntry != null)
-            {
-                existingEntry.quantity += newEntry.quantity;
-            }
-            else
-            {
-                savedInventory.Add(new IngredientSaveEntry
-                {
-                    ingredientName = newEntry.ingredientName,
-                    quantity = newEntry.quantity
-                });
-            }
-        }
-
-        SaveStateManager.saveData.savedInventory = savedInventory;
-        SaveStateManager.SaveGame(SaveStateManager.saveData);
+        SyncIngredientsToSaveData();
     }
 
     public void SaveIngredientsAfterBaking()
     {
-        var currentInventoryData = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
+        SyncIngredientsToSaveData();
+        Debug.Log($"[SaveIngredients] Inventory saved ({SaveStateManager.saveData.savedInventory.Count} ingredients).");
+    }
 
-        // Create a fresh list that matches exactly what's in memory.
-        List<IngredientSaveEntry> newSavedInventory = new List<IngredientSaveEntry>();
-
-        foreach (var entry in currentInventoryData)
-        {
-            newSavedInventory.Add(new IngredientSaveEntry
-            {
-                ingredientName = entry.ingredientName,
-                quantity = entry.quantity
-            });
-        }
-
-        SaveStateManager.saveData.savedInventory = newSavedInventory;
-
+    // Full sync (not merge) so repeated calls from different flows (pickup, battle-end, baking) stay idempotent.
+    private void SyncIngredientsToSaveData()
+    {
+        SaveStateManager.saveData.savedInventory = PersistentInventoryManager.ToSaveData(PersistentInventoryManager.CurrentInventory);
         SaveStateManager.SaveGame(SaveStateManager.saveData);
-
-        Debug.Log($"[SaveIngredients] Inventory saved ({newSavedInventory.Count} ingredients).");
     }
 
     public void LoadIngredients(List<Ingredient> allIngredientPrototypes)
