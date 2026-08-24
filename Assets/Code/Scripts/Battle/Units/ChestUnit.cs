@@ -29,6 +29,13 @@ public class ChestUnit : Unit
 
     protected override void CheckEnemyDefeat()
     {
+        // Free up the tile BEFORE spawning prizes so occupancy check doesn't block spawning
+        if (ownedTile != null)
+        {
+            ownedTile.currentSingleTileCondition = SingleTileCondition.free;
+            ownedTile.detectedUnit = null;
+        }
+        
         // Instead of typical enemy rewards, we process the specific chest loot
         if (unitTemplate is ChestTemplate chestConfig)
         {
@@ -53,13 +60,6 @@ public class ChestUnit : Unit
         else
         {
             Debug.Log("[CHEST] Destroyed! Dropping default SimpleKey (No ChestTemplate assigned).");
-        }
-
-        // Free up the tile so units can step on it
-        if (ownedTile != null)
-        {
-            ownedTile.currentSingleTileCondition = SingleTileCondition.free;
-            ownedTile.detectedUnit = null;
         }
 
         // Turn off the physical chest prototype

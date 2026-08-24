@@ -330,16 +330,18 @@ public class Unit : MonoBehaviour
         if (this.gameObject.tag != "Enemy")
             return;
         var activePlayerUnit = GameObject.FindGameObjectWithTag("ActivePlayerUnit");
-        if (activePlayerUnit != null)
-        {
-            // After an Enemy dies, retrieve the Rewards from it.
-            CheckBattleRewards(activePlayerUnit);
-        }
-
+        
+        // Clear the tile BEFORE processing rewards so prize spawning can succeed
         if (ownedTile != null)
         {
             ownedTile.currentSingleTileCondition = SingleTileCondition.free;
             ownedTile.detectedUnit = null;
+        }
+        
+        if (activePlayerUnit != null)
+        {
+            // After an Enemy dies, retrieve the Rewards from it.
+            CheckBattleRewards(activePlayerUnit);
         }
     }
 

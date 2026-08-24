@@ -194,8 +194,11 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         _locationCanvas.transform.localScale = scale;
     }
 
+    // The Nodes in the OverworldMap scene point to this method. Player clicks on a node -> battle entrance logic starts.
     public void HandleBattleEntry()
     {
+        // In current implementation, all battle types lead to same outcome: entering a Regular Battle.
+        // I should be mindfult that RegularBattle is a misleading name, since actually this can switch to different types of battle.
         switch (type)
         {
             case NodeType.RegularBattle:
@@ -211,15 +214,18 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
     {
         NodesUnlockManager nodesUnlockManager = GameManager.Instance.NodesUnlockManager;
 
-        // Use the controller's own node type to determine if it's a puzzle
+        // Use the controller's own node type to determine if it's a puzzle. We can also hook into this
+        // to manage other type of situations depending on the Node type.
         if (type == NodeType.PuzzleBattle)
         {
             nodesUnlockManager.SpendKeyResource();
         }
 
         // The sequence happening when the Player clicks on a node.
+        // Basically, enemies are picked from the pool, the loader starts and the calendar time increases.
         Time.timeScale = 1f;
-        enemySelection.SelectMapNode();
+        enemySelection.SelectMapNode(); // Injects all data into the node that has been currently clicked by the Player.
+        // This way, when moving from Map to Battle, data will be stored on GameManager, survives across scenes and be recreated at the start of the battle.
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();
         OverworldMapManager.Instance.CalendarController
             .IncreaseDaysCounter(_dayCost); // We increment it additionally here inside interaction optionally.

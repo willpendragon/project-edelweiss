@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using PixelCrushers.DialogueSystem;
+using System;
 
 [System.Serializable]
 public struct AchievementDialogueMapping
@@ -26,16 +27,53 @@ public class BattleDialogueController : MonoBehaviour
 
     private void Start()
     {
+        // These conversations are connected to completing an achievement (in the demo, unlocking deities).
+        // So they will fire typically when you kill all of the bounties required by a Deity AND the Deity apperance roll is successful.
+        // (AKA, a Deity capture Battle).
+        // Be mindful that this logic will always fire before any other overrides.
+        // So if you place a dialogue at, say, Node 2, and the deity trigger unlocks, you won't see that dialogue.
+        // This could be fine, but could also mean the Player will miss it.
+        // Since it takes some times to farm enemy kills and trigger achievements, it's fine to force a dialogue at 1-2 still.
+
         CheckAndTriggerAchievementDialogues();
         if (_deityBanterPlayed)
             return;
         else
         {
+            // If no achievements have been completed, follow the typical logic.
             StartMapConversation();
         }
     }
 
     public void StartMapConversation()
+    {
+        // This will fire only if the user has setup an override inside the Level scriptable object config.
+        // Just be mindful that map types in Level SO config don't correspond to the generated nodes map type (for randomization purposes).
+        // So in the demo, if you wish to make a dialogue appear in correspondance of a specific node in the flow, you need to
+        // force the dialogue triggering by setting a convoTitle in the Level SO config. It requires a bit of back and forth
+        // in-engine to have the dialogue flow make sense, since you want to see if the node configuration belongs to one type.
+        // So always have the map generated at runtime, check the level number and type. Then go back to the level SO config and only then
+        // Add the convo title. Of course generic banter dialogues can sit almost anywhere, but something really specific, you have to
+        // Double-check manually at the moment. Sorry about that (-_-);
+        if (GameManager.Instance.currentConversationTitle != null)
+        {
+            string conversationTitle = GameManager.Instance.currentConversationTitle;
+            DialogueManager.StartConversation(conversationTitle);
+        }
+        else
+        {
+            // Reads from MapData and starts the conversation specified in the corresponding map config that has been created in the Edelweiss Map Editor.
+            // Much more straightforward! Just add a title in the MapData config and it will be played in fight.
+            // This is meant for maps that you're supposed to encounter only once (Boss Fight).
+            // For other cases (example, puzzle maps that are rehashed with different enemies), just read from Level SO -> GameManager.
+            // This is only a temporary solution. Ideally, all maps should be unique and have (or not!) their own dialogue.
+            // Still, I want to be able to fire dialogue in specific moments in the Node flow.
+
+            StartConversationFromMapData();
+        }
+    }
+
+    private void StartConversationFromMapData()
     {
         MapData mapData = GridManager.Instance.currentMapData;
         if (mapData == null)
