@@ -64,14 +64,13 @@ public class FoodListUIController : MonoBehaviour
             //itemFoodButton.onClick.AddListener(() => OnItemClicked(entry.item, entry.item.itemFoodPrice));
 
             TextMeshProUGUI[] texts = itemFoodButton.GetComponentsInChildren<TextMeshProUGUI>();
-            if (texts.Length >= 6)
+            if (texts.Length >= 5)
             {
-                texts[0].text = $"x{entry.quantity}";
-                texts[1].text = entry.item.itemFoodPrice.ToString();
+                texts[0].text = $"x{entry.quantity} Crafted Items Available";
+                texts[1].text = $"{entry.item.itemFoodPrice} [COINS ICON]";
                 texts[2].text = entry.item.itemFoodName;
-                texts[3].text = FoodTypeLabel(entry.item);
-                texts[4].text = entry.item.recoveryAmount.ToString();
-                texts[5].text = entry.item.itemFoodDescription;
+                texts[3].text = $"{FoodTypeLabel(entry.item)} +{entry.item.recoveryAmount}";
+                texts[4].text = entry.item.itemFoodDescription;
             }
         }
     }
