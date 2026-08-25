@@ -22,7 +22,6 @@ public class GameStatsManager : MonoBehaviour
     public Inventory inventory;
     [SerializeField] FaithController faithController;
     [SerializeField] TurnController _turnController;
-    [SerializeField] private List<Ingredient> allIngredientPrototypes;
 
     private CharacterData characterData;
 
@@ -57,7 +56,7 @@ public class GameStatsManager : MonoBehaviour
         // Wait until the CurrentInventory is initialized
         yield return new WaitUntil(() => PersistentInventoryManager.CurrentInventory != null);
 
-        LoadIngredients(allIngredientPrototypes);
+        LoadIngredients(PersistentInventoryManager.Instance.AllIngredientPrototypes);
     }
 
     public void SaveCharacterData()
@@ -431,7 +430,7 @@ public class GameStatsManager : MonoBehaviour
             SaveStateManager.saveData.savedInventory,
             PersistentInventoryManager.CurrentInventory,
             allIngredientPrototypes
-        );
+        );  
         Debug.Log("Loaded ingredients into runtime inventory.");
     }
 
