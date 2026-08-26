@@ -7476,7 +7476,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3124417471100801432, guid: 70bff9b8392642945818fd41c81090c7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000014543533
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3138942876258982343, guid: 70bff9b8392642945818fd41c81090c7, type: 3}
       propertyPath: m_Pivot.x
@@ -7965,6 +7965,10 @@ PrefabInstance:
     - target: {fileID: 4731664505791315198, guid: 70bff9b8392642945818fd41c81090c7, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4747967773111252085, guid: 70bff9b8392642945818fd41c81090c7, type: 3}
+      propertyPath: m_Spacing
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4780865284359770198, guid: 70bff9b8392642945818fd41c81090c7, type: 3}
       propertyPath: m_UiScaleMode
@@ -8598,6 +8602,10 @@ PrefabInstance:
       propertyPath: m_Alpha
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8806397130199468426, guid: 70bff9b8392642945818fd41c81090c7, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8814014030503148775, guid: 70bff9b8392642945818fd41c81090c7, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -8926,7 +8934,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.81568635, g: 0.6117647, b: 0.5568628, a: 1}
+  m_Color: {r: 0.81568635, g: 0.6117647, b: 0.5568628, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

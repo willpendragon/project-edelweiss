@@ -28,6 +28,7 @@ public class FoodListUIController : MonoBehaviour
 
             GameObject itemFoodObject = Instantiate(itemFoodPrefab, foodItemsContainer.transform);
             itemFoodObject.GetComponent<Image>().sprite = entry.item.foodIcon;
+            // I'm keeping this button reference just because I need to keep the flow intact (however the button is not enabled).
             Button itemFoodButton = itemFoodObject.GetComponentInChildren<Button>();
 
             EventTrigger trigger = itemFoodObject.gameObject.GetComponent<EventTrigger>();
