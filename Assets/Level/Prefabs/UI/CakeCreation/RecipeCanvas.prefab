@@ -352,16 +352,16 @@ MonoBehaviour:
   m_Content: {fileID: 3124417471100801432}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 150
   m_Viewport: {fileID: 7995932581452777584}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 3470689297198761630}
   m_HorizontalScrollbarVisibility: 2
-  m_VerticalScrollbarVisibility: 2
+  m_VerticalScrollbarVisibility: 0
   m_HorizontalScrollbarSpacing: -3
   m_VerticalScrollbarSpacing: -3
   m_OnValueChanged:
@@ -1278,6 +1278,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 198254373960054190, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
+      propertyPath: m_Horizontal
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198254373960054190, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
+      propertyPath: m_HorizontalScrollbar
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808933978331823359, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -20
+      objectReference: {fileID: 0}
     - target: {fileID: 3442765945943018445, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
@@ -1400,6 +1412,7 @@ PrefabInstance:
     - {fileID: 5697640253961551671, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
     - {fileID: 952021957261966938, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
     - {fileID: 4679038743680200842, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
+    - {fileID: 209194137195878379, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 285e0215902fa7f4287ac749ff4f6c7e, type: 3}
