@@ -27,10 +27,12 @@ public class FoodListUIController : MonoBehaviour
                 continue;
 
             GameObject itemFoodObject = Instantiate(itemFoodPrefab, foodItemsContainer.transform);
-            itemFoodObject.GetComponent<Image>().sprite = entry.item.foodIcon;
+            // itemFoodObject.GetComponentInChildren<Image>().sprite = entry.item.foodIcon;
+            itemFoodObject.GetComponent<ItemFoodIconHelper>().UpdatePastryIcon(entry.item.foodIcon);
+            // I'm keeping this button reference just because I need to keep the flow intact (however the button is not enabled).
             Button itemFoodButton = itemFoodObject.GetComponentInChildren<Button>();
 
-            EventTrigger trigger = itemFoodObject.gameObject.GetComponent<EventTrigger>();
+            EventTrigger trigger = itemFoodObject.gameObject.GetComponentInChildren<EventTrigger>();
             // Add Require Component to Food Item GameObject.
             // Using Dragging instead of clicking
             EventTrigger.Entry beginDragEntry = new EventTrigger.Entry();
@@ -63,16 +65,24 @@ public class FoodListUIController : MonoBehaviour
 
             //itemFoodButton.onClick.AddListener(() => OnItemClicked(entry.item, entry.item.itemFoodPrice));
 
-            TextMeshProUGUI[] texts = itemFoodButton.GetComponentsInChildren<TextMeshProUGUI>();
-            if (texts.Length >= 6)
-            {
-                texts[0].text = $"x{entry.quantity}";
-                texts[1].text = entry.item.itemFoodPrice.ToString();
-                texts[2].text = entry.item.itemFoodName;
-                texts[3].text = FoodTypeLabel(entry.item);
-                texts[4].text = entry.item.recoveryAmount.ToString();
-                texts[5].text = entry.item.itemFoodDescription;
-            }
+            var itemFoodIconHelper = itemFoodObject.GetComponent<ItemFoodIconHelper>();
+            itemFoodIconHelper.PopulateItemFoodDetails(
+                entry.item.itemFoodName,
+                $"{FoodTypeLabel(entry.item)} +{entry.item.recoveryAmount}",
+                $"{entry.item.itemFoodPrice} <space=30><sprite=91>",
+                $"x{entry.quantity} Available",
+                entry.item.itemFoodDescription
+            );
+
+            // TextMeshProUGUI[] texts = itemFoodButton.GetComponentsInChildren<TextMeshProUGUI>();
+            // if (texts.Length >= 5)
+            // {
+            //     texts[0].text = $"x{entry.quantity} Crafted Items Available";
+            //     texts[1].text = $"{entry.item.itemFoodPrice} [COINS ICON]";
+            //     texts[2].text = entry.item.itemFoodName;
+            //     texts[3].text = $"{FoodTypeLabel(entry.item)} +{entry.item.recoveryAmount}";
+            //     texts[4].text = entry.item.itemFoodDescription;
+            // }
         }
     }
 
@@ -86,12 +96,12 @@ public class FoodListUIController : MonoBehaviour
         }
         else if (food.itemFoodType == ItemFoodType.ManaRecovery)
         {
-            foodTypeLabel = "Mana Recovery";
+            foodTypeLabel = "MP Recovery";
             return foodTypeLabel;
         }
         else if (food.itemFoodType == ItemFoodType.FaithRecovery)
         {
-            foodTypeLabel = "Faith Recovery";
+            foodTypeLabel = "FP Recovery";
             return foodTypeLabel;
         }
         else

@@ -50,6 +50,20 @@ public class PrizeCollectionHelper : MonoBehaviour
                 Debug.Log("Added Key to Game Stats Manager and saved to game state");
             }
             else if (fieldPrizeController != null &&
+                     fieldPrizeController.ItemFieldPrizeType == ItemFieldPrizeType.Ingredient)
+            {
+                Ingredient collectedIngredient = fieldPrizeController.fieldPrizeTemplate.ingredientReward;
+                PersistentInventoryManager.CurrentInventory.Add(collectedIngredient);
+
+                GameStatsManager gameStatsManager = GameObject.FindGameObjectWithTag("GameStatsManager")
+                    .GetComponent<GameStatsManager>();
+                gameStatsManager.SaveIngredients();
+
+                BattleSFXManager.PlaySound(SoundType.PICKUPUPGRADE);
+                DisplayUpgradeNotification($"{collectedIngredient.ingredientName} added to inventory!");
+                Debug.Log($"Collected ingredient {collectedIngredient.ingredientName} and saved to game state");
+            }
+            else if (fieldPrizeController != null &&
                      fieldPrizeController.ItemFieldPrizeType == ItemFieldPrizeType.MinibossKey)
             {
                 BattleManager.Instance.battleRewardsController.acquiredMinibossKey = true;

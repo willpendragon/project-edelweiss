@@ -43,12 +43,17 @@ public class ChestUnit : Unit
 
             if (fieldPrizeController != null)
             {
-                ItemFieldPrize prizeSOToLoad = null;
+                ItemFieldPrize prizeSOToLoad = chestConfig.prizeOverride;
 
-                if (chestConfig.chestPrizeType == ChestTemplate.ChestPrizeType.MinibossKey)
-                    prizeSOToLoad = Resources.Load<ItemFieldPrize>("MinibossKeyPrize");
-                else if (chestConfig.chestPrizeType == ChestTemplate.ChestPrizeType.BossKey)
-                    prizeSOToLoad = Resources.Load<ItemFieldPrize>("BossKeyPrize");
+                if (prizeSOToLoad == null)
+                {
+                    if (chestConfig.chestPrizeType == ChestTemplate.ChestPrizeType.MinibossKey)
+                        prizeSOToLoad = Resources.Load<ItemFieldPrize>("MinibossKeyPrize");
+                    else if (chestConfig.chestPrizeType == ChestTemplate.ChestPrizeType.BossKey)
+                        prizeSOToLoad = Resources.Load<ItemFieldPrize>("BossKeyPrize");
+                    else if (chestConfig.chestPrizeType == ChestTemplate.ChestPrizeType.Ingredient)
+                        prizeSOToLoad = Resources.Load<ItemFieldPrize>("IngredientPrize");
+                }
 
                 fieldPrizeController.DropSpecificPrize(ownedTile, chestConfig.chestPrizeType, prizeSOToLoad);
             }

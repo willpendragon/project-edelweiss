@@ -248,6 +248,7 @@ public partial class MapEditorWindow
         else if (type == TileType.Chest) customPrefabName = "Chest";
         else if (type == TileType.DeityTile) customPrefabName = "DeityTile";
         else if (type == TileType.Beacon) customPrefabName = "Beacon";
+        else if (type == TileType.IngredientChest) customPrefabName = "IngredientChest";
 
         if (!string.IsNullOrEmpty(customPrefabName))
         {
@@ -275,6 +276,7 @@ public partial class MapEditorWindow
         else if (type == TileType.MinibossChest) c = Color.yellow;
         else if (type == TileType.BossChest) c = Color.red;
         else if (type == TileType.DeityTile) c = Color.cyan;
+        else if (type == TileType.IngredientChest) c = Color.green;
 
         if (c != Color.white)
         {

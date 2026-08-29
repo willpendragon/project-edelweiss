@@ -7,10 +7,12 @@ public class PersistentInventoryManager : MonoBehaviour
     public static Inventory CurrentInventory { get; private set; }
 
     [SerializeField] private Inventory inventoryAsset; // Drag Inventory SO.
-    [SerializeField] private List<Ingredient> allIngredientPrototypes; // Assign all known ingredients in the Inspector.
+    [SerializeField] private List<Ingredient> allIngredientPrototypes; // Assign all known ingredients in the Inspector. Single source of truth - other classes should read this instead of keeping their own copy.
     [SerializeField] private List<ItemFood> allBakedItemPrototypes; // Assign all known baked items in the Inspector.
 
     public static PersistentInventoryManager Instance;
+
+    public List<Ingredient> AllIngredientPrototypes => allIngredientPrototypes;
 
     void Awake()
     {

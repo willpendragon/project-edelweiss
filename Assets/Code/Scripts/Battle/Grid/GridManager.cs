@@ -155,11 +155,12 @@ public class GridManager : MonoBehaviour
             }
 
             if (tileData.tileType == TileType.Chest || tileData.tileType == TileType.MinibossChest ||
-                tileData.tileType == TileType.BossChest)
+                tileData.tileType == TileType.BossChest || tileData.tileType == TileType.IngredientChest)
             {
                 string targetPrefabName = "";
                 if (tileData.tileType == TileType.MinibossChest) targetPrefabName = "MiniBossChest";
                 else if (tileData.tileType == TileType.BossChest) targetPrefabName = "BossChest";
+                else if (tileData.tileType == TileType.IngredientChest) targetPrefabName = "IngredientChest";
                 else targetPrefabName = "Chest";
 
                 GameObject loadedPrefab = Resources.Load<GameObject>(targetPrefabName);
@@ -184,6 +185,7 @@ public class GridManager : MonoBehaviour
                     {
                         if (tileData.tileType == TileType.MinibossChest) renderer.material.color = Color.yellow;
                         else if (tileData.tileType == TileType.BossChest) renderer.material.color = Color.red;
+                        else if (tileData.tileType == TileType.IngredientChest) renderer.material.color = Color.green;
                         else renderer.material.color = new Color(0.5f, 0.0f, 0.8f, 1f);
                     }
 
@@ -198,28 +200,36 @@ public class GridManager : MonoBehaviour
 
                 chestPrototype.tag = "Chest";
 
-                // It safely assigns missing setup requirements if the prefab doesn't have them baked in yet
-                if (!chestPrototype.GetComponent<ChestUnit>())
+                // Always wire runtime references, whether ChestUnit was just added or pre-baked onto the prefab
+                var chestUnit = chestPrototype.GetComponent<ChestUnit>();
+                if (chestUnit == null)
                 {
-                    var chestUnit = chestPrototype.AddComponent<ChestUnit>();
+                    chestUnit = chestPrototype.AddComponent<ChestUnit>();
                     chestUnit.HealthPoints = 10;
                     chestUnit.currentUnitLifeCondition = Unit.UnitLifeCondition.unitAlive;
-                    chestUnit.ownedTile = tileController;
                     chestUnit.bossFlag = false;
+                }
 
-                    if (!chestPrototype.GetComponent<PrizeReleaseController>())
-                    {
-                        var releaseController = chestPrototype.AddComponent<PrizeReleaseController>();
-                        chestUnit.fieldPrizeController = releaseController;
-                    }
+                chestUnit.ownedTile = tileController;
+                chestUnit.currentXCoordinate = tileData.position.x;
+                chestUnit.currentYCoordinate = tileData.position.z;
 
-                    chestUnit.currentXCoordinate = tileData.position.x;
-                    chestUnit.currentYCoordinate = tileData.position.z;
+                if (chestUnit.fieldPrizeController == null)
+                {
+                    var releaseController = chestPrototype.GetComponent<PrizeReleaseController>();
+                    if (releaseController == null)
+                        releaseController = chestPrototype.AddComponent<PrizeReleaseController>();
+                    chestUnit.fieldPrizeController = releaseController;
+                }
 
+                if (chestUnit.unitTemplate == null)
+                {
                     if (tileData.tileType == TileType.MinibossChest)
                         chestUnit.unitTemplate = Resources.Load<ChestTemplate>("MinibossChestTemplate");
                     else if (tileData.tileType == TileType.BossChest)
                         chestUnit.unitTemplate = Resources.Load<ChestTemplate>("BossChestTemplate");
+                    else if (tileData.tileType == TileType.IngredientChest)
+                        chestUnit.unitTemplate = Resources.Load<ChestTemplate>("IngredientChestTemplate");
                 }
             }
         }

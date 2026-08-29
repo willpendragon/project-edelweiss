@@ -198,7 +198,8 @@ public partial class MapEditorWindow : EditorWindow
             TileType.Chest,
             TileType.MinibossChest,
             TileType.BossChest,
-            TileType.DeityTile // <--- Added DeityTile
+            TileType.DeityTile, // <--- Added DeityTile
+            TileType.IngredientChest
         };
 
         // 2. Convert them to string arrays for the Editor UI
@@ -217,6 +218,10 @@ public partial class MapEditorWindow : EditorWindow
         {
             string reqName = selectedTileType == TileType.MinibossChest ? "MiniBossChest" : "BossChest";
             EditorGUILayout.HelpBox($"The '{selectedTileType}' strictly requires a prefab named '{reqName}' inside any 'Resources' folder to load properly at runtime.", MessageType.Info);
+        }
+        else if (selectedTileType == TileType.IngredientChest)
+        {
+            EditorGUILayout.HelpBox("The 'IngredientChest' prefab needs a baked-in ChestUnit (Unit Template = your IngredientChestTemplate asset, with Prize Override = your IngredientPrize asset) to avoid any Resources-folder naming requirement. Without a baked-in ChestUnit, it falls back to loading 'IngredientChest'/'IngredientChestTemplate'/'IngredientPrize' by name from a 'Resources' folder.", MessageType.Info);
         }
 
         EditorGUILayout.Space();

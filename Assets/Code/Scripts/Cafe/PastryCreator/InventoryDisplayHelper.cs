@@ -1,30 +1,49 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class InventoryDisplayHelper : MonoBehaviour
-
 {
-    [SerializeField] private List<string> _inventoryEntries;
+    [SerializeField] private Transform _inventoryContentParent;
     [SerializeField] private TextMeshProUGUI _inventoryText;
+    [SerializeField] private GameObject _ingredientPrefab; 
 
     void Start()
     {
         RefreshInventoryDisplay();
     }
+
     public void RefreshInventoryDisplay()
     {
-        _inventoryEntries.Clear();
-        foreach (var entry in PersistentInventoryManager.CurrentInventory.items)
+        foreach (Transform child in _inventoryContentParent)
+            Destroy(child.gameObject);
+
+        var items = PersistentInventoryManager.CurrentInventory.items;
+
+        if (_inventoryText != null)
+            _inventoryText.gameObject.SetActive(items.Count == 0);
+
+        if (items.Count == 0)
         {
-            string inventoryEntry = $"{entry.ingredient.ingredientName} x{entry.quantity}";
-            _inventoryEntries.Add(inventoryEntry);
-            string inventoryList = string.Join("\n", _inventoryEntries);
-            _inventoryText.text = inventoryList;
+            if (_inventoryText != null)
+                _inventoryText.text = "No Ingredients available";
+            return;
         }
-        if (_inventoryEntries.Count == 0)
+
+        foreach (var entry in items)
         {
-            _inventoryText.text = "No Ingredients available";
+            CreateInventoryRow(entry);
+        }
+    }
+
+    private void CreateInventoryRow(InventoryEntry entry)
+    {
+        GameObject row = Instantiate(_ingredientPrefab, _inventoryContentParent);
+        row.name = $"Row_{entry.ingredient.ingredientName}";
+
+        if (row.TryGetComponent<IngredientRowContainerHelper>(out var rowHelper))
+        {
+            string labelText = $"{entry.ingredient.ingredientName} x{entry.quantity}";
+            rowHelper.UpdateIngredientDetails(entry.ingredient.ingredientIcon, labelText);
         }
     }
 }

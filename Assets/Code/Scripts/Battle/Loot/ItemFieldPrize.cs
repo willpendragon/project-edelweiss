@@ -8,7 +8,8 @@ public enum ItemFieldPrizeType
     magicPowerUp,
     PuzzleLevelKey,
     MinibossKey,
-    BossKey
+    BossKey,
+    Ingredient // Appended at end to preserve serialized int values of existing prizes
 }
 [CreateAssetMenu(fileName = "ItemFieldPrize", menuName = "Items/FieldPrize", order = 1)]
 
@@ -22,6 +23,8 @@ public class ItemFieldPrize : ScriptableObject
 
     public ItemFieldPrizeType itemFieldPrizeType;
     public float powerUpAmount;
+
+    public Ingredient ingredientReward; // Hardcoded ingredient dropped when itemFieldPrizeType is Ingredient
 
     //public Sprite foodIcon;
     //public float itemFoodPrice;

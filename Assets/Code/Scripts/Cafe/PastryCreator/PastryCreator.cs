@@ -10,7 +10,6 @@ public class PastryCreator : MonoBehaviour
     [SerializeField] private List<Recipe> allRecipes;
     [SerializeField] private Transform recipeListParent;
     [SerializeField] private GameObject recipeUIPrefab;
-    [SerializeField] private List<Ingredient> allIngredientPrototypes;
     [SerializeField] InventoryDisplayHelper _inventoryDisplayHelper;
     [SerializeField] private PastryFeedbackController _pastryFeedbackController;
     [SerializeField] CafeMenuUIController _cafeMenuiUIController;
@@ -18,6 +17,8 @@ public class PastryCreator : MonoBehaviour
     private IEnumerator Start()
     {
         yield return new WaitUntil(() => PersistentInventoryManager.CurrentInventory != null);
+
+        var allIngredientPrototypes = PersistentInventoryManager.Instance.AllIngredientPrototypes;
 
         // Debug allIngredientPrototypes
         Debug.Log($"[PastryCreator] Ingredient prototypes loaded: {allIngredientPrototypes.Count}");
@@ -41,7 +42,7 @@ public class PastryCreator : MonoBehaviour
 
         var inventory = PersistentInventoryManager.CurrentInventory;
 
-        Debug.Log($"[PastryCreator] Refreshing UI — items in inventory: {inventory.items.Count}");
+        Debug.Log($"[PastryCreator] Refreshing UI items in inventory: {inventory.items.Count}");
 
         foreach (var recipe in allRecipes)
         {

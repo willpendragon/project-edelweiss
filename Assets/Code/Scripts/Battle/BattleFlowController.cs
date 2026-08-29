@@ -77,20 +77,36 @@ public class BattleFlowController : MonoBehaviour
                 }
             }
         }
-        // Add Ingredients to Persistent Inventory
+        // Add Ingredients to Persistent Inventory (and collect for battle-end display)
+        List<Ingredient> battleLootedIngredients = new List<Ingredient>();
         foreach (var player in TurnController.Instance.playerUnitsOnBattlefield)
         {
             var rewards = player.GetComponent<BattleRewardsController>();
             foreach (var ingredient in rewards.ingredients)
             {
                 PersistentInventoryManager.CurrentInventory.Add(ingredient);
+                battleLootedIngredients.Add(ingredient);
             }
             rewards.ingredients.Clear();
         }
 
-        foreach (var entry in PersistentInventoryManager.CurrentInventory.items)
+        // Show only the ingredients looted THIS battle (aggregated by type)
+        Dictionary<string, int> ingredientCounts = new Dictionary<string, int>();
+        foreach (var ingredient in battleLootedIngredients)
         {
-            string ingredientDetails = $"{entry.ingredient.ingredientName} x{entry.quantity}";
+            if (ingredientCounts.ContainsKey(ingredient.ingredientName))
+            {
+                ingredientCounts[ingredient.ingredientName]++;
+            }
+            else
+            {
+                ingredientCounts[ingredient.ingredientName] = 1;
+            }
+        }
+
+        foreach (var kvp in ingredientCounts)
+        {
+            string ingredientDetails = $"{kvp.Key} x{kvp.Value}";
             _lootedIngredients.Add(ingredientDetails);
         }
 
