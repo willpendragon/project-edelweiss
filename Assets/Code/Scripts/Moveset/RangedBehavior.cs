@@ -21,7 +21,7 @@ public class RangedBehavior : PhysicalAttackBehavior
     public float projectileArcHeight = 2f;
     [Tooltip("Dictates how long the projectile takes to reach the target (feedback)")]
     public float projectileDuration = 0.6f;
-    public float spawnYOffset = 1f; 
+    public float spawnYOffset = 1f;
 
     public override void AttackSequence(Unit targetUnit, TileController targetTile, Unit activePlayerUnit)
     {
@@ -51,12 +51,12 @@ public class RangedBehavior : PhysicalAttackBehavior
         int elevationDifference = attackerPos.y - targetPos.y;
         int flattenedDamage = 0;
 
-        if (targetUnit != null && targetUnit.unitType != Unit.UnitType.Deity) // I should check this out later, this probably impedes attacking the Deity obelisk.
+        if (targetUnit != null) // && targetUnit.unitType != Unit.UnitType.Deity)  I should check this out later, this probably impedes attacking the Deity obelisk.
         {
             float baseDamageOutput = activePlayerUnit.unitAttackPower * activePlayerUnit.unitMeleeAttackBaseDamage;
             float distanceBonus = distanceDamageMultiplier * flatDistance;
             float elevationBonus = elevationDifference > 0 ? (heightDamageMultiplier * elevationDifference) : 0f;
-            
+
             float finalDamage = baseDamageOutput * (1f + distanceBonus + elevationBonus);
             flattenedDamage = DamageCalculationUtility.FlattenDamage(finalDamage);
         }
@@ -68,7 +68,7 @@ public class RangedBehavior : PhysicalAttackBehavior
                 Beacon beacon = targetTile.detectedUnit?.GetComponent<Beacon>();
                 if (beacon != null) beacon.OnHitByUnit();
             }
-            else if (targetUnit != null && targetUnit.unitType != Unit.UnitType.Deity)
+            else if (targetUnit != null) // && targetUnit.unitType != Unit.UnitType.Deity)
             {
                 string message = targetUnit.unitType == Unit.UnitType.DeityShard
                     ? $"{activePlayerUnit.unitTemplate.unitName} attacked Shard"
@@ -79,38 +79,38 @@ public class RangedBehavior : PhysicalAttackBehavior
             }
         };
 
-       // Create the 3D projectile feedback
+        // Create the 3D projectile feedback
         // GameObject loadedPrefab = Resources.Load<GameObject>(projectileResourcePath);
-        
+
         if (_projectilePrefab != null)
         {
             Vector3 startPos = activePlayerUnit.transform.position + new Vector3(0, spawnYOffset, 0);
             Vector3 endPos = (targetUnit != null ? targetUnit.transform.position : targetTile.transform.position) + new Vector3(0, spawnYOffset, 0);
 
             GameObject projectile = Instantiate(_projectilePrefab, startPos, Quaternion.identity);
-            
+
             // We store the position to track the trajectory frame-by-frame
             Vector3 previousPos = projectile.transform.position;
-            
+
             // DOJump creates an arc on the Y axis while moving toward the target
             projectile.transform.DOJump(endPos, projectileArcHeight, 1, projectileDuration)
                 .SetEase(Ease.Linear)
-                .OnUpdate(() => 
+                .OnUpdate(() =>
                 {
                     // Calculate the actual direction of travel this frame
                     Vector3 currentPos = projectile.transform.position;
                     Vector3 moveDirection = currentPos - previousPos;
-                    
+
                     // If we have moved, align the Z-axis (forward) with the trajectory
                     if (moveDirection != Vector3.zero)
                     {
                         projectile.transform.forward = moveDirection.normalized;
                     }
-                    
+
                     // Update previous position for the next frame
                     previousPos = currentPos;
                 })
-                .OnComplete(() => 
+                .OnComplete(() =>
                 {
                     onHitCallback.Invoke();
                     Destroy(projectile);
