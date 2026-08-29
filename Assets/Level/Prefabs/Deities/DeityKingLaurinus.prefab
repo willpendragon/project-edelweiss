@@ -296,6 +296,7 @@ MonoBehaviour:
   deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
   deityPortrait: {fileID: 21300000, guid: 6b30c28bc4dd2dc4e8e3f13a408aee6f, type: 3}
   deityHealthBar: {fileID: 9084105364506028735}
+  IsDeityTriggered: 0
   enmityTracker: {fileID: 296715848075637836}
   deityCry: {fileID: 3413119085260301697}
   currentDeityStatus: 0
@@ -343,6 +344,7 @@ MonoBehaviour:
   fieldPrizeController: {fileID: 0}
   unitType: 2
   hasHookshot: 0
+  hasBow: 0
   bossFlag: 0
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}
@@ -1203,7 +1205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4673050221343872805, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.66
       objectReference: {fileID: 0}
     - target: {fileID: 4673050221343872805, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
       propertyPath: m_LocalPosition.z
