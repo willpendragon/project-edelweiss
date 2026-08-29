@@ -41,6 +41,7 @@ public abstract class DeityBehavior : ScriptableObject
             .Where(tile => tile != null &&
                            tile.currentSingleTileCondition == SingleTileCondition.free &&
                            tile.detectedUnit == null &&
+                           tile.tileCurrentFieldPrize == null &&
                            tile.gameObject.CompareTag(GameTags.TILE))
             .ToList();
 
