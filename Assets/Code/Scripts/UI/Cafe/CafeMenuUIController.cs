@@ -95,7 +95,7 @@ public class CafeMenuUIController : MonoBehaviour
             itemFoodObject.transform.DOShakePosition(0.35f, 20f, 20, 90f);
             return;
         }
-        itemFoodObject.GetComponent<ItemFoodIconHelper>().ActivateOrderButton(false);
+        // itemFoodObject.GetComponent<ItemFoodIconHelper>().ActivateOrderButton(false);
 
         _draggedFoodRT = itemFoodObject.GetComponent<RectTransform>();
         // Attach the Food Object Image to the Pointer
@@ -103,6 +103,10 @@ public class CafeMenuUIController : MonoBehaviour
         _originalSiblingIndex = _draggedFoodRT.GetSiblingIndex();
         _originalPosition = _draggedFoodRT.anchoredPosition;
 
+        // Hide Texts
+        itemFoodObject.GetComponent<ItemFoodIconHelper>().HideTexts();
+        // Hook into this method to center the Food Icon and give Player the impression that it's dragging the Food.
+        itemFoodObject.GetComponent<ItemFoodIconHelper>().CenterPastryIcon();
         //// Instantiate a Ghost on the previously position of the selected food on the UI.
         //_ghostFoodInstance = Instantiate(_ghostItemFoodPrefab, _originalParent);
         //_ghostFoodInstance.transform.SetAsSiblingIndex(_draggedFoodRT.GetSiblingIndex());
@@ -306,8 +310,10 @@ public class CafeMenuUIController : MonoBehaviour
             )
             .OnComplete(() =>
             {
+                Vector3 destination = new Vector3(0, 0, 0);
                 _draggedFoodRT
-                    .DOAnchorPos(_originalPosition, 0.25f)
+                    // .DOAnchorPos(_originalPosition, 0.25f)
+                    .DOAnchorPos(destination, 0)
                     .SetEase(Ease.OutQuad);
 
                 _draggedFoodRT
@@ -317,9 +323,9 @@ public class CafeMenuUIController : MonoBehaviour
                         _draggedFoodRT.SetParent(_originalParent);
                         _draggedFoodRT.SetSiblingIndex(_originalSiblingIndex);
 
-                        _draggedFoodRT
-                            .GetComponent<ItemFoodIconHelper>()
-                            .ActivateOrderButton(true);
+                        _draggedFoodRT.GetComponent<ItemFoodIconHelper>().ShowTexts();
+                        _draggedFoodRT.GetComponent<ItemFoodIconHelper>().RestorePastryIcon();
+                        // .ActivateOrderButton(true);
 
                         selectedItem = null;
                         _draggedFoodRT = null;
