@@ -25,11 +25,14 @@ public class FieldPrizeController : MonoBehaviour
         else
         {
             _fieldPrizeLabel.text = ""; // Band-aid solution, prevents keys from overriding labels.
-            // Set specific rotation/scale overrides for Key Objects.
-            _prizeVisuals.transform.localEulerAngles = new Vector3(-143, 0, 0);
-            _prizeVisuals.transform.localScale = new Vector3(0.74f, 0.74f, 0.74f);
-            _prizeVisuals.transform.localPosition = new Vector3(0, 0.2f, 0); // Note this will add to the already
-            // existing Y offset applied to the GameObject when spawning. 
+            // Set specific rotation/scale overrides for Key Objects (note: will not work on hard-coded keys, like miniboss etc).
+            if (_prizeVisuals != null)
+            {
+                _prizeVisuals.transform.localEulerAngles = new Vector3(-143, 0, 0);
+                _prizeVisuals.transform.localScale = new Vector3(0.74f, 0.74f, 0.74f);
+                _prizeVisuals.transform.localPosition = new Vector3(0, 0.2f, 0); // Note this will add up to the already
+                // existing Y offset applied to the GameObject when spawning. 
+            }
             SetKeyColor();
 
         }
