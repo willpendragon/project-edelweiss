@@ -68,6 +68,7 @@ public class TurnController : MonoBehaviour
 
     public bool battleStarted;
     private bool battleEnded;
+    public bool BattleEnded => battleEnded;
 
     [Header("Core Gameplay Logic")] public GameStatsManager gameStatsManager;
 
@@ -214,12 +215,17 @@ public class TurnController : MonoBehaviour
 
     public void PlayerUnitsLifeCheck()
     {
+        // Check to prevent enemies to check the Player Units life status after defeat sequence has already fired once. 
+        if (battleEnded)
+            return;
+
         // Check if there are any units that are NOT dead, indicating the Player Party is still active.
         bool isAnyPlayerUnitAlive = playerUnitsOnBattlefield.Any(player =>
             player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead);
 
         if (!isAnyPlayerUnitAlive) // If no units are alive, then the player party has been defeated.
         {
+            battleEnded = true;
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
         else
@@ -261,9 +267,13 @@ public class TurnController : MonoBehaviour
 
     public void FaithlessGameOverCheck()
     {
+        if (battleEnded)
+            return;
+
         if (playerUnitsOnBattlefield.All(player =>
                 player.GetComponent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.Faithless))
         {
+            battleEnded = true;
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
     }
@@ -440,7 +450,7 @@ public class TurnController : MonoBehaviour
         if (turnCounter == 1)
         {
             Debug.Log("Stop stun recovery attempt, as this is the first turn");
-            return;            
+            return;
         }
 
         UnitStatusController statusController = playerUnit.GetComponent<UnitStatusController>();
