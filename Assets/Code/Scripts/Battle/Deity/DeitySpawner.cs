@@ -51,7 +51,7 @@ public class DeitySpawner : MonoBehaviour
     {
         // Deity Status Check
         UpdateSpawnableDeities();
-        if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
+        if (BattleTypeController.Instance != null && BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.RegularBattle)
         {
             // OVERRIDE: If forced by the Roaming Deity, spawn it directly and skip random chance
             if (BattleTypeController.isForcedRoamingDeity && BattleTypeController.forcedRoamingDeityPrefab != null)
@@ -83,27 +83,44 @@ public class DeitySpawner : MonoBehaviour
             var healthBar = BattleManager.Instance.deity.GetComponentInChildren<DeityHealthBar>();
             healthBar.HideHealthBar();
         }
-        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
+        else if (BattleTypeController.Instance != null && BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.BattleWithDeity)
         {
             if (deityHealthBarInstance != null)
             {
                 PopulateDeityHealthBar();
             }
         }
-        else if (BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.PuzzleBattle) // Also Boss Battles are currently marked as Puzzle Battles
+        else if (BattleTypeController.Instance != null && BattleTypeController.Instance.currentBattleType == BattleTypeController.BattleType.PuzzleBattle)
         {
-            // Quick fix (since deities in boss fight are created via map generation, avoid expensive gameobject finding in the future.
-            currentUnboundDeity = GameObject.FindGameObjectWithTag(GameTags.Deity).GetComponent<Deity>();
-            Slider deityHPSlider =
-                currentUnboundDeity.deityHealthBar.GetComponentInChildren<HPSliderController>().slider;
+            GameObject deityObj = GameObject.FindGameObjectWithTag(GameTags.Deity);
 
-            Unit currentUnboundDeityUnit = currentUnboundDeity.gameObject.GetComponent<Unit>();
+            if (deityObj != null) // Guard check is crucial since Deities as of now are never meant to be in a Dungeon-style Puzzle Battle.
+            {
+                currentUnboundDeity = deityObj.GetComponent<Deity>();
+                Unit currentUnboundDeityUnit = deityObj.GetComponent<Unit>();
 
-            deityHPSlider.maxValue = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints;
-            deityHPSlider.value = currentUnboundDeityUnit.GetComponent<Unit>().unitTemplate.unitHealthPoints;
-            Debug.Log($"Attempt to populate {currentUnboundDeity.gameObject.name} HP Slider");
-            // deityHPSlider.GetComponentInChildren<TextMeshProUGUI>().text =
-            //     currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints.ToString();
+                if (currentUnboundDeity != null && currentUnboundDeityUnit != null && currentUnboundDeityUnit.unitTemplate != null)
+                {
+                    if (currentUnboundDeity.deityHealthBar != null)
+                    {
+                        HPSliderController sliderController = currentUnboundDeity.deityHealthBar.GetComponentInChildren<HPSliderController>();
+
+                        if (sliderController != null && sliderController.slider != null)
+                        {
+                            Slider deityHPSlider = sliderController.slider;
+
+                            deityHPSlider.maxValue = currentUnboundDeityUnit.unitTemplate.unitMaxHealthPoints;
+                            deityHPSlider.value = currentUnboundDeityUnit.unitTemplate.unitHealthPoints;
+
+                            Debug.Log($"Attempt to populate {deityObj.name} HP Slider successful.");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("No Deity found in this Puzzle/Boss Battle. Skipping Deity UI setup.");
+            }
         }
     }
 
