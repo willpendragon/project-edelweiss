@@ -51,6 +51,7 @@ MonoBehaviour:
   _powerUpAmount: 0
   _itemFieldPrizeType: 0
   _fieldPrizeLabel: {fileID: 6990424190059694669}
+  _prizeVisuals: {fileID: 722041400955323699}
 --- !u!114 &650399975054640232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,6 +368,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82c4cf6641d732042a447e92a404def9, type: 3}
+--- !u!1 &722041400955323699 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 82c4cf6641d732042a447e92a404def9, type: 3}
+  m_PrefabInstance: {fileID: 722041400955290515}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &722041400955689235 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 82c4cf6641d732042a447e92a404def9, type: 3}
