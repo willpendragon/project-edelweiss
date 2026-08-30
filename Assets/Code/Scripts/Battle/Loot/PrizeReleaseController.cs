@@ -23,6 +23,10 @@ public class PrizeReleaseController : MonoBehaviour
 
     // Expose FieldPrizeGO internally for dynamic chest loading
     public GameObject FieldPrizePrefab
+     // The Field Prize GO is currently a generic shape in the Project folder.
+     // It will morph either into a Key or an Upgrade Crystal depending on the GameObject
+     // sitting on the Prize SO and retrieve the MeshFilter component. Consider changing this
+     // to a less convoluted system.
     {
         get => _fieldPrizeGO;
         set => _fieldPrizeGO = value;

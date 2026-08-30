@@ -296,6 +296,7 @@ MonoBehaviour:
   deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
   deityPortrait: {fileID: 21300000, guid: 6b30c28bc4dd2dc4e8e3f13a408aee6f, type: 3}
   deityHealthBar: {fileID: 9084105364506028735}
+  DeityModel: {fileID: 7975233190445850094}
   IsDeityTriggered: 0
   enmityTracker: {fileID: 296715848075637836}
   deityCry: {fileID: 3413119085260301697}
@@ -1205,7 +1206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4673050221343872805, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.66
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4673050221343872805, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1255,6 +1256,11 @@ PrefabInstance:
 --- !u!4 &7975233190445547534 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4673050221343872805, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
+  m_PrefabInstance: {fileID: 3348349631370794795}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7975233190445850094 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4673050221343967941, guid: bc7df1884e932da4f971be8baff7cabf, type: 3}
   m_PrefabInstance: {fileID: 3348349631370794795}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4751057937311556008
