@@ -38,6 +38,7 @@ public class Deity : MonoBehaviour
     public GameObject deityEnmityTracker;
     public Sprite deityPortrait;
     public GameObject deityHealthBar;
+    public GameObject DeityModel;
 
     public bool IsDeityTriggered; // Flags the deity as triggered/angry when the Rage meter is full.
 

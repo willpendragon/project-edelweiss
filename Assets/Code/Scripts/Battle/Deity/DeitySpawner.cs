@@ -126,7 +126,7 @@ public class DeitySpawner : MonoBehaviour
     {
         // Remove deities that are killed, linked to players, or captured but unassigned
         GameSaveData saveData = SaveStateManager.saveData;
-        
+
         for (int i = spawnableDeities.Count - 1; i >= 0; i--)
         {
             var deity = spawnableDeities[i];
@@ -134,12 +134,12 @@ public class DeitySpawner : MonoBehaviour
             string deityId = deity.Id;
 
             // Check if killed
-            bool deityIsKilled = _killedDeityDictionary.ContainsKey(deityName) && 
+            bool deityIsKilled = _killedDeityDictionary.ContainsKey(deityName) &&
                                  _killedDeityDictionary[deityName];
 
             // Check if captured and linked to a player
             bool deityIsLinked = saveData.unitsLinkedToDeities.ContainsValue(deityId);
-            
+
             // Check if captured but unassigned
             bool deityIsUnassignedCaptured = saveData.unassignedCapturedDeities.Contains(deityId);
 
@@ -257,7 +257,7 @@ public class DeitySpawner : MonoBehaviour
         unlockedDeity.GetComponent<Unit>().startingXCoordinate = unlockedDeityStartingTileXCoordinate;
         unlockedDeity.GetComponent<Unit>().startingYCoordinate = unlockedDeityStartingTileYCoordinate;
 
-        
+
         // Optionally, check if a DeityTile dictates the 3D spawn position instead of relying on the static empty GameObject
         Vector3 spawnWorldPos = deitySpawnPosition.position;
         TileController firstDeitySpawningTile =
@@ -286,6 +286,12 @@ public class DeitySpawner : MonoBehaviour
                 GridManager.Instance.PlaceUnitOnTileSurface(unboundDeity, firstDeitySpawningTile);
             }
 
+            Deity deityComponent = unboundDeity.GetComponent<Deity>();
+            if (deityComponent != null && deityComponent.DeityModel != null)
+            {
+                deityComponent.DeityModel.transform.localPosition = new Vector3(0, 1f, 0);
+            }
+
             unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
             _deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
 
@@ -310,7 +316,7 @@ public class DeitySpawner : MonoBehaviour
         }
 
         unboundDeity.gameObject.tag = "Enemy";
-        
+
     }
 
     public bool DeityIsUnavailable(string deityName)
@@ -323,9 +329,9 @@ public class DeitySpawner : MonoBehaviour
         }
 
         // Check if captured - find deity ID first
-        var deity = spawnableDeities.FirstOrDefault(d => 
+        var deity = spawnableDeities.FirstOrDefault(d =>
             d.GetComponent<Unit>().unitTemplate.unitName == deityName);
-        
+
         if (deity != null)
         {
             bool isCaptured = SaveStateManager.saveData.unitsLinkedToDeities.ContainsValue(deity.Id);
@@ -335,7 +341,7 @@ public class DeitySpawner : MonoBehaviour
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -347,7 +353,7 @@ public class DeitySpawner : MonoBehaviour
     private string GetDeityIdByName(string deityName)
     {
         // Find deity ID from spawnable deities or loaded data
-        var deity = spawnableDeities.FirstOrDefault(d => 
+        var deity = spawnableDeities.FirstOrDefault(d =>
             d.GetComponent<Unit>().unitTemplate.unitName == deityName);
         return deity != null ? deity.Id : null;
     }
