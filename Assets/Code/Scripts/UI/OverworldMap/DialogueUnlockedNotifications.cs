@@ -19,12 +19,27 @@ public class DialogueUnlockedNotifications : MonoBehaviour
     private void Start()
     {
         GameSaveData conversationData = SaveStateManager.saveData;
-        // Load Convo Current Index and Latest Convo Number
-        int convoIndex = conversationData.convoIndex;
-        int lastConvoNumber = conversationData.lastConvoNumber; // It was previously saved via this class.
-        if (convoIndex == lastConvoNumber) // Blocks execution if no new convo unlocks. 
+
+        if (conversationData.unlockedConversations == null ||
+            conversationData.unlockedConversations.Count == 0 ||
+            conversationData.convoIndex == 0)
+        {
             return;
-        string dialogueTitle = conversationData.unlockedConversations[convoIndex - 1].conversationID;
+        }
+
+        int convoIndex = conversationData.convoIndex;
+        int lastConvoNumber = conversationData.lastConvoNumber;
+
+        int targetIndex = UnityEngine.Mathf.Clamp(convoIndex - 1, 0, conversationData.unlockedConversations.Count - 1);
+
+        int currentConvoNumber = conversationData.unlockedConversations[targetIndex].conversationNumber;
+
+        if (lastConvoNumber == currentConvoNumber)
+        {
+            return;
+        }
+
+        string dialogueTitle = conversationData.unlockedConversations[targetIndex].conversationID;
         ShowNotification(dialogueTitle);
         SaveLastConvoNumber();
     }
@@ -32,8 +47,15 @@ public class DialogueUnlockedNotifications : MonoBehaviour
     public void SaveLastConvoNumber()
     {
         GameSaveData conversationData = SaveStateManager.saveData;
-        int convoIndex = conversationData.convoIndex;
-        conversationData.lastConvoNumber = conversationData.unlockedConversations[convoIndex].conversationNumber;
+        if (conversationData.unlockedConversations == null || conversationData.unlockedConversations.Count == 0)
+        {
+            return;
+        }
+        int targetIndex = conversationData.convoIndex - 1;
+        int maxIndex = conversationData.unlockedConversations.Count - 1;
+        targetIndex = UnityEngine.Mathf.Clamp(targetIndex, 0, maxIndex);
+        conversationData.lastConvoNumber = conversationData.unlockedConversations[targetIndex].conversationNumber;
+        Debug.Log($"Saved Last Convo Number: {conversationData.lastConvoNumber}");
     }
 
     private void ShowNotification(string title)
