@@ -431,8 +431,8 @@ public class DeitySpawner : MonoBehaviour
         // Instantiate material so we don't affect shared materials
         Material mat = renderer.material;
 
-        Color originalColor = mat.HasProperty("_BaseColor")
-            ? mat.GetColor("_BaseColor")
+        Color originalColor = mat.HasProperty("_MainColor")
+            ? mat.GetColor("_MainColor")
             : mat.color;
 
         Color flashColor = Color.red;
@@ -440,11 +440,11 @@ public class DeitySpawner : MonoBehaviour
         float flashDuration = 0.5f; // VERY fast
 
         mat
-            .DOColor(flashColor, "_BaseColor", flashDuration * 0.5f)
+            .DOColor(flashColor, "_MainColor", flashDuration * 0.5f)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
-                mat.DOColor(originalColor, "_BaseColor", flashDuration * 0.5f)
+                mat.DOColor(originalColor, "_MainColor", flashDuration * 0.5f)
                     .SetEase(Ease.InQuad);
             });
     }
