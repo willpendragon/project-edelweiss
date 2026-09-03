@@ -52,6 +52,9 @@ public class BattleManager : MonoBehaviour
     public GridManager gridManager;
     public DeityPowerController DeityPowerController => _deityPowerController;
 
+    // Unit that delivered the winning blow/attunement; null falls back to the static EndBattleCameraSettings SO.
+    private Unit _battleEndFocusUnit;
+
     private void Awake()
     {
         if (Instance == null)
@@ -187,8 +190,20 @@ public class BattleManager : MonoBehaviour
         Debug.Log($"Cleared Node {currentId}!");
     }
 
+    public void SetBattleEndFocusUnit(Unit unit)
+    {
+        _battleEndFocusUnit = unit;
+    }
+
     public void PlayCameraBattleEndAnimation()
     {
-        _cameraController.ApplyBattleEndCameraSettings();
+        if (_battleEndFocusUnit != null)
+        {
+            _cameraController.FocusOnBattleEndUnit(_battleEndFocusUnit);
+        }
+        else
+        {
+            _cameraController.ApplyBattleEndCameraSettings();
+        }
     }
 }

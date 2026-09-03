@@ -224,6 +224,9 @@ public class AttunementPlayerAction : MonoBehaviour, IPlayerAction<TileControlle
     /// </summary>
     private void HandleCaptureSuccess(Unit activePlayerUnit, Deity capturedDeity)
     {
+        // Capture before ResetTags() below wipes the ActivePlayerUnit tag, so the end-camera can focus on them.
+        BattleManager.Instance.SetBattleEndFocusUnit(activePlayerUnit);
+
         OnAttunementSuccess?.Invoke(SUCCESS_CAPTURE_MESSAGE);
         BattleInterface.Instance.SetDeityNotification(SUCCESS_CAPTURE_MESSAGE);
 

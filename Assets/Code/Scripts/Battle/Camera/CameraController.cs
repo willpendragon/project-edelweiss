@@ -444,6 +444,24 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    // Pans/zooms onto the unit that decided the battle instead of snapping to the static end-camera SO.
+    public void FocusOnBattleEndUnit(Unit unit)
+    {
+        if (unit == null)
+        {
+            ApplyBattleEndCameraSettings();
+            return;
+        }
+
+        Vector3 targetPosition = unit.ownedTile != null
+            ? unit.ownedTile.gameObject.transform.position
+            : unit.transform.position;
+
+        float zoomTarget = _endBattleCameraSettings != null ? _endBattleCameraSettings.ZoomAmount : _battleCameraSettings.ZoomAmount;
+
+        PanCameraToPosition(targetPosition, zoomTarget, _cameraPanDuration, _cameraPanEase);
+    }
+
     /// <summary>
     /// Pans camera to each enemy when their turn starts.
     /// The isTurnComplete flag in EnemyTurnManager ensures we wait for parry resolution before moving to next enemy.
