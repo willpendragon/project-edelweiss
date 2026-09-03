@@ -7,10 +7,12 @@ using UnityEngine;
 public class BattleCameraSettings : ScriptableObject
 {
     [SerializeField] private float _zoomAmount = 22.9f; // Orthographic size (or FOV degrees if the camera is perspective)
+    [SerializeField] private float _closeUpZoomAmount = 12f; // Tighter zoom used for the knockback/crit punch-in, distinct from the ambient ZoomAmount
     [SerializeField] private Vector3 _cameraOffset = new Vector3(0, 0, -7f);
     [SerializeField] private float _cameraResetDelay = 1.5f;
 
     public float ZoomAmount => _zoomAmount;
+    public float CloseUpZoomAmount => _closeUpZoomAmount;
     public Vector3 CameraOffset => _cameraOffset;
     public float CameraResetDelay => _cameraResetDelay;
 }

@@ -27,6 +27,11 @@ public class CameraController : MonoBehaviour
     private float _currentManualZoom;
     private float _zoomVelocity;
 
+    // Zoom-punch state (crit/knockback close-up), so it can ease back to wherever the camera was before punching in.
+    private Vector3 _prePunchPosition;
+    private float _prePunchOrthoSize;
+    private bool _isZoomPunchActive;
+
     // Camera boundaries
     private float _minX, _maxX, _minZ, _maxZ;
 
@@ -92,6 +97,7 @@ public class CameraController : MonoBehaviour
     private void OnEnable()
     {
         PhysicalAttackBehavior.OnKnockbackFired += CameraCloseUp;
+        AOESpellPlayerAction.OnSpellCriticalHit += CameraCloseUp;
         AOESpellPlayerAction.OnDeityAngered += DeityCameraCloseUp;
         UnitSelectionController.OnUnitTurnEnded += PanCameraToNextUnit;
         TurnController.OnPlayerTurn += HandlePlayerTurnCamera;
@@ -121,6 +127,7 @@ public class CameraController : MonoBehaviour
     private void OnDisable()
     {
         PhysicalAttackBehavior.OnKnockbackFired -= CameraCloseUp;
+        AOESpellPlayerAction.OnSpellCriticalHit -= CameraCloseUp;
         AOESpellPlayerAction.OnDeityAngered -= DeityCameraCloseUp;
         UnitSelectionController.OnUnitTurnEnded -= PanCameraToNextUnit;
         TurnController.OnPlayerTurn -= HandlePlayerTurnCamera;
@@ -209,6 +216,9 @@ public class CameraController : MonoBehaviour
         // Kill any existing tween and clear pending invokes to prevent conflicts
         _cameraTween?.Kill();
         CancelInvoke(nameof(ResetCameraPosition));
+        // Interrupting a pending zoom-punch means it can't ease back later, so clear its state too.
+        CancelInvoke(nameof(EaseBackToPrePunchState));
+        _isZoomPunchActive = false;
 
         if (_cameras == null || _cameras.Count == 0) return;
 
@@ -359,7 +369,15 @@ public class CameraController : MonoBehaviour
     {
         // Kill current tweens and cancel any pending camera resets to prevent overlap jitter.
         _cameraTween?.Kill();
-        CancelInvoke(nameof(ResetCameraPosition));
+        CancelInvoke(nameof(EaseBackToPrePunchState));
+
+        // Snapshot the pre-punch camera state once, so overlapping triggers (e.g. a knockback that also crits) still ease back to the same place.
+        if (!_isZoomPunchActive && _cameras != null && _cameras.Count > 0)
+        {
+            _prePunchPosition = _cameras[0].transform.position;
+            _prePunchOrthoSize = _cameras[0].orthographicSize;
+            _isZoomPunchActive = true;
+        }
 
         // Block manual control during automatic panning
         _isAutomaticPanningActive = true;
@@ -382,15 +400,38 @@ public class CameraController : MonoBehaviour
                 _isAutomaticPanningActive = false;
             });
 
-            DOVirtual.Float(cam.fieldOfView, _battleCameraSettings.ZoomAmount, fastTransitionTime, value =>
-            {
-                cam.fieldOfView = value;
-            });
+            TweenCameraZoom(cam, _battleCameraSettings.CloseUpZoomAmount, fastTransitionTime, Ease.OutQuad);
         }
 
-        // Restart the reset timer from right now.
+        // Restart the hold timer from right now.
         // If another attack happens before this timer ends, this invoke gets canceled and restarted.
-        Invoke(nameof(ResetCameraPosition), _battleCameraSettings.CameraResetDelay + fastTransitionTime);
+        Invoke(nameof(EaseBackToPrePunchState), _battleCameraSettings.CameraResetDelay + fastTransitionTime);
+    }
+
+    // Eases back to wherever the camera was before the zoom-punch, instead of snapping to the battle's default framing.
+    private void EaseBackToPrePunchState()
+    {
+        _cameraTween?.Kill();
+
+        if (_cameras == null || _cameras.Count == 0)
+        {
+            _isZoomPunchActive = false;
+            return;
+        }
+
+        _isAutomaticPanningActive = true;
+        float fastTransitionTime = 0.25f;
+
+        foreach (var cam in _cameras)
+        {
+            _cameraTween = cam.transform.DOMove(_prePunchPosition, fastTransitionTime).SetEase(Ease.OutQuad).OnComplete(() =>
+            {
+                _isAutomaticPanningActive = false;
+                _isZoomPunchActive = false;
+            });
+
+            TweenCameraZoom(cam, _prePunchOrthoSize, fastTransitionTime, Ease.OutQuad);
+        }
     }
     private void ResetCameraPosition()
     {
