@@ -6,11 +6,11 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    
+
     [Header("Roster Configuration")]
     [Tooltip("The current actively available roster. Put your DEFAULT TRIO here in the inspector for new games.")]
     public List<Unit> playerPartyMembers;
-    
+
     [Tooltip("Every possible Unit prefab in the game. Used to load saved units by ID.")]
     public List<Unit> allUnitMasterList = new List<Unit>();
 
@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public DeityLinkManager DeityLinkManager => _deityLinkManager;
     public BuffManager BuffManager => _buffManager;
     public NodesUnlockManager NodesUnlockManager => _nodesUnlockManager;
-    
+
     public const int MaxActivePartySize = 3;
     public string currentConversationTitle;
 
@@ -36,18 +36,18 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            
+
             // 1. Load the roster from the save file (if it exists)
             LoadPartyFromSave();
-            
+
             // 2. Instantiate the top 3 members
             InstantiateUnits();
-            
-            SceneManager.sceneLoaded += OnSceneLoaded; 
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else if (Instance != this)
         {
-            Destroy(gameObject); 
+            Destroy(gameObject);
         }
     }
 
@@ -88,18 +88,33 @@ public class GameManager : MonoBehaviour
             // Load Recruits
             foreach (string availId in currentSave.availablePartyUnitIds)
             {
-                 Unit foundPref = allUnitMasterList.Find(u => u.Id == availId);
-                 if (foundPref != null && !playerPartyMembers.Contains(foundPref))
-                 {
-                     playerPartyMembers.Add(foundPref);
-                 }
+                Unit foundPref = allUnitMasterList.Find(u => u.Id == availId);
+                if (foundPref != null && !playerPartyMembers.Contains(foundPref))
+                {
+                    playerPartyMembers.Add(foundPref);
+                }
             }
-            
+
             Debug.Log("GameManager loaded custom party configuration from Save Data.");
         }
-        
-        // WE DELETED THE AUTO-ADD LOOP HERE.
-        // If a character is in the master list but not in the save file, they remain hidden/locked!
+    }
+
+    public void SyncPartyListsToSaveData()
+    {
+        GameSaveData currentSave = SaveStateManager.saveData;
+        if (currentSave == null) return;
+
+        currentSave.activePartyUnitIds.Clear();
+        currentSave.availablePartyUnitIds.Clear();
+
+        for (int i = 0; i < playerPartyMembers.Count; i++)
+        {
+            Unit member = playerPartyMembers[i];
+            if (member == null || string.IsNullOrEmpty(member.Id)) continue;
+
+            if (i < MaxActivePartySize) currentSave.activePartyUnitIds.Add(member.Id);
+            else currentSave.availablePartyUnitIds.Add(member.Id);
+        }
     }
 
     public void InstantiateUnits()
@@ -113,7 +128,7 @@ public class GameManager : MonoBehaviour
                 Destroy(instance.gameObject);
             }
         }
-        
+
         // 2. Clear the tracking list
         playerPartyMembersInstances.Clear();
 
@@ -123,13 +138,13 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < unitsToInstantiate; i++)
         {
             Unit newUnitInstance = Instantiate(playerPartyMembers[i], this.gameObject.transform);
-            
+
             // 4. Inject the saved stats (HP, Mana, etc.) into the newly created prefab clone
             LoadUnitStats(newUnitInstance);
-            
-            playerPartyMembersInstances.Add(newUnitInstance); 
+
+            playerPartyMembersInstances.Add(newUnitInstance);
         }
-        
+
         DeityLinkManager?.ApplyDeityLinks();
     }
 
@@ -155,7 +170,7 @@ public class GameManager : MonoBehaviour
         charData.unitShieldPoints = unit.unitShieldPoints;
         charData.unitLifeCondition = unit.currentUnitLifeCondition;
         charData.unitOccupiedFoodSlots = unit.unitOccupiedFoodSlots;
-        
+
         // Keep snapshot of the progression stats (in case of cafe upgrades)
         charData.unitAttackPower = unit.unitAttackPower;
         charData.unitMagicPower = unit.unitMagicPower;
@@ -231,7 +246,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        
+
         // Fallback hard-coded default if DeityTile is absent
         return new Vector2Int(5, 5);
     }
