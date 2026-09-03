@@ -179,6 +179,11 @@ public class DeitySpawner : MonoBehaviour
 
     public void DeitySelector()
     {
+        if (spawnableDeities == null || spawnableDeities.Count == 0)
+        {
+            Debug.Log("No Deities found. Typically happens if the Player killed or caught all of them.");
+            return;
+        }
         Debug.Log("Rolling which Deity will appear");
         int deityIndex = localRandom.Next(0, spawnableDeities.Count); // Use System.Random for Deity selection
         Debug.Log($"Deity Index: {deityIndex} - {spawnableDeities[deityIndex].name}");
