@@ -24,8 +24,12 @@ public class CloseMenuBehind : MonoBehaviour
             return;
         if (_cafeMenus.Length == 0)
             return;
-        // Shows only the Dialogue tab.
-        _cafeMenus[1].alpha = 1;
+        // Shows only the Dialogue tab. This logic is meant to work in Café (where there are many menu).
+        // In Battle or other scenes, nothing will happen (but need guard checks for this).
+        if (_cafeMenus[1] != null)
+        {
+            _cafeMenus[1].alpha = 1;
+        }
     }
 
     public void HideCanvas()
@@ -34,7 +38,10 @@ public class CloseMenuBehind : MonoBehaviour
             return;
         foreach (var menu in _cafeMenus)
         {
-            menu.alpha = 0;
+            if (menu != null)
+            {
+                menu.alpha = 0;
+            }
         }
     }
 
