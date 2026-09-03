@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BattleCameraSettings : ScriptableObject
 {
-    [SerializeField] private float _zoomAmount = 22.9f; // Actually original zoom amount
+    [SerializeField] private float _zoomAmount = 22.9f; // Orthographic size (or FOV degrees if the camera is perspective)
     [SerializeField] private Vector3 _cameraOffset = new Vector3(0, 0, -7f);
     [SerializeField] private float _cameraResetDelay = 1.5f;
 
