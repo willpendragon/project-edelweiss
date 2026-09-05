@@ -85,11 +85,13 @@ public class GridManager : MonoBehaviour
             GenerateGridMapFromData(currentMapData);
             _obstacleController.SpawnObstacles();
         }
+
+        // Populate here (not Start) so it's ready before any other object's Start() runs, avoiding a Start()-order race.
+        gridTileControllers = GameObject.FindObjectsOfType<TileController>();
     }
 
     private void Start()
     {
-        gridTileControllers = GameObject.FindObjectsOfType<TileController>();
         if (OnSpawnActivationPlatforms != null)
         {
             OnSpawnActivationPlatforms.Invoke();

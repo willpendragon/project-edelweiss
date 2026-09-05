@@ -32,8 +32,11 @@ public class CameraController : MonoBehaviour
     private float _prePunchOrthoSize;
     private bool _isZoomPunchActive;
 
-    // Camera boundaries
-    private float _minX, _maxX, _minZ, _maxZ;
+    // Camera boundaries. Default to unclamped so a failed/late boundary calc fails open, not locked at (0,0).
+    private float _minX = float.NegativeInfinity;
+    private float _maxX = float.PositiveInfinity;
+    private float _minZ = float.NegativeInfinity;
+    private float _maxZ = float.PositiveInfinity;
 
     [Header("Camera Transition")][SerializeField] private float _cameraPanDuration = 0.8f;
     [SerializeField] private float _cameraFollowDuration = 0.6f;
