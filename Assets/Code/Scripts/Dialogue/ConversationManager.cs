@@ -72,21 +72,18 @@ public class ConversationManager : MonoBehaviour
 
     public void UnlockNewConversation()
     {
-        // Unlocks a new conversation, only after a Victory in Battle.
-        List<ConversationData> lockedConvos = conversations.FindAll(convo => !convo.isUnlocked);
 
-        if (lockedConvos.Count > 0)
+        if (_convoIndex >= conversations.Count)
         {
-            IncreaseIndex();
-            lockedConvos[_convoIndex].isUnlocked = true;
-            Debug.Log($"Unlocked convo {lockedConvos[_convoIndex].conversationID}");
-            _lastUnlockedConversation = $"{lockedConvos[_convoIndex].conversationID}";
-            SaveUnlockedConversation();
+            Debug.Log("All convos already unlocked");
+            return;
         }
-        else
-        {
-            Debug.Log("All conversations are already unlocked.");
-        }
+        conversations[_convoIndex].isUnlocked = true;
+        Debug.Log($"Unlocked convo {conversations[_convoIndex].conversationID}");
+        _lastUnlockedConversation = $"{conversations[_convoIndex].conversationID}";
+
+        IncreaseIndex();
+        SaveUnlockedConversation();
     }
 
     private void IncreaseIndex()

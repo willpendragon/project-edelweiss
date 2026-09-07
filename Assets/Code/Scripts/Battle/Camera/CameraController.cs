@@ -17,7 +17,7 @@ public class CameraController : MonoBehaviour
 
     // These settings change how the camera looks at the end of a battle.
     [SerializeField] private EndBattleCameraSettings _endBattleCameraSettings;
-    
+
     [Header("Manual Camera Control")][SerializeField] private ManualCameraSettings _manualCameraSettings;
 
     // Manual camera control state
@@ -26,9 +26,17 @@ public class CameraController : MonoBehaviour
     private Vector3 _manualPanVelocity;
     private float _currentManualZoom;
     private float _zoomVelocity;
-    
-    // Camera boundaries
-    private float _minX, _maxX, _minZ, _maxZ;
+
+    // Zoom-punch state (crit/knockback close-up), so it can ease back to wherever the camera was before punching in.
+    private Vector3 _prePunchPosition;
+    private float _prePunchOrthoSize;
+    private bool _isZoomPunchActive;
+
+    // Camera boundaries. Default to unclamped so a failed/late boundary calc fails open, not locked at (0,0).
+    private float _minX = float.NegativeInfinity;
+    private float _maxX = float.PositiveInfinity;
+    private float _minZ = float.NegativeInfinity;
+    private float _maxZ = float.PositiveInfinity;
 
     [Header("Camera Transition")][SerializeField] private float _cameraPanDuration = 0.8f;
     [SerializeField] private float _cameraFollowDuration = 0.6f;
@@ -52,10 +60,10 @@ public class CameraController : MonoBehaviour
         {
             ApplyGeneralCameraSettings();
         }
-        
+
         // Calculate camera boundaries based on grid size
         CalculateCameraBoundaries();
-        
+
         // Initialize manual zoom to current orthographic size
         if (_cameras != null && _cameras.Count > 0)
         {
@@ -74,13 +82,13 @@ public class CameraController : MonoBehaviour
         // {
         //     DeityCameraCloseUp();
         // }
-        
+
         // Manual camera control (only during player turn and when not automatically panning)
         if (_isManualControlEnabled && !_isAutomaticPanningActive && _manualCameraSettings != null)
         {
             HandleManualPanInput();
             HandleManualZoomInput();
-            
+
             // Reset camera with configured key
             if (_manualCameraSettings.EnableReset && Input.GetKeyDown(_manualCameraSettings.ResetKey))
             {
@@ -92,6 +100,7 @@ public class CameraController : MonoBehaviour
     private void OnEnable()
     {
         PhysicalAttackBehavior.OnKnockbackFired += CameraCloseUp;
+        AOESpellPlayerAction.OnSpellCriticalHit += CameraCloseUp;
         AOESpellPlayerAction.OnDeityAngered += DeityCameraCloseUp;
         UnitSelectionController.OnUnitTurnEnded += PanCameraToNextUnit;
         TurnController.OnPlayerTurn += HandlePlayerTurnCamera;
@@ -100,7 +109,7 @@ public class CameraController : MonoBehaviour
         EnemyTurnManager.OnEnemyTurnStarted += HandleIndividualEnemyTurnStart;
         EnemyTurnManager.OnPlayerTurnSwap += PanCameraToActiveUnit;
         EnemyTurnManager.OnDeityTurn += HandleDeityTurnCamera;
-        
+
         // Manual camera control events
         TurnController.OnPlayerTurn += EnableManualCameraControl;
         EnemyTurnManager.OnPlayerTurn += EnableManualCameraControl;
@@ -121,6 +130,7 @@ public class CameraController : MonoBehaviour
     private void OnDisable()
     {
         PhysicalAttackBehavior.OnKnockbackFired -= CameraCloseUp;
+        AOESpellPlayerAction.OnSpellCriticalHit -= CameraCloseUp;
         AOESpellPlayerAction.OnDeityAngered -= DeityCameraCloseUp;
         UnitSelectionController.OnUnitTurnEnded -= PanCameraToNextUnit;
         TurnController.OnPlayerTurn -= HandlePlayerTurnCamera;
@@ -129,7 +139,7 @@ public class CameraController : MonoBehaviour
         EnemyTurnManager.OnEnemyTurnStarted -= HandleIndividualEnemyTurnStart;
         EnemyTurnManager.OnPlayerTurnSwap -= PanCameraToActiveUnit;
         EnemyTurnManager.OnDeityTurn -= HandleDeityTurnCamera;
-        
+
         // Manual camera control events
         TurnController.OnPlayerTurn -= EnableManualCameraControl;
         EnemyTurnManager.OnPlayerTurn -= EnableManualCameraControl;
@@ -209,9 +219,12 @@ public class CameraController : MonoBehaviour
         // Kill any existing tween and clear pending invokes to prevent conflicts
         _cameraTween?.Kill();
         CancelInvoke(nameof(ResetCameraPosition));
+        // Interrupting a pending zoom-punch means it can't ease back later, so clear its state too.
+        CancelInvoke(nameof(EaseBackToPrePunchState));
+        _isZoomPunchActive = false;
 
         if (_cameras == null || _cameras.Count == 0) return;
-        
+
         // Block manual control during automatic panning
         _isAutomaticPanningActive = true;
 
@@ -223,11 +236,11 @@ public class CameraController : MonoBehaviour
         foreach (var cam in _cameras)
         {
             Vector3 finalPosition = targetPosition + _battleCameraSettings.CameraOffset;
-            
+
             // Clamp to boundaries before tweening to prevent camera from going outside valid area
             finalPosition.x = Mathf.Clamp(finalPosition.x, _minX, _maxX);
             finalPosition.z = Mathf.Clamp(finalPosition.z, _minZ, _maxZ);
-            
+
             Debug.Log($"[Auto Pan to Character] Target tile: ({targetPosition.x:F2}, {targetPosition.z:F2}) | Camera will be at: ({finalPosition.x:F2}, {finalPosition.z:F2}) | Boundaries: X[{_minX:F1}, {_maxX:F1}], Z[{_minZ:F1}, {_maxZ:F1}]");
 
             _cameraTween = cam.transform.DOMove(finalPosition, panDuration).SetEase(easeToUse).OnComplete(() =>
@@ -236,10 +249,22 @@ public class CameraController : MonoBehaviour
                 _isAutomaticPanningActive = false;
             });
 
-            DOVirtual.Float(cam.fieldOfView, zoomTarget, panDuration, value =>
-            {
-                cam.fieldOfView = value;
-            }).SetEase(easeToUse);
+            TweenCameraZoom(cam, zoomTarget, panDuration, easeToUse);
+        }
+    }
+
+    // Ortho cameras ignore fieldOfView, so branch on projection mode to actually change what's visible.
+    private void TweenCameraZoom(Camera cam, float targetValue, float duration, Ease ease)
+    {
+        if (cam.orthographic)
+        {
+            DOTween.To(() => cam.orthographicSize, value => cam.orthographicSize = value, targetValue, duration).SetEase(ease);
+            // Keep manual scroll-zoom's Lerp target in sync so it doesn't drift back once this tween ends.
+            _currentManualZoom = targetValue;
+        }
+        else
+        {
+            DOVirtual.Float(cam.fieldOfView, targetValue, duration, value => cam.fieldOfView = value).SetEase(ease);
         }
     }
     public void PanCameraToActiveUnit()
@@ -347,8 +372,16 @@ public class CameraController : MonoBehaviour
     {
         // Kill current tweens and cancel any pending camera resets to prevent overlap jitter.
         _cameraTween?.Kill();
-        CancelInvoke(nameof(ResetCameraPosition));
-        
+        CancelInvoke(nameof(EaseBackToPrePunchState));
+
+        // Snapshot the pre-punch camera state once, so overlapping triggers (e.g. a knockback that also crits) still ease back to the same place.
+        if (!_isZoomPunchActive && _cameras != null && _cameras.Count > 0)
+        {
+            _prePunchPosition = _cameras[0].transform.position;
+            _prePunchOrthoSize = _cameras[0].orthographicSize;
+            _isZoomPunchActive = true;
+        }
+
         // Block manual control during automatic panning
         _isAutomaticPanningActive = true;
 
@@ -358,7 +391,7 @@ public class CameraController : MonoBehaviour
         foreach (var cam in _cameras)
         {
             Vector3 finalTransform = targetPosition + _battleCameraSettings.CameraOffset;
-            
+
             // Clamp to boundaries before tweening to prevent camera from going outside valid area
             finalTransform.x = Mathf.Clamp(finalTransform.x, _minX, _maxX);
             finalTransform.z = Mathf.Clamp(finalTransform.z, _minZ, _maxZ);
@@ -370,15 +403,38 @@ public class CameraController : MonoBehaviour
                 _isAutomaticPanningActive = false;
             });
 
-            DOVirtual.Float(cam.fieldOfView, _battleCameraSettings.ZoomAmount, fastTransitionTime, value =>
-            {
-                cam.fieldOfView = value;
-            });
+            TweenCameraZoom(cam, _battleCameraSettings.CloseUpZoomAmount, fastTransitionTime, Ease.OutQuad);
         }
 
-        // Restart the reset timer from right now.
+        // Restart the hold timer from right now.
         // If another attack happens before this timer ends, this invoke gets canceled and restarted.
-        Invoke(nameof(ResetCameraPosition), _battleCameraSettings.CameraResetDelay + fastTransitionTime);
+        Invoke(nameof(EaseBackToPrePunchState), _battleCameraSettings.CameraResetDelay + fastTransitionTime);
+    }
+
+    // Eases back to wherever the camera was before the zoom-punch, instead of snapping to the battle's default framing.
+    private void EaseBackToPrePunchState()
+    {
+        _cameraTween?.Kill();
+
+        if (_cameras == null || _cameras.Count == 0)
+        {
+            _isZoomPunchActive = false;
+            return;
+        }
+
+        _isAutomaticPanningActive = true;
+        float fastTransitionTime = 0.25f;
+
+        foreach (var cam in _cameras)
+        {
+            _cameraTween = cam.transform.DOMove(_prePunchPosition, fastTransitionTime).SetEase(Ease.OutQuad).OnComplete(() =>
+            {
+                _isAutomaticPanningActive = false;
+                _isZoomPunchActive = false;
+            });
+
+            TweenCameraZoom(cam, _prePunchOrthoSize, fastTransitionTime, Ease.OutQuad);
+        }
     }
     private void ResetCameraPosition()
     {
@@ -395,7 +451,7 @@ public class CameraController : MonoBehaviour
                 cam.transform.eulerAngles = _generalCameraSettings.CameraRotation;
             }
         }
-        
+
         // Reset automatic panning flag since this is an instant reset
         _isAutomaticPanningActive = false;
     }
@@ -405,7 +461,7 @@ public class CameraController : MonoBehaviour
         CancelInvoke(nameof(ResetCameraPosition));
 
         if (_cameras == null || _cameras.Count == 0) return;
-        
+
         // Block manual control during smooth reset animation
         _isAutomaticPanningActive = true;
 
@@ -436,12 +492,36 @@ public class CameraController : MonoBehaviour
     {
         if (_endBattleCameraSettings == null || _cameras == null || _cameras.Count == 0) return;
 
+        // Lock out manual pan/zoom input so it can't undo this fallback framing for the rest of the scene.
+        DisableManualCameraControl();
+
         foreach (var cam in _cameras)
         {
             cam.transform.position = _endBattleCameraSettings.CameraPosition;
             cam.transform.eulerAngles = _endBattleCameraSettings.CameraRotation;
             cam.fieldOfView = _endBattleCameraSettings.ZoomAmount;
         }
+    }
+
+    // Pans/zooms onto the unit that decided the battle instead of snapping to the static end-camera SO.
+    public void FocusOnBattleEndUnit(Unit unit)
+    {
+        // Lock out manual pan/zoom input so it can't fight or undo this shot for the rest of the scene.
+        DisableManualCameraControl();
+
+        if (unit == null)
+        {
+            ApplyBattleEndCameraSettings();
+            return;
+        }
+
+        Vector3 targetPosition = unit.ownedTile != null
+            ? unit.ownedTile.gameObject.transform.position
+            : unit.transform.position;
+
+        float zoomTarget = _endBattleCameraSettings != null ? _endBattleCameraSettings.ZoomAmount : _battleCameraSettings.ZoomAmount;
+
+        PanCameraToPosition(targetPosition, zoomTarget, _cameraPanDuration, _cameraPanEase);
     }
 
     /// <summary>
@@ -491,9 +571,9 @@ public class CameraController : MonoBehaviour
             PanCameraToPosition(targetPos + _deityFocusOffset, _battleCameraSettings.ZoomAmount, panTime, panEase);
         }
     }
-    
+
     #region Manual Camera Control
-    
+
     /// <summary>
     /// Calculates camera movement boundaries based on grid size and padding settings
     /// </summary>
@@ -504,33 +584,33 @@ public class CameraController : MonoBehaviour
             Debug.LogWarning("[CameraController] Cannot calculate boundaries: GridManager or ManualCameraSettings is null");
             return;
         }
-        
+
         // Get actual world positions of all tiles to find grid extents
         if (GridManager.Instance.gridTileControllers == null || GridManager.Instance.gridTileControllers.Length == 0)
         {
             Debug.LogWarning("[CameraController] No tiles found for boundary calculation");
             return;
         }
-        
+
         // Find the actual min/max positions of all tiles in world space
         float minWorldX = float.MaxValue;
         float maxWorldX = float.MinValue;
         float minWorldZ = float.MaxValue;
         float maxWorldZ = float.MinValue;
-        
+
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             if (tile != null)
             {
                 Vector3 tilePos = tile.transform.position;
-                
+
                 if (tilePos.x < minWorldX) minWorldX = tilePos.x;
                 if (tilePos.x > maxWorldX) maxWorldX = tilePos.x;
                 if (tilePos.z < minWorldZ) minWorldZ = tilePos.z;
                 if (tilePos.z > maxWorldZ) maxWorldZ = tilePos.z;
             }
         }
-        
+
         // Account for camera offset - boundaries should be based on camera positions, not tile positions
         // The camera sits at tile position + offset, so we need to adjust boundaries accordingly
         Vector3 cameraOffset = _battleCameraSettings.CameraOffset;
@@ -538,100 +618,100 @@ public class CameraController : MonoBehaviour
         float maxCameraX = maxWorldX + cameraOffset.x;
         float minCameraZ = minWorldZ + cameraOffset.z;
         float maxCameraZ = maxWorldZ + cameraOffset.z;
-        
+
         // Apply padding from settings to create absolute world-space boundaries
         _minX = minCameraX - _manualCameraSettings.HorizontalBoundaryPadding;
         _maxX = maxCameraX + _manualCameraSettings.HorizontalBoundaryPadding;
         _minZ = minCameraZ - _manualCameraSettings.VerticalBoundaryPadding;
         _maxZ = maxCameraZ + _manualCameraSettings.VerticalBoundaryPadding;
-        
+
         Debug.Log($"[CameraController] Camera boundaries calculated: X[{_minX:F1}, {_maxX:F1}], Z[{_minZ:F1}, {_maxZ:F1}] | Tile extents: X[{minWorldX:F1}, {maxWorldX:F1}], Z[{minWorldZ:F1}, {maxWorldZ:F1}] | Camera offset: {cameraOffset}");
     }
-    
+
     /// <summary>
     /// Handles WASD/arrow key input for manual camera panning
     /// </summary>
     private void HandleManualPanInput()
     {
         if (_cameras == null || _cameras.Count == 0) return;
-        
+
         // Get input axes
         float horizontal = Input.GetAxis("Horizontal"); // A/D or Left/Right arrows
         float vertical = Input.GetAxis("Vertical"); // W/S or Up/Down arrows
-        
+
         // Skip if no input
         if (Mathf.Approximately(horizontal, 0f) && Mathf.Approximately(vertical, 0f))
             return;
-        
+
         Camera mainCam = _cameras[0];
         Vector3 currentPos = mainCam.transform.position;
-        
+
         // For isometric camera: calculate movement relative to camera's orientation
         // Get camera's forward and right vectors projected onto the horizontal plane (XZ)
         Vector3 forward = mainCam.transform.forward;
         Vector3 right = mainCam.transform.right;
-        
+
         // Project onto XZ plane (remove Y component) and normalize
         forward.y = 0f;
         right.y = 0f;
         forward.Normalize();
         right.Normalize();
-        
+
         // Calculate movement direction based on camera orientation
         Vector3 moveDirection = (right * horizontal + forward * vertical).normalized;
-        
+
         // Calculate target position with snappy movement
         float moveAmount = _manualCameraSettings.PanSpeed * Time.deltaTime;
         Vector3 targetPosition = currentPos + moveDirection * moveAmount;
-        
+
         // Clamp to boundaries
         targetPosition.x = Mathf.Clamp(targetPosition.x, _minX, _maxX);
         targetPosition.z = Mathf.Clamp(targetPosition.z, _minZ, _maxZ);
-        
+
         // Apply with optional light damping for feel (lerp is faster than SmoothDamp)
         Vector3 newPosition = Vector3.Lerp(currentPos, targetPosition, 1f - _manualCameraSettings.PanDamping);
-        
+
         // Final clamp to ensure boundaries are never exceeded
         newPosition.x = Mathf.Clamp(newPosition.x, _minX, _maxX);
         newPosition.z = Mathf.Clamp(newPosition.z, _minZ, _maxZ);
-        
+
         // Press B during play to see boundary debug info
         if (Input.GetKeyDown(KeyCode.B))
         {
             Debug.Log($"[Manual Pan] Pos: ({currentPos.x:F2}, {currentPos.z:F2}) | Boundaries: X[{_minX:F1}, {_maxX:F1}], Z[{_minZ:F1}, {_maxZ:F1}] | AtMinX: {Mathf.Approximately(currentPos.x, _minX)} | AtMaxX: {Mathf.Approximately(currentPos.x, _maxX)}");
         }
-        
+
         foreach (var cam in _cameras)
         {
             cam.transform.position = newPosition;
         }
     }
-    
+
     /// <summary>
     /// Handles mouse scroll wheel input for zoom (orthographic size)
     /// </summary>
     private void HandleManualZoomInput()
     {
         if (_cameras == null || _cameras.Count == 0) return;
-        
+
         float scrollDelta = Input.mouseScrollDelta.y;
-        
+
         // Debug: Press Z to see current state
         if (Input.GetKeyDown(KeyCode.Z))
         {
             Debug.Log($"[Zoom Debug] Manual control: {_isManualControlEnabled} | Auto-panning: {_isAutomaticPanningActive} | Current Size: {_cameras[0].orthographicSize:F1} | Target: {_currentManualZoom:F1} | Range: [{_manualCameraSettings.MinZoom}, {_manualCameraSettings.MaxZoom}]");
         }
-        
+
         // Update target zoom based on scroll input
         if (!Mathf.Approximately(scrollDelta, 0f))
         {
             float oldTarget = _currentManualZoom;
             _currentManualZoom -= scrollDelta * _manualCameraSettings.ZoomSpeed;
             _currentManualZoom = Mathf.Clamp(_currentManualZoom, _manualCameraSettings.MinZoom, _manualCameraSettings.MaxZoom);
-            
+
             Debug.Log($"[Manual Zoom] SCROLL DETECTED! Delta: {scrollDelta:F2} | Old: {oldTarget:F1} → New: {_currentManualZoom:F1} | Current Size: {_cameras[0].orthographicSize:F1} | ZoomSpeed: {_manualCameraSettings.ZoomSpeed}");
         }
-        
+
         // Apply smooth zoom to all cameras EVERY FRAME (not just when scrolling)
         foreach (var cam in _cameras)
         {
@@ -640,7 +720,7 @@ public class CameraController : MonoBehaviour
             cam.orthographicSize = newSize;
         }
     }
-    
+
     /// <summary>
     /// Enables manual camera control (called on player turn start)
     /// </summary>
@@ -649,7 +729,7 @@ public class CameraController : MonoBehaviour
         _isManualControlEnabled = true;
         Debug.Log("[CameraController] Manual camera control enabled");
     }
-    
+
     /// <summary>
     /// Disables manual camera control (called on enemy turn start)
     /// </summary>
@@ -658,28 +738,28 @@ public class CameraController : MonoBehaviour
         _isManualControlEnabled = false;
         Debug.Log("[CameraController] Manual camera control disabled");
     }
-    
+
     /// <summary>
     /// Resets camera to the original/default position
     /// </summary>
     private void ResetToDefaultPosition()
     {
         if (_cameras == null || _cameras.Count == 0) return;
-        
+
         // Smoothly return to original position
         foreach (var cam in _cameras)
         {
             cam.transform.DOMove(_originalCameraPosition, 0.5f).SetEase(Ease.OutQuad);
-            
+
             DOVirtual.Float(cam.fieldOfView, _originalZoomAmount, 0.5f, value =>
             {
                 cam.fieldOfView = value;
                 _currentManualZoom = value;
             }).SetEase(Ease.OutQuad);
         }
-        
+
         Debug.Log("[CameraController] Camera reset to default position");
     }
-    
+
     #endregion
 }

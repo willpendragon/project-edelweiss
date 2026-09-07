@@ -160,7 +160,7 @@ public class CafeMenuUIController : MonoBehaviour
             var unit = foundUnit.unit;
             Debug.Log($"Released Drag on {unit.unitTemplate.unitName}");
 
-            if (FeedCharacter(ref itemFood, unit))
+            if (FeedCharacter(ref itemFood, unit, raycastHit.collider.gameObject))
             {
                 // Make food disappear on the position of the character
                 Vector3 worldPos = unit.transform.position;
@@ -260,7 +260,7 @@ public class CafeMenuUIController : MonoBehaviour
         //notificationTexts.text = $"Selected {foodItem.item.itemFoodName} for feeding. Choose a character.";
     }
 
-    public bool FeedCharacter(ref ItemFood foodItem, Unit fedUnit)
+    public bool FeedCharacter(ref ItemFood foodItem, Unit fedUnit, GameObject unitCafeSprite)
     {
         if (_feedingController.HandleFeeding(foodItem, fedUnit))
         {
@@ -272,7 +272,15 @@ public class CafeMenuUIController : MonoBehaviour
 
             _cafeSaveManager.SaveRestoredCharacterStats(fedUnit);
             // Move "love" feedback in another class
-            GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, loveIconPrefabTransform);
+            // Should instantiate in the fedUnit position. Different icons, different meaning.
+            // Lucky combinations should glow.
+            Vector3 spawnPosition = unitCafeSprite.transform.position + new Vector3(0, 2.47f, 0);
+            GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, spawnPosition, unitCafeSprite.transform.rotation);
+
+            // Transform unitTransform = unitCafeSprite.transform;
+            // unitTransform.position += new Vector3(0, 2.47f, 0);
+            // GameObject loveIconPrefabInstance = Instantiate(loveIconPrefab, unitTransform.position, unitTransform.rotation);
+            Debug.Log($"Spawned Love Icon at {fedUnit.unitTemplate.unitName}'s position");
             Destroy(loveIconPrefabInstance, 1);
             // Spend War Funds and Update Counter. Should use a dedicated class for spending.
             gameStatsManager.warFunds -= selectedItemPrice;

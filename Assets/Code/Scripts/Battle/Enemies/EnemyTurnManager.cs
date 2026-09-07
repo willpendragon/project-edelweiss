@@ -64,7 +64,7 @@ public class EnemyTurnManager : MonoBehaviour
     {
         // Refactor this moving out Deity logic. Call the Deity Logic and separately (if the Deity is present).
 
-        while (currentEnemyTurnIndex < enemiesInQueue.Count)
+        while (currentEnemyTurnIndex < enemiesInQueue.Count && !TurnController.Instance.BattleEnded)
         {
             EnemyAgent activeEnemy = enemiesInQueue[currentEnemyTurnIndex];
             Debug.Log($"<color=cyan>[EnemyTurnManager] Starting turn for {activeEnemy.name} (Index: {currentEnemyTurnIndex})</color>");
@@ -74,24 +74,24 @@ public class EnemyTurnManager : MonoBehaviour
             {
                 // Pan camera to this enemy - waits for previous enemy's parry to complete due to isTurnComplete check
                 OnEnemyTurnStarted?.Invoke(activeEnemy);
-                
+
                 _iconDisplayHelper.ShowIcon();
-                
+
                 // Reset turn completion flag before starting enemy's turn
                 activeEnemy.isTurnComplete = false;
-                
+
                 activeEnemy.EnemyTurnEvents();
-                
+
                 // Wait for the enemy to complete their turn, with timeout fallback
                 float timeout = 10f; // Safety timeout to prevent infinite hangs
                 float elapsedTime = 0f;
-                
+
                 while (!activeEnemy.isTurnComplete && elapsedTime < timeout)
                 {
                     elapsedTime += Time.deltaTime;
                     yield return null;
                 }
-                
+
                 if (activeEnemy.isTurnComplete)
                 {
                     Debug.Log($"<color=cyan>[EnemyTurnManager] {activeEnemy.name} completed turn normally (Time: {elapsedTime:F2}s)</color>");
@@ -100,7 +100,7 @@ public class EnemyTurnManager : MonoBehaviour
                 {
                     Debug.LogWarning($"<color=yellow>[EnemyTurnManager] {activeEnemy.name} TIMED OUT after {timeout}s - forcing completion</color>");
                 }
-                
+
                 _iconDisplayHelper.HideIcon();
             }
             else
@@ -111,6 +111,10 @@ public class EnemyTurnManager : MonoBehaviour
             }
             currentEnemyTurnIndex++;
         }
+        // Breaks loop when battle has been already ended (prevents multiple firings of the defeat sequence).
+
+        if (TurnController.Instance.BattleEnded)
+            yield break;
 
         ActivateTrap();
 

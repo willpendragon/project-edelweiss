@@ -68,6 +68,7 @@ public class TurnController : MonoBehaviour
 
     public bool battleStarted;
     private bool battleEnded;
+    public bool BattleEnded => battleEnded;
 
     [Header("Core Gameplay Logic")] public GameStatsManager gameStatsManager;
 
@@ -212,14 +213,25 @@ public class TurnController : MonoBehaviour
             return true;
     }
 
+    // Snapshots the ActivePlayerUnit (the killing/attuning unit) before ResetTags() clears the tag, for the end-camera to focus on.
+    private void CaptureBattleEndFocusUnit()
+    {
+        BattleManager.Instance.SetBattleEndFocusUnit(PartyUtility.RetrieveActivePlayerUnit());
+    }
+
     public void PlayerUnitsLifeCheck()
     {
+        // Check to prevent enemies to check the Player Units life status after defeat sequence has already fired once. 
+        if (battleEnded)
+            return;
+
         // Check if there are any units that are NOT dead, indicating the Player Party is still active.
         bool isAnyPlayerUnitAlive = playerUnitsOnBattlefield.Any(player =>
             player.GetComponent<Unit>().currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead);
 
         if (!isAnyPlayerUnitAlive) // If no units are alive, then the player party has been defeated.
         {
+            battleEnded = true;
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
         else
@@ -261,9 +273,13 @@ public class TurnController : MonoBehaviour
 
     public void FaithlessGameOverCheck()
     {
+        if (battleEnded)
+            return;
+
         if (playerUnitsOnBattlefield.All(player =>
                 player.GetComponent<Unit>().unitStatusController.unitCurrentStatus == UnitStatus.Faithless))
         {
+            battleEnded = true;
             BattleFlowController.Instance.PlayerPartyDefeatSequence();
         }
     }
@@ -274,6 +290,7 @@ public class TurnController : MonoBehaviour
                 enemy.GetComponent<Unit>().currentUnitLifeCondition == Unit.UnitLifeCondition.unitDead))
         {
             battleEnded = true;
+            CaptureBattleEndFocusUnit();
             BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
         }
         else if (enemyUnitsOnBattlefield.All(enemy =>
@@ -299,6 +316,7 @@ public class TurnController : MonoBehaviour
         if (GameObject.FindGameObjectWithTag(Tags.ENEMY).GetComponent<Unit>().unitHealthPoints <= 0)
         {
             battleEnded = true;
+            CaptureBattleEndFocusUnit();
             BattleFlowController.Instance.PlayerPartyVictorySequence("Deicide", warFunds);
             // Add Deity to the Killed Deity Dictionary
             OnDeityKilled(_deitySpawner.currentUnboundDeity);
@@ -365,6 +383,7 @@ public class TurnController : MonoBehaviour
                 if (residentDeityDefeated)
                 {
                     battleEnded = true;
+                    CaptureBattleEndFocusUnit();
                     BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
                 }
             }
@@ -375,6 +394,7 @@ public class TurnController : MonoBehaviour
                 if (allEnemiesDefeated)
                 {
                     battleEnded = true;
+                    CaptureBattleEndFocusUnit();
                     BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
                 }
             }
@@ -386,6 +406,7 @@ public class TurnController : MonoBehaviour
             if (allEnemiesDefeated)
             {
                 battleEnded = true;
+                CaptureBattleEndFocusUnit();
                 BattleFlowController.Instance.PlayerPartyVictorySequence("Victory", warFunds);
             }
         }
@@ -440,7 +461,7 @@ public class TurnController : MonoBehaviour
         if (turnCounter == 1)
         {
             Debug.Log("Stop stun recovery attempt, as this is the first turn");
-            return;            
+            return;
         }
 
         UnitStatusController statusController = playerUnit.GetComponent<UnitStatusController>();

@@ -58,6 +58,13 @@ public class UnitSetupController : MonoBehaviour
         }
 
         RestorePlayerUnitsStatus();
+
+        // Re-sort now every unit has its final battlefield position; don't rely solely on CameraDistanceController's fallback delay.
+        GameObject cameraDistanceControllerObject = GameObject.FindGameObjectWithTag("CameraDistanceController");
+        if (cameraDistanceControllerObject != null)
+        {
+            cameraDistanceControllerObject.GetComponent<CameraDistanceController>().SortUnits();
+        }
     }
     private bool IsWithinGridBounds(int x, int y)
     {

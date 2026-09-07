@@ -32,7 +32,7 @@ public class RecruitManager : MonoBehaviour
 
     private void Start()
     {
-        // GameManager already did the heavy lifting. We just map the first 3 units to our active UI slots.
+        // Handles display of characters in the Garrison UI.
         int limit = Mathf.Min(MaxActivePartySize, AvailablePartyMembers.Count);
         for (int i = 0; i < limit; i++)
         {

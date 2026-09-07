@@ -6,6 +6,18 @@ using UnityEngine;
 public class CameraDistanceController : MonoBehaviour
 {
     public List<GameObject> unitsOnBattlefield;
+
+    private void OnEnable()
+    {
+        // Re-sort on the actual "battle setup decided" signal instead of only trusting a fixed delay guess.
+        BattleTypeController.OnBattleTypeInitialized += SortUnits;
+    }
+
+    private void OnDisable()
+    {
+        BattleTypeController.OnBattleTypeInitialized -= SortUnits;
+    }
+
     // Call this method whenever a unit moves.
     public void Start()
     {
@@ -14,7 +26,7 @@ public class CameraDistanceController : MonoBehaviour
 
     IEnumerator SortUnitsWrapper()
     {
-        // Using a coroutine to delay the sorting of units after units spawned.
+        // Fallback only: real init timing varies too much (esp. in builds) to rely on this delay alone.
         yield return new WaitForSeconds(0.5f);
         SortUnits();
     }
@@ -28,6 +40,10 @@ public class CameraDistanceController : MonoBehaviour
         unitsOnBattlefield.AddRange(FindGameObjectsInLayer(LayerMask.NameToLayer("Unit")));
         unitsOnBattlefield.AddRange(FindGameObjectsInLayer(LayerMask.NameToLayer("UnitMapIcon")));
 
+        if (unitsOnBattlefield.Count == 0)
+        {
+            Debug.LogWarning("[CameraDistanceController] SortUnits found no GameObjects on the Unit/UnitMapIcon layers - sprites may draw in the wrong order or behind other geometry.");
+        }
 
         // Sort the list of units by their distance from the camera. The unit farthest from the camera gets the highest sorting order.
         unitsOnBattlefield.Sort((unit1, unit2) =>

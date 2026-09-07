@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CharacterUnlockManager : MonoBehaviour
 {
-    // --- NEW: Global event for when a character unlocks ---
     public static event Action<Unit> OnCharacterUnlocked;
 
     [Header("Configuration")]
@@ -34,7 +33,6 @@ public class CharacterUnlockManager : MonoBehaviour
                 {
                     Debug.Log($"[CharacterUnlockManager] Unlocking: {condition.characterToUnlock.name}");
 
-                    saveData.availablePartyUnitIds.Add(newUnitId);
                     hasNewUnlocks = true;
 
                     if (GameManager.Instance != null && !GameManager.Instance.playerPartyMembers.Exists(u => u.Id == newUnitId))
@@ -50,6 +48,7 @@ public class CharacterUnlockManager : MonoBehaviour
 
         if (hasNewUnlocks)
         {
+            if (GameManager.Instance != null) GameManager.Instance.SyncPartyListsToSaveData();
             SaveStateManager.SaveGame(saveData);
             Debug.Log("Saved new character unlocks to file.");
         }

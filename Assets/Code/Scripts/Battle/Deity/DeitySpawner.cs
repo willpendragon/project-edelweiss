@@ -179,6 +179,11 @@ public class DeitySpawner : MonoBehaviour
 
     public void DeitySelector()
     {
+        if (spawnableDeities == null || spawnableDeities.Count == 0)
+        {
+            Debug.Log("No Deities found. Typically happens if the Player killed or caught all of them.");
+            return;
+        }
         Debug.Log("Rolling which Deity will appear");
         int deityIndex = localRandom.Next(0, spawnableDeities.Count); // Use System.Random for Deity selection
         Debug.Log($"Deity Index: {deityIndex} - {spawnableDeities[deityIndex].name}");
@@ -253,88 +258,95 @@ public class DeitySpawner : MonoBehaviour
 
     public void InitiateBattleWithDeity(GameObject unlockedDeity)
     {
-        //Unlocks Deity as an Unbound Entity
-        Debug.Log($"Unlocked {unlockedDeity.GetComponent<Unit>().unitTemplate.unitName}");
-
-        // Reset tribute modifier stacks for new deity battle
-        TributeModifierTracker.Instance.ResetStacks();
-
-        string deityName = unlockedDeity.GetComponent<Unit>().unitTemplate.unitName;
-
-        if (DeityIsKilled(deityName))
+        try
         {
-            return;
-        }
+            //Unlocks Deity as an Unbound Entity
+            Debug.Log($"Unlocked {unlockedDeity.GetComponent<Unit>().unitTemplate.unitName}");
 
-        Vector2Int deityCoords = GameManager.Instance.GetDeityStartingCoordinates();
+            // Reset tribute modifier stacks for new deity battle
+            TributeModifierTracker.Instance.ResetStacks();
 
-        int unlockedDeityStartingTileXCoordinate = deityCoords.x;
-        int unlockedDeityStartingTileYCoordinate = deityCoords.y;
+            string deityName = unlockedDeity.GetComponent<Unit>().unitTemplate.unitName;
 
-        unlockedDeity.GetComponent<Unit>().startingXCoordinate = unlockedDeityStartingTileXCoordinate;
-        unlockedDeity.GetComponent<Unit>().startingYCoordinate = unlockedDeityStartingTileYCoordinate;
-
-
-        // Optionally, check if a DeityTile dictates the 3D spawn position instead of relying on the static empty GameObject
-        Vector3 spawnWorldPos = deitySpawnPosition.position;
-        TileController firstDeitySpawningTile =
-            GridManager.Instance.GetTileControllerInstance(deityCoords.x, deityCoords.y);
-
-        if (firstDeitySpawningTile != null && firstDeitySpawningTile.tileType == TileType.DeityTile)
-        {
-            float finalY = firstDeitySpawningTile.transform.position.y;
-            Collider col = firstDeitySpawningTile.GetComponent<Collider>();
-            if (col != null) finalY = col.bounds.max.y;
-
-            spawnWorldPos = new Vector3(firstDeitySpawningTile.transform.position.x, finalY,
-                firstDeitySpawningTile.transform.position.z);
-        }
-
-        GameObject unboundDeity = Instantiate(unlockedDeity, spawnWorldPos, Quaternion.identity);
-        Debug.Log($"Instantiate Unbound Deity GameObject at {spawnWorldPos}");
-
-        if (unboundDeity != null)
-        {
-            Debug.Log("Start of Summon Deity on Battlefield");
-
-            // Adjust position correctly to tile surface
-            if (firstDeitySpawningTile != null)
+            if (DeityIsKilled(deityName))
             {
-                GridManager.Instance.PlaceUnitOnTileSurface(unboundDeity, firstDeitySpawningTile);
+                return;
             }
 
-            Deity deityComponent = unboundDeity.GetComponent<Deity>();
-            if (deityComponent != null && deityComponent.DeityModel != null)
+            Vector2Int deityCoords = GameManager.Instance.GetDeityStartingCoordinates();
+
+            int unlockedDeityStartingTileXCoordinate = deityCoords.x;
+            int unlockedDeityStartingTileYCoordinate = deityCoords.y;
+
+            unlockedDeity.GetComponent<Unit>().startingXCoordinate = unlockedDeityStartingTileXCoordinate;
+            unlockedDeity.GetComponent<Unit>().startingYCoordinate = unlockedDeityStartingTileYCoordinate;
+
+
+            // Optionally, check if a DeityTile dictates the 3D spawn position instead of relying on the static empty GameObject
+            Vector3 spawnWorldPos = deitySpawnPosition.position;
+            TileController firstDeitySpawningTile =
+                GridManager.Instance.GetTileControllerInstance(deityCoords.x, deityCoords.y);
+
+            if (firstDeitySpawningTile != null && firstDeitySpawningTile.tileType == TileType.DeityTile)
             {
-                deityComponent.DeityModel.transform.localPosition = new Vector3(0, 1f, 0);
+                float finalY = firstDeitySpawningTile.transform.position.y;
+                Collider col = firstDeitySpawningTile.GetComponent<Collider>();
+                if (col != null) finalY = col.bounds.max.y;
+
+                spawnWorldPos = new Vector3(firstDeitySpawningTile.transform.position.x, finalY,
+                    firstDeitySpawningTile.transform.position.z);
             }
 
-            unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
-            _deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
+            GameObject unboundDeity = Instantiate(unlockedDeity, spawnWorldPos, Quaternion.identity);
+            Debug.Log($"Instantiate Unbound Deity GameObject at {spawnWorldPos}");
 
-            GridMovementController gridMovementController = GameObject.FindGameObjectWithTag("GridMovementController")
-                .GetComponent<GridMovementController>();
-            if (firstDeitySpawningTile != null)
+            if (unboundDeity != null)
             {
-                firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
-                firstDeitySpawningTile.detectedUnit = unboundDeity;
+                Debug.Log("Start of Summon Deity on Battlefield");
+
+                // Adjust position correctly to tile surface
+                if (firstDeitySpawningTile != null)
+                {
+                    GridManager.Instance.PlaceUnitOnTileSurface(unboundDeity, firstDeitySpawningTile);
+                }
+
+                Deity deityComponent = unboundDeity.GetComponent<Deity>();
+                if (deityComponent != null && deityComponent.DeityModel != null)
+                {
+                    deityComponent.DeityModel.transform.localPosition = new Vector3(0, 1f, 0);
+                }
+
+                unboundDeity.GetComponent<Unit>().ownedTile = firstDeitySpawningTile;
+                _deityObeliskInstance = Instantiate(deityObelisk, deityObeliskSpawningPoint.transform);
+
+                if (firstDeitySpawningTile != null)
+                {
+                    firstDeitySpawningTile.currentSingleTileCondition = SingleTileCondition.occupiedByDeity;
+                    firstDeitySpawningTile.detectedUnit = unboundDeity;
+                }
+
+                currentUnboundDeity = unboundDeity.GetComponent<Deity>();
+                _enemyTurnManager.deity = unboundDeity;
+                MoveObeliskOnGridMap();
+
+                Debug.Log("Deity occupies Tile");
             }
 
-            currentUnboundDeity = unboundDeity.GetComponent<Deity>();
-            _enemyTurnManager.deity = unboundDeity;
-            MoveObeliskOnGridMap();
+            foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+            {
+                Destroy(enemy);
+            }
 
-            Debug.Log("Deity occupies Tile");
+            unboundDeity.gameObject.tag = "Enemy";
         }
-
-        foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        catch (System.Exception ex)
         {
-            Destroy(enemy);
+            // This runs during SceneManager.sceneLoaded, before any Start() - log loudly instead of silently
+            // aborting mid-setup (which previously left the Deity model spawned but its UI/turn wiring incomplete).
+            Debug.LogError($"[DeitySpawner] InitiateBattleWithDeity failed: {ex}");
         }
-
-        unboundDeity.gameObject.tag = "Enemy";
-
     }
+
 
     public bool DeityIsUnavailable(string deityName)
     {
@@ -431,8 +443,8 @@ public class DeitySpawner : MonoBehaviour
         // Instantiate material so we don't affect shared materials
         Material mat = renderer.material;
 
-        Color originalColor = mat.HasProperty("_BaseColor")
-            ? mat.GetColor("_BaseColor")
+        Color originalColor = mat.HasProperty("_MainColor")
+            ? mat.GetColor("_MainColor")
             : mat.color;
 
         Color flashColor = Color.red;
@@ -440,11 +452,11 @@ public class DeitySpawner : MonoBehaviour
         float flashDuration = 0.5f; // VERY fast
 
         mat
-            .DOColor(flashColor, "_BaseColor", flashDuration * 0.5f)
+            .DOColor(flashColor, "_MainColor", flashDuration * 0.5f)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
-                mat.DOColor(originalColor, "_BaseColor", flashDuration * 0.5f)
+                mat.DOColor(originalColor, "_MainColor", flashDuration * 0.5f)
                     .SetEase(Ease.InQuad);
             });
     }
