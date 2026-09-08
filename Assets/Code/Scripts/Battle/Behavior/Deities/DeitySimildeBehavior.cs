@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using DG.Tweening;
 
 [CreateAssetMenu(fileName = "SimildeBehavior", menuName = "DeityBehavior/Similde")]
 public class DeitySimildeBehavior : DeityBehavior
