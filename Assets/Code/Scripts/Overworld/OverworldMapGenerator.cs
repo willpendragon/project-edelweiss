@@ -34,7 +34,7 @@ public class OverworldMapGenerator : MonoBehaviour
     // Note: in the current build, only one map is assigned to each pool. So, the system is there, but you can't really see randomization in action.
     // However, as a designer, you will create more maps, add them to the pools, and this class will randomly pickem up and offer them to the player
     // based on the following distribution rules. (see Difficulty Progression.)
- 
+
     [Header("Map Data Pools")]
     [Tooltip("Maps to randomly select from based on the generated Node Type.")]
     public List<MapData> regularMaps = new List<MapData>();
@@ -61,8 +61,8 @@ public class OverworldMapGenerator : MonoBehaviour
     [Tooltip("Assign a material for the line connecting Map Nodes.")]
     public Material pathLineMaterial;
     [Tooltip("Change this offset to avoid the lide compenetraing with the level floor")]
-    public float lineVerticalOffset = 0.2f; 
-    
+    public float lineVerticalOffset = 0.2f;
+
     public GameObject[] partyMemberIcons;
     public float iconZOffset = 1f;
 
@@ -89,7 +89,7 @@ public class OverworldMapGenerator : MonoBehaviour
     public List<DebugNodeMapOverride> debugNodeMapOverrides = new List<DebugNodeMapOverride>();
 
     [HideInInspector] public Transform currentMapNodeTransform;
-    [HideInInspector] public int currentNodeId; 
+    [HideInInspector] public int currentNodeId;
 
     private List<Vector3> nodePositions = new List<Vector3>();
     private int currentDomainId = 0;
@@ -99,15 +99,17 @@ public class OverworldMapGenerator : MonoBehaviour
     private List<GameObject> spawnedPartyIcons = new List<GameObject>();
     private List<GameObject> spawnedLines = new List<GameObject>();
     private bool needsRegeneration = false;
-    
-    private Dictionary<int, List<int>> adjacencyList = new Dictionary<int, List<int>>();
+
+    // Use this read only graph of node connections to allow the roaming Deities class pathfind along real edges
+    // just like the player. Could also prove useful for similar mechanics (e.g.: raiding enemy units, etc.).
+    public Dictionary<int, List<int>> adjacencyList { get; private set; } = new Dictionary<int, List<int>>();
     private bool isMoving = false;
 
     private float lastMapWidth;
     private float lastMapDepth;
     private float lastMinDistance;
     private int lastSeed;
-    
+
     // Tracking config weights and thresholds.
     private float lastRegularWeight;
     private float lastPuzzleWeight;
@@ -141,7 +143,7 @@ public class OverworldMapGenerator : MonoBehaviour
         lastPuzzleThreshold = config.puzzleBattleThreshold;
         lastMinibossThreshold = config.minibossBattleThreshold;
 
-        currentDomain = domainLevelSelection; 
+        currentDomain = domainLevelSelection;
         GameSaveData gameSaveData = SaveStateManager.saveData; // Retrieve the Player's progression (aka, how many nodes they have completed).
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
 
@@ -155,7 +157,7 @@ public class OverworldMapGenerator : MonoBehaviour
             if (gameSaveData.runSeed == 0)
             {
                 gameSaveData.runSeed = Random.Range(1, int.MaxValue);
-                SaveStateManager.SaveGame(gameSaveData); 
+                SaveStateManager.SaveGame(gameSaveData);
             }
 
             // Initialize Unity's randomizer with the saved Run Seed
@@ -175,7 +177,7 @@ public class OverworldMapGenerator : MonoBehaviour
                 runtimeConfig.puzzleBattleThreshold = Random.Range(runtimeConfig.puzzleThresholdRange.x, runtimeConfig.puzzleThresholdRange.y + 1);
                 runtimeConfig.minibossBattleThreshold = Random.Range(runtimeConfig.minibossThresholdRange.x, runtimeConfig.minibossThresholdRange.y + 1);
             }
-            
+
             // Re-seed one more time right before node layout generation, as complete safety measure.
             Random.InitState(gameSaveData.runSeed);
         }
@@ -205,7 +207,7 @@ public class OverworldMapGenerator : MonoBehaviour
                 testPosition = initialPosition + new Vector3(randomX, 0, randomZ);
 
                 isValid = true;
-                
+
                 foreach (Vector3 pos in scatteredPositions)
                 {
                     if (Vector3.Distance(testPosition, pos) < runtimeConfig.minDistanceApart)
@@ -217,16 +219,16 @@ public class OverworldMapGenerator : MonoBehaviour
             }
 
             scatteredPositions.Add(testPosition);
-            adjacencyList[i] = new List<int>(); 
+            adjacencyList[i] = new List<int>();
         }
 
         // Sort from left to right to build an advancing mesh
         scatteredPositions.Sort((a, b) => a.x.CompareTo(b.x));
-        
+
         // Pre-generate node types to identify gateways (choke points) early.
         // TomodachiPod here! :D Please remember that gateways are special nodes that prevent the Player
         // To progress further unless they've completed them. It makes sense for a gateway to be a Miniboss fight.
-        
+
         NodeType[] predefinedNodeTypes = new NodeType[scatteredPositions.Count];
         for (int i = 0; i < scatteredPositions.Count; i++)
         {
@@ -254,10 +256,10 @@ public class OverworldMapGenerator : MonoBehaviour
             {
                 forwardNeighbors.Add(j);
             }
-            
+
             // Sort remaining forward nodes by distance.
             forwardNeighbors.Sort((a, b) => Vector3.Distance(scatteredPositions[i], scatteredPositions[a]).CompareTo(Vector3.Distance(scatteredPositions[i], scatteredPositions[b])));
-            
+
             // Branch 1 to 2 paths ahead.
             int branchingPaths = Mathf.Min(Random.Range(1, 3), forwardNeighbors.Count);
             for (int k = 0; k < branchingPaths; k++)
@@ -270,7 +272,7 @@ public class OverworldMapGenerator : MonoBehaviour
                     adjacencyList[target].Add(i); // Bidirectional mapping.
                 }
             }
-            
+
             // Failsafe: Guarantee connection reaching the gateway to prevent dead islands.
             if (!adjacencyList[i].Contains(nextGateway) && nextGateway == i + 1)
             {
@@ -286,23 +288,23 @@ public class OverworldMapGenerator : MonoBehaviour
             GameObject lineObj = new GameObject($"MapLine_{edge.x}_{edge.y}");
             lineObj.transform.SetParent(mapNodeTransform);
             LineRenderer lr = lineObj.AddComponent<LineRenderer>();
-            
+
             // Visual configuration.
             lr.alignment = LineAlignment.TransformZ;
             lr.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
             lr.numCornerVertices = 4;
             lr.numCapVertices = 4;
             if (pathLineMaterial != null) lr.material = pathLineMaterial;
-            
+
             lr.startWidth = 0.5f;
             lr.endWidth = 0.5f;
             lr.useWorldSpace = true;
-            
+
             // Position mapping.
             lr.positionCount = 2;
             lr.SetPosition(0, scatteredPositions[edge.x] + new Vector3(0, lineVerticalOffset, 0));
             lr.SetPosition(1, scatteredPositions[edge.y] + new Vector3(0, lineVerticalOffset, 0));
-            
+
             spawnedLines.Add(lineObj);
         }
 
@@ -311,9 +313,9 @@ public class OverworldMapGenerator : MonoBehaviour
         {
             Vector3 finalPosition = scatteredPositions[i];
             GameObject newNode = Instantiate(mapNode, finalPosition, Quaternion.identity);
-            
+
             // Assign the type calculated earlier.
-            NodeType nodeType = predefinedNodeTypes[i]; 
+            NodeType nodeType = predefinedNodeTypes[i];
 
             MapNodeController nodeController = newNode.GetComponentInChildren<MapNodeController>();
             if (nodeController != null)
@@ -331,7 +333,7 @@ public class OverworldMapGenerator : MonoBehaviour
             enemySelection.enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
             enemySelection.levelNumber = domainLevelSelection.levelList[i].levelNumber;
             enemySelection.conversationTitle = domainLevelSelection.levelList[i].conversationTitle; // Allows designers to set which convo will play in which node.
-            
+
             // Pass the current index 'i' to evaluate difficulty.
             MapData randomlySelectedMap = GetRandomMapForType(nodeType, i);
             if (randomlySelectedMap != null)
@@ -369,7 +371,7 @@ public class OverworldMapGenerator : MonoBehaviour
             if (i == visualStartNodeId)
             {
                 currentMapNodeTransform = newNode.transform;
-                currentNodeId = i; 
+                currentNodeId = i;
                 UpdatePartyMemberVisuals(newNode);
             }
 
@@ -434,7 +436,7 @@ public class OverworldMapGenerator : MonoBehaviour
             // Fallback: If difficulty is disabled or the specific specific difficulty pool was empty, pull randomly from the entire valid pool.
             return pool[Random.Range(0, pool.Count)];
         }
-        
+
         Debug.LogWarning($"[MapGenerator] No MapData found in pool for {type}. Will fallback to default domain assignment.");
         return null;
     }
@@ -444,8 +446,8 @@ public class OverworldMapGenerator : MonoBehaviour
         if (isMoving || currentNodeId == targetId) return;
 
         List<int> shortestPath = PathfindingBFS(currentNodeId, targetId);
-        
-        if (shortestPath != null && shortestPath.Count > 1) 
+
+        if (shortestPath != null && shortestPath.Count > 1)
         {
             StartCoroutine(MovePartyRoutine(shortestPath));
         }
@@ -489,14 +491,14 @@ public class OverworldMapGenerator : MonoBehaviour
     {
         Queue<int> pathQueue = new Queue<int>();
         Dictionary<int, int> parentMap = new Dictionary<int, int>();
-        
+
         pathQueue.Enqueue(start);
         parentMap[start] = -1;
 
         while (pathQueue.Count > 0)
         {
             int current = pathQueue.Dequeue();
-            
+
             if (current == target) break;
 
             foreach (int neighbor in adjacencyList[current])
@@ -506,14 +508,14 @@ public class OverworldMapGenerator : MonoBehaviour
                     MapNodeController currentController = spawnedNodes[current].GetComponentInChildren<MapNodeController>();
                     MapNodeController neighborController = spawnedNodes[neighbor].GetComponentInChildren<MapNodeController>();
 
-                    bool currentIsGateway = currentController != null && 
+                    bool currentIsGateway = currentController != null &&
                         (currentController.type == NodeType.MinibossBattle || currentController.type == NodeType.BossBattle);
 
-                    bool currentIsUnclearedGateway = currentIsGateway && 
+                    bool currentIsUnclearedGateway = currentIsGateway &&
                         currentController.currentLockStatus != MapNodeController.LockStatus.levelCleared;
 
-                    bool neighborIsUnclearedGateway = neighborController != null && 
-                        (neighborController.type == NodeType.MinibossBattle || neighborController.type == NodeType.BossBattle) && 
+                    bool neighborIsUnclearedGateway = neighborController != null &&
+                        (neighborController.type == NodeType.MinibossBattle || neighborController.type == NodeType.BossBattle) &&
                         neighborController.currentLockStatus != MapNodeController.LockStatus.levelCleared;
 
                     // Strict Barrier: You cannot move FORWARD from a Gateway to any other node
@@ -528,11 +530,11 @@ public class OverworldMapGenerator : MonoBehaviour
                         if (runtimeConfig != null && runtimeConfig.enforceChokepointProgressionRule)
                         {
                             // Calculate how many nodes exist from start up to (and including) this gateway.
-                            int totalNodesUpToGateway = current + 1; 
-                            
+                            int totalNodesUpToGateway = current + 1;
+
                             // Calculate required amount based on the percentage.
                             int requiredClearedCount = Mathf.CeilToInt(totalNodesUpToGateway * (runtimeConfig.chokepointCompletionPercentageRequired / 100f));
-                            
+
                             int clearedCount = 0;
                             // Count how many nodes in this chunk have actually been cleared.
                             for (int i = 0; i <= current; i++)
@@ -554,7 +556,7 @@ public class OverworldMapGenerator : MonoBehaviour
                     // 2. Choke Point check: You cannot path THROUGH an uncleared Gateway to reach something else.
                     if (neighborIsUnclearedGateway && neighbor != target && neighbor > current)
                     {
-                        continue; 
+                        continue;
                     }
 
                     parentMap[neighbor] = current;
@@ -573,7 +575,7 @@ public class OverworldMapGenerator : MonoBehaviour
             calculatedPath.Add(backtrackNode);
             backtrackNode = parentMap[backtrackNode];
         }
-        
+
         calculatedPath.Reverse();
         return calculatedPath;
     }
@@ -581,7 +583,7 @@ public class OverworldMapGenerator : MonoBehaviour
     private IEnumerator MovePartyRoutine(List<int> path)
     {
         isMoving = true;
-        
+
         GameStatsManager gameStatsManager = FindAnyObjectByType<GameStatsManager>();
         RoamingDeityController deityController = FindAnyObjectByType<RoamingDeityController>();
 
@@ -589,9 +591,9 @@ public class OverworldMapGenerator : MonoBehaviour
         {
             int nextNode = path[i];
             Vector3 targetPosition = nodePositions[nextNode];
-            
-            float horizontalOffset = 2; 
-            float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f; 
+
+            float horizontalOffset = 2;
+            float startOffset = -(partyMemberIcons.Length - 1) * horizontalOffset * 0.5f;
 
             Tween waitTween = null;
 
@@ -613,9 +615,9 @@ public class OverworldMapGenerator : MonoBehaviour
             {
                 yield return waitTween.WaitForCompletion();
             }
-            
+
             currentNodeId = nextNode;
-            
+
             if (gameStatsManager != null)
             {
                 gameStatsManager.SaveCurrentNodeId(currentNodeId);
@@ -631,9 +633,9 @@ public class OverworldMapGenerator : MonoBehaviour
             if (deityController != null)
             {
                 deityController.OnPlayerMoved(currentNodeId);
-                
+
                 // Optional: add a tiny visual delay if you want the deity to move visibly right after the player stats
-                yield return new WaitForSeconds(0.6f); 
+                yield return new WaitForSeconds(0.6f);
             }
         }
 
@@ -660,8 +662,8 @@ public class OverworldMapGenerator : MonoBehaviour
         }
 
         Vector3 partyMemberIconPosition = mapNode.transform.position + new Vector3(0, 0, iconZOffset);
-        float horizontalOffset = 2; 
-        float startOffset = -(dynamicPartyIcons.Count - 1) * horizontalOffset * 0.5f; 
+        float horizontalOffset = 2;
+        float startOffset = -(dynamicPartyIcons.Count - 1) * horizontalOffset * 0.5f;
 
         // Cache the required Layer integer natively to avoid string lookups in the loop
         int unitMapIconLayer = LayerMask.NameToLayer("UnitMapIcon");
@@ -671,7 +673,7 @@ public class OverworldMapGenerator : MonoBehaviour
             if (dynamicPartyIcons[j] == null) continue;
 
             Vector3 offsetPosition = new Vector3(startOffset + horizontalOffset * j, 0, 0);
-            
+
             // 1. Create an empty wrapper GameObject to act as our uncontested move target
             GameObject iconWrapper = new GameObject($"PartyIconWrapper_{dynamicPartyIcons[j].name}");
             iconWrapper.transform.position = partyMemberIconPosition + offsetPosition;
@@ -689,7 +691,7 @@ public class OverworldMapGenerator : MonoBehaviour
             {
                 anim.applyRootMotion = false;
             }
-            
+
             // 4. --- NEW: FORCE LAYER TO 'UnitMapIcon' FOR VISIBILITY ---
             if (unitMapIconLayer != -1) // Ensure the layer actually exists in the project
             {
@@ -704,7 +706,7 @@ public class OverworldMapGenerator : MonoBehaviour
             {
                 Debug.LogWarning("[OverworldMapGenerator] Layer 'UnitMapIcon' does not exist in your project settings!");
             }
-            
+
             // 5. Track the wrapper so DOTween moves it instead of the animated child
             spawnedPartyIcons.Add(iconWrapper);
         }
@@ -719,12 +721,12 @@ public class OverworldMapGenerator : MonoBehaviour
     {
         MapNodeController nodeController = mapNode.GetComponentInChildren<MapNodeController>();
         Color color = nodeController != null ? GetNodeTypeColor(nodeController.type) : Color.white;
-        
+
         if (isCleared)
         {
             color = Color.gray; // Visually indicate the node has been cleared
         }
-        
+
         mapNode.GetComponentInChildren<MeshRenderer>().material.color = color;
     }
 
@@ -767,7 +769,7 @@ public class OverworldMapGenerator : MonoBehaviour
         randomVal -= runtimeConfig.regularBattleWeight;
 
         if (randomVal < currentPuzzleWeight) return NodeType.PuzzleBattle;
-        
+
         return NodeType.MinibossBattle;
     }
 
@@ -786,7 +788,7 @@ public class OverworldMapGenerator : MonoBehaviour
         if (config.mapWidth != lastMapWidth || config.mapDepth != lastMapDepth || config.minDistanceApart != lastMinDistance || config.randomSeed != lastSeed)
             hasChanged = true;
 
-        if (config.regularBattleWeight != lastRegularWeight || config.puzzleBattleWeight != lastPuzzleWeight || 
+        if (config.regularBattleWeight != lastRegularWeight || config.puzzleBattleWeight != lastPuzzleWeight ||
             config.minibossBattleWeight != lastMinibossWeight || config.bossBattleWeight != lastBossWeight)
             hasChanged = true;
 
@@ -817,7 +819,7 @@ public class OverworldMapGenerator : MonoBehaviour
             if (icon != null) Destroy(icon);
         }
         spawnedPartyIcons.Clear();
-        
+
         foreach (var line in spawnedLines)
         {
             if (line != null) Destroy(line);
@@ -852,13 +854,13 @@ public class OverworldMapGenerator : MonoBehaviour
             Debug.LogError("Cannot teleport: The selected domain has no levels.");
             return;
         }
-        
+
         gameSaveData.currentNodeId = bossNodeId;
 
         // Regenerate the map. It will now use the overridden start position.
         ClearMap();
         GenerateLevel(currentDomain);
-        
+
         // The generator has now placed the player at the boss node.
         // Now, we inject the specific debug map data into that node.
         if (spawnedNodes.Count > bossNodeId && spawnedNodes[bossNodeId] != null)
@@ -873,7 +875,7 @@ public class OverworldMapGenerator : MonoBehaviour
         // Force the Boss Key unlock
         var gameStatsManager = FindAnyObjectByType<GameStatsManager>();
         gameStatsManager.hasBossKey = true;
-        
+
         // Optional: Persist this change to the save file.
         GameStatsManager statsManager = FindObjectOfType<GameStatsManager>();
         if (statsManager != null)
