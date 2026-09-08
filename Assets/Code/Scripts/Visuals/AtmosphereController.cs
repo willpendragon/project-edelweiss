@@ -70,6 +70,7 @@ public class AtmosphereController : MonoBehaviour
             sceneVolume.isGlobal = true;
             volumeObj.transform.SetParent(this.transform);
         }
-        sceneVolume.sharedProfile = _bloodMoonVolumeProfile;
+        sceneVolume.profile = _bloodMoonVolumeProfile;
+        Debug.Log("Added Blood Moon Mood");
     }
 }
