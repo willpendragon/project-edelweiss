@@ -14,6 +14,8 @@ public class NotificationsUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _footerNotifications;
     private List<string> _eventNotifications = new List<string>();
     private float _marqueeResetDelay = 1.5f;
+    private Tween _footerNotificationTween;
+    private const string _defaultFooterMessage = "Use Left Mouse Button on 3D icons to access Battles and Locations.";
 
 
     public void Awake()
@@ -67,8 +69,8 @@ public class NotificationsUIManager : MonoBehaviour
 
     public void DisplayFooterNotification(string message)
     {
-        string previousMessage = _footerNotifications.text;
+        _footerNotificationTween?.Kill(); // Prevent an earlier pending revert from stomping this message
         _footerNotifications.text = message;
-        DOVirtual.DelayedCall(_marqueeResetDelay, () => _footerNotifications.text = previousMessage);
+        _footerNotificationTween = DOVirtual.DelayedCall(_marqueeResetDelay, () => _footerNotifications.text = _defaultFooterMessage);
     }
 }
