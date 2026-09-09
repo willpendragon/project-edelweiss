@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using DG.Tweening; // Required for delayed calls
+using ProjectEdelweiss.Utils;
 
 [CreateAssetMenu(fileName = "MoonPrincessBehavior", menuName = "DeityBehavior/MoonPrincess")]
 public class DeityMoonPrincessBehavior : DeityBehavior
@@ -114,7 +115,7 @@ public class DeityMoonPrincessBehavior : DeityBehavior
                     // Apply stun status to the player unit
                     playerUnit.GetComponentInChildren<UnitStatusController>().unitCurrentStatus = UnitStatus.stun;
                     playerUnit.GetComponentInChildren<UnitStatusController>().UnitStun.Invoke();
-                    
+
                     // Play visual feedback for the stun
                     PlayRageStunFeedback(playerUnit);
                 }
@@ -168,7 +169,6 @@ public class DeityMoonPrincessBehavior : DeityBehavior
 
     private void AttemptZapAttack(Deity deity, Unit deityUnit)
     {
-        BattleInterface.Instance.SetDeityNotification($"{deityName} prepares to unleash {zapAttackName}!");
         DOVirtual.DelayedCall(1.5f, () => ZapAttack(deity, deityUnit));
     }
 
@@ -231,16 +231,15 @@ public class DeityMoonPrincessBehavior : DeityBehavior
     private void AttemptWindGustAttack(Deity deity, Unit deityUnit)
     {
         WindDirection currentWindDirection = defaultWindDirection;
-        
+
         if (randomizeWindDirection)
         {
             // Pick a random direction (0 to 3) corresponding to North, South, East, West
             currentWindDirection = (WindDirection)localRandom.Next(0, 4);
         }
 
-        string dirText = currentWindDirection == WindDirection.AwayFromDeity ? "away from her" : $"towards {currentWindDirection}";
-        BattleInterface.Instance.SetDeityNotification($"{deityName} conjures a {windGustAttackName} blowing {dirText}!");
-        
+        BattleInterface.Instance.SetDeityNotification($"{deityName} conjures a Wind Gust");
+
         DOVirtual.DelayedCall(1.5f, () => WindGustAttack(deity, deityUnit, currentWindDirection));
     }
 
@@ -360,13 +359,18 @@ public class DeityMoonPrincessBehavior : DeityBehavior
             // 2. Apply the push result
             if (fellIntoVoid)
             {
+                if (targetUnit.gameObject.CompareTag(GameTags.Player) || targetUnit.gameObject.CompareTag(GameTags.ActivePlayerUnit))
+                {
+                    BattleInterface.Instance.SetDeityNotification($"Wind pushed {targetUnit.unitTemplate.unitName} into oblivion...");
+                }
+
                 targetUnit.FallIntoVoid(normalizedPushDirection, WIND_GUST_PUSH_DISTANCE);
             }
             else if (currentPos != targetUnitGridPos)
             {
                 // Save the original tile before moving
                 TileController originalTile = targetUnit.ownedTile;
-                
+
                 // Attempt to move the unit normally to the valid safe tile we found
                 bool moved = targetUnit.MoveUnit(currentPos.x, currentPos.y, true);
 
@@ -387,11 +391,11 @@ public class DeityMoonPrincessBehavior : DeityBehavior
                         destinationTile.currentSingleTileCondition = SingleTileCondition.occupied;
                         targetUnit.ownedTile = destinationTile;
                     }
-                    
+
                     // Update unit's position coordinates
                     targetUnit.currentXCoordinate = currentPos.x;
                     targetUnit.currentYCoordinate = currentPos.y;
-                    
+
                     Debug.Log($"{targetUnit.gameObject.name} was pushed by Wind Gust to ({currentPos.x}, {currentPos.y})");
                 }
                 else

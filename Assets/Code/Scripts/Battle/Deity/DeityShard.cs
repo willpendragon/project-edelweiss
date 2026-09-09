@@ -56,6 +56,8 @@ public class DeityShard : MonoBehaviour
                 float currentHpPercentage = maxHp > 0 ? deityUnit.unitHealthPoints / maxHp : 0;
 
                 Debug.Log($"Shard attacked, {damageAmount} damage on {deityUnit.unitTemplate.unitName}.");
+                // TODO: replace with real shard-hit feedback (VFX/sound/notification)
+                Debug.Log($"Shard hit! Redirected {damageAmount} damage to {deityUnit.unitTemplate.unitName}.");
 
                 _residentDeity.deityCry.Play();
                 _battleFeedbackController.PlayHitAnimation();
