@@ -60,14 +60,20 @@ public class MeleePlayerAction : MonoBehaviour, IPlayerAction<TileController>
     }
     private bool IsEnemyReachable(Unit activePlayerUnit, TileController targetTile)
     {
-        // Voxel Distance Calculation (Manhattan Distance)
         Vector3Int pPos = activePlayerUnit.ownedTile.gridPosition;
         Vector3Int targetPos = targetTile.gridPosition;
 
-        // Quanti "blocchi" di mappa tra l'attaccante e il difensore?
         int distanceX = Mathf.Abs(pPos.x - targetPos.x);
         int distanceZ = Mathf.Abs(pPos.z - targetPos.z);
-        
+
+        // Ranged attacks are evaluated with the same Chebyshev distance + min/max range used by CursorController's icon check, to avoid the icon/fire mismatch.
+        if (activePlayerUnit.hasBow && activePlayerUnit.unitTemplate.physicAttackBehavior is RangedBehavior rangedBehavior)
+        {
+            int flatDistance = Mathf.Max(distanceX, distanceZ);
+            return flatDistance >= rangedBehavior.minAttackRange && flatDistance <= rangedBehavior.maxAttackRange;
+        }
+
+        // Voxel Distance Calculation (Manhattan Distance)
         int actualDistance = distanceX + distanceZ;
         meleeRange = activePlayerUnit.unitTemplate.physicAttackBehavior.GetAttackRange(); 
 
