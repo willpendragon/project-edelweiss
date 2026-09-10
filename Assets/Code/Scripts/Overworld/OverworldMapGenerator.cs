@@ -856,6 +856,7 @@ public class OverworldMapGenerator : MonoBehaviour
         }
 
         gameSaveData.currentNodeId = bossNodeId;
+        gameSaveData.highestUnlockedLevel = 14;
 
         // Regenerate the map. It will now use the overridden start position.
         ClearMap();

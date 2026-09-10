@@ -11,12 +11,13 @@ public class GameFlowController : MonoBehaviour
         Standard,
         BossFightUnlocked,
         NextDomainUnlocked,
-        DomainClear
+        DomainClear,
+        DemoEnd
     }
 
     [SerializeField] Transform bossLevelTowerSpawnpoint;
     [SerializeField] GameObject bossLevelTowerPrefab;
-    [SerializeField] RectTransform endOfDemoPanel;
+    [SerializeField] CanvasGroup demoEndCanvas;
     [SerializeField] GraphicRaycaster overWorldMapCanvas;
     [SerializeField] private int _currentSessionHighestUnlockedLevel;
     [SerializeField] private int _bossFightRequirement;
@@ -60,15 +61,16 @@ public class GameFlowController : MonoBehaviour
         _demoEndRequirement = _currentDomain.clearRequirement;
     }
 
+    // Note: this logic is currently meant only for the demo (where only one domain is present).
     private void SetCompletionState(int currentSessionHighestUnlockedLevel)
     {
-        if (_currentSessionHighestUnlockedLevel == _bossFightRequirement)
+        // if (_currentSessionHighestUnlockedLevel == _bossFightRequirement)
+        // {
+        //     _completionState = CompletionState.BossFightUnlocked;
+        // }
+        if (_currentSessionHighestUnlockedLevel == _demoEndRequirement)
         {
-            _completionState = CompletionState.BossFightUnlocked;
-        }
-        else if (_currentSessionHighestUnlockedLevel == _demoEndRequirement)
-        {
-            _completionState = CompletionState.BossFightUnlocked;
+            _completionState = CompletionState.DemoEnd;
         }
         else if (_currentSessionHighestUnlockedLevel == _nextDomainUnlockRequirement)
         {
@@ -83,34 +85,37 @@ public class GameFlowController : MonoBehaviour
             case CompletionState.BossFightUnlocked:
                 UnlockBossFight();
                 break;
+            case CompletionState.DemoEnd:
+                DisplayDemoEndScreen();
+                break;
             case CompletionState.NextDomainUnlocked:
                 UnlockNewDomain();
                 break;
             case CompletionState.DomainClear:
-                UnlockDemoEnd();
+                // UnlockNewDomain();
                 break;
         }
     }
 
+    private void DisplayDemoEndScreen()
+    {
+        demoEndCanvas.alpha = 1;
+    }
+
     private void UnlockBossFight()
     {
+        // This method is not needed anymore, as the Player unlocks the Boss Fight via a Boss Key.
+
         // GameObject newBossLevelTower = Instantiate(bossLevelTowerPrefab, bossLevelTowerSpawnpoint);
         // Debug.Log("Boss Jacob's Ladder appears");
         // Hard-coded for demo purposes
-        overWorldMapCanvas.enabled = true;
-        endOfDemoPanel.localScale = Vector3.one;
+        // overWorldMapCanvas.enabled = true;
+        // endOfDemoPanel.localScale = Vector3.one;
     }
     private void UnlockNewDomain()
     {
         int nextDomainIndex = _currentSessionHighestUnlockedLevel += 1;
         _currentDomain = domains[nextDomainIndex];
         // Presentation logic to display level unlock.
-    }
-
-    private void UnlockDemoEnd()
-    {
-        // Hard-coded logic for demo end.
-        overWorldMapCanvas.enabled = true;
-        endOfDemoPanel.localScale = Vector3.one;
     }
 }
