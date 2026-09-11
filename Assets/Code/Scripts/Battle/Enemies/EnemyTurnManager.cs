@@ -10,6 +10,7 @@ public class EnemyTurnManager : MonoBehaviour
     public int currentEnemyTurnIndex;
     public BattleManager battleManager;
     [SerializeField] float singleEnemyturnDuration;
+    [SerializeField] float trapActivationDelay = 1f;
 
     public delegate void DeityTurn(string deityTurn);
     public static event DeityTurn OnDeityTurn;
@@ -64,6 +65,11 @@ public class EnemyTurnManager : MonoBehaviour
     {
         // Refactor this moving out Deity logic. Call the Deity Logic and separately (if the Deity is present).
 
+        // Spikes must resolve before any enemy acts, so knockbacked/pulled enemies pay for it immediately.
+        bool trapFired = ActivateTrap();
+        if (trapFired)
+            yield return new WaitForSeconds(trapActivationDelay);
+
         while (currentEnemyTurnIndex < enemiesInQueue.Count && !TurnController.Instance.BattleEnded)
         {
             EnemyAgent activeEnemy = enemiesInQueue[currentEnemyTurnIndex];
@@ -116,8 +122,6 @@ public class EnemyTurnManager : MonoBehaviour
         if (TurnController.Instance.BattleEnded)
             yield break;
 
-        ActivateTrap();
-
         if (deity == null)
         {
             DOVirtual.DelayedCall(1f, () => OnPlayerTurn?.Invoke("Player Turn"));
@@ -140,17 +144,22 @@ public class EnemyTurnManager : MonoBehaviour
         _iconDisplayHelper = enemy.gameObject.GetComponentInChildren<IconDisplayHelper>();
     }
 
-    private void ActivateTrap()
+    private bool ActivateTrap()
     {
         //Need to move this in another class or move in a class of its own, following the single responsibility principle
+
+        bool anyTrapFired = false;
 
         foreach (var tile in GridManager.Instance.gridTileControllers)
         {
             TrapController trapTile = tile.GetComponent<TrapController>();
             if (trapTile != null && trapTile.currentTrapActivationStatus == TrapController.TrapActivationStatus.active)
             {
-                trapTile.ApplyTrapEffect();
+                if (trapTile.ApplyTrapEffect())
+                    anyTrapFired = true;
             }
         }
+
+        return anyTrapFired;
     }
 }

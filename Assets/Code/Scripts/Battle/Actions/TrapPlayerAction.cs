@@ -6,7 +6,7 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
 {
     public float trapCreationCost = 5;
     public int trapCreationRange = 1;
-    public float trapVerticalOffset = 0.52f;
+    public float trapVerticalOffset = 1.9f;
     public static event System.Action OnTrapPlaced;
 
     public delegate void NotEnoughMana(string notification);
@@ -27,7 +27,10 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         TrapController trapController = targetTile.GetComponentInChildren<TrapController>();
         if (trapController == null) return;
 
-        int distance = GridManager.Instance.gridMovementController.GetDistance(activePlayerUnit.ownedTile, targetTile);
+        // GridMovementController.GetDistance is an A* pathfinding heuristic (scaled 10/14 per tile), not a raw tile count - use Manhattan distance to match trapCreationRange's unit.
+        Vector3Int attackerPos = activePlayerUnit.ownedTile.gridPosition;
+        Vector3Int targetPos = targetTile.gridPosition;
+        int distance = Mathf.Abs(attackerPos.x - targetPos.x) + Mathf.Abs(attackerPos.z - targetPos.z);
         if (distance > trapCreationRange ||
             targetTile.currentSingleTileCondition != SingleTileCondition.free ||
             trapController.currentTrapActivationStatus == TrapController.TrapActivationStatus.active)
@@ -46,8 +49,9 @@ public class TrapPlayerAction : MonoBehaviour, IPlayerAction<TileController>
         Transform tilePosition = targetTile.transform;
         Vector3 offSet = new Vector3(0, trapVerticalOffset, 0);
         Vector3 spawnPosition = targetTile.transform.position + offSet;
-        GameObject trapVFX = (GameObject)Resources.Load("TrapTileVFX");
-        Instantiate(trapVFX, spawnPosition, Quaternion.identity);
+        GameObject trapVFXPrefab = (GameObject)Resources.Load("TrapTileVFX");
+        GameObject trapVFXInstance = Instantiate(trapVFXPrefab, spawnPosition, Quaternion.identity);
+        trapVFXInstance.transform.localScale = new Vector3(2, 2, 2);
 
         activePlayerUnit.unitOpportunityPoints--;
 
