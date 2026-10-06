@@ -1,4 +1,5 @@
 using Edelweiss.Core;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -82,16 +83,16 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     [Header("Gameplay Logic")]
     public GameObject detectedUnit;
-    
+
     // Sostituiamo le coordinate X e Y singole con un Vector3Int completo
-    public Vector3Int gridPosition; 
-    
+    public Vector3Int gridPosition;
+
     // Mantenute per compatibilit� immediata se altri script vi accedono, 
     // ma ti consiglio di migrare tutto a 'gridPosition.x', 'gridPosition.y', 'gridPosition.z' in futuro.
     public int tileXCoordinate { get => gridPosition.x; set => gridPosition.x = value; }
     public int tileYCoordinate { get => gridPosition.z; set => gridPosition.z = value; } // L'estetica dice "Y" per i vecchi script, la logica usa "Z"
     public int tileElevation { get => gridPosition.y; set => gridPosition.y = value; } // Nuova Y / Altezza
-    
+
 
     public IPlayerAction<TileController> currentPlayerAction = new SelectUnitPlayerAction();
     public MeleePlayerAction meleeAction;
@@ -190,7 +191,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
                     // If we found the absolute highest priority (Unselected Player), stop looking deeper
                     if (highestPriority == 2)
-                        break; 
+                        break;
                 }
                 else if (highestPriority == -1 && currentPriority == 0)
                 {
@@ -204,7 +205,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         if (actualTargetTile != null && actualTargetTile.detectedUnit != null)
         {
             var unitSelection = FindAnyObjectByType<UnitSelectionController>();
-            
+
             if (actualTargetTile.detectedUnit.CompareTag("Player") || actualTargetTile.detectedUnit.CompareTag("ActivePlayerUnit"))
             {
                 unitSelection.SelectPlayerUnit(actualTargetTile.detectedUnit.GetComponent<Unit>());
@@ -243,7 +244,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         {
             float cursorY = transform.position.y + 0.57f;
             Collider tileCollider = GetComponentInChildren<Collider>();
-            
+
             if (tileCollider != null)
             {
                 cursorY = tileCollider.bounds.max.y + 0.07f;
@@ -252,7 +253,11 @@ public class TileController : MonoBehaviour, IPointerClickHandler, IPointerEnter
             cursorInstance.transform.position = new Vector3(transform.position.x, cursorY, transform.position.z);
             cursorInstance.SetActive(true);
         }
-        BattleSFXManager.PlaySound(SoundType.UIHOVER);
+        if (BattleSFXManager.Instance != null)
+        {
+            BattleSFXManager.PlaySound(SoundType.UIHOVER);
+        }
+
     }
     public void OnPointerExit(PointerEventData eventData)
     {

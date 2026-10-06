@@ -107,12 +107,14 @@ public class UnitSelectionController : MonoBehaviour
         ClearPreviousSelection();
         SetAsActivePlayer(playerUnit);
         //SpawnSelectionIcon(playerUnit.gameObject);
-        ChangeActivePlayerUnitTile(playerUnit);
         SpawnUnitInfoPanel(playerUnit);
         PlaySelectionFeedback(playerUnit);
         _playerPartyProfilesUIManager?.HighlightSelectedUnitProfile(playerUnit.unitTemplate.unitName);
         var reachableTilesVisualizer = FindAnyObjectByType<ReachableTilesVisualizer>();
         reachableTilesVisualizer.ShowReachableTiles();
+
+        // Applied last so the selected unit's tile stays green, since ShowReachableTiles recolors the owned tile too.
+        ChangeActivePlayerUnitTile(playerUnit);
 
         OutlineAttackableEnemies(playerUnit);
 

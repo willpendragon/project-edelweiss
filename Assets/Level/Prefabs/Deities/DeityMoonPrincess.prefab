@@ -250,6 +250,7 @@ MonoBehaviour:
   deityEnmityTracker: {fileID: 5392762742674943852, guid: 4eecbe9cc45435a4c8483f101367aea8, type: 3}
   deityPortrait: {fileID: 21300000, guid: 8f298345a85fe8d40a479ea7bd37db74, type: 3}
   deityHealthBar: {fileID: 815814198754761429}
+  DeityModel: {fileID: 0}
   IsDeityTriggered: 0
   enmityTracker: {fileID: 8613417181408787468}
   deityCry: {fileID: 8214377848972271374}
@@ -605,19 +606,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7685408336782913760, guid: 6ef389aba516fde429a23d56c8c50e51, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.030157842
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 7685408336782913760, guid: 6ef389aba516fde429a23d56c8c50e51, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7685408336782913760, guid: 6ef389aba516fde429a23d56c8c50e51, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.99954516
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 7685408336782913760, guid: 6ef389aba516fde429a23d56c8c50e51, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7685408336782913760, guid: 6ef389aba516fde429a23d56c8c50e51, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -625,7 +626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7685408336782913760, guid: 6ef389aba516fde429a23d56c8c50e51, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 183.456
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 7685408336782913760, guid: 6ef389aba516fde429a23d56c8c50e51, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

@@ -259,6 +259,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 2701180006881903547}
   fadeInDuration: 0.5
   fadeOutDuration: 0.5
+  iconSortingLayerName: BattleIndicators
+  iconSortingOrder: 5000
 --- !u!1 &4166987097090433852
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +273,7 @@ GameObject:
   - component: {fileID: 5090446047043621278}
   - component: {fileID: 369530382422409763}
   m_Layer: 8
-  m_Name: GodlingSprite
+  m_Name: RockEnemySprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -333,8 +335,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d1ee3fde4e15e2a4cb4a6437bc2d2a4c, type: 3}
-  m_Color: {r: 0.4188679, g: 0.23314343, b: 0.23314343, a: 1}
+  m_Sprite: {fileID: 142639325, guid: 8d671ea37973f38449b59a60201d9938, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -354,7 +356,7 @@ Animator:
   m_GameObject: {fileID: 4166987097090433852}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1591224fd9625d24f9595c5f3031aedf, type: 2}
+  m_Controller: {fileID: 9100000, guid: b53b845ce30433b48acdb258ba466cdb, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -384,7 +386,7 @@ GameObject:
   - component: {fileID: 1163028146103148358}
   - component: {fileID: 8120714621248630938}
   m_Layer: 10
-  m_Name: RockEnemy
+  m_Name: PrefabRockEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -456,6 +458,7 @@ MonoBehaviour:
   opportunityCounter: {fileID: 0}
   receivedDamageCounter: {fileID: 0}
   enemySpriteRenderer: {fileID: 5090446047043621278}
+  isTurnComplete: 0
   unitStunStatusIcon: {fileID: 3406946445924013396, guid: e9adfb87616477e4784c4a1060a542fd, type: 3}
 --- !u!114 &3031252642805861247
 MonoBehaviour:
@@ -500,6 +503,7 @@ MonoBehaviour:
   fieldPrizeController: {fileID: 8120714621248630938}
   unitType: 1
   hasHookshot: 0
+  hasBow: 0
   bossFlag: 0
   linkedDeity: {fileID: 0}
   summonedLinkedDeity: {fileID: 0}

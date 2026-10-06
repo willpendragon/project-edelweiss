@@ -184,6 +184,9 @@ public class PhysicalAttackBehavior : ScriptableObject
 
         HitTarget(attacker, defender, modifierIsActive, isWallKnockback);
 
+        // Any connecting knockback dislodges the mask, regardless of the outcome below
+        RemoveInvulnerableMask(defender);
+
         if (OnKnockbackFired != null)
             OnKnockbackFired();
 
@@ -202,7 +205,6 @@ public class PhysicalAttackBehavior : ScriptableObject
             if (defenderAgent2 != null)
                 defenderAgent2.RemoveElementalBuff(defenderAgent2);
 
-            RemoveInvulnerableMask(defender);
             NotifyKnockbackResolved();
             return; // Early return prevents standard movement logic below
         }

@@ -55,6 +55,7 @@ public class BattleCalloutsController : MonoBehaviour
         SFXHelper(activePlayerUnit);
         // Play Critical Hit SFX
         BattleSFXManager.PlaySound(SoundType.CRITICALHIT);
+        BattleSFXManager.PlaySound(SoundType.CRITICALHITVOICE);
     }
 
     public void ShowDeityAttackCallout(Unit deityUnit)
@@ -75,12 +76,12 @@ public class BattleCalloutsController : MonoBehaviour
 
     private void SFXHelper(Unit unit)
     {
-        // Add a dedicated SFX for the Deity in Inspector, currently using placeholder.
-        if (unit.unitTemplate.unitCriticalHitVoice == null)
-            return;
+        // // Add a dedicated SFX for the Deity in Inspector, currently using placeholder.
+        // if (unit.unitTemplate.unitCriticalHitVoice == null)
+        //     return;
 
-        GameObject criticalHitVoiceSFX = Instantiate(unit.unitTemplate.unitCriticalHitVoice, Camera.main.transform);
-        Destroy(criticalHitVoiceSFX, unit.unitTemplate.unitCriticalHitVoice.GetComponent<AudioSource>().clip.length);
+        // GameObject criticalHitVoiceSFX = Instantiate(unit.unitTemplate.unitCriticalHitVoice, Camera.main.transform);
+        // Destroy(criticalHitVoiceSFX, unit.unitTemplate.unitCriticalHitVoice.GetComponent<AudioSource>().clip.length);
     }
 
     public void ShowDeityAngeredCallout()

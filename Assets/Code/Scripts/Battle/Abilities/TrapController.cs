@@ -21,8 +21,7 @@ public class TrapController : MonoBehaviour
     {
         //currentTrapActivationStatus = TrapActivationStatus.inactive;
     }
-    public void ApplyTrapEffect()
-
+    public bool ApplyTrapEffect()
     {
         OnTrapAction();
         if (GetComponentInParent<TileController>().detectedUnit != null)
@@ -33,6 +32,7 @@ public class TrapController : MonoBehaviour
                 //detectedUnitOnTrapTile.GetComponent<CrystalHandler>()?.TurnUnitIntoCrystal();
                 detectedUnitOnTrapTile.TakeDamage(spikeDamage);
                 //Debug.Log("Targeted Unit became a Capture Crystal");
+                return true;
             }
             else if (detectedUnitOnTrapTile.currentUnitLifeCondition != Unit.UnitLifeCondition.unitDead)
             {
@@ -40,8 +40,11 @@ public class TrapController : MonoBehaviour
 
                 Debug.Log("Applying Trap Effect to the Unit standing on the Trap Tile");
                 TurnController.Instance.GameOverCheck();
+                return true;
             }
         }
+
+        return false;
     }
 
     public bool SpikeKillingPlayer(Unit detectedUnitOnTraptile, float spikeDamage)

@@ -285,42 +285,48 @@ public class Unit : MonoBehaviour
                 meshRenderer.material.color = Color.black;
             }
 
-            currentUnitLifeCondition = UnitLifeCondition.unitDead;
+            FinalizeUnitDeath();
+        }
+    }
 
-            if (unitProfilePanel != null)
-                Destroy(unitProfilePanel);
+    // Shared life-condition/UI cleanup, used by both normal death and FallIntoVoid.
+    private void FinalizeUnitDeath()
+    {
+        currentUnitLifeCondition = UnitLifeCondition.unitDead;
 
-            var enemyTargetIcon = GameObject.FindGameObjectWithTag("EnemyTargetIcon");
-            if (enemyTargetIcon != null)
-                Destroy(enemyTargetIcon);
+        if (unitProfilePanel != null)
+            Destroy(unitProfilePanel);
 
+        var enemyTargetIcon = GameObject.FindGameObjectWithTag("EnemyTargetIcon");
+        if (enemyTargetIcon != null)
+            Destroy(enemyTargetIcon);
+
+        // Destroy Stun Icon, temporary solution.
+        if (battleFeedbackController != null)
+        {
             // Destroy Stun Icon, temporary solution.
-            if (battleFeedbackController != null)
+            if (battleFeedbackController.stunIcon != null)
+                Destroy(battleFeedbackController.stunIcon);
+        }
+
+        CheckEnemyDefeat();
+
+        // Reset TileController color to Movement Range.
+        // This assumes that a tile occupied by dead enemy is always in the Movement Range (vertical slice only).
+        if (ownedTile != null)
+        {
+            ownedTile.tileShaderController.SetTileToMoveRangeColor();
+            ownedTile.tileShaderController.SetTileGlowIntensity(1f);
+        }
+
+        OnCheckGameOver?.Invoke();
+
+        // Deactivates Player Unit Profile when applicable.
+        if (gameObject.CompareTag(GameTags.Player) || gameObject.CompareTag(GameTags.ActivePlayerUnit))
+        {
+            if (unitTemplate != null)
             {
-                // Destroy Stun Icon, temporary solution.
-                if (battleFeedbackController.stunIcon != null)
-                    Destroy(battleFeedbackController.stunIcon);
-            }
-
-            CheckEnemyDefeat();
-
-            // Reset TileController color to Movement Range.
-            // This assumes that a tile occupied by dead enemy is always in the Movement Range (vertical slice only).
-            if (ownedTile != null)
-            {
-                ownedTile.tileShaderController.SetTileToMoveRangeColor();
-                ownedTile.tileShaderController.SetTileGlowIntensity(1f);
-            }
-
-            OnCheckGameOver?.Invoke();
-
-            // Deactivates Player Unit Profile when applicable.
-            if (gameObject.CompareTag(GameTags.Player) || gameObject.CompareTag(GameTags.ActivePlayerUnit))
-            {
-                if (unitTemplate != null)
-                {
-                    BattleInterface.Instance.PlayerPartyProfilesUIManager.SetDeadUnitProfile(unitTemplate.unitName);
-                }
+                BattleInterface.Instance.PlayerPartyProfilesUIManager.SetDeadUnitProfile(unitTemplate.unitName);
             }
         }
     }
@@ -496,7 +502,11 @@ public class Unit : MonoBehaviour
             }
         }
 
-        fallSequence.OnComplete(() => { HealthPoints = 0; });
+        fallSequence.OnComplete(() =>
+        {
+            HealthPoints = 0;
+            FinalizeUnitDeath(); // Keeps cursor/UI cleanup in sync with units that fall off the grid
+        });
         
         // Handle Slider destruction in cases where the Unit falls off the grid.
         // Use includeInactive=true to find sliders even if they're hidden

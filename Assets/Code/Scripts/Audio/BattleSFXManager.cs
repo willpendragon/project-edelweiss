@@ -21,7 +21,8 @@ public enum SoundType
     PICKUPUPGRADE,
     PICKUPMINIBOSSKEY,
     PICKUPBOSSKEY,
-    SWORDATTACK
+    SWORDATTACK,
+    CRITICALHITVOICE
 }
 
 [RequireComponent(typeof(AudioSource))]

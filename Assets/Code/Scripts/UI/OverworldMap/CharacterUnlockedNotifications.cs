@@ -21,15 +21,18 @@ public class CharacterUnlockedNotifications : MonoBehaviour
         if (OverworldUIManager.Instance != null && OverworldUIManager.Instance.EventsUIManager != null)
         {
             // Fallback to exactly prefab name if for some reason unitTemplate is missing
-            string characterName = unlockedCharacter.unitTemplate != null 
-                ? unlockedCharacter.unitTemplate.unitName 
+            string characterName = unlockedCharacter.unitTemplate != null
+                ? unlockedCharacter.unitTemplate.unitName
                 : unlockedCharacter.name;
-            
+
+            Sprite characterPortrait = unlockedCharacter.unitTemplate != null ? unlockedCharacter.unitTemplate.unitBattlePortrait : null;
+
             OverworldUIManager.Instance.EventsUIManager.AddNotification(
                 _characterUnlockConfig,
                 $"{characterName}",
                 characterName,
-                _characterUnlockConfig.categoryName
+                _characterUnlockConfig.categoryName,
+                characterPortrait
             );
         }
     }

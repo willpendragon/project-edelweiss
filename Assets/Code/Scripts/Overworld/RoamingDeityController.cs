@@ -8,16 +8,16 @@ public class RoamingDeityController : MonoBehaviour
     [Header("Dependencies")]
     public OverworldMapGenerator mapGenerator;
     public GameObject deityModelPrefab;
-    public GameObject deityBattlePrefab; // ADD THIS: The Unit prefab used in battle
+    public GameObject deityBattlePrefab;
 
     [Header("Settings")]
-    public int spawnNodeDistanceMin = 3; // Ensure it doesn't spawn right on top of the player
+    public int spawnNodeDistanceMin = 3;
     [Tooltip("Be careful to assign a MapData of the Regular Battle type! Other types (like Puzzle) will just ignore the forced Deity spawn. To be fixed 'later'...")]
-    public MapData simildeBossMapData; // Assign the specific MapData/EnemyPartyData for Similde
-    
+    public MapData simildeBossMapData;
+
     [Header("Visuals")]
     [Tooltip("The final scale of the Deity model on the overworld map.")]
-    public float deityModelScale = 0.5f; 
+    public float deityModelScale = 0.5f;
     [Tooltip("How long the apparition animation takes.")]
     public float spawnTweenDuration = 0.8f;
 
@@ -27,21 +27,16 @@ public class RoamingDeityController : MonoBehaviour
 
     private void Start()
     {
-        // For prototyping, we can spawn the Deity a few seconds after the map is generated,
-        // or you can call SpawnDeity() via a specific event (e.g., from GameFlowController).
         Invoke(nameof(SpawnDeity), 2f);
     }
 
-    /// <summary>
-    /// Randomly spawns the Deity on a valid, un-cleared node.
-    /// </summary>
     public void SpawnDeity()
     {
         if (mapGenerator == null || mapGenerator.domains.Count == 0 || _isDeityActive)
             return;
 
         int playerStartId = mapGenerator.currentNodeId;
-        int maxNodeCount = mapGenerator.currentMapNodeTransform != null ? 
+        int maxNodeCount = mapGenerator.currentMapNodeTransform != null ?
             mapGenerator.spawnedNodes.Count : 10; // Fallback
 
         // Find a valid node ID to spawn the deity
@@ -57,26 +52,21 @@ public class RoamingDeityController : MonoBehaviour
         if (validSpawnNodes.Count > 0)
         {
             _deityCurrentNodeId = validSpawnNodes[Random.Range(0, validSpawnNodes.Count)];
-            
-            // Wait for map generator node positions to populate
+
+            // Wait for map generator node positions to populate.
             Vector3 targetPosition = mapGenerator.spawnedNodes[_deityCurrentNodeId].transform.position;
 
             _spawnedDeityInstance = Instantiate(deityModelPrefab, targetPosition + Vector3.up * 0.5f, Quaternion.identity);
             _isDeityActive = true;
 
-            // --- Apparition Tween ---
-            // Set scale to 0 initially, then tween up to the target scale to pop in
             _spawnedDeityInstance.transform.localScale = Vector3.zero;
             _spawnedDeityInstance.transform.DOScale(Vector3.one * deityModelScale, spawnTweenDuration)
                 .SetEase(Ease.OutBack);
-            
+
             Debug.Log($"[Roaming Deity] Similde spawned at Node {_deityCurrentNodeId}");
         }
     }
 
-    /// <summary>
-    /// Call this immediately after the Player completes their move to a new node.
-    /// </summary>
     public void OnPlayerMoved(int targetId)
     {
         if (!_isDeityActive) return;
@@ -88,28 +78,73 @@ public class RoamingDeityController : MonoBehaviour
     {
         int playerNodeId = mapGenerator.currentNodeId;
 
-        // Simple approach: Deity just moves 1 node closer by ID, or use pathfinding if available.
-        // Assuming higher node ID = further forward. If the player is ahead, the deity moves up.
-        int nextNodeId = _deityCurrentNodeId;
-
-        if (_deityCurrentNodeId < playerNodeId)
+        // Already sharing the player's node: skip movement and resolve the encounter.
+        if (_deityCurrentNodeId == playerNodeId)
         {
-            nextNodeId++;
+            CheckForEncounter();
+            yield break;
         }
-        else if (_deityCurrentNodeId > playerNodeId)
+        List<int> path = FindPath(_deityCurrentNodeId, playerNodeId);
+
+        if (path == null || path.Count < 2)
         {
-            nextNodeId--; // Moves backwards
+            Debug.LogWarning($"[Roaming Deity] No connected path from Node {_deityCurrentNodeId} to Node {playerNodeId}. Staying put.");
+            yield break;
         }
 
-        _deityCurrentNodeId = nextNodeId;
+        // Move exactly ONE step along the connected path toward the player.
+        _deityCurrentNodeId = path[1];
         Vector3 nextPosition = mapGenerator.spawnedNodes[_deityCurrentNodeId].transform.position;
 
-        // Animate the Deity moving
         yield return _spawnedDeityInstance.transform.DOMove(nextPosition + Vector3.up * 0.5f, 0.5f)
             .SetEase(Ease.InOutSine)
             .WaitForCompletion();
 
         CheckForEncounter();
+    }
+
+    private List<int> FindPath(int start, int target)
+    {
+        if (mapGenerator == null || mapGenerator.adjacencyList == null)
+            return null;
+
+        if (!mapGenerator.adjacencyList.ContainsKey(start) || !mapGenerator.adjacencyList.ContainsKey(target))
+            return null;
+
+        Queue<int> frontier = new Queue<int>();
+        Dictionary<int, int> parentMap = new Dictionary<int, int>();
+
+        frontier.Enqueue(start);
+        parentMap[start] = -1;
+
+        while (frontier.Count > 0)
+        {
+            int current = frontier.Dequeue();
+
+            if (current == target) break;
+
+            foreach (int neighbor in mapGenerator.adjacencyList[current])
+            {
+                if (!parentMap.ContainsKey(neighbor))
+                {
+                    parentMap[neighbor] = current;
+                    frontier.Enqueue(neighbor);
+                }
+            }
+        }
+
+        if (!parentMap.ContainsKey(target))
+            return null;
+
+        List<int> path = new List<int>();
+        int backtrackNode = target;
+        while (backtrackNode != -1)
+        {
+            path.Add(backtrackNode);
+            backtrackNode = parentMap[backtrackNode];
+        }
+        path.Reverse();
+        return path;
     }
 
     private void CheckForEncounter()
@@ -123,7 +158,7 @@ public class RoamingDeityController : MonoBehaviour
     private void TriggerForcedDeityBattle()
     {
         Debug.Log("[Roaming Deity] Encountered the Player! Forcing Battle...");
-        
+
         _isDeityActive = false;
         Destroy(_spawnedDeityInstance);
 
@@ -132,13 +167,12 @@ public class RoamingDeityController : MonoBehaviour
 
         if (currentSelection != null && simildeBossMapData != null)
         {
-            currentSelection.mapData = simildeBossMapData; 
-            currentNode.type = NodeType.BossBattle; 
+            currentSelection.mapData = simildeBossMapData;
+            currentNode.type = NodeType.BossBattle;
 
-            // FLAG THE BATTLE STATE HERE
             BattleTypeController.isForcedRoamingDeity = true;
             BattleTypeController.forcedRoamingDeityPrefab = deityBattlePrefab;
-            
+
             currentNode.HandleBattleEntry();
         }
         else
