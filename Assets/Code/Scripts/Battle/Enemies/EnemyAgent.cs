@@ -94,9 +94,9 @@ public class EnemyAgent : MonoBehaviour
 
     private void SwapGraphics()
     {
-        // This method changes the Unit sprite to an alternate model.
-        var alternateSprite = _enemyUnit.unitTemplate.GetAlternateSprite();
-        enemySpriteRenderer.sprite = alternateSprite;
+        // var alternateSprite = _enemyUnit.unitTemplate.GetAlternateSprite();
+        // enemySpriteRenderer.sprite = alternateSprite;
+        _enemyUnit.characterAnimator.runtimeAnimatorController = _enemyUnit.unitTemplate.GetAlternateAnimator();
     }
 
     // Should be generalized for all types of Buffs

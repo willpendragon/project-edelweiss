@@ -43,4 +43,9 @@ public class UnitTemplate : ScriptableObject
     public virtual float GetElementalModifier() => 1.0f; // Valore di default
 
     public virtual Sprite GetAlternateSprite() => null;
+
+    public virtual AnimationClip GetAlternateIdle() => null;
+
+    public virtual RuntimeAnimatorController GetAlternateAnimator() => null;
+
 }

@@ -1,6 +1,6 @@
 using DG.Tweening;
 using System.Collections.Generic;
-using TMPro; 
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -12,8 +12,9 @@ public class NotificationRequest
     public NotificationConfig config;
     public string title;
     public string description;
+    public Sprite customIcon;
 
-    public NotificationRequest(NotificationConfig config, string title, string description, string category)
+    public NotificationRequest(NotificationConfig config, string title, string description, string category, Sprite customIcon = null)
     {
         this.config = config;
         this.title = title;
@@ -39,7 +40,7 @@ public class EventsUIManager : MonoBehaviour
         _eventSystem = EventSystem.current;
     }
 
-    public void AddNotification(NotificationConfig config, string title, string description, string category)
+    public void AddNotification(NotificationConfig config, string title, string description, string category, Sprite customIcon = null)
     {
         _queue.Enqueue(new NotificationRequest(config, title, description, category));
 
@@ -68,7 +69,7 @@ public class EventsUIManager : MonoBehaviour
         }
         NotificationRequest current = _queue.Dequeue();
 
-        _eventImage.sprite = current.config.icon;
+        _eventImage.sprite = current.customIcon != null ? current.customIcon : current.config.icon;
         _eventText.text = current.title;
         _categoryText.text = current.config.categoryName;
 
