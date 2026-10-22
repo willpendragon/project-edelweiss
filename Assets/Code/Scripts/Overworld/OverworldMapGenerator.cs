@@ -70,6 +70,12 @@ public class OverworldMapGenerator : MonoBehaviour
     [Tooltip("Toggle this to regenerate map at runtime.")]
     public bool autoUpdateInPlayMode = true;
 
+    [Tooltip("Hold either Shift key + S to show zero-based node indices in Editor Play mode and Development Builds.")]
+    public bool enableNodeIndexOverlay = true;
+
+    [Tooltip("Base overworld camera used to position debug node labels. Assign explicitly when using stacked cameras.")]
+    public Camera nodeIndexOverlayCamera;
+
     [Tooltip("Assign a MapData here to teleport directly to the boss battle with it by pressing B.")]
     public MapData debugBossMapData;
 
@@ -778,6 +784,78 @@ public class OverworldMapGenerator : MonoBehaviour
         ClearMap();
         GenerateLevel(currentDomain);
     }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    private GUIStyle nodeIndexLabelStyle;
+    private bool warnedAboutNodeIndexCamera;
+
+    private static bool ShouldShowNodeIndices(bool enabled, bool focused, bool shiftHeld, bool sHeld)
+    {
+        return enabled && focused && shiftHeld && sHeld;
+    }
+
+    private static bool TryGetNodeLabelPosition(Camera camera, Vector3 worldPosition, out Vector2 position)
+    {
+        position = Vector2.zero;
+        Vector3 viewport = camera.WorldToViewportPoint(worldPosition);
+        if (viewport.z < camera.nearClipPlane || viewport.z > camera.farClipPlane ||
+            viewport.x < 0f || viewport.x > 1f || viewport.y < 0f || viewport.y > 1f)
+            return false;
+
+        Vector3 screen = camera.WorldToScreenPoint(worldPosition);
+        position = new Vector2(screen.x, Screen.height - screen.y - 24f);
+        return true;
+    }
+
+    private void OnGUI()
+    {
+        if (!Application.isPlaying || !isActiveAndEnabled || Event.current.type != EventType.Repaint ||
+            !ShouldShowNodeIndices(enableNodeIndexOverlay, Application.isFocused,
+                Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift), Input.GetKey(KeyCode.S)))
+            return;
+
+        if (nodeIndexOverlayCamera == null || !nodeIndexOverlayCamera.isActiveAndEnabled)
+        {
+            if (!warnedAboutNodeIndexCamera)
+            {
+                Debug.LogWarning("Overworld node index overlay requires an active Node Index Overlay Camera. Assign the base overworld camera in the Inspector.", this);
+                warnedAboutNodeIndexCamera = true;
+            }
+            return;
+        }
+        warnedAboutNodeIndexCamera = false;
+
+        if (nodeIndexLabelStyle == null)
+        {
+            nodeIndexLabelStyle = new GUIStyle(GUI.skin.box)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = 14,
+                fontStyle = FontStyle.Bold,
+                padding = new RectOffset(6, 6, 3, 3)
+            };
+            nodeIndexLabelStyle.normal.textColor = Color.white;
+        }
+
+        Color previousColor = GUI.color;
+        GUI.color = Color.white;
+        for (int i = 0; i < spawnedNodes.Count; i++)
+        {
+            GameObject node = spawnedNodes[i];
+            if (node == null || !node.activeInHierarchy ||
+                !TryGetNodeLabelPosition(nodeIndexOverlayCamera, node.transform.position, out Vector2 position))
+                continue;
+
+            GUIContent content = new GUIContent($"Node {i}");
+            Vector2 size = nodeIndexLabelStyle.CalcSize(content);
+            Rect rect = new Rect(position - size * 0.5f, size);
+            rect.x = Mathf.Clamp(rect.x, 0f, Mathf.Max(0f, Screen.width - size.x));
+            rect.y = Mathf.Clamp(rect.y, 0f, Mathf.Max(0f, Screen.height - size.y));
+            GUI.Label(rect, content, nodeIndexLabelStyle);
+        }
+        GUI.color = previousColor;
+    }
+#endif
 
     private void Update()
     {
