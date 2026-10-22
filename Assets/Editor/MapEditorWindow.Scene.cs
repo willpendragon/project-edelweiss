@@ -8,12 +8,14 @@ public partial class MapEditorWindow
     // Variables to remember what tool we were using before holding Right-Click
     private bool _storedTile, _storedDeco, _storedUnit, _storedInteractable, _storedBucket;
     private bool _storedEnemy; // <--- NEW: temporary state for right-click
+    private bool _storedDeityShard, _storedDelete;
 
     private bool _isRightClickDeleting = false;
 
     private void OnSceneGUI(SceneView sceneView)
     {
         Event e = Event.current;
+        SetPaintingHeight(useFixedPaintingHeight, paintingLayer);
 
         if (e.type == EventType.KeyDown)
         {
@@ -30,7 +32,7 @@ public partial class MapEditorWindow
             }
             if (e.keyCode == KeyCode.B)
             {
-                SetMode(bucket: !isBucketMode);
+                isBucketMode = !isBucketMode;
                 Repaint(); sceneView.Repaint(); e.Use();
             }
         }
@@ -46,6 +48,20 @@ public partial class MapEditorWindow
         }
         // -------------------------------------------------------------
 
+        if (gridWidth <= 0 || gridDepth <= 0 || gridHeight <= 0)
+        {
+            DrawPaintingHeightStatus("Set positive map dimensions to paint.");
+            return;
+        }
+
+        if (useFixedPaintingHeight && e.type == EventType.ScrollWheel && !e.alt)
+        {
+            AdjustPaintingHeight(e.delta.y);
+            Repaint();
+            sceneView.Repaint();
+            e.Use();
+        }
+
         // --- TEMPORARY RIGHT-CLICK DELETE OVERRIDE ---
         if (e.type == EventType.MouseDown && e.button == 1 && !e.alt)
         {
@@ -55,6 +71,8 @@ public partial class MapEditorWindow
             _storedUnit = isPlacingUnit;
             _storedInteractable = isPlacingInteractable;
             _storedBucket = isBucketMode;
+            _storedDeityShard = isPlacingDeityShard;
+            _storedDelete = isDeletingTile;
 
             // Right click capture logic:
             _storedEnemy = isPlacingEnemy;
@@ -69,7 +87,7 @@ public partial class MapEditorWindow
         else if (e.type == EventType.MouseUp && e.button == 1 && _isRightClickDeleting)
         {
             // 3. Restore previous states on release
-            SetMode(tile: _storedTile, deco: _storedDeco, unit: _storedUnit, interactable: _storedInteractable, delete: false, bucket: _storedBucket, enemy: _storedEnemy);
+            SetMode(tile: _storedTile, deco: _storedDeco, unit: _storedUnit, deityShard: _storedDeityShard, interactable: _storedInteractable, delete: _storedDelete, bucket: _storedBucket, enemy: _storedEnemy);
             _isRightClickDeleting = false;
 
             Repaint(); sceneView.Repaint(); 
@@ -77,7 +95,7 @@ public partial class MapEditorWindow
         // ---------------------------------------------
 
         int controlID = GUIUtility.GetControlID(FocusType.Passive);
-        if (isPlacingTile || isPlacingDecoration || isPlacingInteractable || isPlacingUnit || isDeletingTile || isBucketMode)
+        if (!e.alt)
             HandleUtility.AddDefaultControl(controlID);
 
         Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
@@ -87,7 +105,7 @@ public partial class MapEditorWindow
         float closestDist = float.MaxValue;
 
         // 1. Raycast over physics tiles first to establish the baseline hit distance
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        if (!useFixedPaintingHeight && Physics.Raycast(ray, out RaycastHit hitInfo))
         {
             hasHit = true;
             closestDist = hitInfo.distance;
@@ -162,14 +180,17 @@ public partial class MapEditorWindow
             }
         }
         
-        CheckHits(decorations);
-        CheckHits(spawnedUnits);
-        CheckHits(spawnedInteractables);
-        CheckHits(spawnedEnemies);
-        CheckHits(spawnedDeityShards); // 1. Add this to track DeityShards for clicking/selecting
+        if (!useFixedPaintingHeight)
+        {
+            CheckHits(decorations);
+            CheckHits(spawnedUnits);
+            CheckHits(spawnedInteractables);
+            CheckHits(spawnedEnemies);
+            CheckHits(spawnedDeityShards);
+        }
 
         // 3. Fallback back to the empty Ground Plane if absolutely nothing was hit natively
-        if (!hasHit)
+        if (!useFixedPaintingHeight && !hasHit)
         {
             Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
             if (groundPlane.Raycast(ray, out float enter))
@@ -178,6 +199,26 @@ public partial class MapEditorWindow
                 targetGridPos = GetGridCoordinatesFromWorldPosition(ray.GetPoint(enter));
                 targetGridPos.y = 0;
             }
+        }
+
+        if (e.type == EventType.KeyDown && e.keyCode == KeyCode.H && !e.alt)
+        {
+            if (useFixedPaintingHeight)
+                SetPaintingHeight(false, paintingLayer);
+            else if (hasHit)
+                SetPaintingHeight(true, targetGridPos.y);
+            heightScrollDelta = 0f;
+            e.Use();
+            sceneView.Repaint();
+            return;
+        }
+
+        if (useFixedPaintingHeight)
+        {
+            hasHit = TryGetFixedHeightTarget(ray, out targetGridPos);
+            DrawPaintingHeightStatus(hasHit
+                ? $"Layer {paintingLayer} | World Y {paintingLayer * tileSize.y:0.###}"
+                : $"Layer {paintingLayer}: plane not in view. Tilt or move the Scene camera.");
         }
 
         if (hasHit && !e.alt)
@@ -232,5 +273,36 @@ public partial class MapEditorWindow
 
         if (e.type == EventType.MouseUp) lastGridPosition = new Vector3Int(-1, -1, -1);
         DrawGrid(); sceneView.Repaint();
+    }
+
+    private void AdjustPaintingHeight(float scrollDelta)
+    {
+        // Unity reports three delta units per wheel notch; retain fractional trackpad input.
+        heightScrollDelta += scrollDelta;
+        int steps = (int)(heightScrollDelta / 3f);
+        if (steps == 0) return;
+        heightScrollDelta -= steps * 3f;
+        SetPaintingHeight(true, paintingLayer - steps);
+    }
+
+    private bool TryGetFixedHeightTarget(Ray ray, out Vector3Int target)
+    {
+        target = Vector3Int.zero;
+        float worldY = paintingLayer * GetTileWorldSize3D().y;
+        Plane plane = new Plane(Vector3.up, new Vector3(0f, worldY, 0f));
+        if (!plane.Raycast(ray, out float enter)) return false;
+
+        target = GetGridCoordinatesFromWorldPosition(ray.GetPoint(enter));
+        target.y = paintingLayer;
+        return true;
+    }
+
+    private void DrawPaintingHeightStatus(string message)
+    {
+        Handles.BeginGUI();
+        GUILayout.BeginArea(new Rect(12f, 12f, 430f, 48f));
+        GUILayout.Label(message, EditorStyles.helpBox);
+        GUILayout.EndArea();
+        Handles.EndGUI();
     }
 }

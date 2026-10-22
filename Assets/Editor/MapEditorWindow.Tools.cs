@@ -169,7 +169,7 @@ public partial class MapEditorWindow
 
                 foreach (var n in neighbors3D)
                 {
-                    if (IsInsideGrid(n) && !visited.Contains(n))
+                    if (IsInsideGrid(n) && (!useFixedPaintingHeight || n.y == startPos.y) && !visited.Contains(n))
                     {
                         if (tiles.TryGetValue(n, out GameObject neighborTile) && neighborTile != null)
                         {
@@ -200,7 +200,7 @@ public partial class MapEditorWindow
                         if (isNeighborEmpty)
                         {
                             // THE FLOOR RULE: Does this exact column have ANY block exactly 1 step beneath it?
-                            bool hasFloorBeneath = n.y == 0 || HasBlockAt(new Vector3Int(n.x, n.y - 1, n.z));
+                            bool hasFloorBeneath = useFixedPaintingHeight || n.y == 0 || HasBlockAt(new Vector3Int(n.x, n.y - 1, n.z));
 
                             if (hasFloorBeneath)
                             {
@@ -221,6 +221,8 @@ public partial class MapEditorWindow
             else if (isPlacingUnit) PlaceUnit(p, false);
             else if (isDeletingTile) DeleteTile(p, false);
             else if (isPlacingEnemy) PlaceEnemy(p, false);
+            else if (isPlacingInteractable) PlaceInteractable(p, false);
+            else if (isPlacingDeityShard) PlaceDeityShard(p, false);
         }
         
         SyncDictionaryFromScene();

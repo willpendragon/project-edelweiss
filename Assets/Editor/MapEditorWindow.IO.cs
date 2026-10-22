@@ -432,10 +432,11 @@ private void SaveDeityShardPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_
         Vector3 size = GetTileWorldSize3D();
         float cellWidth = size.x + inBetweenTilesXOffset, cellDepth = size.z + inBetweenTilesZOffset;
         float offsetX = cellWidth / 2f, offsetZ = cellDepth / 2f;
+        float worldY = useFixedPaintingHeight ? paintingLayer * size.y : 0f;
         Handles.color = new Color(0, 1, 1, 0.2f);
 
-        for (int x = 0; x <= gridWidth; x++) Handles.DrawLine(new Vector3((x * cellWidth) - offsetX, 0, -offsetZ), new Vector3((x * cellWidth) - offsetX, 0, (gridHeight * cellDepth) - offsetZ));
-        for (int z = 0; z <= gridHeight; z++) Handles.DrawLine(new Vector3(-offsetX, 0, (z * cellDepth) - offsetZ), new Vector3((gridWidth * cellWidth) - offsetX, 0, (z * cellDepth) - offsetZ));
+        for (int x = 0; x <= gridWidth; x++) Handles.DrawLine(new Vector3((x * cellWidth) - offsetX, worldY, -offsetZ), new Vector3((x * cellWidth) - offsetX, worldY, (gridHeight * cellDepth) - offsetZ));
+        for (int z = 0; z <= gridHeight; z++) Handles.DrawLine(new Vector3(-offsetX, worldY, (z * cellDepth) - offsetZ), new Vector3((gridWidth * cellWidth) - offsetX, worldY, (z * cellDepth) - offsetZ));
     }
 
     private void DrawPreview(Vector3Int gridPos)
