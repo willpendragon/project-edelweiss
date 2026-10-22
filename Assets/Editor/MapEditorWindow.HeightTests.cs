@@ -66,6 +66,36 @@ public partial class MapEditorWindow
         }
 
         [Test]
+        public void GridLabelsUseActivePlaneAndPreserveHorizontalCoordinates()
+        {
+            window.SetPaintingHeight(true, 3);
+            Assert.That(window.GetGridLabelCoordinates(1, 0), Is.EqualTo(new Vector3Int(1, 3, 0)));
+            window.SetPaintingHeight(false, 3);
+            Assert.That(window.GetGridLabelCoordinates(1, 0), Is.EqualTo(new Vector3Int(1, 0, 0)));
+            Assert.That(window.GetGridLabelCoordinates(0, 0), Is.EqualTo(Vector3Int.zero));
+        }
+
+        [Test]
+        public void GridLabelsFormatCoordinatesInXYZOrder()
+        {
+            Assert.That(FormatGridCoordinates(new Vector3Int(1, 3, 2)), Is.EqualTo("(1, 3, 2)"));
+            Assert.That(FormatGridCoordinates(Vector3Int.zero), Is.EqualTo("(0, 0, 0)"));
+        }
+
+        [Test]
+        public void GridLabelCentersRespectTileDimensionsAndSpacing()
+        {
+            window.inBetweenTilesXOffset = 0.5f;
+            window.inBetweenTilesZOffset = 1f;
+            window.SetPaintingHeight(true, 3);
+            Vector3Int coordinates = window.GetGridLabelCoordinates(1, 1);
+            Assert.That(window.GridToWorld(coordinates, new Vector3(2f, 2f, 3f)),
+                Is.EqualTo(new Vector3(2.5f, 6f, 4f)));
+            Assert.That(window.GridToWorld(window.GetGridLabelCoordinates(0, 0), Vector3.one),
+                Is.EqualTo(new Vector3(0f, 3f, 0f)));
+        }
+
+        [Test]
         public void FixedHeightProjectsOntoPlaneUsingTileSizeAndOffsets()
         {
             GameObject tile = CreateTestObject();

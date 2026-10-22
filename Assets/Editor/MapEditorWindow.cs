@@ -80,6 +80,8 @@ public partial class MapEditorWindow : EditorWindow
     [SerializeField] private bool useFixedPaintingHeight;
     [SerializeField] private int paintingLayer;
     private float heightScrollDelta;
+    private bool showCoordinates = true;
+    private GUIStyle coordinateLabelStyle;
 
     private Vector3Int lastGridPosition = new Vector3Int(-1, -1, -1);
     private Vector3Int lastPaintedPosition = new Vector3Int(-1, -1, -1);
@@ -108,6 +110,7 @@ public partial class MapEditorWindow : EditorWindow
         inBetweenTilesZOffset = EditorPrefs.GetFloat("MapEditor_OffsetZ", 0f);
         clearOnClose = EditorPrefs.GetBool("MapEditor_ClearOnClose", false);
         paintDelay = EditorPrefs.GetFloat("MapEditor_PaintDelay", 0.15f);
+        showCoordinates = EditorPrefs.GetBool("MapEditor_ShowCoordinates", true);
 
         _so = new SerializedObject(this);
         _decorationsProp = _so.FindProperty("decorationPrefabs");
@@ -384,6 +387,13 @@ public partial class MapEditorWindow : EditorWindow
 
         EditorGUILayout.Space();
         GUILayout.Label("Painting Height", EditorStyles.boldLabel);
+        EditorGUI.BeginChangeCheck();
+        showCoordinates = EditorGUILayout.Toggle("Show Coordinates", showCoordinates);
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorPrefs.SetBool("MapEditor_ShowCoordinates", showCoordinates);
+            SceneView.RepaintAll();
+        }
         EditorGUI.BeginChangeCheck();
         bool fixedHeight = GUILayout.Toolbar(useFixedPaintingHeight ? 1 : 0, new[] { "Surface", "Fixed Height" }) == 1;
         int layer = EditorGUILayout.IntField("Painting Layer (Y)", paintingLayer);
