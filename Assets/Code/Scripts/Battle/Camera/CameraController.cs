@@ -26,6 +26,30 @@ public class CameraController : MonoBehaviour
     private Vector3 _manualPanVelocity;
     private float _currentManualZoom;
     private float _zoomVelocity;
+    private MapData _zoomMap;
+    private readonly Dictionary<Camera, Tween> _mapZoomTweens = new Dictionary<Camera, Tween>();
+
+    private bool UsesMapZoom(Camera cam) => _zoomMap != null && _zoomMap.overrideCameraZoom && cam.orthographic;
+
+    private void ConfigureMapZoom(MapData mapData)
+    {
+        foreach (var tween in _mapZoomTweens.Values) tween.Kill();
+        _mapZoomTweens.Clear();
+        _zoomMap = mapData;
+        if (_zoomMap != null) _zoomMap.ValidateCameraZoom();
+    }
+
+    private void ApplyMapDefaultZoom()
+    {
+        if (_cameras == null) return;
+        foreach (var cam in _cameras)
+        {
+            if (!UsesMapZoom(cam)) continue;
+            if (_mapZoomTweens.TryGetValue(cam, out var tween)) tween.Kill();
+            cam.orthographicSize = _zoomMap.orthographicSize;
+            _currentManualZoom = _zoomMap.orthographicSize;
+        }
+    }
 
     // Zoom-punch state (crit/knockback close-up), so it can ease back to wherever the camera was before punching in.
     private Vector3 _prePunchPosition;
@@ -49,6 +73,7 @@ public class CameraController : MonoBehaviour
     {
         // Check if GridManager has an active map with an override
         var mapData = GridManager.Instance != null ? GridManager.Instance.currentMapData : null;
+        ConfigureMapZoom(mapData);
 
         if (mapData != null && mapData.overrideCameraSettings)
         {
@@ -60,6 +85,8 @@ public class CameraController : MonoBehaviour
         {
             ApplyGeneralCameraSettings();
         }
+
+        ApplyMapDefaultZoom();
 
         // Calculate camera boundaries based on grid size
         CalculateCameraBoundaries();
@@ -158,6 +185,8 @@ public class CameraController : MonoBehaviour
 
         // Kill any active camera tween to prevent lingering animations
         _cameraTween?.Kill();
+        foreach (var tween in _mapZoomTweens.Values) tween.Kill();
+        _mapZoomTweens.Clear();
     }
 
     public void ApplyGeneralCameraSettings()
@@ -174,6 +203,7 @@ public class CameraController : MonoBehaviour
         // Keep the original references updated so battle camera reset works correctly
         _originalCameraPosition = _cameras[0].transform.position;
         _originalZoomAmount = _cameras[0].fieldOfView;
+        ApplyMapDefaultZoom();
     }
 
     public void ApplyMapCameraSettings(Vector3 position, Vector3 rotation, float zoom, bool isOrtho, float orthoSize)
@@ -249,7 +279,8 @@ public class CameraController : MonoBehaviour
                 _isAutomaticPanningActive = false;
             });
 
-            TweenCameraZoom(cam, zoomTarget, panDuration, easeToUse);
+            float cameraZoom = !targetZoom.HasValue && UsesMapZoom(cam) ? _zoomMap.orthographicSize : zoomTarget;
+            TweenCameraZoom(cam, cameraZoom, panDuration, easeToUse);
         }
     }
 
@@ -258,13 +289,16 @@ public class CameraController : MonoBehaviour
     {
         if (cam.orthographic)
         {
-            DOTween.To(() => cam.orthographicSize, value => cam.orthographicSize = value, targetValue, duration).SetEase(ease);
+            if (UsesMapZoom(cam) && _mapZoomTweens.TryGetValue(cam, out var previousTween))
+                previousTween.Kill();
+            Tween tween = DOTween.To(() => cam.orthographicSize, value => cam.orthographicSize = value, targetValue, duration).SetEase(ease).SetTarget(cam);
+            if (UsesMapZoom(cam)) _mapZoomTweens[cam] = tween;
             // Keep manual scroll-zoom's Lerp target in sync so it doesn't drift back once this tween ends.
             _currentManualZoom = targetValue;
         }
         else
         {
-            DOVirtual.Float(cam.fieldOfView, targetValue, duration, value => cam.fieldOfView = value).SetEase(ease);
+            DOVirtual.Float(cam.fieldOfView, targetValue, duration, value => cam.fieldOfView = value).SetEase(ease).SetTarget(cam);
         }
     }
     public void PanCameraToActiveUnit()
@@ -440,11 +474,21 @@ public class CameraController : MonoBehaviour
     {
         _cameraTween?.Kill();
         CancelInvoke(nameof(ResetCameraPosition));
+        CancelMapZoomPunch();
 
         foreach (var cam in _cameras)
         {
             cam.transform.position = _originalCameraPosition;
-            cam.fieldOfView = _originalZoomAmount;
+            if (UsesMapZoom(cam))
+            {
+                if (_mapZoomTweens.TryGetValue(cam, out var tween)) tween.Kill();
+                cam.orthographicSize = _zoomMap.orthographicSize;
+                _currentManualZoom = _zoomMap.orthographicSize;
+            }
+            else
+            {
+                cam.fieldOfView = _originalZoomAmount;
+            }
 
             if (_generalCameraSettings != null)
             {
@@ -459,6 +503,7 @@ public class CameraController : MonoBehaviour
     {
         _cameraTween?.Kill();
         CancelInvoke(nameof(ResetCameraPosition));
+        CancelMapZoomPunch();
 
         if (_cameras == null || _cameras.Count == 0) return;
 
@@ -475,10 +520,17 @@ public class CameraController : MonoBehaviour
                     _isAutomaticPanningActive = false;
                 });
 
-            DOVirtual.Float(cam.fieldOfView, _originalZoomAmount, _cameraPanDuration, value =>
+            if (UsesMapZoom(cam))
             {
-                cam.fieldOfView = value;
-            }).SetEase(_cameraPanEase);
+                TweenCameraZoom(cam, _zoomMap.orthographicSize, _cameraPanDuration, _cameraPanEase);
+            }
+            else
+            {
+                DOVirtual.Float(cam.fieldOfView, _originalZoomAmount, _cameraPanDuration, value =>
+                {
+                    cam.fieldOfView = value;
+                }).SetEase(_cameraPanEase);
+            }
 
             if (_generalCameraSettings != null)
             {
@@ -568,7 +620,7 @@ public class CameraController : MonoBehaviour
             float panTime = _enemyCameraSettings != null ? _enemyCameraSettings.PanDuration : _cameraPanDuration;
             Ease panEase = _enemyCameraSettings != null ? _enemyCameraSettings.PanEase : _cameraPanEase;
 
-            PanCameraToPosition(targetPos + _deityFocusOffset, _battleCameraSettings.ZoomAmount, panTime, panEase);
+            PanCameraToPosition(targetPos + _deityFocusOffset, null, panTime, panEase);
         }
     }
 
@@ -699,15 +751,17 @@ public class CameraController : MonoBehaviour
         // Debug: Press Z to see current state
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            Debug.Log($"[Zoom Debug] Manual control: {_isManualControlEnabled} | Auto-panning: {_isAutomaticPanningActive} | Current Size: {_cameras[0].orthographicSize:F1} | Target: {_currentManualZoom:F1} | Range: [{_manualCameraSettings.MinZoom}, {_manualCameraSettings.MaxZoom}]");
+            Camera cam = _cameras[0];
+            float minimum = UsesMapZoom(cam) ? _zoomMap.minimumOrthographicSize : _manualCameraSettings.MinZoom;
+            float maximum = UsesMapZoom(cam) ? _zoomMap.maximumOrthographicSize : _manualCameraSettings.MaxZoom;
+            Debug.Log($"[Zoom Debug] Manual control: {_isManualControlEnabled} | Auto-panning: {_isAutomaticPanningActive} | Current Size: {cam.orthographicSize:F1} | Target: {_currentManualZoom:F1} | Range: [{minimum}, {maximum}]");
         }
 
         // Update target zoom based on scroll input
         if (!Mathf.Approximately(scrollDelta, 0f))
         {
             float oldTarget = _currentManualZoom;
-            _currentManualZoom -= scrollDelta * _manualCameraSettings.ZoomSpeed;
-            _currentManualZoom = Mathf.Clamp(_currentManualZoom, _manualCameraSettings.MinZoom, _manualCameraSettings.MaxZoom);
+            UpdateManualZoomTarget(scrollDelta);
 
             Debug.Log($"[Manual Zoom] SCROLL DETECTED! Delta: {scrollDelta:F2} | Old: {oldTarget:F1} → New: {_currentManualZoom:F1} | Current Size: {_cameras[0].orthographicSize:F1} | ZoomSpeed: {_manualCameraSettings.ZoomSpeed}");
         }
@@ -719,6 +773,21 @@ public class CameraController : MonoBehaviour
             float newSize = Mathf.Lerp(cam.orthographicSize, _currentManualZoom, Time.deltaTime / _manualCameraSettings.ZoomSmoothTime);
             cam.orthographicSize = newSize;
         }
+    }
+
+    private void UpdateManualZoomTarget(float scrollDelta)
+    {
+        Camera cam = _cameras[0];
+        float minimum = UsesMapZoom(cam) ? _zoomMap.minimumOrthographicSize : _manualCameraSettings.MinZoom;
+        float maximum = UsesMapZoom(cam) ? _zoomMap.maximumOrthographicSize : _manualCameraSettings.MaxZoom;
+        _currentManualZoom = Mathf.Clamp(_currentManualZoom - scrollDelta * _manualCameraSettings.ZoomSpeed, minimum, maximum);
+    }
+
+    private void CancelMapZoomPunch()
+    {
+        if (_zoomMap == null || !_zoomMap.overrideCameraZoom) return;
+        CancelInvoke(nameof(EaseBackToPrePunchState));
+        _isZoomPunchActive = false;
     }
 
     /// <summary>
@@ -745,6 +814,11 @@ public class CameraController : MonoBehaviour
     private void ResetToDefaultPosition()
     {
         if (_cameras == null || _cameras.Count == 0) return;
+        if (UsesMapZoom(_cameras[0]))
+        {
+            ResetCameraPositionSmooth();
+            return;
+        }
 
         // Smoothly return to original position
         foreach (var cam in _cameras)

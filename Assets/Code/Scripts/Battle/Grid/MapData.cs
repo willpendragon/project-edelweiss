@@ -90,7 +90,40 @@ public class MapData : ScriptableObject
     public Vector3 cameraRotation;
     public float cameraZoom = 60f;
     public bool isOrthographic = false;
+    [InspectorName("Default Orthographic Size")]
+    [Tooltip("Saved orthographic size. Also the default zoom for normal framing when Override Camera Zoom is enabled. Larger sizes zoom out.")]
     public float orthographicSize = 5f;
+
+    [Header("Orthographic Zoom")]
+    [Tooltip("Use this map's default and scroll limits instead of global zoom settings. Independent of the camera transform override. Special combat shots are unchanged.")]
+    public bool overrideCameraZoom = false;
+    [Tooltip("Smallest orthographic size allowed when scrolling (closest zoom).")]
+    public float minimumOrthographicSize = 5f;
+    [Tooltip("Largest orthographic size allowed when scrolling (furthest zoom).")]
+    public float maximumOrthographicSize = 20f;
+
+    public void ValidateCameraZoom()
+    {
+        if (!overrideCameraZoom) return;
+
+        float minimum = IsFinite(minimumOrthographicSize) ? Mathf.Max(0.01f, minimumOrthographicSize) : 0.01f;
+        float maximum = IsFinite(maximumOrthographicSize) ? Mathf.Max(minimum, maximumOrthographicSize) : Mathf.Max(minimum, 20f);
+        float defaultSize = IsFinite(orthographicSize) ? Mathf.Clamp(orthographicSize, minimum, maximum) : minimum;
+        if (minimum == minimumOrthographicSize && maximum == maximumOrthographicSize && defaultSize == orthographicSize)
+            return;
+
+        minimumOrthographicSize = minimum;
+        maximumOrthographicSize = maximum;
+        orthographicSize = defaultSize;
+        Debug.LogWarning($"Map '{name}': corrected invalid camera zoom settings. Sizes must be finite and positive, with minimum <= default <= maximum.", this);
+    }
+
+    private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+
+    private void OnValidate()
+    {
+        ValidateCameraZoom();
+    }
 
     [Header("Directional Light")] public bool overrideDirectionalLight = false;
     public Vector3 directionalLightRotation = new Vector3(50f, -30f, 0f);
