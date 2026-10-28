@@ -432,10 +432,61 @@ private void SaveDeityShardPrefabsToPrefs() => EditorPrefs.SetString("MapEditor_
         Vector3 size = GetTileWorldSize3D();
         float cellWidth = size.x + inBetweenTilesXOffset, cellDepth = size.z + inBetweenTilesZOffset;
         float offsetX = cellWidth / 2f, offsetZ = cellDepth / 2f;
+        float worldY = useFixedPaintingHeight ? paintingLayer * size.y : 0f;
         Handles.color = new Color(0, 1, 1, 0.2f);
 
-        for (int x = 0; x <= gridWidth; x++) Handles.DrawLine(new Vector3((x * cellWidth) - offsetX, 0, -offsetZ), new Vector3((x * cellWidth) - offsetX, 0, (gridHeight * cellDepth) - offsetZ));
-        for (int z = 0; z <= gridHeight; z++) Handles.DrawLine(new Vector3(-offsetX, 0, (z * cellDepth) - offsetZ), new Vector3((gridWidth * cellWidth) - offsetX, 0, (z * cellDepth) - offsetZ));
+        for (int x = 0; x <= gridWidth; x++) Handles.DrawLine(new Vector3((x * cellWidth) - offsetX, worldY, -offsetZ), new Vector3((x * cellWidth) - offsetX, worldY, (gridHeight * cellDepth) - offsetZ));
+        for (int z = 0; z <= gridHeight; z++) Handles.DrawLine(new Vector3(-offsetX, worldY, (z * cellDepth) - offsetZ), new Vector3((gridWidth * cellWidth) - offsetX, worldY, (z * cellDepth) - offsetZ));
+        DrawCoordinateLabels(size);
+    }
+
+    private Vector3Int GetGridLabelCoordinates(int x, int z)
+    {
+        return new Vector3Int(x, useFixedPaintingHeight ? paintingLayer : 0, z);
+    }
+
+    private static string FormatGridCoordinates(Vector3Int position)
+    {
+        return $"({position.x}, {position.y}, {position.z})";
+    }
+
+    private void DrawCoordinateLabels(Vector3 tileSize)
+    {
+        if (!showCoordinates || Event.current.type != EventType.Repaint) return;
+        SceneView sceneView = SceneView.currentDrawingSceneView;
+        if (sceneView == null || sceneView.camera == null) return;
+        Camera camera = sceneView.camera;
+
+        if (coordinateLabelStyle == null)
+        {
+            coordinateLabelStyle = new GUIStyle(EditorStyles.helpBox)
+            {
+                fontSize = 10,
+                alignment = TextAnchor.MiddleCenter,
+                padding = new RectOffset(3, 3, 1, 1),
+                wordWrap = false
+            };
+        }
+
+        Handles.BeginGUI();
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int z = 0; z < gridHeight; z++)
+            {
+                Vector3Int coordinates = GetGridLabelCoordinates(x, z);
+                Vector3 worldPosition = GridToWorld(coordinates, tileSize);
+                Vector3 viewport = camera.WorldToViewportPoint(worldPosition);
+                if (viewport.z < camera.nearClipPlane || viewport.z > camera.farClipPlane ||
+                    viewport.x < 0f || viewport.x > 1f || viewport.y < 0f || viewport.y > 1f)
+                    continue;
+
+                GUIContent content = new GUIContent(FormatGridCoordinates(coordinates));
+                Vector2 labelSize = coordinateLabelStyle.CalcSize(content);
+                Vector2 center = HandleUtility.WorldToGUIPoint(worldPosition);
+                GUI.Label(new Rect(center - labelSize * 0.5f, labelSize), content, coordinateLabelStyle);
+            }
+        }
+        Handles.EndGUI();
     }
 
     private void DrawPreview(Vector3Int gridPos)

@@ -25,6 +25,27 @@ public class RoamingDeityController : MonoBehaviour
     private int _deityCurrentNodeId = -1;
     private bool _isDeityActive = false;
 
+    public void RefreshAfterMapRebuild()
+    {
+        StopAllCoroutines();
+        if (!_isDeityActive || _spawnedDeityInstance == null) return;
+        _spawnedDeityInstance.transform.DOKill();
+        if (_deityCurrentNodeId >= 0 && _deityCurrentNodeId < mapGenerator.spawnedNodes.Count)
+        {
+            _spawnedDeityInstance.transform.position =
+                mapGenerator.spawnedNodes[_deityCurrentNodeId].transform.position + Vector3.up * 0.5f;
+            _spawnedDeityInstance.transform.localScale = Vector3.one * deityModelScale;
+        }
+        else
+        {
+            Destroy(_spawnedDeityInstance);
+            _spawnedDeityInstance = null;
+            _isDeityActive = false;
+            _deityCurrentNodeId = -1;
+            SpawnDeity();
+        }
+    }
+
     private void Start()
     {
         Invoke(nameof(SpawnDeity), 2f);
@@ -36,8 +57,7 @@ public class RoamingDeityController : MonoBehaviour
             return;
 
         int playerStartId = mapGenerator.currentNodeId;
-        int maxNodeCount = mapGenerator.currentMapNodeTransform != null ?
-            mapGenerator.spawnedNodes.Count : 10; // Fallback
+        int maxNodeCount = mapGenerator.spawnedNodes.Count;
 
         // Find a valid node ID to spawn the deity
         List<int> validSpawnNodes = new List<int>();

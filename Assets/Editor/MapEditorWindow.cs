@@ -77,6 +77,12 @@ public partial class MapEditorWindow : EditorWindow
     private bool isBucketMode = false;
     private bool clearOnClose = false;
 
+    [SerializeField] private bool useFixedPaintingHeight;
+    [SerializeField] private int paintingLayer;
+    private float heightScrollDelta;
+    private bool showCoordinates = true;
+    private GUIStyle coordinateLabelStyle;
+
     private Vector3Int lastGridPosition = new Vector3Int(-1, -1, -1);
     private Vector3Int lastPaintedPosition = new Vector3Int(-1, -1, -1);
     private int brushSize = 1;
@@ -104,6 +110,7 @@ public partial class MapEditorWindow : EditorWindow
         inBetweenTilesZOffset = EditorPrefs.GetFloat("MapEditor_OffsetZ", 0f);
         clearOnClose = EditorPrefs.GetBool("MapEditor_ClearOnClose", false);
         paintDelay = EditorPrefs.GetFloat("MapEditor_PaintDelay", 0.15f);
+        showCoordinates = EditorPrefs.GetBool("MapEditor_ShowCoordinates", true);
 
         _so = new SerializedObject(this);
         _decorationsProp = _so.FindProperty("decorationPrefabs");
@@ -232,32 +239,12 @@ public partial class MapEditorWindow : EditorWindow
         EditorGUILayout.Space();
         GUILayout.Label("Map Camera Settings", EditorStyles.boldLabel);
         referenceCamera = (Camera)EditorGUILayout.ObjectField("Scene Camera Reference", referenceCamera, typeof(Camera), true);
+        DrawMapZoomSettings();
 
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Save Camera to Map Asset"))
         {
-            if (currentMap == null)
-            {
-                Debug.LogWarning("Map Editor: Assign a Current Map Asset first!");
-            }
-            else if (referenceCamera == null)
-            {
-                Debug.LogWarning("Map Editor: Assign a Scene Camera Reference to save its transform!");
-            }
-            else
-            {
-                Undo.RecordObject(currentMap, "Save Camera Settings");
-                currentMap.overrideCameraSettings = true;
-                currentMap.cameraPosition = referenceCamera.transform.position;
-                currentMap.cameraRotation = referenceCamera.transform.eulerAngles;
-                currentMap.cameraZoom = referenceCamera.fieldOfView;
-                currentMap.isOrthographic = referenceCamera.orthographic;
-                currentMap.orthographicSize = referenceCamera.orthographicSize;
-                
-                EditorUtility.SetDirty(currentMap);
-                AssetDatabase.SaveAssets();
-                Debug.Log("Map Editor: True Camera settings successfully saved to MapData!");
-            }
+            SaveCameraToMap();
         }
 
         if (GUILayout.Button("Apply Map Camera to Scene"))
@@ -379,6 +366,34 @@ public partial class MapEditorWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();
+        GUILayout.Label("Painting Height", EditorStyles.boldLabel);
+        EditorGUI.BeginChangeCheck();
+        showCoordinates = EditorGUILayout.Toggle("Show Coordinates", showCoordinates);
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorPrefs.SetBool("MapEditor_ShowCoordinates", showCoordinates);
+            SceneView.RepaintAll();
+        }
+        EditorGUI.BeginChangeCheck();
+        bool fixedHeight = GUILayout.Toolbar(useFixedPaintingHeight ? 1 : 0, new[] { "Surface", "Fixed Height" }) == 1;
+        int layer = EditorGUILayout.IntField("Painting Layer (Y)", paintingLayer);
+        if (EditorGUI.EndChangeCheck())
+        {
+            SetPaintingHeight(fixedHeight, layer);
+            heightScrollDelta = 0f;
+        }
+        SetPaintingHeight(useFixedPaintingHeight, paintingLayer);
+        if (gridWidth <= 0 || gridDepth <= 0 || gridHeight <= 0)
+            EditorGUILayout.HelpBox("All map dimensions must be greater than zero to paint.", MessageType.Warning);
+        EditorGUILayout.LabelField("World Height", (paintingLayer * GetTileWorldSize3D().y).ToString("0.###"));
+        EditorGUILayout.HelpBox(
+            "Surface: existing raycast placement. Press H over a surface target to use its height.\n" +
+            "Fixed Height: wheel up/down changes layers; Alt + wheel zooms. H returns to Surface.\n" +
+            "Fixed-height bucket fill stays on this layer and does not require support. Delete removes all items at each targeted cell.\n" +
+            "Gameplay spawn markers still require a supporting tile at runtime.",
+            MessageType.Info);
+
+        EditorGUILayout.Space();
         brushSize = EditorGUILayout.IntSlider("Brush Size (Number Keys 1-6)", brushSize, 1, 6);
 
         EditorGUILayout.Space();
@@ -439,7 +454,20 @@ public partial class MapEditorWindow : EditorWindow
         isDeletingTile = delete;
 
         if (bucket) isBucketMode = true;
-        else if (!tile && !deco && !unit && !enemy && !interactable && !delete) isBucketMode = false;
+        else if (!tile && !deco && !unit && !deityShard && !enemy && !interactable && !delete) isBucketMode = false;
+    }
+
+    private void SetPaintingHeight(bool fixedHeight, int layer)
+    {
+        layer = Mathf.Clamp(layer, 0, Mathf.Max(0, gridDepth - 1));
+        if (useFixedPaintingHeight == fixedHeight && paintingLayer == layer) return;
+
+        useFixedPaintingHeight = fixedHeight;
+        paintingLayer = layer;
+        lastGridPosition = new Vector3Int(-1, -1, -1);
+        lastPaintedPosition = new Vector3Int(-1, -1, -1);
+        Repaint();
+        SceneView.RepaintAll();
     }
 
     private void DrawPrefabPool(string label, ref SerializedProperty prop, List<GameObject> prefabs, ref int index, ref GameObject activePrefab, ref Vector2 scroll, System.Action saveCallback)
@@ -481,6 +509,53 @@ public partial class MapEditorWindow : EditorWindow
         }
     }
 
+    private void DrawMapZoomSettings()
+    {
+        if (currentMap == null) return;
+
+        var mapObject = new SerializedObject(currentMap);
+        mapObject.Update();
+        EditorGUILayout.PropertyField(mapObject.FindProperty("overrideCameraZoom"), new GUIContent("Override Camera Zoom"));
+        if (mapObject.FindProperty("overrideCameraZoom").boolValue)
+        {
+            EditorGUILayout.PropertyField(mapObject.FindProperty("minimumOrthographicSize"), new GUIContent("Minimum Orthographic Size"));
+            EditorGUILayout.PropertyField(mapObject.FindProperty("orthographicSize"), new GUIContent("Default Orthographic Size"));
+            EditorGUILayout.PropertyField(mapObject.FindProperty("maximumOrthographicSize"), new GUIContent("Maximum Orthographic Size"));
+            EditorGUILayout.HelpBox("Smaller sizes zoom in; larger sizes zoom out. Applies to orthographic cameras, normal unit framing and scroll limits. Special combat shots are unchanged. Independent of the camera transform override.", MessageType.Info);
+        }
+        if (mapObject.ApplyModifiedProperties())
+        {
+            currentMap.ValidateCameraZoom();
+            EditorUtility.SetDirty(currentMap);
+        }
+    }
+
+    private void SaveCameraToMap()
+    {
+        if (currentMap == null)
+        {
+            Debug.LogWarning("Map Editor: Assign a Current Map Asset first!");
+            return;
+        }
+        if (referenceCamera == null)
+        {
+            Debug.LogWarning("Map Editor: Assign a Scene Camera Reference to save its transform!");
+            return;
+        }
+
+        Undo.RecordObject(currentMap, "Save Camera Settings");
+        currentMap.overrideCameraSettings = true;
+        currentMap.cameraPosition = referenceCamera.transform.position;
+        currentMap.cameraRotation = referenceCamera.transform.eulerAngles;
+        currentMap.cameraZoom = referenceCamera.fieldOfView;
+        currentMap.isOrthographic = referenceCamera.orthographic;
+        currentMap.orthographicSize = referenceCamera.orthographicSize;
+        currentMap.ValidateCameraZoom();
+        EditorUtility.SetDirty(currentMap);
+        AssetDatabase.SaveAssets();
+        Debug.Log("Map Editor: True Camera settings successfully saved to MapData!");
+    }
+
     private void SyncCameraFromMap()
     {
         if (currentMap == null)
@@ -489,7 +564,7 @@ public partial class MapEditorWindow : EditorWindow
             return;
         }
 
-        if (!currentMap.overrideCameraSettings)
+        if (!currentMap.overrideCameraSettings && !currentMap.overrideCameraZoom)
         {
             Debug.Log("Map Editor: Current Map Asset does not have camera override active. Skipping camera sync.");
             return;
@@ -513,14 +588,22 @@ public partial class MapEditorWindow : EditorWindow
         Undo.RecordObject(referenceCamera.transform, "Sync Camera Transform");
         Undo.RecordObject(referenceCamera, "Sync Camera Properties");
 
-        referenceCamera.transform.position = currentMap.cameraPosition;
-        referenceCamera.transform.eulerAngles = currentMap.cameraRotation;
-        referenceCamera.orthographic = currentMap.isOrthographic;
-        
-        if (currentMap.isOrthographic)
+        currentMap.ValidateCameraZoom();
+        if (currentMap.overrideCameraSettings)
+        {
+            referenceCamera.transform.position = currentMap.cameraPosition;
+            referenceCamera.transform.eulerAngles = currentMap.cameraRotation;
+            referenceCamera.orthographic = currentMap.isOrthographic;
+
+            if (currentMap.isOrthographic)
+                referenceCamera.orthographicSize = currentMap.orthographicSize;
+            else
+                referenceCamera.fieldOfView = currentMap.cameraZoom;
+        }
+        else if (currentMap.overrideCameraZoom && referenceCamera.orthographic)
+        {
             referenceCamera.orthographicSize = currentMap.orthographicSize;
-        else
-            referenceCamera.fieldOfView = currentMap.cameraZoom;
+        }
 
         Debug.Log($"Map Editor: Successfully applied camera settings from '{currentMap.name}' to '{referenceCamera.name}'.");
     }
