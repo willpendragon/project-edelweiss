@@ -11,7 +11,7 @@ public enum NodeType
     BossBattle
 }
 
-public class OverworldMapGenerator : MonoBehaviour
+public partial class OverworldMapGenerator : MonoBehaviour
 {
     public List<Domain> domains = new List<Domain>(); // Domains are a set of different Levels.
     public GameObject mapNode;
@@ -24,6 +24,8 @@ public class OverworldMapGenerator : MonoBehaviour
     // in terms of difficulty and challenge types distribution.
     [Tooltip("Please create a MapConfig Scriptable Object and assign it here, this will dictate rules and weights.")]
     public MapGenerationConfig config;
+    [Tooltip("Use Domain Level list order, maps and enemy parties. Node types come from the effective MapData, including debug overrides. Scatter and branching remain seeded.")]
+    public bool authoredMode;
 
     // Think of Maps as Lego Sets themes: there are different types: Regular (normal skirmishes), Puzzle (maps which have some Zelda-like elements),
     // MiniBoss/Boss Maps (where Player must confront MiniBoss/Boss). Mind that this is an arbitrary design distinction, as what really matters
@@ -111,19 +113,6 @@ public class OverworldMapGenerator : MonoBehaviour
     public Dictionary<int, List<int>> adjacencyList { get; private set; } = new Dictionary<int, List<int>>();
     private bool isMoving = false;
 
-    private float lastMapWidth;
-    private float lastMapDepth;
-    private float lastMinDistance;
-    private int lastSeed;
-
-    // Tracking config weights and thresholds.
-    private float lastRegularWeight;
-    private float lastPuzzleWeight;
-    private float lastMinibossWeight;
-    private float lastBossWeight;
-    private int lastPuzzleThreshold;
-    private int lastMinibossThreshold;
-
     // Hold a runtime copy to avoid permanently modifying the actual SO in the Editor.
     private MapGenerationConfig runtimeConfig;
 
@@ -131,43 +120,43 @@ public class OverworldMapGenerator : MonoBehaviour
 
     public void GenerateLevel(Domain domainLevelSelection)
     {
+        requestedDomain = domainLevelSelection;
+        TryGenerateLevel(hasSuccessfulGeneration);
+    }
+
+    private void GenerateLevelCore(Domain domainLevelSelection, AuthoredEncounter[] encounters)
+    {
         if (config == null)
         {
             Debug.LogError("MapGenerationConfig is missing! Please assign one in the inspector.");
             return;
         }
 
-        // Initialize tracking variables for automatic runtime regeneration.
-        lastMapWidth = config.mapWidth;
-        lastMapDepth = config.mapDepth;
-        lastMinDistance = config.minDistanceApart;
-        lastSeed = config.randomSeed;
-        lastRegularWeight = config.regularBattleWeight;
-        lastPuzzleWeight = config.puzzleBattleWeight;
-        lastMinibossWeight = config.minibossBattleWeight;
-        lastBossWeight = config.bossBattleWeight;
-        lastPuzzleThreshold = config.puzzleBattleThreshold;
-        lastMinibossThreshold = config.minibossBattleThreshold;
-
         currentDomain = domainLevelSelection;
         GameSaveData gameSaveData = SaveStateManager.saveData; // Retrieve the Player's progression (aka, how many nodes they have completed).
         int highestUnlockedLevel = gameSaveData.highestUnlockedLevel;
 
         // Create a temporary clone of the config for this generation run.
+        if (runtimeConfig != null) DestroyGeneratedObject(runtimeConfig);
         runtimeConfig = Instantiate(config);
 
         // If either randomization rule is active, we rely on a persistent Run Seed
         if (runtimeConfig.randomizeSeedOnGeneration || runtimeConfig.fullyRandomizeRules)
         {
+            int generationSeed = gameSaveData.runSeed;
             // If starting a fresh run, generate a new persistent seed and save it!
-            if (gameSaveData.runSeed == 0)
+            if (generationSeed == 0)
             {
-                gameSaveData.runSeed = Random.Range(1, int.MaxValue);
-                SaveStateManager.SaveGame(gameSaveData);
+                generationSeed = rebuilding ? runtimeConfig.randomSeed : Random.Range(1, int.MaxValue);
+                if (!rebuilding)
+                {
+                    gameSaveData.runSeed = generationSeed;
+                    SaveStateManager.SaveGame(gameSaveData);
+                }
             }
 
             // Initialize Unity's randomizer with the saved Run Seed
-            Random.InitState(gameSaveData.runSeed);
+            Random.InitState(generationSeed);
 
             // Deterministically randomize the rules if Roguelike Mode is active. Seed is fixes, ranged will yield same values
             // anytime Player loads this save file.
@@ -185,7 +174,7 @@ public class OverworldMapGenerator : MonoBehaviour
             }
 
             // Re-seed one more time right before node layout generation, as complete safety measure.
-            Random.InitState(gameSaveData.runSeed);
+            Random.InitState(generationSeed);
         }
         else
         {
@@ -238,7 +227,7 @@ public class OverworldMapGenerator : MonoBehaviour
         NodeType[] predefinedNodeTypes = new NodeType[scatteredPositions.Count];
         for (int i = 0; i < scatteredPositions.Count; i++)
         {
-            predefinedNodeTypes[i] = GenerateNodeType(i, scatteredPositions.Count);
+            predefinedNodeTypes[i] = encounters != null ? encounters[i].type : GenerateNodeType(i, scatteredPositions.Count);
         }
 
         // Determine mesh connections (multi-path) restricted by Gateways.
@@ -336,12 +325,13 @@ public class OverworldMapGenerator : MonoBehaviour
             // Spawn a node an inject all data (set by designers) from the Level SOs into the actual nodes created at runtime.
             // Beware: the Enemy Selection class now handles more than just enemy data.
             var enemySelection = newNode.GetComponent<EnemySelection>();
+            nodeController.enemySelection = enemySelection;
             enemySelection.enemyParty = domainLevelSelection.levelList[i].enemyPartyData;
             enemySelection.levelNumber = domainLevelSelection.levelList[i].levelNumber;
             enemySelection.conversationTitle = domainLevelSelection.levelList[i].conversationTitle; // Allows designers to set which convo will play in which node.
 
             // Pass the current index 'i' to evaluate difficulty.
-            MapData randomlySelectedMap = GetRandomMapForType(nodeType, i);
+            MapData randomlySelectedMap = encounters != null ? encounters[i].map : GetRandomMapForType(nodeType, i);
             if (randomlySelectedMap != null)
             {
                 enemySelection.mapData = randomlySelectedMap;
@@ -353,7 +343,7 @@ public class OverworldMapGenerator : MonoBehaviour
             }
 
             // Debug cherrypick: forces this node to use a specific MapData regardless of pool selection.
-            MapData debugOverrideMap = GetDebugMapOverrideForNode(i);
+            MapData debugOverrideMap = encounters == null ? GetDebugMapOverrideForNode(i) : null;
             if (debugOverrideMap != null)
             {
                 enemySelection.mapData = debugOverrideMap;
@@ -361,17 +351,18 @@ public class OverworldMapGenerator : MonoBehaviour
             }
 
             // Make all nodes interactable globally, control state via exact IDs.
-            bool isCleared = gameSaveData.clearedNodesId != null && gameSaveData.clearedNodesId.Contains(i);
+            bool isCleared = rebuilding ? rebuildClearedNodes.Contains(i) :
+                gameSaveData.clearedNodesId != null && gameSaveData.clearedNodesId.Contains(i);
 
             if (isCleared) nodeController.SetCleared();
             else nodeController.SetUnlocked();
 
             UpdateNodeVisuals(newNode, isCleared);
 
-            int visualStartNodeId = gameSaveData.currentNodeId;
+            int visualStartNodeId = rebuilding ? rebuildPlayerNode : gameSaveData.currentNodeId;
             if (visualStartNodeId < 0 || visualStartNodeId >= domainLevelSelection.levelList.Length)
             {
-                visualStartNodeId = highestUnlockedLevel;
+                visualStartNodeId = Mathf.Clamp(highestUnlockedLevel, 0, domainLevelSelection.levelList.Length - 1);
             }
 
             if (i == visualStartNodeId)
@@ -387,11 +378,11 @@ public class OverworldMapGenerator : MonoBehaviour
 
     private MapData GetDebugMapOverrideForNode(int nodeIndex)
     {
-        if (!debugMapDataPopulationIsActive) return null;
+        if (!debugMapDataPopulationIsActive || debugNodeMapOverrides == null) return null;
 
         foreach (var entry in debugNodeMapOverrides)
         {
-            if (entry.nodeIndex == nodeIndex) return entry.mapData;
+            if (entry != null && entry.nodeIndex == nodeIndex) return entry.mapData;
         }
 
         return null;
@@ -623,6 +614,7 @@ public class OverworldMapGenerator : MonoBehaviour
             }
 
             currentNodeId = nextNode;
+            currentMapNodeTransform = spawnedNodes[nextNode].transform;
 
             if (gameStatsManager != null)
             {
@@ -781,13 +773,40 @@ public class OverworldMapGenerator : MonoBehaviour
 
     private void RegenerateMap()
     {
-        ClearMap();
-        GenerateLevel(currentDomain);
+        TryGenerateLevel(true);
     }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     private GUIStyle nodeIndexLabelStyle;
     private bool warnedAboutNodeIndexCamera;
+
+    private static string GetNodeOverlayText(int index, bool authored, EnemySelection selection)
+    {
+        string text = $"Node {index}";
+        if (authored)
+        {
+            string mapName = selection != null && selection.mapData != null
+                ? LiteralOverlayName(selection.mapData.name) : "Missing map";
+            string enemyName = selection != null && selection.enemyParty != null
+                ? LiteralOverlayName(selection.enemyParty.name) : "Missing enemy configuration";
+            text += $"\nMap: {mapName}\nEnemies: {enemyName}";
+        }
+        return $"<color=#FFFFFFFF>{text}</color>";
+    }
+
+    private static string LiteralOverlayName(string name)
+    {
+        // Break rich-text tag openers with an invisible separator, preserving the visible asset name.
+        return name.Replace("<", "<\u200B");
+    }
+
+    private static Rect GetNodeOverlayRect(Vector2 position, Vector2 size, Vector2 viewport)
+    {
+        return new Rect(
+            Mathf.Clamp(position.x - size.x * 0.5f, 0f, Mathf.Max(0f, viewport.x - size.x)),
+            Mathf.Clamp(position.y - size.y * 0.5f, 0f, Mathf.Max(0f, viewport.y - size.y)),
+            size.x, size.y);
+    }
 
     private static bool ShouldShowNodeIndices(bool enabled, bool focused, bool shiftHeld, bool sHeld)
     {
@@ -827,18 +846,36 @@ public class OverworldMapGenerator : MonoBehaviour
 
         if (nodeIndexLabelStyle == null)
         {
-            nodeIndexLabelStyle = new GUIStyle(GUI.skin.box)
+            nodeIndexLabelStyle = new GUIStyle
             {
+                font = GUI.skin.font,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 14,
                 fontStyle = FontStyle.Bold,
+                richText = true,
                 padding = new RectOffset(6, 6, 3, 3)
             };
-            nodeIndexLabelStyle.normal.textColor = Color.white;
+            foreach (GUIStyleState state in new[]
+            {
+                nodeIndexLabelStyle.normal, nodeIndexLabelStyle.hover,
+                nodeIndexLabelStyle.active, nodeIndexLabelStyle.focused,
+                nodeIndexLabelStyle.onNormal, nodeIndexLabelStyle.onHover,
+                nodeIndexLabelStyle.onActive, nodeIndexLabelStyle.onFocused
+            })
+            {
+                state.textColor = Color.white;
+                state.background = null;
+            }
         }
 
         Color previousColor = GUI.color;
+        Color previousContentColor = GUI.contentColor;
+        bool previousEnabled = GUI.enabled;
+        GUI.enabled = true;
         GUI.color = Color.white;
+        GUI.contentColor = Color.white;
+        nodeIndexLabelStyle.richText = true;
+        nodeIndexLabelStyle.wordWrap = authoredMode;
         for (int i = 0; i < spawnedNodes.Count; i++)
         {
             GameObject node = spawnedNodes[i];
@@ -846,66 +883,74 @@ public class OverworldMapGenerator : MonoBehaviour
                 !TryGetNodeLabelPosition(nodeIndexOverlayCamera, node.transform.position, out Vector2 position))
                 continue;
 
-            GUIContent content = new GUIContent($"Node {i}");
+            EnemySelection selection = authoredMode ? node.GetComponent<EnemySelection>() : null;
+            GUIContent content = new GUIContent(GetNodeOverlayText(i, authoredMode, selection));
             Vector2 size = nodeIndexLabelStyle.CalcSize(content);
-            Rect rect = new Rect(position - size * 0.5f, size);
-            rect.x = Mathf.Clamp(rect.x, 0f, Mathf.Max(0f, Screen.width - size.x));
-            rect.y = Mathf.Clamp(rect.y, 0f, Mathf.Max(0f, Screen.height - size.y));
-            GUI.Label(rect, content, nodeIndexLabelStyle);
+            if (authoredMode)
+            {
+                size.x = Mathf.Min(size.x, Mathf.Max(1f, Mathf.Min(360f, Screen.width)));
+                size.y = nodeIndexLabelStyle.CalcHeight(content, size.x);
+            }
+            Rect rect = GetNodeOverlayRect(position, size, new Vector2(Screen.width, Screen.height));
+            GUI.color = new Color(0.65f, 0.7f, 0.8f, 0.95f);
+            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            GUI.color = new Color(0.06f, 0.07f, 0.1f, 0.95f);
+            GUI.DrawTexture(new Rect(rect.x + 1f, rect.y + 1f, rect.width - 2f, rect.height - 2f),
+                Texture2D.whiteTexture);
+            GUI.color = Color.white;
+            nodeIndexLabelStyle.Draw(rect, content, false, false, false, false);
         }
         GUI.color = previousColor;
+        GUI.contentColor = previousContentColor;
+        GUI.enabled = previousEnabled;
     }
 #endif
 
     private void Update()
     {
-        if (!Application.isPlaying || !autoUpdateInPlayMode || config == null || currentDomain == null) return;
+        if (!Application.isPlaying || !autoUpdateInPlayMode || requestedDomain == null) return;
 
-        bool hasChanged = false;
-
-        if (config.mapWidth != lastMapWidth || config.mapDepth != lastMapDepth || config.minDistanceApart != lastMinDistance || config.randomSeed != lastSeed)
-            hasChanged = true;
-
-        if (config.regularBattleWeight != lastRegularWeight || config.puzzleBattleWeight != lastPuzzleWeight ||
-            config.minibossBattleWeight != lastMinibossWeight || config.bossBattleWeight != lastBossWeight)
-            hasChanged = true;
-
-        if (config.puzzleBattleThreshold != lastPuzzleThreshold || config.minibossBattleThreshold != lastMinibossThreshold)
-            hasChanged = true;
-
-        if (hasChanged)
-        {
+        if (LiveInputsChanged())
             RegenerateMap();
-        }
 
         if (Input.GetKeyDown(KeyCode.B))
-        {
             DebugTeleportToBossBattle();
-        }
     }
 
     private void ClearMap()
     {
         foreach (var node in spawnedNodes)
         {
-            if (node != null) Destroy(node);
+            if (node != null)
+            {
+                var controller = node.GetComponentInChildren<MapNodeController>();
+                if (controller != null) controller.CloseForMapRebuild();
+                node.SetActive(false);
+                DestroyGeneratedObject(node);
+            }
         }
         spawnedNodes.Clear();
 
         foreach (var icon in spawnedPartyIcons)
         {
-            if (icon != null) Destroy(icon);
+            if (icon != null)
+            {
+                icon.transform.DOKill();
+                icon.SetActive(false);
+                DestroyGeneratedObject(icon);
+            }
         }
         spawnedPartyIcons.Clear();
 
         foreach (var line in spawnedLines)
         {
-            if (line != null) Destroy(line);
+            if (line != null) DestroyGeneratedObject(line);
         }
         spawnedLines.Clear();
 
         nodePositions.Clear();
         adjacencyList.Clear();
+        currentMapNodeTransform = null;
     }
 
     public void DebugTeleportToBossBattle()
@@ -922,6 +967,30 @@ public class OverworldMapGenerator : MonoBehaviour
             return;
         }
 
+        if (authoredMode)
+        {
+            authoredTeleportMap = debugBossMapData;
+            if (TryGenerateLevel(true))
+            {
+                currentNodeId = spawnedNodes.Count - 1;
+                currentMapNodeTransform = spawnedNodes[currentNodeId].transform;
+                foreach (var icon in spawnedPartyIcons)
+                {
+                    if (icon != null)
+                    {
+                        icon.transform.DOKill();
+                        icon.SetActive(false);
+                        DestroyGeneratedObject(icon);
+                    }
+                }
+                spawnedPartyIcons.Clear();
+                UpdatePartyMemberVisuals(spawnedNodes[currentNodeId]);
+                var stats = FindAnyObjectByType<GameStatsManager>();
+                if (stats != null) stats.hasBossKey = true;
+            }
+            return;
+        }
+
         // --- Main Teleport Logic ---
         // Temporarily override the save data to force the player's spawn on the last node.
         GameSaveData gameSaveData = SaveStateManager.saveData;
@@ -935,9 +1004,9 @@ public class OverworldMapGenerator : MonoBehaviour
 
         gameSaveData.currentNodeId = bossNodeId;
         gameSaveData.highestUnlockedLevel = 14;
+        currentNodeId = bossNodeId;
 
         // Regenerate the map. It will now use the overridden start position.
-        ClearMap();
         GenerateLevel(currentDomain);
 
         // The generator has now placed the player at the boss node.

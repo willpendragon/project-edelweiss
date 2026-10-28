@@ -186,6 +186,15 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         _mapMenuController.SetArrowsVisibility(1f);
     }
 
+    public void CloseForMapRebuild()
+    {
+        if (_locationCanvas == null || !_locationCanvas.interactable) return;
+        SetCanvasVisibility(0f, false, false, Vector3.zero);
+        SetOverworldUIVisibility(1f);
+        Time.timeScale = 1f;
+        if (_mapMenuController != null) _mapMenuController.SetArrowsVisibility(1f);
+    }
+
     private void SetCanvasVisibility(float alpha, bool blocksRaycasts, bool isInteractable, Vector3 scale)
     {
         _locationCanvas.alpha = alpha;
@@ -224,6 +233,7 @@ public class MapNodeController : MonoBehaviour, IPointerClickHandler
         // The sequence happening when the Player clicks on a node.
         // Basically, enemies are picked from the pool, the loader starts and the calendar time increases.
         Time.timeScale = 1f;
+        if (mapGenerator != null) mapGenerator.CommitPreviewNodeForBattle();
         enemySelection.SelectMapNode(); // Injects all data into the node that has been currently clicked by the Player.
         // This way, when moving from Map to Battle, data will be stored on GameManager, survives across scenes and be recreated at the start of the battle.
         GameManager.Instance.GetComponentInChildren<SceneLoader>().ChangeScene();

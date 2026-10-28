@@ -978,7 +978,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 139781ea64fb45a428d61d62c4219e34, type: 2}
   mapNode: {fileID: 7530335955166926438, guid: 3cbe7607717d6e145bab6c0affb91a81, type: 3}
   mapNodeTransform: {fileID: 1490335694}
-  config: {fileID: 11400000, guid: 71d4daf0b20a6e640bc3317e1035afc7, type: 2}
+  config: {fileID: 11400000, guid: d916e3242ddd9ab42aa582f83e63db96, type: 2}
+  authoredMode: 1
   regularMaps:
   - {fileID: 11400000, guid: f43a7862c78c6b54ca3eb20e0dfc95a9, type: 2}
   puzzleMaps:
@@ -998,9 +999,13 @@ MonoBehaviour:
   - {fileID: 206116485120872592, guid: 166c0ab59b8c39a4a8694a5a17fc9051, type: 3}
   iconZOffset: -2
   autoUpdateInPlayMode: 1
+  enableNodeIndexOverlay: 1
+  nodeIndexOverlayCamera: {fileID: 1559498398}
   debugBossMapData: {fileID: 11400000, guid: b5868fbdab7a12e49be0a18a8e2c683b, type: 2}
-  debugMapDataPopulationIsActive: 0
-  debugNodeMapOverrides: []
+  debugMapDataPopulationIsActive: 1
+  debugNodeMapOverrides:
+  - nodeIndex: 3
+    mapData: {fileID: 11400000, guid: c7e4e9f11c68bbb44b869d3236a504c8, type: 2}
   currentMapNodeTransform: {fileID: 0}
   currentNodeId: 0
 --- !u!1 &129807939
@@ -6487,7 +6492,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1481731952}
+  - {fileID: 1639629576}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8926,7 +8931,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -20, y: -2.8787231}
+  m_AnchoredPosition: {x: -20, y: -2.878662}
   m_SizeDelta: {x: 256, y: 64.513}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1332464729
@@ -9399,7 +9404,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -33.179077, y: -76.725586}
+  m_AnchoredPosition: {x: -33.1792, y: -76.725586}
   m_SizeDelta: {x: 229.3927, y: 81.4653}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1374782113
@@ -10386,37 +10391,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1479011542}
   m_CullTransparentMesh: 1
---- !u!21 &1481731952
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Height Fog Global
-  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _Banner: 1
-    - _HeightFogGlobal: 1
-    - _IsHeightFogShader: 1
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1484199777
 GameObject:
   m_ObjectHideFlags: 0
@@ -11229,7 +11203,7 @@ MonoBehaviour:
   mapGenerator: {fileID: 127295436}
   deityModelPrefab: {fileID: 3348349630364506734, guid: 60480ad0717cd254d988fa0ebcdac6fe, type: 3}
   deityBattlePrefab: {fileID: 3348349630364506734, guid: 60480ad0717cd254d988fa0ebcdac6fe, type: 3}
-  spawnNodeDistanceMin: 3
+  spawnNodeDistanceMin: 7
   simildeBossMapData: {fileID: 11400000, guid: f43a7862c78c6b54ca3eb20e0dfc95a9, type: 2}
   deityModelScale: 3
   spawnTweenDuration: 0.8
@@ -11801,6 +11775,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9d1d2dd6764c2a448918d10730770f4, type: 3}
+--- !u!21 &1639629576
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Height Fog Global
+  m_Shader: {fileID: 4800000, guid: 3a7ef1b66bafb7a448a880ef76d2e6e6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Banner: 1
+    - _HeightFogGlobal: 1
+    - _IsHeightFogShader: 1
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &1658903593
 GameObject:
   m_ObjectHideFlags: 0
@@ -12650,6 +12655,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1777899889}
   m_Mesh: {fileID: -462981019419857548, guid: 41e9bfa696c38274d9e6340ff10139b4, type: 3}
+--- !u!1 &1799994077
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1799994078}
+  - component: {fileID: 1799994079}
+  m_Layer: 0
+  m_Name: ResourcesDebug
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1799994078
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799994077}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1799994079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799994077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6539222cc7d6a24480e94fa67150afc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameStatsManager: {fileID: 2069997350}
 --- !u!1 &1801264626
 GameObject:
   m_ObjectHideFlags: 0
@@ -22903,3 +22953,4 @@ SceneRoots:
   - {fileID: 5332027507439618696}
   - {fileID: 1254011838}
   - {fileID: 1828706002}
+  - {fileID: 1799994078}
